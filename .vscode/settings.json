@@ -1,0 +1,16 @@
+{
+	"cSpell.words": [
+		"corejs",
+		"demi",
+		"filesize",
+		"iife",
+		"onwarn",
+		"reinstaller",
+		"saqqdy",
+		"tscjs",
+		"tsnd",
+		"unpub",
+		"unpublish"
+	],
+	"typescript.tsdk": "node_modules/typescript/lib"
+}
