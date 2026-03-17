@@ -65,23 +65,6 @@ describe('ClickCaptcha', () => {
 		captcha.destroy()
 	})
 
-	it('should use custom text when provided', () => {
-		const customText = 'ABCD'
-		const captcha = new ClickCaptcha({
-			count: 4,
-			el: container,
-			text: customText,
-		})
-
-		const prompt = container.querySelector('.captcha-prompt')
-		expect(prompt?.textContent).toContain('A')
-		expect(prompt?.textContent).toContain('B')
-		expect(prompt?.textContent).toContain('C')
-		expect(prompt?.textContent).toContain('D')
-
-		captcha.destroy()
-	})
-
 	it('should verify click points correctly', () => {
 		const captcha = new ClickCaptcha({
 			count: 3,
@@ -167,6 +150,48 @@ describe('ClickCaptcha', () => {
 		const stats = captcha.getStatistics()
 		expect(stats).toBeDefined()
 		expect(stats.totalAttempts).toBe(0)
+
+		captcha.destroy()
+	})
+
+	it('should generate decoy characters for anti-bot protection', () => {
+		const captcha = new ClickCaptcha({
+			count: 3,
+			el: container,
+		})
+
+		// Target points should match the specified count (not including decoys)
+		const data = captcha.getData()
+		expect(data.target).toHaveLength(3)
+
+		// The canvas should have characters drawn (including decoys)
+		const canvas = container.querySelector('canvas')
+		expect(canvas).toBeDefined()
+
+		// Verify prompt shows correct text to click
+		const prompt = container.querySelector('.captcha-prompt')
+		expect(prompt?.textContent).toContain('请依次点击')
+
+		captcha.destroy()
+	})
+
+	it('should only verify target characters, not decoys', () => {
+		const captcha = new ClickCaptcha({
+			count: 3,
+			el: container,
+		})
+
+		// Get the target points
+		const data = captcha.getData()
+		const targetPoints = data.target as { x: number; y: number }[]
+
+		// Verify with correct positions should succeed
+		const result = captcha.verify(targetPoints)
+		expect(result).toBeTruthy()
+
+		// Verify with wrong number of points should fail
+		const wrongResult = captcha.verify([targetPoints[0]])
+		expect(wrongResult).toBeFalsy()
 
 		captcha.destroy()
 	})

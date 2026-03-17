@@ -23,20 +23,34 @@ A lightweight behavioral captcha library with slider puzzle, click verification,
 
 ## Features
 
-- 🧩 **Slider Captcha** - Puzzle-style slider verification with random shapes (square/triangle/trapezoid/pentagon)
-- 🖱️ **Click Captcha** - Text click verification with Chinese vocabulary support
-- 👻 **Invisible Captcha** - Risk-based invisible verification
-- 📦 **Popup Captcha** - Modal popup wrapper for slider and click captcha (NEW)
-- 🖥️ **Backend Server** - Express 5 backend with server-side image generation
-- 🔐 **Security Features** - HMAC-SHA256 signature, timestamp validation
-- 📊 **Statistics API** - Track verification success rates and timing
-- 🌐 **Backend Mode** - Optional server-side verification support
+### Captcha Types
+
+- 🧩 **Slider Captcha** - Puzzle verification with random shapes (square/triangle/trapezoid/pentagon), decoy holes with random rotation
+- 🖱️ **Click Captcha** - Text click verification with 200+ Chinese vocabulary support, no duplicate characters per word, random decoy characters for anti-bot protection
+- 👻 **Invisible Captcha** - Risk-based invisible verification, behavior tracking and analysis
+- 📦 **Popup Captcha** - Modal popup wrapper for slider and click captcha, trigger by element click or programmatically
+
+### Verification Modes
+
+- 🎯 **Frontend Mode** - Pure frontend verification, no backend required
+- 🌐 **Backend Mode** - Server-side verification with image generation
+
+### Security Features
+
+- 🔐 **Data Signature** - HMAC-SHA256 signature to prevent data tampering
+- ⏱️ **Timestamp Validation** - Prevent replay attacks
+- 🚦 **Rate Limiting** - Prevent API abuse (60 requests/min by default)
+- 🚫 **IP Blacklist** - Block malicious IPs with temporary/permanent blocking
+- 🛡️ **Brute-Force Protection** - Detect and block brute-force attacks
+
+### Other Features
+
+- 📊 **Statistics API** - Track verification success rates, timing, and distances
 - 🚀 **Framework Agnostic** - Works with Vue, React, Angular, or vanilla JS
 - 📦 **Lightweight** - ~35KB minified, no dependencies
-- 🎨 **Customizable** - Flexible options for styling and behavior
+- 🖼️ **Custom Images** - Support custom background and slider images
 - 📱 **Mobile Friendly** - Full touch events support
-- 🎯 **Decoy Holes** - Anti-bot deceptive holes with random rotation
-- 🖼️ **Enhanced Backgrounds** - Gradient backgrounds with decorative patterns
+- 🌐 **IE11+ Support** - Requires Promise polyfill
 
 ## Installing
 
@@ -53,7 +67,7 @@ $ yarn add captcha-pro
 
 ## Usage
 
-### Slider Captcha (Puzzle)
+### Slider Captcha
 
 ```html
 <div id="slider-captcha"></div>
@@ -63,38 +77,29 @@ $ yarn add captcha-pro
 
   const captcha = new SliderCaptcha({
     el: '#slider-captcha',
-    width: 280,
-    height: 155,
+    width: 300,
+    height: 170,
     precision: 5,
     showRefresh: true,
-    onSuccess: () => {
-      console.log('Verification passed!')
-    },
-    onFail: () => {
-      console.log('Verification failed!')
-    }
+    onSuccess: () => console.log('Verification passed!'),
+    onFail: () => console.log('Verification failed!')
   })
 
   // Get captcha data
   const data = captcha.getData()
   console.log('Target position:', data.target)
 
-  // Manual verification
-  const isValid = captcha.verify([150]) // x position
-
   // Get statistics
   const stats = captcha.getStatistics()
   console.log('Success rate:', stats.successRate + '%')
 
-  // Reset captcha
+  // Reset or destroy
   captcha.reset()
-
-  // Destroy captcha
   captcha.destroy()
 </script>
 ```
 
-### Click Captcha (Text Click)
+### Click Captcha
 
 ```html
 <div id="click-captcha"></div>
@@ -104,17 +109,10 @@ $ yarn add captcha-pro
 
   const captcha = new ClickCaptcha({
     el: '#click-captcha',
-    width: 280,
-    height: 155,
+    width: 300,
+    height: 170,
     count: 3,
-    text: 'ABC', // Optional, auto-generated if not provided
-    showRefresh: true,
-    onSuccess: () => {
-      console.log('Verification passed!')
-    },
-    onFail: () => {
-      console.log('Verification failed!')
-    }
+    onSuccess: () => console.log('Verification passed!')
   })
 
   // Get clicked points
@@ -122,9 +120,44 @@ $ yarn add captcha-pro
 </script>
 ```
 
-### Invisible Captcha (New in v1.0)
+### Popup Captcha
 
-Risk-based verification that only shows a challenge when necessary:
+```html
+<button id="submit-btn">Submit</button>
+
+<script type="module">
+  import { PopupCaptcha } from 'captcha-pro'
+
+  const popup = new PopupCaptcha({
+    trigger: '#submit-btn',
+    type: 'slider', // 'slider' | 'click'
+    modal: {
+      title: 'Security Verification',
+      maskClosable: true,    // Click mask to close
+      escClosable: true,     // Press ESC to close
+      showClose: true,       // Show close button
+    },
+    captchaOptions: {
+      width: 300,
+      height: 170,
+      precision: 5,
+    },
+    autoClose: true,
+    closeDelay: 500,
+    onSuccess: () => console.log('Verification passed!'),
+    onOpen: () => console.log('Popup opened'),
+    onClose: () => console.log('Popup closed')
+  })
+
+  // Programmatic control
+  popup.show()         // Show popup
+  popup.hide()         // Hide popup
+  popup.isVisible()    // Get visibility state
+  popup.getCaptcha()   // Get inner captcha instance
+</script>
+```
+
+### Invisible Captcha
 
 ```html
 <button id="submit-btn">Submit</button>
@@ -142,13 +175,10 @@ Risk-based verification that only shows a challenge when necessary:
         trackAnalysis: true
       }
     },
-    onChallenge: () => {
-      console.log('Showing captcha challenge...')
-    },
-    onSuccess: () => {
-      console.log('Passed! Submitting form...')
-      form.submit()
-    }
+    challengeType: 'slider', // 'slider' | 'click'
+    onChallenge: () => console.log('Showing captcha challenge...'),
+    onSuccess: () => form.submit(),
+    onFail: () => console.log('Verification failed')
   })
 
   // Get risk score
@@ -156,72 +186,18 @@ Risk-based verification that only shows a challenge when necessary:
 </script>
 ```
 
-### Popup Captcha (New in v1.0)
-
-Modal popup wrapper for slider and click captcha:
-
-```html
-<button id="submit-btn">Submit</button>
-
-<script type="module">
-  import { PopupCaptcha } from 'captcha-pro'
-
-  // Create popup with trigger button
-  const popup = new PopupCaptcha({
-    trigger: '#submit-btn',    // Button that triggers the popup
-    type: 'slider',            // 'slider' | 'click'
-    modal: {
-      title: 'Security Verification',
-      maskClosable: true,      // Click mask to close
-      escClosable: true,       // ESC key to close
-      showClose: true,         // Show close button
-    },
-    captchaOptions: {          // Captcha options (popup size adapts to captcha size)
-      width: 300,
-      height: 170,
-      precision: 5,
-      showRefresh: true,
-    },
-    autoClose: true,           // Auto close on success
-    closeDelay: 500,           // Delay before close (ms)
-    onOpen: () => {
-      console.log('Popup opened')
-    },
-    onClose: () => {
-      console.log('Popup closed')
-    },
-    onSuccess: () => {
-      console.log('Verification passed!')
-      // Submit form or continue
-    },
-    onFail: () => {
-      console.log('Verification failed')
-    }
-  })
-
-  // Or trigger programmatically
-  // popup.show()
-  // popup.hide()
-  // popup.isVisible()
-  // popup.getCaptcha() // Get inner captcha instance
-</script>
-```
-
-### Security Features (New in v1.0)
-
-#### Data Signature
-
-Add HMAC-SHA256 signature for backend verification:
+### Security Features
 
 ```javascript
 import { SliderCaptcha } from 'captcha-pro'
 
+// With HMAC-SHA256 signature for backend verification
 const captcha = new SliderCaptcha({
   el: '#captcha',
   security: {
-    secretKey: 'your-secret-key', // Shared with backend
+    secretKey: 'your-secret-key',  // Shared with backend
     enableSign: true,
-    timestampTolerance: 60000 // 60 seconds
+    timestampTolerance: 60000      // 60 seconds
   },
   onSuccess: async () => {
     // Get signed data for backend verification
@@ -235,17 +211,13 @@ const captcha = new SliderCaptcha({
     })
   }
 })
-```
 
-#### Backend Verification (Node.js Example)
-
-```javascript
+// Backend verification example (Node.js)
 import { createHmac } from 'crypto'
 
 function verifyCaptcha(data, secretKey) {
   // Check timestamp
-  const now = Date.now()
-  if (Math.abs(now - data.timestamp) > 60000) {
+  if (Math.abs(Date.now() - data.timestamp) > 60000) {
     return { valid: false, error: 'Timestamp expired' }
   }
 
@@ -255,17 +227,13 @@ function verifyCaptcha(data, secretKey) {
     .update(message)
     .digest('hex')
 
-  if (expectedSign !== data.signature) {
-    return { valid: false, error: 'Invalid signature' }
-  }
-
-  return { valid: true }
+  return expectedSign === data.signature
+    ? { valid: true }
+    : { valid: false, error: 'Invalid signature' }
 }
 ```
 
-### Backend Verification Mode (New in v1.0)
-
-Configure captcha to verify with backend API:
+### Backend Verification Mode
 
 ```javascript
 import { SliderCaptcha } from 'captcha-pro'
@@ -281,39 +249,99 @@ const captcha = new SliderCaptcha({
     },
     timeout: 10000
   },
-  onSuccess: () => {
-    console.log('Backend verification passed!')
-  }
+  onSuccess: () => console.log('Backend verification passed!'),
+  onFail: () => console.log('Verification failed')
 })
 ```
 
-## Backend Server (@captcha-pro/server)
+### Statistics API
 
-The `@captcha-pro/server` package provides a complete backend solution for generating and verifying captcha images on the server side.
+```javascript
+const captcha = new SliderCaptcha({ el: '#captcha' })
 
-### Installation
+// After some verifications...
+const stats = captcha.getStatistics()
+console.log({
+  totalAttempts: stats.totalAttempts,
+  successCount: stats.successCount,
+  failCount: stats.failCount,
+  successRate: stats.successRate + '%',
+  avgVerifyTime: stats.avgVerifyTime + 'ms',
+  avgDragTime: stats.avgDragTime + 'ms',
+  avgDragDistance: stats.avgDragDistance + 'px'
+})
 
-```bash
-# use pnpm
-$ pnpm install @captcha-pro/server
-
-# use npm
-$ npm install @captcha-pro/server --save
-
-# use yarn
-$ yarn add @captcha-pro/server
+// Reset statistics
+captcha.resetStatistics()
 ```
+
+### Custom Images
+
+```javascript
+import { SliderCaptcha } from 'captcha-pro'
+
+const captcha = new SliderCaptcha({
+  el: '#captcha',
+  bgImage: '/path/to/background.jpg',
+  sliderImage: '/path/to/slider.png', // Optional, auto-generated if not provided
+  width: 300,
+  height: 200,
+  sliderWidth: 60,
+  sliderHeight: 60,
+  onSuccess: () => console.log('Verification passed!')
+})
+```
+
+### Factory Functions
+
+```javascript
+import {
+  createSliderCaptcha,
+  createClickCaptcha,
+  createInvisibleCaptcha,
+  createPopupCaptcha
+} from 'captcha-pro'
+
+const slider = createSliderCaptcha({ el: '#slider' })
+const click = createClickCaptcha({ el: '#click' })
+const invisible = createInvisibleCaptcha({ el: '#btn' })
+const popup = createPopupCaptcha({ type: 'slider' })
+```
+
+### Browser Direct Import (IIFE)
+
+```html
+<head>
+  <!-- IE11 needs Promise polyfill -->
+  <!--[if IE]>
+  <script src="https://cdn.jsdelivr.net/npm/core-js-bundle/minified.js"></script>
+  <![endif]-->
+  <script src="https://unpkg.com/captcha-pro/dist/index.global.min.js"></script>
+</head>
+<body>
+  <div id="captcha"></div>
+  <script>
+    const captcha = new CaptchaPro.SliderCaptcha({
+      el: '#captcha',
+      onSuccess: () => alert('Success!')
+    })
+  </script>
+</body>
+```
+
+## Backend Server
+
+A complete backend server is provided in `server/node` for server-side image generation and verification.
 
 ### Quick Start
 
 ```bash
-# Start development server
 cd server/node
 pnpm install
 pnpm dev
 ```
 
-The server will start at `http://localhost:3001`.
+Server runs at `http://localhost:3001`
 
 ### API Endpoints
 
@@ -326,18 +354,17 @@ The server will start at `http://localhost:3001`.
 
 ### Generate Captcha
 
-**GET** `/api/captcha?type=slider&width=280&height=155`
+**GET** `/api/captcha?type=slider&width=300&height=170`
 
 Query Parameters:
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `type` | string | `slider` | Captcha type: slider, click |
-| `width` | number | `280` | Image width |
-| `height` | number | `155` | Image height |
+| `type` | string | `slider` | Captcha type: `slider` or `click` |
+| `width` | number | `300` | Image width |
+| `height` | number | `170` | Image height |
 | `precision` | number | `5` | Verification precision |
 | `clickCount` | number | `3` | Click count (for click type) |
-| `clickText` | string | - | Custom click text |
 
 Response:
 
@@ -349,8 +376,8 @@ Response:
     "type": "slider",
     "bgImage": "data:image/png;base64,...",
     "sliderImage": "data:image/png;base64,...",
-    "width": 280,
-    "height": 155,
+    "width": 300,
+    "height": 170,
     "expiresAt": 1700000000000
   }
 }
@@ -376,11 +403,28 @@ Response:
 {
   "success": true,
   "message": "Verification successful",
-  "data": {
-    "verifiedAt": 1700000000000
-  }
+  "data": { "verifiedAt": 1700000000000 }
 }
 ```
+
+### Security Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/security/status/:ip` | Get IP security status |
+| GET | `/api/security/blacklist` | Get blacklist entries |
+| POST | `/api/security/blacklist` | Add IP to blacklist |
+| DELETE | `/api/security/blacklist/:ip` | Remove IP from blacklist |
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `3001` | Server port |
+| `HOST` | `localhost` | Server host |
+| `SECRET_KEY` | `captcha-pro-secret-key` | Secret key for signing |
+| `EXPIRE_TIME` | `60000` | Captcha expire time (ms) |
+| `TIMESTAMP_TOLERANCE` | `60000` | Timestamp tolerance (ms) |
 
 ### Frontend Integration with Backend
 
@@ -394,100 +438,8 @@ const captcha = new SliderCaptcha({
     getCaptcha: 'http://localhost:3001/api/captcha?type=slider',
     verify: 'http://localhost:3001/api/captcha/verify'
   },
-  onSuccess: () => {
-    console.log('Backend verification passed!')
-  }
+  onSuccess: () => console.log('Backend verification passed!')
 })
-```
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PORT` | `3001` | Server port |
-| `HOST` | `localhost` | Server host |
-| `SECRET_KEY` | `captcha-pro-secret-key` | Secret key for signing |
-| `EXPIRE_TIME` | `60000` | Captcha expire time (ms) |
-| `TIMESTAMP_TOLERANCE` | `60000` | Timestamp tolerance (ms) |
-
-### Statistics API (New in v1.0)
-
-Track verification statistics:
-
-```javascript
-const captcha = new SliderCaptcha({ el: '#captcha' })
-
-// After some verifications...
-const stats = captcha.getStatistics()
-console.log('Statistics:', {
-  totalAttempts: stats.totalAttempts,
-  successCount: stats.successCount,
-  failCount: stats.failCount,
-  successRate: stats.successRate + '%',
-  avgVerifyTime: stats.avgVerifyTime + 'ms',
-  avgDragDistance: stats.avgDragDistance + 'px'
-})
-
-// Reset statistics
-captcha.resetStatistics()
-```
-
-### Factory Functions
-
-```javascript
-import {
-  createSliderCaptcha,
-  createClickCaptcha,
-  createInvisibleCaptcha,
-  createPopupCaptcha
-} from 'captcha-pro'
-
-const slider = createSliderCaptcha({ el: '#slider' })
-const click = createClickCaptcha({ el: '#click' })
-const invisible = createInvisibleCaptcha({ el: '#btn' })
-const popup = createPopupCaptcha({ type: 'slider', onSuccess: () => {} })
-```
-
-### Use with Custom Images
-
-```javascript
-import { SliderCaptcha } from 'captcha-pro'
-
-const captcha = new SliderCaptcha({
-  el: '#captcha',
-  bgImage: '/path/to/background.jpg',
-  sliderImage: '/path/to/slider.png', // Optional
-  width: 300,
-  height: 200,
-  sliderWidth: 60,
-  sliderHeight: 60,
-  onSuccess: () => {
-    // Handle success
-  }
-})
-```
-
-### Import in Browser (IIFE)
-
-```html
-<head>
-  <!-- For IE11 support, include Promise polyfill first -->
-  <!--[if IE]>
-  <script src="https://cdn.jsdelivr.net/npm/core-js-bundle/minified.js"></script>
-  <![endif]-->
-
-  <!-- Import captcha-pro library -->
-  <script src="https://unpkg.com/captcha-pro/dist/index.global.min.js"></script>
-</head>
-<body>
-  <div id="captcha"></div>
-  <script>
-    const captcha = new CaptchaPro.SliderCaptcha({
-      el: '#captcha',
-      onSuccess: () => alert('Success!')
-    })
-  </script>
-</body>
 ```
 
 ## API Reference
@@ -518,11 +470,9 @@ const captcha = new SliderCaptcha({
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `el` | `string \| HTMLElement` | - | Container element or selector |
-| `bgImage` | `string` | - | Background image URL |
 | `width` | `number` | `300` | Container width |
 | `height` | `number` | `170` | Container height |
 | `count` | `number` | `3` | Number of click points |
-| `text` | `string` | - | Custom text to click |
 | `showRefresh` | `boolean` | `true` | Show refresh button |
 | `className` | `string` | `'captcha-click'` | Custom class name |
 | `verifyMode` | `'frontend' \| 'backend'` | `'frontend'` | Verification mode |
@@ -577,6 +527,15 @@ const captcha = new SliderCaptcha({
 | `enableSign` | `boolean` | `false` | Enable data signing |
 | `timestampTolerance` | `number` | `60000` | Timestamp tolerance (ms) |
 
+### BackendVerifyOptions
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `getCaptcha` | `string \| Function` | - | URL or function to get captcha |
+| `verify` | `string \| Function` | - | URL or function to verify captcha |
+| `headers` | `object` | - | Request headers |
+| `timeout` | `number` | `10000` | Request timeout (ms) |
+
 ### Instance Methods
 
 | Method | Description |
@@ -585,7 +544,7 @@ const captcha = new SliderCaptcha({
 | `reset()` | Reset captcha state |
 | `refresh()` | Generate new captcha |
 | `destroy()` | Destroy captcha instance |
-| `getData()` | Get captcha data (target values) |
+| `getData()` | Get captcha data |
 | `getSignedData()` | Get signed data for backend verification |
 | `getStatistics()` | Get verification statistics |
 | `resetStatistics()` | Reset statistics |
@@ -600,14 +559,22 @@ const captcha = new SliderCaptcha({
 | `getCaptcha()` | Get inner captcha instance |
 | `destroy()` | Destroy popup instance |
 
+### InvisibleCaptcha Instance Methods
+
+| Method | Description |
+|--------|-------------|
+| `getRiskScore()` | Get current risk score (0-1) |
+| `showChallenge()` | Manually show challenge |
+| `destroy()` | Destroy instance |
+
 ## Build Outputs
 
 | File | Format | Size | Use Case |
 |------|--------|------|----------|
 | `index.mjs` | ESM | 35KB | Bundlers (webpack, vite, rollup) |
 | `index.cjs` | CommonJS | 36KB | Node.js, older bundlers |
-| `index.global.js` | IIFE | 57KB | Browser (development, with sourcemap) |
-| `index.global.min.js` | IIFE | 34KB | Browser (production, minified) |
+| `index.global.js` | IIFE | 57KB | Browser (development) |
+| `index.global.min.js` | IIFE | 34KB | Browser (production) |
 
 ## Browser Support
 
@@ -615,36 +582,24 @@ const captcha = new SliderCaptcha({
 | --- | --- | --- | --- | --- |
 | Chrome ✓ | Firefox ✓ | Safari ✓ | Opera ✓ | IE 11+ ✓ |
 
-> **Note for IE11**: Requires Promise polyfill. Include `core-js` or `polyfill.io` before loading captcha-pro.
+> **Note for IE11**: Requires Promise polyfill.
 
 ## Development
 
 ```bash
-# Clone the repository
+# Clone and install
 git clone https://github.com/saqqdy/captcha-pro.git
-
-# Enter directory
 cd captcha-pro
-
-# Install dependencies
 pnpm install
 
-# Build project
+# Build, test, lint
 pnpm build
-
-# Run tests
 pnpm test
-
-# Run lint
 pnpm lint
 
-# View demo
-# Open examples/html/index.html in browser
+# Run backend server
+cd server/node && pnpm dev
 ```
-
-## Support & Issues
-
-Please open an issue [here](https://github.com/saqqdy/captcha-pro/issues).
 
 ## License
 

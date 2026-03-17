@@ -456,14 +456,10 @@
                         <option value="5">5个</option>
                     </select>
                 </div>
-                <div class="option-row">
-                    <label>自定义文字:</label>
-                    <input type="text" id="clickText" placeholder="留空则随机生成中文词汇" maxlength="5">
-                </div>
             </div>
 
             <div class="info-box">
-                💡 默认使用中文词汇库，包含200+常用成语和词汇，每个词汇不含重复字
+                💡 使用中文词汇库自动生成，包含200+常用成语和词汇，每个词汇不含重复字。同时随机生成1-2个迷惑文字用于防机器人识别。
             </div>
 
             <div class="captcha-container">
@@ -722,14 +718,12 @@
             container.innerHTML = ''
 
             const count = parseInt(document.getElementById('clickCount').value)
-            const text = document.getElementById('clickText').value || undefined
 
             clickCaptcha = new CaptchaPro.ClickCaptcha({
                 el: container,
                 width: 300,
                 height: 170,
                 count: count,
-                text: text,
                 onSuccess: () => {
                     showResult('click-result', '✅ 验证成功！', true)
                 },
@@ -1044,7 +1038,6 @@
             document.getElementById('sliderImageMode').addEventListener('change', initSliderCaptcha)
             document.getElementById('sliderEnableSign').addEventListener('change', initSliderCaptcha)
             document.getElementById('clickCount').addEventListener('change', initClickCaptcha)
-            document.getElementById('clickText').addEventListener('change', initClickCaptcha)
             document.getElementById('invisibleThreshold').addEventListener('change', () => {
                 if (invisibleCaptcha) invisibleCaptcha.destroy()
                 initInvisibleCaptcha()

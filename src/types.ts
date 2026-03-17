@@ -258,10 +258,6 @@ export interface ClickCaptchaOptions extends BaseCaptchaOptions {
 	 * Number of click points
 	 */
 	count?: number
-	/**
-	 * Text to click (generated if not provided)
-	 */
-	text?: string
 }
 
 /**

@@ -101,11 +101,14 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	private targetPoints: Point[] = []
 	private clickPoints: Point[] = []
 	private clickTexts: string[] = []
+	private decoyTexts: string[] = [] // Decoy characters to confuse bots
+	private decoyPoints: Point[] = [] // Decoy character positions
 	private _verified: boolean = false
 	private captchaId: string = ''
 	// @ts-expect-error - stored for potential future use
 	private _backendData: BackendCaptchaResponse | null = null
 	private clickStartTime: number = 0
+	private _text?: string
 	private statistics: StatisticsData = {
 		totalAttempts: 0,
 		successCount: 0,
@@ -168,7 +171,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			this.captchaId = response.captchaId
 			this.options.bgImage = response.bgImage
 			if (response.clickTexts) {
-				this.options.text = response.clickTexts.join('')
+				this._text = response.clickTexts.join('')
 				this.options.count = response.clickTexts.length
 			}
 			await this.loadBackgroundImage()
@@ -402,13 +405,13 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	private generateClickPoints(): void {
 		if (!this.bgCanvas) return
 
-		const { width, height, count, text } = this.options
+		const { width, height, count } = this.options
 		const ctx = this.bgCanvas.getContext('2d')!
 
-		// Generate or use provided text
+		// Generate or use provided text (from backend)
 		let chars: string
-		if (text) {
-			chars = text
+		if (this._text) {
+			chars = this._text
 		} else {
 			// Randomly select a word from Chinese vocabulary
 			const randomWord = CHINESE_WORDS[random(0, CHINESE_WORDS.length - 1)]
@@ -428,11 +431,41 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		this.clickTexts = chars.split('').slice(0, count!)
 		this.targetPoints = []
 		this.clickPoints = []
+		this.decoyTexts = []
+		this.decoyPoints = []
+
+		// Generate 1-2 decoy characters to confuse bots
+		const decoyCount = random(1, 2)
+		const usedChars = new Set(this.clickTexts)
+
+		for (let i = 0; i < decoyCount; i++) {
+			// Pick random characters from vocabulary that are not in clickTexts
+			let decoyChar = '',
+			 attempts = 0
+			const maxAttempts = 50
+
+			while (!decoyChar && attempts < maxAttempts) {
+				const randomWord = CHINESE_WORDS[random(0, CHINESE_WORDS.length - 1)]
+				for (const char of randomWord) {
+					if (!usedChars.has(char)) {
+						decoyChar = char
+						usedChars.add(char)
+						break
+					}
+				}
+				attempts++
+			}
+
+			if (decoyChar) {
+				this.decoyTexts.push(decoyChar)
+			}
+		}
 
 		// Generate random positions for each character
 		const fontSize = 20
 		const padding = fontSize + 10
 
+		// Draw click target characters
 		for (let i = 0; i < this.clickTexts.length; i++) {
 			let x: number,
 				y: number,
@@ -463,6 +496,38 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			ctx.restore()
 		}
 
+		// Draw decoy characters (lighter color to make them slightly different)
+		for (let i = 0; i < this.decoyTexts.length; i++) {
+			let x: number,
+				y: number,
+				attempts = 0
+			const maxAttempts = 100
+
+			// Find non-overlapping position
+			do {
+				x = random(padding, width! - padding)
+				y = random(padding, height! - padding)
+				attempts++
+			} while (this.isOverlapping(x, y, fontSize, true) && attempts < maxAttempts)
+
+			// Store decoy position for overlap checking
+			this.decoyPoints.push({ x, y })
+
+			// Draw decoy character with slightly lighter color
+			ctx.save()
+			ctx.font = `${fontSize}px "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif`
+			ctx.fillStyle = '#555' // Slightly lighter than target chars
+			ctx.textAlign = 'center'
+			ctx.textBaseline = 'middle'
+
+			// Random rotation
+			const rotation = (random(-25, 25) * Math.PI) / 180
+			ctx.translate(x, y)
+			ctx.rotate(rotation)
+			ctx.fillText(this.decoyTexts[i], 0, 0)
+			ctx.restore()
+		}
+
 		// Update prompt text
 		this.updatePrompt()
 	}
@@ -470,11 +535,21 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	/**
 	 * Check if position overlaps with existing points
 	 */
-	private isOverlapping(x: number, y: number, size: number): boolean {
+	private isOverlapping(x: number, y: number, size: number, checkDecoys: boolean = false): boolean {
+		// Check against target points
 		for (const point of this.targetPoints) {
 			const distance = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2)
 			if (distance < size * 1.5) {
 				return true
+			}
+		}
+		// Check against decoy points if needed
+		if (checkDecoys) {
+			for (const point of this.decoyPoints) {
+				const distance = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2)
+				if (distance < size * 1.5) {
+					return true
+				}
 			}
 		}
 		return false
