@@ -1,41 +1,125 @@
-# Captcha Pro Server Demo (Go/Gin)
+# Captcha Pro Go Server
 
 [中文](./README_CN.md) | English
 
-A Go demo implementation for Captcha Pro backend service using Gin framework. This is a reference implementation to help you integrate captcha-pro with your own backend.
-
-> **Note**: This is a demo/reference implementation. It is NOT published as a Go module. You can copy and adapt this code for your own backend service.
+A Go captcha verification service for Gin framework with server-side image generation.
 
 ## Features
 
-- 🖼️ **Server-side Image Generation** - Images generated on backend
+- 🖼️ **Server-side Image Generation** - Images generated on backend using gg library
 - 🔐 **AES-GCM Data Encryption** - Secure encrypted data transmission with PBKDF2 key derivation
 - 🛡️ **Security Features** - Rate limiting, IP blacklist, brute-force protection
 - 📦 **Multiple Captcha Types** - Slider, click, rotate
 - ⚡ **Memory Cache** - Fast in-memory captcha storage
 - 🔄 **Auto Expiration** - Automatic captcha cleanup
-- 🚀 **High Performance** - Go's native concurrency support
+- 🚀 **High Performance** - Go's native concurrency
 
-## Requirements
+## Installation
 
-- Go 1.21+
-
-## Quick Start
-
-This is a demo project. Clone the repository and run locally:
+### As a Library
 
 ```bash
-# Navigate to server directory
+go get github.com/saqqdy/captcha-pro/server/go
+```
+
+### Standalone Server
+
+```bash
 cd server/go
-
-# Install dependencies
 go mod tidy
+go run cmd/server/main.go
+```
 
-# Run
+## Usage
+
+### Library Integration
+
+```go
+package main
+
+import (
+    "github.com/gin-gonic/gin"
+    "github.com/saqqdy/captcha-pro/server/go/pkg/captcha"
+)
+
+func main() {
+    r := gin.Default()
+
+    // Create captcha server with configuration
+    server := captcha.New(captcha.Config{
+        SecretKey:  "your-secret-key",
+        ExpireTime: 60000,
+        TimestampTolerance: 60000,
+        Security: captcha.SecurityConfig{
+            EnableRateLimit: true,
+            RateLimitMax:    60,
+        },
+    })
+
+    // Apply security middleware (optional)
+    r.Use(server.Middleware())
+
+    // Register routes
+    server.RegisterRoutes(r)
+
+    r.Run(":8080")
+}
+```
+
+### Standalone Server
+
+```bash
+# Set environment variables (optional)
+export SECRET_KEY=your-secret-key
+export PORT=8082
+
+# Run server
 go run cmd/server/main.go
 ```
 
 Server starts at `http://localhost:8082`.
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `8082` | Server port |
+| `HOST` | `localhost` | Server host |
+| `SECRET_KEY` | `captcha-pro-secret-key` | AES-GCM encryption key |
+| `EXPIRE_TIME` | `60000` | Captcha expire time (ms) |
+| `TIMESTAMP_TOLERANCE` | `60000` | Timestamp tolerance (ms) |
+| `ENABLE_RATE_LIMIT` | `true` | Enable rate limiting |
+| `RATE_LIMIT_MAX` | `60` | Max requests per window |
+| `RATE_LIMIT_WINDOW` | `60000` | Rate limit window (ms) |
+| `ENABLE_BLACKLIST` | `true` | Enable IP blacklist |
+| `ENABLE_BRUTE_FORCE` | `true` | Enable brute-force protection |
+| `MAX_FAILED_ATTEMPTS` | `10` | Max failed attempts |
+
+### Config Struct
+
+```go
+type Config struct {
+    SecretKey          string
+    ExpireTime         int64
+    TimestampTolerance int64
+    Security           SecurityConfig
+}
+
+type SecurityConfig struct {
+    EnableRateLimit          bool
+    RateLimitMax             int
+    RateLimitWindow          int64
+    RateLimitBlockDuration   int64
+    EnableBlacklist          bool
+    BlacklistDuration        int64
+    EnableBruteForce         bool
+    MaxFailedAttempts        int
+    FailedAttemptsWindow     int64
+    BruteForceBlockDuration  int64
+}
+```
 
 ## API Endpoints
 
@@ -72,6 +156,7 @@ Query Parameters:
 | sliderHeight | number | 50 | Slider height (slider only) |
 | precision | number | 5 | Verification precision |
 | clickCount | number | 3 | Click count (click only) |
+| clickText | string | - | Custom click text (click only) |
 
 ## Verify Captcha
 
@@ -121,8 +206,7 @@ base64(salt[16] + iv[12] + ciphertext + authTag[16])
 ### Usage Example
 
 ```go
-// Backend (Go) - Copy internal/crypto/aes.go to your project
-import "your-project/internal/crypto"
+import "github.com/saqqdy/captcha-pro/server/go/internal/crypto"
 
 func verifyCaptcha(encryptedData, secretKey string) (*crypto.CaptchaData, error) {
     data, err := crypto.DecryptCaptchaData(encryptedData, secretKey)
@@ -141,13 +225,11 @@ func verifyCaptcha(encryptedData, secretKey string) (*crypto.CaptchaData, error)
 ## Security Features
 
 ### Rate Limiting
-
 - Default: 60 requests per minute
 - Block duration: 5 minutes
 - Headers: `X-RateLimit-Remaining`, `Retry-After`
 
 ### IP Blacklist
-
 ```bash
 # Add IP to blacklist
 curl -X POST http://localhost:8082/api/security/blacklist \
@@ -159,10 +241,28 @@ curl -X DELETE http://localhost:8082/api/security/blacklist/192.168.1.100
 ```
 
 ### Brute-Force Protection
-
 - Max failed attempts: 10
 - Window: 5 minutes
 - Block duration: 15 minutes
+
+## Frontend Integration
+
+```javascript
+import { SliderCaptcha } from 'captcha-pro'
+
+const captcha = new SliderCaptcha({
+  el: '#captcha-container',
+  verifyMode: 'backend',
+  backendVerify: {
+    getCaptcha: 'http://localhost:8082/api/captcha?type=slider',
+    verify: 'http://localhost:8082/api/captcha/verify'
+  },
+  security: {
+    secretKey: 'your-secret-key',
+    enableSign: true
+  }
+})
+```
 
 ## Project Structure
 
@@ -170,33 +270,50 @@ curl -X DELETE http://localhost:8082/api/security/blacklist/192.168.1.100
 server/go/
 ├── cmd/
 │   └── server/
-│       └── main.go           # Application entry point
+│       └── main.go           # Standalone server entry point
+├── pkg/
+│   └── captcha/
+│       ├── config.go         # Configuration types
+│       ├── server.go         # Main server and routes
+│       ├── generator.go      # Captcha image generator
+│       ├── cache.go          # Memory cache
+│       └── security.go       # Security manager
 ├── internal/
 │   ├── crypto/
-│   │   └── aes.go            # AES-GCM encryption (can be copied to your project)
-│   ├── handler/
-│   │   ├── captcha.go        # Captcha handlers
-│   │   └── security.go       # Security handlers
-│   ├── model/
-│   │   └── types.go          # Type definitions
-│   ├── security/
-│   │   └── manager.go        # Security manager
-│   └── service/
-│       ├── cache.go          # Memory cache
-│       └── generator.go      # Captcha generator
+│   │   └── aes.go            # AES-GCM encryption
+│   └── types/
+│       └── captcha.go        # Type definitions
 ├── go.mod
 ├── go.sum
-└── README.md
+├── README.md
+└── README_CN.md
 ```
 
-## Integration Guide
+## Customization
 
-To integrate with your own Go backend:
+### Custom Cache Implementation
 
-1. Copy `internal/crypto/aes.go` to your project
-2. Use `crypto.DecryptCaptchaData()` to verify encrypted signatures from frontend
-3. Implement your own captcha storage (Redis, database, etc.)
-4. Customize security settings as needed
+```go
+// Implement your own cache (e.g., Redis)
+type RedisCache struct {
+    client *redis.Client
+}
+
+func (c *RedisCache) Get(id string) *types.CaptchaCache {
+    // ...
+}
+
+func (c *RedisCache) Set(id string, data *types.CaptchaCache, ttl int64) {
+    // ...
+}
+```
+
+### Middleware Only
+
+```go
+// Use only the security middleware
+r.Use(server.Middleware())
+```
 
 ## Other Backend Demos
 

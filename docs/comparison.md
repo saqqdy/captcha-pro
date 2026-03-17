@@ -311,9 +311,9 @@ async function verify(data, secretKey) {
 | IIFE (浏览器) | ✅ `index.global.js` | ✅ 前端 JS | ✅ SDK |
 | TypeScript 类型 | ✅ 内置 `.d.ts` | ❌ | ❌ |
 | **后端示例** |
-| Node.js 示例 | ✅ `server/node` | ❌ | ❌ |
-| Java 示例 | ✅ `server/java` | ✅ Spring Boot Starter | ❌ |
-| Go 示例 | ✅ `server/go` | ❌ | ❌ |
+| Node.js 示例 | ✅ `server/node` (Express) | ❌ | ❌ |
+| Java 示例 | ✅ `server/java` (Spring Boot Starter) | ✅ Spring Boot Starter | ❌ |
+| Go 示例 | ✅ `server/go` (Gin库集成) | ❌ | ❌ |
 | 云服务 | ❌ | ❌ | ✅ 托管服务 |
 
 ---

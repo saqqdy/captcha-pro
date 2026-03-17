@@ -1,14 +1,12 @@
-# Captcha Pro 服务端示例 (Go/Gin)
+# Captcha Pro Go Server
 
 中文 | [English](./README.md)
 
-基于 Gin 框架的验证码生成与验证服务示例实现。这是一个参考实现，帮助您将 captcha-pro 集成到自己的后端服务中。
-
-> **注意**：这是一个演示/参考实现，不会作为 Go 模块发布。您可以复制并根据需要修改代码来构建自己的后端服务。
+基于 Gin 框架的 Go 验证码验证服务，支持服务端图片生成。
 
 ## 功能特性
 
-- 🖼️ **服务端图片生成** - 在后端生成验证码图片
+- 🖼️ **服务端图片生成** - 使用 gg 库在后端生成验证码图片
 - 🔐 **AES-GCM 数据加密** - 使用 PBKDF2 密钥派生的安全加密传输
 - 🛡️ **安全防护** - 请求限流、IP黑名单、防暴力破解
 - 📦 **多种验证码类型** - 滑动拼图、点选文字、旋转验证
@@ -16,26 +14,112 @@
 - 🔄 **自动过期** - 验证码自动过期清理
 - 🚀 **高性能** - Go 原生并发支持
 
-## 环境要求
+## 安装
 
-- Go 1.21+
-
-## 快速开始
-
-这是一个演示项目，克隆仓库并在本地运行：
+### 作为库使用
 
 ```bash
-# 进入服务端目录
+go get github.com/saqqdy/captcha-pro/server/go
+```
+
+### 独立服务器
+
+```bash
 cd server/go
-
-# 安装依赖
 go mod tidy
+go run cmd/server/main.go
+```
 
-# 运行
+## 使用方式
+
+### 库集成模式
+
+```go
+package main
+
+import (
+    "github.com/gin-gonic/gin"
+    "github.com/saqqdy/captcha-pro/server/go/pkg/captcha"
+)
+
+func main() {
+    r := gin.Default()
+
+    // 创建验证码服务器
+    server := captcha.New(captcha.Config{
+        SecretKey:  "your-secret-key",
+        ExpireTime: 60000,
+        TimestampTolerance: 60000,
+        Security: captcha.SecurityConfig{
+            EnableRateLimit: true,
+            RateLimitMax:    60,
+        },
+    })
+
+    // 应用安全中间件（可选）
+    r.Use(server.Middleware())
+
+    // 注册路由
+    server.RegisterRoutes(r)
+
+    r.Run(":8080")
+}
+```
+
+### 独立服务器模式
+
+```bash
+# 设置环境变量（可选）
+export SECRET_KEY=your-secret-key
+export PORT=8082
+
+# 运行服务器
 go run cmd/server/main.go
 ```
 
 服务将在 `http://localhost:8082` 启动。
+
+## 配置
+
+### 环境变量
+
+| 变量名 | 默认值 | 说明 |
+|--------|--------|------|
+| `PORT` | `8082` | 服务端口 |
+| `HOST` | `localhost` | 服务主机 |
+| `SECRET_KEY` | `captcha-pro-secret-key` | AES-GCM 加密密钥 |
+| `EXPIRE_TIME` | `60000` | 验证码过期时间 (ms) |
+| `TIMESTAMP_TOLERANCE` | `60000` | 时间戳容忍度 (ms) |
+| `ENABLE_RATE_LIMIT` | `true` | 启用请求限流 |
+| `RATE_LIMIT_MAX` | `60` | 窗口内最大请求数 |
+| `RATE_LIMIT_WINDOW` | `60000` | 限流窗口 (ms) |
+| `ENABLE_BLACKLIST` | `true` | 启用 IP 黑名单 |
+| `ENABLE_BRUTE_FORCE` | `true` | 启用防暴力破解 |
+| `MAX_FAILED_ATTEMPTS` | `10` | 最大失败尝试次数 |
+
+### Config 结构体
+
+```go
+type Config struct {
+    SecretKey          string
+    ExpireTime         int64
+    TimestampTolerance int64
+    Security           SecurityConfig
+}
+
+type SecurityConfig struct {
+    EnableRateLimit          bool
+    RateLimitMax             int
+    RateLimitWindow          int64
+    RateLimitBlockDuration   int64
+    EnableBlacklist          bool
+    BlacklistDuration        int64
+    EnableBruteForce         bool
+    MaxFailedAttempts        int
+    FailedAttemptsWindow     int64
+    BruteForceBlockDuration  int64
+}
+```
 
 ## API 接口
 
@@ -72,6 +156,7 @@ go run cmd/server/main.go
 | sliderHeight | number | 50 | 滑块高度 (仅slider) |
 | precision | number | 5 | 验证精度 |
 | clickCount | number | 3 | 点击数量 (仅click) |
+| clickText | string | - | 自定义点击文字 (仅click) |
 
 ## 验证验证码
 
@@ -121,8 +206,7 @@ base64(salt[16] + iv[12] + ciphertext + authTag[16])
 ### 使用示例
 
 ```go
-// 后端 (Go) - 从 internal/crypto/aes.go 复制到您的项目
-import "your-project/internal/crypto"
+import "github.com/saqqdy/captcha-pro/server/go/internal/crypto"
 
 func verifyCaptcha(encryptedData, secretKey string) (*crypto.CaptchaData, error) {
     data, err := crypto.DecryptCaptchaData(encryptedData, secretKey)
@@ -141,13 +225,11 @@ func verifyCaptcha(encryptedData, secretKey string) (*crypto.CaptchaData, error)
 ## 安全功能
 
 ### 请求限流
-
 - 默认限制：每分钟 60 次请求
 - 封锁时长：5 分钟
 - 响应头：`X-RateLimit-Remaining`、`Retry-After`
 
 ### IP 黑名单
-
 ```bash
 # 添加 IP 到黑名单
 curl -X POST http://localhost:8082/api/security/blacklist \
@@ -159,10 +241,28 @@ curl -X DELETE http://localhost:8082/api/security/blacklist/192.168.1.100
 ```
 
 ### 防暴力破解
-
 - 最大失败尝试次数：10 次
 - 统计窗口：5 分钟
 - 封锁时长：15 分钟
+
+## 前端集成示例
+
+```javascript
+import { SliderCaptcha } from 'captcha-pro'
+
+const captcha = new SliderCaptcha({
+  el: '#captcha-container',
+  verifyMode: 'backend',
+  backendVerify: {
+    getCaptcha: 'http://localhost:8082/api/captcha?type=slider',
+    verify: 'http://localhost:8082/api/captcha/verify'
+  },
+  security: {
+    secretKey: 'your-secret-key',
+    enableSign: true
+  }
+})
+```
 
 ## 项目结构
 
@@ -170,33 +270,50 @@ curl -X DELETE http://localhost:8082/api/security/blacklist/192.168.1.100
 server/go/
 ├── cmd/
 │   └── server/
-│       └── main.go           # 应用入口
+│       └── main.go           # 独立服务入口
+├── pkg/
+│   └── captcha/
+│       ├── config.go         # 配置类型
+│       ├── server.go         # 服务器和路由
+│       ├── generator.go      # 验证码生成器
+│       ├── cache.go          # 内存缓存
+│       └── security.go       # 安全管理器
 ├── internal/
 │   ├── crypto/
-│   │   └── aes.go            # AES-GCM 加密 (可复制到您的项目)
-│   ├── handler/
-│   │   ├── captcha.go        # 验证码处理器
-│   │   └── security.go       # 安全处理器
-│   ├── model/
-│   │   └── types.go          # 类型定义
-│   ├── security/
-│   │   └── manager.go        # 安全管理器
-│   └── service/
-│       ├── cache.go          # 内存缓存
-│       └── generator.go      # 验证码生成器
+│   │   └── aes.go            # AES-GCM 加密
+│   └── types/
+│       └── captcha.go        # 类型定义
 ├── go.mod
 ├── go.sum
-└── README.md
+├── README.md
+└── README_CN.md
 ```
 
-## 集成指南
+## 自定义
 
-将此示例集成到您自己的 Go 后端：
+### 自定义缓存实现
 
-1. 将 `internal/crypto/aes.go` 复制到您的项目
-2. 使用 `crypto.DecryptCaptchaData()` 验证前端传来的加密签名
-3. 实现您自己的验证码存储（Redis、数据库等）
-4. 根据需要自定义安全设置
+```go
+// 实现自己的缓存（如 Redis）
+type RedisCache struct {
+    client *redis.Client
+}
+
+func (c *RedisCache) Get(id string) *types.CaptchaCache {
+    // ...
+}
+
+func (c *RedisCache) Set(id string, data *types.CaptchaCache, ttl int64) {
+    // ...
+}
+```
+
+### 仅使用中间件
+
+```go
+// 仅使用安全中间件
+r.Use(server.Middleware())
+```
 
 ## 其他后端示例
 
