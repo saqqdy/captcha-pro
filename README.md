@@ -17,7 +17,7 @@ A lightweight behavioral captcha library with slider puzzle, click verification,
 
 <div style="text-align: center; margin-bottom: 20px;" align="center">
 
-### **[Documentation](https://www.saqqdy.com/captcha-pro)** · **[Change Log](./CHANGELOG.md)** · **[简体中文](./README_CN.md)**
+### **[Change Log](./CHANGELOG.md)** · **[简体中文](./README_CN.md)**
 
 </div>
 
@@ -37,7 +37,7 @@ A lightweight behavioral captcha library with slider puzzle, click verification,
 
 ### Security Features
 
-- 🔐 **Data Signature** - HMAC-SHA256 signature to prevent data tampering
+- 🔐 **Data Encryption** - AES-GCM encryption to prevent data tampering
 - ⏱️ **Timestamp Validation** - Prevent replay attacks
 - 🚦 **Rate Limiting** - Prevent API abuse (60 requests/min by default)
 - 🚫 **IP Blacklist** - Block malicious IPs with temporary/permanent blocking
@@ -190,9 +190,9 @@ $ yarn add captcha-pro
 ### Security Features
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha, decryptCaptchaData } from 'captcha-pro'
 
-// With HMAC-SHA256 signature for backend verification
+// With AES-GCM encryption for backend verification
 const captcha = new SliderCaptcha({
   el: '#captcha',
   security: {
@@ -201,36 +201,35 @@ const captcha = new SliderCaptcha({
     timestampTolerance: 60000      // 60 seconds
   },
   onSuccess: async () => {
-    // Get signed data for backend verification
-    const signedData = await captcha.getSignedData()
-    // signedData contains: type, target, timestamp, nonce, signature
+    // Get encrypted data for backend verification
+    const encryptedData = await captcha.getSignedData()
+    // encryptedData contains: type, target, timestamp, nonce, encrypted data
 
     // Send to backend
     await fetch('/api/verify', {
       method: 'POST',
-      body: JSON.stringify(signedData)
+      body: JSON.stringify(encryptedData)
     })
   }
 })
 
 // Backend verification example (Node.js)
-import { createHmac } from 'crypto'
+import { decryptCaptchaData, validateTimestamp } from 'captcha-pro'
 
-function verifyCaptcha(data, secretKey) {
-  // Check timestamp
-  if (Math.abs(Date.now() - data.timestamp) > 60000) {
-    return { valid: false, error: 'Timestamp expired' }
+async function verifyCaptcha(encryptedData, secretKey) {
+  try {
+    // Decrypt data
+    const data = await decryptCaptchaData(encryptedData.signature, secretKey)
+
+    // Check timestamp
+    if (!validateTimestamp(data.timestamp, 60000)) {
+      return { valid: false, error: 'Timestamp expired' }
+    }
+
+    return { valid: true, data }
+  } catch (error) {
+    return { valid: false, error: 'Invalid encrypted data' }
   }
-
-  // Verify signature
-  const message = `${data.type}|${JSON.stringify(data.target)}|${data.timestamp}|${data.nonce}`
-  const expectedSign = createHmac('sha256', secretKey)
-    .update(message)
-    .digest('hex')
-
-  return expectedSign === data.signature
-    ? { valid: true }
-    : { valid: false, error: 'Invalid signature' }
 }
 ```
 
@@ -524,7 +523,7 @@ const captcha = new SliderCaptcha({
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `secretKey` | `string` | - | Secret key for HMAC-SHA256 signing |
+| `secretKey` | `string` | - | Secret key for AES-GCM encryption |
 | `enableSign` | `boolean` | `false` | Enable data signing |
 | `timestampTolerance` | `number` | `60000` | Timestamp tolerance (ms) |
 

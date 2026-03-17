@@ -17,7 +17,7 @@
 
 <div style="text-align: center; margin-bottom: 20px;" align="center">
 
-### **[文档](https://www.saqqdy.com/captcha-pro)** · **[更新日志](./CHANGELOG.md)** · **[English](./README.md)**
+### **[更新日志](./CHANGELOG.md)** · **[English](./README.md)**
 
 </div>
 
@@ -37,7 +37,7 @@
 
 ### 安全特性
 
-- 🔐 **数据签名** - HMAC-SHA256 签名防止数据篡改
+- 🔐 **数据加密** - AES-GCM 加密防止数据篡改
 - ⏱️ **时间戳验证** - 防止重放攻击
 - 🚦 **频率限制** - 防止 API 滥用（默认 60 次/分钟）
 - 🚫 **IP 黑名单** - 支持临时/永久封禁恶意 IP
@@ -190,9 +190,9 @@ $ yarn add captcha-pro
 ### 安全特性
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha, decryptCaptchaData } from 'captcha-pro'
 
-// 带 HMAC-SHA256 签名用于后端验证
+// 带 AES-GCM 加密用于后端验证
 const captcha = new SliderCaptcha({
   el: '#captcha',
   security: {
@@ -201,36 +201,35 @@ const captcha = new SliderCaptcha({
     timestampTolerance: 60000      // 60秒
   },
   onSuccess: async () => {
-    // 获取带签名的数据用于后端验证
-    const signedData = await captcha.getSignedData()
-    // signedData 包含: type, target, timestamp, nonce, signature
+    // 获取加密数据用于后端验证
+    const encryptedData = await captcha.getSignedData()
+    // encryptedData 包含: type, target, timestamp, nonce, 加密数据
 
     // 发送到后端
     await fetch('/api/verify', {
       method: 'POST',
-      body: JSON.stringify(signedData)
+      body: JSON.stringify(encryptedData)
     })
   }
 })
 
 // 后端验证示例（Node.js）
-import { createHmac } from 'crypto'
+import { decryptCaptchaData, validateTimestamp } from 'captcha-pro'
 
-function verifyCaptcha(data, secretKey) {
-  // 检查时间戳
-  if (Math.abs(Date.now() - data.timestamp) > 60000) {
-    return { valid: false, error: '时间戳已过期' }
+async function verifyCaptcha(encryptedData, secretKey) {
+  try {
+    // 解密数据
+    const data = await decryptCaptchaData(encryptedData.signature, secretKey)
+
+    // 检查时间戳
+    if (!validateTimestamp(data.timestamp, 60000)) {
+      return { valid: false, error: '时间戳已过期' }
+    }
+
+    return { valid: true, data }
+  } catch (error) {
+    return { valid: false, error: '加密数据无效' }
   }
-
-  // 验证签名
-  const message = `${data.type}|${JSON.stringify(data.target)}|${data.timestamp}|${data.nonce}`
-  const expectedSign = createHmac('sha256', secretKey)
-    .update(message)
-    .digest('hex')
-
-  return expectedSign === data.signature
-    ? { valid: true }
-    : { valid: false, error: '签名无效' }
 }
 ```
 
@@ -524,7 +523,7 @@ const captcha = new SliderCaptcha({
 
 | 参数 | 类型 | 默认值 | 描述 |
 |------|------|---------|------|
-| `secretKey` | `string` | - | HMAC-SHA256 签名密钥 |
+| `secretKey` | `string` | - | AES-GCM 加密密钥 |
 | `enableSign` | `boolean` | `false` | 启用数据签名 |
 | `timestampTolerance` | `number` | `60000` | 时间戳容差（毫秒） |
 

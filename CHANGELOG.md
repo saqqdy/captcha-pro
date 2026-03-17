@@ -32,7 +32,7 @@ All notable changes to this project will be documented in this file.
 
 ### Security Features
 
-- 🔐 **Data Signature** - HMAC-SHA256 signature to prevent data tampering
+- 🔐 **Data Encryption** - AES-GCM encryption with PBKDF2 key derivation (replacing HMAC-SHA256)
 - ⏱️ **Timestamp Validation** - Prevent replay attacks
 - 🚦 **Rate Limiting** - Prevent API abuse (default: 60 requests/min)
 - 🚫 **IP Blacklist** - Block malicious IPs

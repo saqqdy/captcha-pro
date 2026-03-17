@@ -149,10 +149,95 @@ captcha.show()
 | 项目 | Captcha-Pro | AJ-Captcha | 腾讯验证码 |
 |------|-------------|------------|-----------|
 | **验证数据** | `{ type, target, timestamp, signature }` | `{ captchaVerification }` | `{ ticket, randstr }` |
-| **数据签名** | ✅ HMAC-SHA256 | ✅ AES加密 | ✅ 云端签名 |
+| **数据加密** | ✅ AES-GCM | ✅ AES加密 | ✅ 云端签名 |
 | **时间戳验证** | ✅ 支持 | ✅ 支持 | ✅ 支持 |
 | **防重放** | ✅ nonce + timestamp | ✅ 支持 | ✅ 支持 |
 | **后端二次验证** | ✅ 可选 | ✅ 必须 | ✅ 必须 |
+
+### 1.5 数据签名机制对比
+
+#### 签名算法对比
+
+| 特性 | Captcha-Pro | AJ-Captcha | 腾讯验证码 |
+|------|-------------|------------|-----------|
+| **加密算法** | AES-GCM | AES加密 | 云端私钥签名 |
+| **密钥管理** | 前后端共享密钥 | 服务端密钥 | 腾讯云托管 |
+| **加密位置** | 前端生成/后端验证 | 服务端生成 | 云端生成 |
+| **验证方式** | AES解密验证 | AES解密 | 云端API验证 |
+
+#### 签名数据结构
+
+**Captcha-Pro 加密数据：**
+```javascript
+{
+  type: 'slider',           // 验证码类型
+  captchaId: 'uuid',        // 验证码ID
+  target: [123, 45],        // 目标位置/点位
+  timestamp: 1700000000000, // 时间戳
+  nonce: 'random-string',   // 随机字符串(防重放)
+  signature: 'base64-aes'   // AES-GCM 加密数据
+}
+```
+
+**AJ-Captcha 签名数据：**
+```javascript
+{
+  captchaVerification: 'AES加密字符串'  // AES加密后的验证数据
+}
+```
+
+**腾讯验证码签名数据：**
+```javascript
+{
+  ticket: '云端票据',   // 云端签发的票据
+  randstr: '随机字符串' // 随机字符串
+}
+```
+
+#### 加密验证流程
+
+**Captcha-Pro：**
+```javascript
+// 前端生成加密数据
+const data = await captcha.getSignedData()
+
+// 后端验证
+import { decryptCaptchaData, validateTimestamp } from 'captcha-pro'
+
+async function verify(data, secretKey) {
+  // 1. 解密数据
+  const decrypted = await decryptCaptchaData(data.signature, secretKey)
+
+  // 2. 验证时间戳
+  if (!validateTimestamp(decrypted.timestamp, 60000)) {
+    return { valid: false, error: '时间戳已过期' }
+  }
+
+  // 3. 验证数据完整性
+  return { valid: true, data: decrypted }
+}
+```
+
+**加密特点对比：**
+
+| 特点 | Captcha-Pro | AJ-Captcha | 腾讯验证码 |
+|------|-------------|------------|-----------|
+| **透明度** | ✅ 数据结构完全透明 | ⚠️ 加密黑盒 | ⚠️ 云端黑盒 |
+| **可调试** | ✅ 易于调试验证 | ⚠️ 需解密调试 | ❌ 无法调试 |
+| **跨语言** | ✅ AES标准算法 | ⚠️ 需Java解密 | ❌ 仅API调用 |
+| **离线验证** | ✅ 本地可验证 | ✅ 本地可验证 | ❌ 必须联网 |
+| **密钥轮换** | ✅ 灵活配置 | ⚠️ 需重启服务 | ✅ 云端管理 |
+| **防篡改** | ✅ AES-GCM认证加密 | ✅ AES加密保证 | ✅ 云端保护 |
+
+#### 加密安全性对比
+
+| 安全维度 | Captcha-Pro | AJ-Captcha | 腾讯验证码 |
+|---------|-------------|------------|-----------|
+| **防篡改** | ✅ AES-GCM认证加密 | ✅ AES加密保证 | ✅ 云端签名 |
+| **防重放** | ✅ nonce+timestamp | ✅ 内置机制 | ✅ ticket时效 |
+| **防中间人** | ⚠️ 需HTTPS | ⚠️ 需HTTPS | ✅ 强制HTTPS |
+| **密钥泄露风险** | ⚠️ 前端可逆向 | ✅ 仅服务端 | ✅ 云端托管 |
+| **自托管可控** | ✅ 完全自主 | ✅ 完全自主 | ❌ 依赖第三方 |
 
 ---
 
@@ -176,7 +261,7 @@ captcha.show()
 | **后端验证** | ✅ 可选支持 | ✅ 内置 | ✅ 云端托管 |
 | **后端服务** | ✅ Express 5 (Node.js) | ✅ Spring Boot (Java) | ✅ 云端托管 |
 | **服务端图片生成** | ✅ Canvas (Node.js) | ✅ Java AWT | ✅ 云端生成 |
-| **验证数据签名** | ✅ HMAC-SHA256 | ✅ 支持 | ✅ 支持 |
+| **验证数据加密** | ✅ AES-GCM | ✅ 支持 | ✅ 支持 |
 | **时间戳验证** | ✅ 支持 | ✅ 支持 | ✅ 支持 |
 | **自定义图片** | ✅ 支持 | ✅ 支持 | ❌ 不支持 |
 | **自动生成图片** | ✅ Canvas 绘制 | ✅ 后端生成 | ✅ 云端生成 |

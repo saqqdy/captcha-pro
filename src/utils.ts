@@ -177,33 +177,15 @@ export function drawRoundedRect(ctx: CanvasRenderingContext2D, x: number, y: num
 }
 
 /**
- * Convert string to ArrayBuffer
- */
-function stringToArrayBuffer(str: string): ArrayBuffer {
-	const buffer = new ArrayBuffer(str.length)
-	const view = new Uint8Array(buffer)
-	for (let i = 0; i < str.length; i++) {
-		view[i] = str.charCodeAt(i)
-	}
-	return buffer
-}
-
-/**
- * Convert ArrayBuffer to hex string
- */
-function arrayBufferToHex(buffer: ArrayBuffer): string {
-	return Array.from(new Uint8Array(buffer))
-		.map((b) => b.toString(16).padStart(2, '0'))
-		.join('')
-}
-
-/**
  * Crypto API interface for browser
  */
 interface CryptoApi {
 	subtle: {
 		importKey: (format: string, keyData: unknown, algorithm: unknown, extractable: boolean, keyUsages: string[]) => Promise<unknown>
 		sign: (algorithm: unknown, key: unknown, data: unknown) => Promise<ArrayBuffer>
+		encrypt: (algorithm: unknown, key: unknown, data: unknown) => Promise<ArrayBuffer>
+		decrypt: (algorithm: unknown, key: unknown, data: unknown) => Promise<ArrayBuffer>
+		digest: (algorithm: string, data: unknown) => Promise<ArrayBuffer>
 	}
 }
 
@@ -222,31 +204,145 @@ function getCrypto(): CryptoApi {
 }
 
 /**
- * HMAC-SHA256 implementation using Web Crypto API
+ * Derive AES key from secret string using PBKDF2
  */
-export async function hmacSha256(message: string, key: string): Promise<string> {
+async function deriveAesKey(secretKey: string, salt: Uint8Array): Promise<unknown> {
 	const cryptoApi = getCrypto()
 
-	// Import key
-	const keyBuffer = stringToArrayBuffer(key)
-	const cryptoKey = await cryptoApi.subtle.importKey(
+	// Import the secret key as raw material
+	const keyMaterial = await cryptoApi.subtle.importKey(
 		'raw',
-		keyBuffer,
-		{ name: 'HMAC', hash: 'SHA-256' },
+		new TextEncoder().encode(secretKey),
+		'PBKDF2',
 		false,
-		['sign']
+		['deriveBits', 'deriveKey']
 	)
 
-	// Sign message
-	const messageBuffer = new TextEncoder().encode(message)
-	const signature = await cryptoApi.subtle.sign('HMAC', cryptoKey, messageBuffer)
-
-	// Convert to hex string
-	return arrayBufferToHex(signature)
+	// Derive AES key using PBKDF2
+	return cryptoApi.subtle.importKey(
+		'raw',
+		await (cryptoApi.subtle as any).deriveBits(
+			{
+				name: 'PBKDF2',
+				salt,
+				iterations: 100000,
+				hash: 'SHA-256',
+			},
+			keyMaterial,
+			256
+		),
+		{ name: 'AES-GCM' },
+		false,
+		['encrypt', 'decrypt']
+	)
 }
 
 /**
- * Generate signature for captcha data
+ * AES-GCM encryption using Web Crypto API
+ */
+export async function aesEncrypt(plaintext: string, secretKey: string): Promise<string> {
+	const cryptoApi = getCrypto()
+
+	// Generate random salt and IV
+	const salt = new Uint8Array(16)
+	const iv = new Uint8Array(12)
+	if (typeof window !== 'undefined') {
+		const cryptoObj = Reflect.get(window, 'crypto') as { getRandomValues: (arr: Uint8Array) => Uint8Array }
+		cryptoObj.getRandomValues(salt)
+		cryptoObj.getRandomValues(iv)
+	}
+
+	// Derive key
+	const aesKey = await deriveAesKey(secretKey, salt)
+
+	// Encrypt
+	const encoder = new TextEncoder()
+	const data = encoder.encode(plaintext)
+	const encrypted = await cryptoApi.subtle.encrypt(
+		{ name: 'AES-GCM', iv },
+		aesKey,
+		data
+	)
+
+	// Combine salt + iv + ciphertext and encode as base64
+	const combined = new Uint8Array(salt.length + iv.length + encrypted.byteLength)
+	combined.set(salt, 0)
+	combined.set(iv, salt.length)
+	combined.set(new Uint8Array(encrypted), salt.length + iv.length)
+
+	// Convert to base64
+	return btoa(String.fromCharCode(...combined))
+}
+
+/**
+ * AES-GCM decryption using Web Crypto API
+ */
+export async function aesDecrypt(ciphertext: string, secretKey: string): Promise<string> {
+	const cryptoApi = getCrypto()
+
+	// Decode base64
+	const combined = new Uint8Array(
+		atob(ciphertext)
+			.split('')
+			.map((c) => c.charCodeAt(0))
+	)
+
+	// Extract salt, iv, and ciphertext
+	const salt = combined.slice(0, 16)
+	const iv = combined.slice(16, 28)
+	const encrypted = combined.slice(28)
+
+	// Derive key
+	const aesKey = await deriveAesKey(secretKey, salt)
+
+	// Decrypt
+	const decrypted = await cryptoApi.subtle.decrypt(
+		{ name: 'AES-GCM', iv },
+		aesKey,
+		encrypted
+	)
+
+	return new TextDecoder().decode(decrypted)
+}
+
+/**
+ * Generate encrypted data for captcha verification (AES-GCM)
+ */
+export async function generateEncryptedData(
+	type: string,
+	target: number[] | { x: number; y: number }[],
+	timestamp: number,
+	nonce: string,
+	secretKey: string
+): Promise<string> {
+	const data = JSON.stringify({
+		type,
+		target,
+		timestamp,
+		nonce,
+	})
+	return aesEncrypt(data, secretKey)
+}
+
+/**
+ * Decrypt and verify captcha data (AES-GCM)
+ */
+export async function decryptCaptchaData(
+	encryptedData: string,
+	secretKey: string
+): Promise<{
+	type: string
+	target: number[] | { x: number; y: number }[]
+	timestamp: number
+	nonce: string
+}> {
+	const decrypted = await aesDecrypt(encryptedData, secretKey)
+	return JSON.parse(decrypted)
+}
+
+/**
+ * @deprecated Use generateEncryptedData instead
+ * Generate signature for captcha data (HMAC-SHA256 - kept for backward compatibility)
  */
 export async function generateSignature(
 	type: string,
@@ -255,9 +351,7 @@ export async function generateSignature(
 	nonce: string,
 	secretKey: string
 ): Promise<string> {
-	const targetStr = JSON.stringify(target)
-	const message = `${type}|${targetStr}|${timestamp}|${nonce}`
-	return hmacSha256(message, secretKey)
+	return generateEncryptedData(type, target, timestamp, nonce, secretKey)
 }
 
 /**
