@@ -26,7 +26,7 @@ A lightweight behavioral captcha library with slider puzzle, click verification,
 ### Captcha Types
 
 - 🧩 **Slider Captcha** - Puzzle verification with random shapes (square/triangle/trapezoid/pentagon), decoy holes with random rotation
-- 🖱️ **Click Captcha** - Text click verification with 200+ Chinese vocabulary support, no duplicate characters per word, random decoy characters for anti-bot protection
+- 🖱️ **Click Captcha** - Text click verification with 200+ Chinese vocabulary support, no duplicate characters per word, random decoy characters, prompt images for anti-bot
 - 👻 **Invisible Captcha** - Risk-based invisible verification, behavior tracking and analysis
 - 📦 **Popup Captcha** - Modal popup wrapper for slider and click captcha, trigger by element click or programmatically
 
@@ -50,6 +50,7 @@ A lightweight behavioral captcha library with slider puzzle, click verification,
 - 📦 **Lightweight** - ~35KB minified, no dependencies
 - 🖼️ **Custom Images** - Support custom background and slider images
 - 📱 **Mobile Friendly** - Full touch events support
+- ♿ **Accessibility** - ARIA attributes, keyboard navigation support
 - 🌐 **IE11+ Support** - Requires Promise polyfill
 
 ## Installing

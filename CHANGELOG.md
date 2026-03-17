@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
   - Chinese vocabulary support with 200+ common words/phrases
   - No duplicate characters per word
   - Random decoy characters (1-2 extra) for anti-bot protection
+  - Prompt text displayed as base64 images to prevent machine recognition
   - Enhanced gradient backgrounds (matching slider style)
 - 👻 **Invisible Captcha** - Risk-based invisible verification
 - 📦 **Popup Captcha** - Modal popup wrapper for slider/click captcha
@@ -63,6 +64,7 @@ All notable changes to this project will be documented in this file.
 
 - 📦 Framework agnostic (Vue, React, Angular, vanilla JS)
 - 📱 Mobile friendly with full touch event support
+- ♿ Accessibility support (ARIA attributes, keyboard navigation)
 - 🎨 Highly customizable configuration options
 - 🖼️ Custom background and slider images support
 - 💪 Full TypeScript support

@@ -54,7 +54,6 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 	private isDragging: boolean = false
 	private startX: number = 0
 	private dragStartTime: number = 0
-	// @ts-expect-error - used internally for state tracking
 	private _verified: boolean = false
 	private captchaId: string = ''
 	// @ts-expect-error - stored for potential future use
@@ -135,9 +134,12 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 	private render(): void {
 		if (!this.container) return
 
+		// Container width = canvas width + padding (10px on each side)
+		const containerWidth = this.options.width! + 20
+
 		addClass(this.container, this.options.className!)
 		setStyle(this.container, {
-			width: this.options.width!,
+			width: containerWidth,
 			position: 'relative',
 			overflow: 'hidden',
 			borderRadius: '8px',
@@ -145,6 +147,28 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
 			padding: '10px',
 		})
+
+		// Accessibility: Set container role and label
+		this.container.setAttribute('role', 'application')
+		this.container.setAttribute('aria-label', 'Slider Captcha Verification')
+
+		// Screen reader instructions (visually hidden)
+		const instructions = createElement('div', {
+			id: 'captcha-instructions',
+			class: 'captcha-sr-only',
+		}, {
+			position: 'absolute',
+			width: '1px',
+			height: '1px',
+			padding: '0',
+			margin: '-1px',
+			overflow: 'hidden',
+			clip: 'rect(0, 0, 0, 0)',
+			whiteSpace: 'nowrap',
+			border: '0',
+		})
+		instructions.textContent = 'Drag the slider or use left/right arrow keys to complete the puzzle verification. Press Enter to submit.'
+		this.container.appendChild(instructions)
 
 		// Image container
 		const imageContainer = createElement('div', { class: 'captcha-image-container' }, {
@@ -157,19 +181,30 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		this.container.appendChild(imageContainer)
 
 		// Background canvas
-		this.bgCanvas = createElement('canvas', {}, { width: this.options.width!, height: this.options.height! }) as HTMLCanvasElement
+		this.bgCanvas = createElement('canvas', {
+			role: 'img',
+			'aria-label': 'Captcha background image',
+		}, { width: this.options.width!, height: this.options.height! }) as HTMLCanvasElement
 		this.bgCanvas.width = this.options.width!
 		this.bgCanvas.height = this.options.height!
 		imageContainer.appendChild(this.bgCanvas)
 
 		// Slider canvas (puzzle piece)
-		this.sliderCanvas = createElement('canvas', {}, { position: 'absolute', top: 0, left: 0 }) as HTMLCanvasElement
+		this.sliderCanvas = createElement('canvas', {
+			role: 'img',
+			'aria-label': 'Puzzle piece to drag',
+		}, { position: 'absolute', top: 0, left: 0 }) as HTMLCanvasElement
 		this.sliderCanvas.width = this.options.sliderWidth!
 		this.sliderCanvas.height = this.options.sliderHeight!
 		imageContainer.appendChild(this.sliderCanvas)
 
-		// Status overlay (floating from bottom)
-		const statusOverlay = createElement('div', { class: 'captcha-status-overlay' }, {
+		// Status overlay (floating from bottom) - for screen reader announcements
+		const statusOverlay = createElement('div', {
+			class: 'captcha-status-overlay',
+			role: 'status',
+			'aria-live': 'polite',
+			'aria-atomic': 'true',
+		}, {
 			position: 'absolute',
 			bottom: 0,
 			left: 0,
@@ -189,7 +224,12 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 
 		// Refresh button (positioned inside image)
 		if (this.options.showRefresh) {
-			const refreshBtn = createElement('div', { class: 'captcha-refresh-btn' }, {
+			const refreshBtn = createElement('button', {
+				class: 'captcha-refresh-btn',
+				type: 'button',
+				'aria-label': 'Refresh captcha',
+				title: 'Refresh',
+			}, {
 				position: 'absolute',
 				top: '10px',
 				right: '10px',
@@ -203,8 +243,9 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 				justifyContent: 'center',
 				zIndex: '10',
 				transition: 'transform 0.2s ease',
+				border: 'none',
 			})
-			refreshBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#666" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>'
+			refreshBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#666" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>'
 			on(refreshBtn, 'click', () => {
 				this.refresh()
 				this.options.onRefresh?.()
@@ -213,7 +254,16 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		}
 
 		// Slider button container
-		const sliderContainer = createElement('div', { class: 'captcha-slider-track' }, {
+		const sliderContainer = createElement('div', {
+			class: 'captcha-slider-track',
+			role: 'slider',
+			'aria-label': 'Verification slider',
+			'aria-valuemin': '0',
+			'aria-valuemax': String(this.options.width! - this.options.sliderWidth!),
+			'aria-valuenow': '0',
+			'aria-describedby': 'captcha-instructions',
+			tabindex: '0',
+		}, {
 			width: '100%',
 			height: '40px',
 			background: '#f7f9fa',
@@ -274,9 +324,14 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			transition: 'background 0.2s ease',
 			zIndex: '2',
 		})
-		this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#1991fa" d="M8 5v14l11-7z"/></svg>'
+		this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#1991fa" d="M8 5v14l11-7z"/></svg>'
 		sliderContainer.appendChild(this.sliderBtn)
+
+		// Store slider container for keyboard events
+		this.sliderContainer = sliderContainer
 	}
+
+	private sliderContainer: HTMLElement | null = null
 
 	/**
 	 * Load images
@@ -647,6 +702,118 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		on(document, 'touchmove', this.onDragMove, { passive: false })
 		on(document, 'mouseup', this.onDragEnd)
 		on(document, 'touchend', this.onDragEnd)
+
+		// Keyboard accessibility
+		if (this.sliderContainer) {
+			on(this.sliderContainer, 'keydown', this.onKeyDown)
+			on(this.sliderContainer, 'focus', this.onFocus)
+			on(this.sliderContainer, 'blur', this.onBlur)
+		}
+	}
+
+	/**
+	 * Keyboard navigation handler
+	 */
+	private onKeyDown = (e: Event): void => {
+		const ke = e as KeyboardEvent
+		if (this._verified) return
+
+		const maxX = this.options.width! - this.options.sliderWidth!
+		const step = 10 // pixels per key press
+
+		switch (ke.key) {
+			case 'ArrowRight':
+			case 'ArrowUp':
+				ke.preventDefault()
+				this.currentX = Math.min(this.currentX + step, maxX)
+				this.updateSliderPosition()
+				this.updateAriaValue()
+				break
+			case 'ArrowLeft':
+			case 'ArrowDown':
+				ke.preventDefault()
+				this.currentX = Math.max(this.currentX - step, 0)
+				this.updateSliderPosition()
+				this.updateAriaValue()
+				break
+			case 'Home':
+				ke.preventDefault()
+				this.currentX = 0
+				this.updateSliderPosition()
+				this.updateAriaValue()
+				break
+			case 'End':
+				ke.preventDefault()
+				this.currentX = maxX
+				this.updateSliderPosition()
+				this.updateAriaValue()
+				break
+			case 'Enter':
+			case ' ':
+				ke.preventDefault()
+				this.verifyPosition()
+				break
+		}
+	}
+
+	/**
+	 * Update slider position (for keyboard navigation)
+	 */
+	private updateSliderPosition(): void {
+		// Hide hint text
+		if (this.hintText) {
+			setStyle(this.hintText, { opacity: '0' })
+		}
+
+		// Update slider position
+		if (this.sliderCanvas) {
+			setStyle(this.sliderCanvas, { left: `${this.currentX}px` })
+		}
+		if (this.sliderBtn) {
+			setStyle(this.sliderBtn, {
+				left: `${this.currentX + 2}px`,
+				background: '#1991fa',
+				borderColor: '#1991fa',
+			})
+		}
+		if (this.sliderProgress) {
+			const progressWidth = Math.max(40, this.currentX + 40)
+			setStyle(this.sliderProgress, {
+				width: `${progressWidth}px`,
+				border: '1px solid #1991fa',
+				background: 'rgba(25, 145, 250, 0.08)',
+			})
+		}
+	}
+
+	/**
+	 * Update ARIA value for screen readers
+	 */
+	private updateAriaValue(): void {
+		if (this.sliderContainer) {
+			this.sliderContainer.setAttribute('aria-valuenow', String(Math.round(this.currentX)))
+		}
+	}
+
+	/**
+	 * Focus handler
+	 */
+	private onFocus = (): void => {
+		if (this.sliderContainer) {
+			setStyle(this.sliderContainer, {
+				outline: '2px solid #1991fa',
+				outlineOffset: '2px',
+			})
+		}
+	}
+
+	/**
+	 * Blur handler
+	 */
+	private onBlur = (): void => {
+		if (this.sliderContainer) {
+			setStyle(this.sliderContainer, { outline: 'none' })
+		}
 	}
 
 	/**
@@ -913,6 +1080,9 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		this._verified = false
 		this.tracks = []
 
+		// Reset ARIA value
+		this.updateAriaValue()
+
 		if (this.sliderCanvas) {
 			setStyle(this.sliderCanvas, { left: '2px' })
 		}
@@ -952,6 +1122,13 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		off(document, 'mouseup', this.onDragEnd)
 		off(document, 'touchend', this.onDragEnd)
 
+		// Remove keyboard event listeners
+		if (this.sliderContainer) {
+			off(this.sliderContainer, 'keydown', this.onKeyDown)
+			off(this.sliderContainer, 'focus', this.onFocus)
+			off(this.sliderContainer, 'blur', this.onBlur)
+		}
+
 		if (this.container) {
 			this.container.innerHTML = ''
 		}
@@ -963,6 +1140,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		this.sliderProgress = null
 		this.statusOverlay = null
 		this.hintText = null
+		this.sliderContainer = null
 	}
 
 	/**

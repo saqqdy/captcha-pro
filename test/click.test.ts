@@ -168,9 +168,13 @@ describe('ClickCaptcha', () => {
 		const canvas = container.querySelector('canvas')
 		expect(canvas).toBeDefined()
 
-		// Verify prompt shows correct text to click
+		// Verify prompt shows correct text
 		const prompt = container.querySelector('.captcha-prompt')
 		expect(prompt?.textContent).toContain('请依次点击')
+
+		// Verify characters are shown as images (not plain text)
+		const images = prompt?.querySelectorAll('img')
+		expect(images?.length).toBe(3)
 
 		captcha.destroy()
 	})

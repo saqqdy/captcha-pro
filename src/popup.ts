@@ -164,11 +164,17 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 		const modalOptions = { ...defaultModalOptions, ...this.options.modal }
 
 		// Get captcha dimensions for popup sizing
-		// Popup width adapts to captcha width
-		const captchaWidth = this.options.captchaOptions?.width || 300
+		// Popup width = canvas width + padding (10px on each side)
+		const canvasWidth = this.options.captchaOptions?.width || 300
+		const captchaWidth = canvasWidth + 20
 
-		// Create overlay
-		this.overlay = createElement('div', { class: 'captcha-popup-overlay' }, {
+		// Create overlay with accessibility attributes
+		this.overlay = createElement('div', {
+			class: 'captcha-popup-overlay',
+			role: 'dialog',
+			'aria-modal': 'true',
+			'aria-label': modalOptions.title || 'Security Verification',
+		}, {
 			position: 'fixed',
 			top: '0',
 			left: '0',
@@ -177,7 +183,10 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 		})
 
 		// Create container - size adapts to captcha dimensions
-		this.container = createElement('div', { class: 'captcha-popup-container' }, {
+		this.container = createElement('div', {
+			class: 'captcha-popup-container',
+			role: 'document',
+		}, {
 			width: `${captchaWidth}px`,
 		})
 
@@ -186,9 +195,14 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 			const header = createElement('div', { class: 'captcha-popup-header' })
 
 			if (modalOptions.title) {
-				const title = createElement('h3', { class: 'captcha-popup-title' })
+				const title = createElement('h3', {
+					class: 'captcha-popup-title',
+					id: 'captcha-popup-title',
+				})
 				title.textContent = modalOptions.title
 				header.appendChild(title)
+				// Link dialog to title for screen readers
+				this.overlay.setAttribute('aria-labelledby', 'captcha-popup-title')
 			} else {
 				// Empty spacer
 				const spacer = createElement('div')
@@ -196,8 +210,12 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 			}
 
 			if (modalOptions.showClose) {
-				const closeBtn = createElement('button', { class: 'captcha-popup-close' })
-				closeBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>'
+				const closeBtn = createElement('button', {
+					class: 'captcha-popup-close',
+					type: 'button',
+					'aria-label': 'Close dialog',
+				})
+				closeBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>'
 				on(closeBtn, 'click', () => this.hide())
 				header.appendChild(closeBtn)
 			}
@@ -284,11 +302,17 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 		}
 	}
 
+	// Store the element that had focus before popup opened
+	private previousActiveElement: HTMLElement | null = null
+
 	/**
 	 * Show popup
 	 */
 	show(): void {
 		if (!this.overlay) return
+
+		// Store the currently focused element
+		this.previousActiveElement = document.activeElement as HTMLElement
 
 		// Create captcha before showing
 		this.createCaptcha()
@@ -305,6 +329,17 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 		this._visible = true
 		addClass(this.overlay, 'visible')
 
+		// Focus management - focus the first focusable element
+		setTimeout(() => {
+			const closeBtn = this.container?.querySelector('.captcha-popup-close') as HTMLElement
+			if (closeBtn) {
+				closeBtn.focus()
+			} else {
+				// Focus the overlay itself
+				this.overlay?.focus()
+			}
+		}, 100)
+
 		// Callback
 		this.options.onOpen?.()
 	}
@@ -320,6 +355,11 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 
 		// Restore body scroll
 		setStyle(document.body, { overflow: '' })
+
+		// Restore focus to previous element
+		if (this.previousActiveElement && typeof this.previousActiveElement.focus === 'function') {
+			this.previousActiveElement.focus()
+		}
 
 		// Callback
 		this.options.onClose?.()

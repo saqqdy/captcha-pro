@@ -186,9 +186,12 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	private render(): void {
 		if (!this.container) return
 
+		// Container width = canvas width + padding (10px on each side)
+		const containerWidth = this.options.width! + 20
+
 		addClass(this.container, this.options.className!)
 		setStyle(this.container, {
-			width: this.options.width!,
+			width: containerWidth,
 			position: 'relative',
 			overflow: 'hidden',
 			borderRadius: '8px',
@@ -197,8 +200,34 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			padding: '10px',
 		})
 
+		// Accessibility: Set container role and label
+		this.container.setAttribute('role', 'application')
+		this.container.setAttribute('aria-label', 'Click Captcha Verification')
+
+		// Screen reader instructions (visually hidden)
+		const instructions = createElement('div', {
+			id: 'captcha-click-instructions',
+			class: 'captcha-sr-only',
+		}, {
+			position: 'absolute',
+			width: '1px',
+			height: '1px',
+			padding: '0',
+			margin: '-1px',
+			overflow: 'hidden',
+			clip: 'rect(0, 0, 0, 0)',
+			whiteSpace: 'nowrap',
+			border: '0',
+		})
+		instructions.textContent = 'Click on the characters in the order shown below. Use mouse or tap to select.'
+		this.container.appendChild(instructions)
+
 		// Image container
-		const imageContainer = createElement('div', { class: 'captcha-image-container' }, {
+		const imageContainer = createElement('div', {
+			class: 'captcha-image-container',
+			role: 'img',
+			'aria-label': 'Captcha image with characters',
+		}, {
 			position: 'relative',
 			width: '100%',
 			height: `${this.options.height!  }px`,
@@ -208,13 +237,19 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		this.container.appendChild(imageContainer)
 
 		// Background canvas
-		this.bgCanvas = createElement('canvas', {}, { width: this.options.width!, height: this.options.height! }) as HTMLCanvasElement
+		this.bgCanvas = createElement('canvas', {
+			'aria-hidden': 'true',
+		}, { width: this.options.width!, height: this.options.height! }) as HTMLCanvasElement
 		this.bgCanvas.width = this.options.width!
 		this.bgCanvas.height = this.options.height!
 		imageContainer.appendChild(this.bgCanvas)
 
 		// Text canvas (overlay for click points)
-		this.textCanvas = createElement('canvas', {}, {
+		this.textCanvas = createElement('canvas', {
+			role: 'button',
+			'aria-label': 'Click area - click on the characters in order',
+			tabindex: '0',
+		}, {
 			position: 'absolute',
 			top: 0,
 			left: 0,
@@ -226,7 +261,12 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 
 		// Refresh button (positioned inside image)
 		if (this.options.showRefresh) {
-			const refreshBtn = createElement('div', { class: 'captcha-refresh-btn' }, {
+			const refreshBtn = createElement('button', {
+				class: 'captcha-refresh-btn',
+				type: 'button',
+				'aria-label': 'Refresh captcha',
+				title: 'Refresh',
+			}, {
 				position: 'absolute',
 				top: '10px',
 				right: '10px',
@@ -240,8 +280,9 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 				justifyContent: 'center',
 				zIndex: '10',
 				transition: 'transform 0.2s ease',
+				border: 'none',
 			})
-			refreshBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#666" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>'
+			refreshBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#666" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>'
 			on(refreshBtn, 'click', () => {
 				this.refresh()
 				this.options.onRefresh?.()
@@ -249,8 +290,13 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			imageContainer.appendChild(refreshBtn)
 		}
 
-		// Status overlay (slide up from bottom)
-		const statusOverlay = createElement('div', { class: 'captcha-status-overlay' }, {
+		// Status overlay (slide up from bottom) - for screen reader announcements
+		const statusOverlay = createElement('div', {
+			class: 'captcha-status-overlay',
+			role: 'status',
+			'aria-live': 'polite',
+			'aria-atomic': 'true',
+		}, {
 			position: 'absolute',
 			bottom: 0,
 			left: 0,
@@ -269,7 +315,11 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		this.statusOverlay = statusOverlay
 
 		// Text prompt bar
-		const promptContainer = createElement('div', { class: 'captcha-prompt' }, {
+		const promptContainer = createElement('div', {
+			class: 'captcha-prompt',
+			role: 'status',
+			'aria-live': 'polite',
+		}, {
 			width: '100%',
 			height: '40px',
 			background: '#f7f9fa',
@@ -556,11 +606,44 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	}
 
 	/**
+	 * Generate base64 image for a character
+	 */
+	private generateCharImage(char: string): string {
+		const canvas = document.createElement('canvas')
+		const fontSize = 16
+		const padding = 4
+		canvas.width = fontSize + padding * 2
+		canvas.height = fontSize + padding * 2
+
+		const ctx = canvas.getContext('2d')!
+		ctx.font = `bold ${fontSize}px "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif`
+		ctx.fillStyle = '#1991fa'
+		ctx.textAlign = 'center'
+		ctx.textBaseline = 'middle'
+
+		// Random slight rotation for anti-bot
+		const rotation = (random(-10, 10) * Math.PI) / 180
+		ctx.translate(canvas.width / 2, canvas.height / 2)
+		ctx.rotate(rotation)
+		ctx.fillText(char, 0, 0)
+
+		return canvas.toDataURL('image/png')
+	}
+
+	/**
 	 * Update prompt text
 	 */
 	private updatePrompt(): void {
 		if (this.promptContainer) {
-			this.promptContainer.innerHTML = `请依次点击: <span style="color: #1991fa; font-weight: 500; margin-left: 4px;">${this.clickTexts.join(' ')}</span>`
+			// Generate base64 images for each character to prevent bot recognition
+			const charImages = this.clickTexts
+				.map(char => {
+					const imgSrc = this.generateCharImage(char)
+					return `<img src="${imgSrc}" alt="" style="vertical-align: middle; margin: 0 2px;" width="24" height="24" aria-hidden="true">`
+				})
+				.join('')
+
+			this.promptContainer.innerHTML = `请依次点击: <span style="display: inline-block; margin-left: 4px; vertical-align: middle;">${charImages}</span>`
 		}
 	}
 
