@@ -1,115 +1,74 @@
-import { Vue2, createVNode, isVue2, render } from 'vue-demi'
-import type { App, VNode, VNodeProps } from 'vue-demi'
+import ClickCaptcha from './click'
+import InvisibleCaptcha from './invisible'
+import PopupCaptcha from './popup'
+import SliderCaptcha from './slider'
 
-export type CreateVNodeParameters = Parameters<typeof createVNode>
-export type Component = CreateVNodeParameters['0']
-export type Data = Record<string, unknown>
-export interface Options {
-	/**
-	 * propsData
-	 */
-	props?: (Data & VNodeProps) | null
-	/**
-	 * children
-	 */
-	children?: unknown
-	patchFlag?: number
-	dynamicProps?: string[] | null
-	isBlockNode?: boolean
-	/**
-	 * mount target
-	 */
-	target?: Element | ShadowRoot
-	/**
-	 * tagName of mount target, default: div
-	 */
-	tagName?: keyof HTMLElementTagNameMap
-	/**
-	 * vue3.0 app
-	 */
-	app?: App
-	/**
-	 * vue2.0 context
-	 */
-	context?: Data & {
-		router: unknown
-		store: unknown
-		i18n: unknown
-	}
-	/**
-	 * parent context
-	 */
-	parent?: unknown
+export type {
+	BackendCaptchaResponse,
+	BackendVerifyOptions,
+	BackendVerifyResponse,
+	BaseCaptchaOptions,
+	CaptchaData,
+	CaptchaInstance,
+	CaptchaStatistics,
+	CaptchaType,
+	ClickCaptchaInstance,
+	ClickCaptchaOptions,
+	InvisibleCaptchaInstance,
+	InvisibleCaptchaOptions,
+	Point,
+	PopupCaptchaInstance,
+	PopupCaptchaOptions,
+	PopupModalOptions,
+	RiskAssessmentOptions,
+	SecurityOptions,
+	SliderCaptchaInstance,
+	SliderCaptchaOptions,
+	SliderTrack,
+	StatisticsData,
+	VerifyMode,
+} from './types'
+
+export { ClickCaptcha, InvisibleCaptcha, PopupCaptcha, SliderCaptcha }
+
+export const version = '__VERSION__' as string
+
+/**
+ * Create slider captcha instance
+ */
+export function createSliderCaptcha(options: import('./types').SliderCaptchaOptions): SliderCaptcha {
+	return new SliderCaptcha(options)
 }
 
-class CaptchaPro {
-	vNode: VNode | typeof Vue2 | null = null
-	target: Element | ShadowRoot
-	options: Options = {}
-	seed = 1
-	constructor(component: Component, options: Options = {}) {
-		if (typeof document === 'undefined') throw new Error('This plugin works in browser')
-		this.options = options
-		this.target =
-			(typeof options.target === 'string'
-				? document.querySelector(options.target)
-				: options.target) || document.createElement(options.tagName || 'div')
-		this.vNode = this.createVM(component, options)
-	}
-
-	createVM(
-		component: Component,
-		{
-			props,
-			children,
-			patchFlag,
-			dynamicProps,
-			isBlockNode,
-			app,
-			context,
-			parent
-		}: Options = {}
-	) {
-		let vNode
-		if (isVue2) {
-			const VueConstructor = Vue2.extend(Object.assign({}, context || {}, component))
-			vNode = new VueConstructor({
-				parent,
-				propsData: props
-			})
-			vNode.id = 'captcha-pro-' + this.seed++
-			return vNode
-		} else {
-			vNode = createVNode(component, props, children, patchFlag, dynamicProps, isBlockNode)
-			// set context
-			if (app?._context) vNode.appContext = app._context
-			return vNode
-		}
-	}
-
-	// mount
-	mount() {
-		// target is not mounted
-		!this.options.target && document.body.appendChild(this.target)
-		if (isVue2) {
-			this.vNode && this.vNode.$mount(this.target)
-		} else {
-			render(this.vNode, this.target)
-		}
-	}
-
-	// unmount
-	unmount() {
-		if (isVue2) {
-			this.vNode.$destroy()
-			document.body.removeChild(this.vNode.$el)
-		} else {
-			render(null, this.target)
-			document.body.removeChild(this.target)
-		}
-		this.vNode = null
-		this.target = null as unknown as Element | ShadowRoot
-	}
+/**
+ * Create click captcha instance
+ */
+export function createClickCaptcha(options: import('./types').ClickCaptchaOptions): ClickCaptcha {
+	return new ClickCaptcha(options)
 }
 
-export default CaptchaPro
+/**
+ * Create invisible captcha instance
+ */
+export function createInvisibleCaptcha(options: import('./types').InvisibleCaptchaOptions): InvisibleCaptcha {
+	return new InvisibleCaptcha(options)
+}
+
+/**
+ * Create popup captcha instance
+ */
+export function createPopupCaptcha(options: import('./types').PopupCaptchaOptions): PopupCaptcha {
+	return new PopupCaptcha(options)
+}
+
+export default {
+	ClickCaptcha,
+	InvisibleCaptcha,
+	PopupCaptcha,
+	SliderCaptcha,
+	createClickCaptcha,
+	createInvisibleCaptcha,
+	createPopupCaptcha,
+	createSliderCaptcha,
+	version: '__VERSION__',
+}

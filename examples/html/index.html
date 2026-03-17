@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Captcha Pro v1.0 - 行为验证码演示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .demo-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .demo-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .demo-section h2::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .new-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .captcha-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .result {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .options {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .options-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .option-row label {
+            min-width: 100px;
+            color: #666;
+        }
+
+        .option-row input,
+        .option-row select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .option-row input:focus,
+        .option-row select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .statistics {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .statistics-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .statistics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Captcha custom styles */
+        .captcha-slider,
+        .captcha-click {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Popup captcha custom styles */
+        .captcha-popup-container {
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .feature-item::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 12px 16px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 20px;
+            color: #1565c0;
+            font-size: 14px;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .code-block .keyword {
+            color: #569cd6;
+        }
+
+        .code-block .string {
+            color: #ce9178;
+        }
+
+        .code-block .comment {
+            color: #6a9955;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .demo-section {
+                padding: 20px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Captcha Pro <span class="version-badge">v1.0</span></h1>
+        <p class="subtitle">轻量级行为验证码库 - 滑动拼图 · 点选文字 · 智能无感 · 弹窗模式</p>
+
+        <!-- Features Overview -->
+        <div class="demo-section">
+            <h2>功能特性</h2>
+            <div class="feature-list">
+                <div class="feature-item">随机滑块形状 (4种)</div>
+                <div class="feature-item">迷惑坑位防机器人</div>
+                <div class="feature-item">渐变背景装饰图案</div>
+                <div class="feature-item">中文词汇库 (200+)</div>
+                <div class="feature-item">弹窗模式支持</div>
+                <div class="feature-item">前后端验证模式</div>
+                <div class="feature-item">数据签名安全</div>
+                <div class="feature-item">统计API接口</div>
+            </div>
+        </div>
+
+        <!-- Slider Captcha Demo -->
+        <div class="demo-section">
+            <h2>滑动拼图验证码</h2>
+
+            <div class="options">
+                <div class="options-title">配置选项</div>
+                <div class="option-row">
+                    <label>验证精度:</label>
+                    <select id="sliderPrecision">
+                        <option value="3">高 (3px)</option>
+                        <option value="5" selected>中 (5px)</option>
+                        <option value="10">低 (10px)</option>
+                    </select>
+                </div>
+                <div class="option-row">
+                    <label>验证模式:</label>
+                    <select id="sliderVerifyMode">
+                        <option value="frontend" selected>前端验证</option>
+                        <option value="backend">后端验证</option>
+                    </select>
+                </div>
+                <div class="option-row">
+                    <label>图片生成:</label>
+                    <select id="sliderImageMode">
+                        <option value="frontend" selected>前端生成</option>
+                        <option value="backend">后端生成</option>
+                    </select>
+                </div>
+                <div class="option-row">
+                    <label>启用签名:</label>
+                    <input type="checkbox" id="sliderEnableSign">
+                </div>
+            </div>
+
+            <div class="captcha-container">
+                <div id="slider-captcha"></div>
+            </div>
+
+            <div id="slider-result" class="result"></div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="resetSliderCaptcha()">重置验证码</button>
+                <button class="btn btn-secondary" onclick="getSliderData()">获取验证数据</button>
+                <button class="btn btn-secondary" onclick="getSliderStats()">查看统计</button>
+            </div>
+
+            <div id="slider-stats" class="statistics" style="display: none;">
+                <div class="statistics-title">验证统计</div>
+                <div class="statistics-grid" id="slider-stats-grid"></div>
+            </div>
+        </div>
+
+        <!-- Click Captcha Demo -->
+        <div class="demo-section">
+            <h2>点选文字验证码</h2>
+
+            <div class="options">
+                <div class="options-title">配置选项</div>
+                <div class="option-row">
+                    <label>点击数量:</label>
+                    <select id="clickCount">
+                        <option value="3" selected>3个</option>
+                        <option value="4">4个</option>
+                        <option value="5">5个</option>
+                    </select>
+                </div>
+                <div class="option-row">
+                    <label>自定义文字:</label>
+                    <input type="text" id="clickText" placeholder="留空则随机生成中文词汇" maxlength="5">
+                </div>
+            </div>
+
+            <div class="info-box">
+                💡 默认使用中文词汇库，包含200+常用成语和词汇，每个词汇不含重复字
+            </div>
+
+            <div class="captcha-container">
+                <div id="click-captcha"></div>
+            </div>
+
+            <div id="click-result" class="result"></div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="resetClickCaptcha()">重置验证码</button>
+                <button class="btn btn-secondary" onclick="getClickData()">获取验证数据</button>
+                <button class="btn btn-secondary" onclick="getClickStats()">查看统计</button>
+            </div>
+
+            <div id="click-stats" class="statistics" style="display: none;">
+                <div class="statistics-title">验证统计</div>
+                <div class="statistics-grid" id="click-stats-grid"></div>
+            </div>
+        </div>
+
+        <!-- Popup Captcha Demo (NEW) -->
+        <div class="demo-section">
+            <h2>弹窗验证码 <span class="new-badge">NEW</span></h2>
+
+            <div class="options">
+                <div class="options-title">配置选项</div>
+                <div class="option-row">
+                    <label>验证码类型:</label>
+                    <select id="popupType">
+                        <option value="slider" selected>滑动拼图</option>
+                        <option value="click">点选文字</option>
+                    </select>
+                </div>
+                <div class="option-row">
+                    <label>弹窗标题:</label>
+                    <input type="text" id="popupTitle" placeholder="安全验证" style="width: 150px;">
+                </div>
+                <div class="option-row">
+                    <label>自动关闭:</label>
+                    <input type="checkbox" id="popupAutoClose" checked>
+                </div>
+            </div>
+
+            <div class="btn-group" style="margin-bottom: 20px;">
+                <button class="btn btn-primary" id="popup-trigger-btn">点击验证</button>
+                <button class="btn btn-secondary" onclick="showPopupManual()">手动显示弹窗</button>
+            </div>
+
+            <div id="popup-result" class="result"></div>
+        </div>
+
+        <!-- Invisible Captcha Demo -->
+        <div class="demo-section">
+            <h2>智能无感验证</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                基于风险评估的无感验证，仅在检测到可疑行为时才显示验证码挑战。
+            </p>
+
+            <div class="options">
+                <div class="options-title">配置选项</div>
+                <div class="option-row">
+                    <label>风险阈值:</label>
+                    <select id="invisibleThreshold">
+                        <option value="0.3">宽松 (0.3)</option>
+                        <option value="0.5">适中 (0.5)</option>
+                        <option value="0.7" selected>严格 (0.7)</option>
+                        <option value="0.9">非常严格 (0.9)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="btn-group" style="margin-bottom: 20px;">
+                <button class="btn btn-primary" id="invisible-trigger">点击验证</button>
+            </div>
+
+            <div id="invisible-result" class="result"></div>
+            <div id="invisible-risk" style="text-align: center; color: #666; margin-top: 10px;"></div>
+        </div>
+
+        <!-- Custom Image Demo -->
+        <div class="demo-section">
+            <h2>自定义图片验证码</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                支持使用自定义背景图片，可以指定滑块图片或自动生成。
+            </p>
+
+            <div class="captcha-container">
+                <div id="custom-captcha"></div>
+            </div>
+
+            <div id="custom-result" class="result"></div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="resetCustomCaptcha()">更换图片</button>
+                <button class="btn btn-secondary" onclick="toggleCustomImage()">切换图片源</button>
+            </div>
+        </div>
+
+        <!-- Backend Captcha Demo -->
+        <div class="demo-section">
+            <h2>后端验证演示 <span class="new-badge">服务端生成</span></h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                图片由后端服务生成，更安全可靠。需要先启动后端服务：<code>cd server/node && pnpm dev</code>
+            </p>
+
+            <div class="options">
+                <div class="options-title">后端服务状态</div>
+                <div class="option-row">
+                    <label>服务地址:</label>
+                    <input type="text" id="backendUrl" value="http://localhost:3001" style="width: 200px;">
+                </div>
+                <div class="option-row">
+                    <label>验证码类型:</label>
+                    <select id="backendCaptchaType">
+                        <option value="slider" selected>滑动拼图</option>
+                        <option value="click">点选文字</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="captcha-container">
+                <div id="backend-captcha"></div>
+            </div>
+
+            <div id="backend-result" class="result"></div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="initBackendCaptcha()">获取验证码</button>
+                <button class="btn btn-secondary" onclick="checkBackendHealth()">检查服务状态</button>
+            </div>
+        </div>
+
+        <!-- Factory Functions Demo -->
+        <div class="demo-section">
+            <h2>工厂函数</h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                使用工厂函数创建验证码实例，代码更简洁。
+            </p>
+
+            <div class="code-block">
+                <span class="comment">// 使用工厂函数创建实例</span><br>
+                <span class="keyword">import</span> {<br>
+                &nbsp;&nbsp;createSliderCaptcha,<br>
+                &nbsp;&nbsp;createClickCaptcha,<br>
+                &nbsp;&nbsp;createInvisibleCaptcha,<br>
+                &nbsp;&nbsp;createPopupCaptcha<br>
+                } <span class="keyword">from</span> <span class="string">'captcha-pro'</span><br><br>
+                <span class="keyword">const</span> slider = createSliderCaptcha({ el: <span class="string">'#slider'</span> })<br>
+                <span class="keyword">const</span> click = createClickCaptcha({ el: <span class="string">'#click'</span> })<br>
+                <span class="keyword">const</span> invisible = createInvisibleCaptcha({ el: <span class="string">'#btn'</span> })<br>
+                <span class="keyword">const</span> popup = createPopupCaptcha({ type: <span class="string">'slider'</span> })
+            </div>
+
+            <div class="btn-group" style="margin-top: 20px;">
+                <button class="btn btn-success" onclick="demoFactoryFunctions()">演示工厂函数</button>
+            </div>
+
+            <div id="factory-result" class="result"></div>
+        </div>
+
+        <div class="footer">
+            <p>
+                <a href="https://github.com/saqqdy/captcha-pro" target="_blank">GitHub</a> ·
+                <a href="https://www.npmjs.com/package/captcha-pro" target="_blank">NPM</a>
+            </p>
+            <p style="margin-top: 10px;">Made with ❤️ by saqqdy</p>
+        </div>
+    </div>
+
+    <!-- Load CaptchaPro from local dist (relative path) -->
+    <script src="../../dist/index.global.js"></script>
+    <script>
+        // Captcha Instances
+        let sliderCaptcha = null
+        let clickCaptcha = null
+        let invisibleCaptcha = null
+        let backendCaptcha = null
+        let popupCaptcha = null
+        let customCaptcha = null
+
+        // Sample images for custom captcha
+        const sampleImages = [
+            'https://picsum.photos/seed/captcha1/300/170',
+            'https://picsum.photos/seed/captcha2/300/170',
+            'https://picsum.photos/seed/captcha3/300/170',
+            'https://picsum.photos/seed/captcha4/300/170',
+        ]
+        let currentImageIndex = 0
+
+        // Initialize Slider Captcha
+        function initSliderCaptcha() {
+            const container = document.getElementById('slider-captcha')
+            container.innerHTML = ''
+
+            const precision = parseInt(document.getElementById('sliderPrecision').value)
+            const verifyMode = document.getElementById('sliderVerifyMode').value
+            const imageMode = document.getElementById('sliderImageMode').value
+            const enableSign = document.getElementById('sliderEnableSign').checked
+
+            // Backend image generation
+            if (imageMode === 'backend') {
+                const backendUrl = document.getElementById('backendUrl')?.value || 'http://localhost:3001'
+                sliderCaptcha = new CaptchaPro.SliderCaptcha({
+                    el: container,
+                    width: 300,
+                    height: 170,
+                    precision: precision,
+                    verifyMode: 'backend',
+                    backendVerify: {
+                        getCaptcha: `${backendUrl}/api/captcha?type=slider`,
+                        verify: `${backendUrl}/api/captcha/verify`
+                    },
+                    security: enableSign ? {
+                        secretKey: 'demo-secret-key',
+                        enableSign: true
+                    } : undefined,
+                    onSuccess: () => {
+                        showResult('slider-result', '✅ 后端验证成功！', true)
+                    },
+                    onFail: () => {
+                        showResult('slider-result', '❌ 验证失败，请重试', false)
+                    },
+                    onRefresh: () => {
+                        hideResult('slider-result')
+                    }
+                })
+                return
+            }
+
+            // Frontend image generation
+            sliderCaptcha = new CaptchaPro.SliderCaptcha({
+                el: container,
+                width: 300,
+                height: 170,
+                precision: precision,
+                verifyMode: verifyMode,
+                security: enableSign ? {
+                    secretKey: 'demo-secret-key',
+                    enableSign: true
+                } : undefined,
+                onSuccess: () => {
+                    showResult('slider-result', '✅ 验证成功！', true)
+                },
+                onFail: () => {
+                    showResult('slider-result', '❌ 验证失败，请重试', false)
+                },
+                onRefresh: () => {
+                    hideResult('slider-result')
+                }
+            })
+        }
+
+        // Initialize Click Captcha
+        function initClickCaptcha() {
+            const container = document.getElementById('click-captcha')
+            container.innerHTML = ''
+
+            const count = parseInt(document.getElementById('clickCount').value)
+            const text = document.getElementById('clickText').value || undefined
+
+            clickCaptcha = new CaptchaPro.ClickCaptcha({
+                el: container,
+                width: 300,
+                height: 170,
+                count: count,
+                text: text,
+                onSuccess: () => {
+                    showResult('click-result', '✅ 验证成功！', true)
+                },
+                onFail: () => {
+                    showResult('click-result', '❌ 验证失败，请重试', false)
+                },
+                onRefresh: () => {
+                    hideResult('click-result')
+                }
+            })
+        }
+
+        // Initialize Popup Captcha
+        function initPopupCaptcha() {
+            if (popupCaptcha) {
+                popupCaptcha.destroy()
+            }
+
+            const type = document.getElementById('popupType').value
+            const title = document.getElementById('popupTitle').value || '安全验证'
+            const autoClose = document.getElementById('popupAutoClose').checked
+
+            popupCaptcha = new CaptchaPro.PopupCaptcha({
+                trigger: '#popup-trigger-btn',
+                type: type,
+                modal: {
+                    title: title,
+                    maskClosable: true,
+                    escClosable: true,
+                    showClose: true
+                },
+                captchaOptions: {
+                    width: 300,
+                    height: 170,
+                    precision: 5
+                },
+                autoClose: autoClose,
+                closeDelay: 500,
+                onOpen: () => {
+                    hideResult('popup-result')
+                },
+                onClose: () => {
+                    console.log('Popup closed')
+                },
+                onSuccess: () => {
+                    showResult('popup-result', '✅ 弹窗验证成功！', true)
+                },
+                onFail: () => {
+                    showResult('popup-result', '❌ 验证失败，请重试', false)
+                }
+            })
+        }
+
+        // Show popup manually
+        function showPopupManual() {
+            if (popupCaptcha) {
+                popupCaptcha.show()
+            }
+        }
+
+        // Initialize Invisible Captcha
+        function initInvisibleCaptcha() {
+            const threshold = parseFloat(document.getElementById('invisibleThreshold').value)
+
+            invisibleCaptcha = new CaptchaPro.InvisibleCaptcha({
+                el: '#invisible-trigger',
+                trigger: 'click',
+                riskAssessment: {
+                    threshold: threshold,
+                    behaviorCheck: {
+                        minInteractionTime: 500,
+                        trackAnalysis: true
+                    }
+                },
+                challengeType: 'slider',
+                onChallenge: () => {
+                    showResult('invisible-result', '⚠️ 检测到可疑行为，请完成验证', false)
+                },
+                onSuccess: () => {
+                    showResult('invisible-result', '✅ 验证通过！', true)
+                    const risk = invisibleCaptcha.getRiskScore()
+                    document.getElementById('invisible-risk').textContent = `风险评分: ${risk.toFixed(2)}`
+                },
+                onFail: () => {
+                    showResult('invisible-result', '❌ 验证失败', false)
+                }
+            })
+        }
+
+        // Initialize Custom Image Captcha
+        function initCustomCaptcha() {
+            const container = document.getElementById('custom-captcha')
+            container.innerHTML = ''
+
+            const imageUrl = sampleImages[currentImageIndex]
+
+            customCaptcha = new CaptchaPro.SliderCaptcha({
+                el: container,
+                bgImage: imageUrl,
+                width: 300,
+                height: 170,
+                precision: 5,
+                onSuccess: () => {
+                    showResult('custom-result', '✅ 自定义图片验证成功！', true)
+                },
+                onFail: () => {
+                    showResult('custom-result', '❌ 验证失败，请重试', false)
+                },
+                onRefresh: () => {
+                    hideResult('custom-result')
+                }
+            })
+        }
+
+        function resetCustomCaptcha() {
+            currentImageIndex = (currentImageIndex + 1) % sampleImages.length
+            if (customCaptcha) customCaptcha.destroy()
+            initCustomCaptcha()
+        }
+
+        function toggleCustomImage() {
+            currentImageIndex = (currentImageIndex + 1) % sampleImages.length
+            if (customCaptcha) {
+                customCaptcha.destroy()
+                initCustomCaptcha()
+            }
+        }
+
+        // Initialize Backend Captcha Demo
+        async function initBackendCaptcha() {
+            const container = document.getElementById('backend-captcha')
+            hideResult('backend-result')
+
+            const backendUrl = document.getElementById('backendUrl').value
+            const captchaType = document.getElementById('backendCaptchaType').value
+
+            // Destroy previous instance first
+            if (backendCaptcha) {
+                backendCaptcha.destroy()
+                backendCaptcha = null
+            }
+
+            // Clear container and show loading
+            container.innerHTML = '<p style="color: #666; padding: 50px 0; text-align: center;">加载中...</p>'
+
+            try {
+                // Check if backend is available
+                const healthRes = await fetch(`${backendUrl}/api/health`)
+                if (!healthRes.ok) throw new Error('Backend not available')
+            } catch (e) {
+                container.innerHTML = '<p style="color: #e74c3c; padding: 50px 0; text-align: center;">❌ 无法连接后端服务，请确保已启动服务端<br><code>cd server/node && pnpm dev</code></p>'
+                return
+            }
+
+            // Clear container for new captcha
+            container.innerHTML = ''
+
+            // Create captcha based on type
+            if (captchaType === 'slider') {
+                backendCaptcha = new CaptchaPro.SliderCaptcha({
+                    el: container,
+                    width: 300,
+                    height: 170,
+                    verifyMode: 'backend',
+                    backendVerify: {
+                        getCaptcha: `${backendUrl}/api/captcha?type=slider`,
+                        verify: `${backendUrl}/api/captcha/verify`
+                    },
+                    onSuccess: () => {
+                        showResult('backend-result', '✅ 后端验证成功！', true)
+                    },
+                    onFail: () => {
+                        showResult('backend-result', '❌ 验证失败，请重试', false)
+                    }
+                })
+            } else if (captchaType === 'click') {
+                backendCaptcha = new CaptchaPro.ClickCaptcha({
+                    el: container,
+                    width: 300,
+                    height: 170,
+                    verifyMode: 'backend',
+                    backendVerify: {
+                        getCaptcha: `${backendUrl}/api/captcha?type=click`,
+                        verify: `${backendUrl}/api/captcha/verify`
+                    },
+                    onSuccess: () => {
+                        showResult('backend-result', '✅ 后端验证成功！', true)
+                    },
+                    onFail: () => {
+                        showResult('backend-result', '❌ 验证失败，请重试', false)
+                    }
+                })
+            }
+        }
+
+        // Check backend health
+        async function checkBackendHealth() {
+            const backendUrl = document.getElementById('backendUrl').value
+            try {
+                const res = await fetch(`${backendUrl}/api/health`)
+                const data = await res.json()
+                alert(`✅ 后端服务正常\n\n状态: ${data.status}\n缓存数量: ${data.cacheSize}\n时间: ${new Date(data.timestamp).toLocaleString()}`)
+            } catch (e) {
+                alert('❌ 无法连接后端服务\n\n请确保已启动服务端:\ncd server/node && pnpm dev')
+            }
+        }
+
+        // Demo Factory Functions
+        function demoFactoryFunctions() {
+            // Using factory functions
+            const slider = CaptchaPro.createSliderCaptcha({
+                el: '#factory-result',
+                width: 300,
+                height: 170,
+                onSuccess: () => {
+                    showResult('factory-result', '✅ 工厂函数创建的验证码验证成功！', true)
+                },
+                onFail: () => {
+                    showResult('factory-result', '❌ 验证失败', false)
+                }
+            })
+        }
+
+        // Reset Functions
+        function resetSliderCaptcha() {
+            if (sliderCaptcha) sliderCaptcha.destroy()
+            hideResult('slider-result')
+            document.getElementById('slider-stats').style.display = 'none'
+            initSliderCaptcha()
+        }
+
+        function resetClickCaptcha() {
+            if (clickCaptcha) clickCaptcha.destroy()
+            hideResult('click-result')
+            document.getElementById('click-stats').style.display = 'none'
+            initClickCaptcha()
+        }
+
+        // Get Data Functions
+        function getSliderData() {
+            if (sliderCaptcha) {
+                const data = sliderCaptcha.getData()
+                console.log('Slider Captcha Data:', data)
+                alert('验证数据已输出到控制台\n\n' + JSON.stringify(data, null, 2))
+            }
+        }
+
+        function getClickData() {
+            if (clickCaptcha) {
+                const data = clickCaptcha.getData()
+                const points = clickCaptcha.getClickPoints()
+                console.log('Click Captcha Data:', data)
+                console.log('Clicked Points:', points)
+                alert('验证数据已输出到控制台')
+            }
+        }
+
+        // Statistics Functions
+        function getSliderStats() {
+            if (sliderCaptcha) {
+                const stats = sliderCaptcha.getStatistics()
+                const container = document.getElementById('slider-stats')
+                const grid = document.getElementById('slider-stats-grid')
+
+                grid.innerHTML = `
+                    <div class="stat-item"><div class="stat-value">${stats.totalAttempts}</div><div class="stat-label">总尝试</div></div>
+                    <div class="stat-item"><div class="stat-value">${stats.successCount}</div><div class="stat-label">成功次数</div></div>
+                    <div class="stat-item"><div class="stat-value">${stats.failCount}</div><div class="stat-label">失败次数</div></div>
+                    <div class="stat-item"><div class="stat-value">${stats.successRate}%</div><div class="stat-label">成功率</div></div>
+                    <div class="stat-item"><div class="stat-value">${stats.avgVerifyTime}ms</div><div class="stat-label">平均耗时</div></div>
+                    <div class="stat-item"><div class="stat-value">${stats.avgDragDistance}px</div><div class="stat-label">平均距离</div></div>
+                `
+
+                container.style.display = 'block'
+            }
+        }
+
+        function getClickStats() {
+            if (clickCaptcha) {
+                const stats = clickCaptcha.getStatistics()
+                const container = document.getElementById('click-stats')
+                const grid = document.getElementById('click-stats-grid')
+
+                grid.innerHTML = `
+                    <div class="stat-item"><div class="stat-value">${stats.totalAttempts}</div><div class="stat-label">总尝试</div></div>
+                    <div class="stat-item"><div class="stat-value">${stats.successCount}</div><div class="stat-label">成功次数</div></div>
+                    <div class="stat-item"><div class="stat-value">${stats.failCount}</div><div class="stat-label">失败次数</div></div>
+                    <div class="stat-item"><div class="stat-value">${stats.successRate}%</div><div class="stat-label">成功率</div></div>
+                    <div class="stat-item"><div class="stat-value">${stats.avgVerifyTime}ms</div><div class="stat-label">平均耗时</div></div>
+                `
+
+                container.style.display = 'block'
+            }
+        }
+
+        // Utility Functions
+        function showResult(elementId, message, isSuccess) {
+            const element = document.getElementById(elementId)
+            element.textContent = message
+            element.className = 'result ' + (isSuccess ? 'success' : 'error')
+        }
+
+        function hideResult(elementId) {
+            const element = document.getElementById(elementId)
+            element.className = 'result'
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('sliderPrecision').addEventListener('change', initSliderCaptcha)
+            document.getElementById('sliderVerifyMode').addEventListener('change', initSliderCaptcha)
+            document.getElementById('sliderImageMode').addEventListener('change', initSliderCaptcha)
+            document.getElementById('sliderEnableSign').addEventListener('change', initSliderCaptcha)
+            document.getElementById('clickCount').addEventListener('change', initClickCaptcha)
+            document.getElementById('clickText').addEventListener('change', initClickCaptcha)
+            document.getElementById('invisibleThreshold').addEventListener('change', () => {
+                if (invisibleCaptcha) invisibleCaptcha.destroy()
+                initInvisibleCaptcha()
+            })
+            document.getElementById('backendCaptchaType').addEventListener('change', () => {
+                if (backendCaptcha) backendCaptcha.destroy()
+                document.getElementById('backend-captcha').innerHTML = ''
+                hideResult('backend-result')
+            })
+            document.getElementById('popupType').addEventListener('change', initPopupCaptcha)
+            document.getElementById('popupTitle').addEventListener('change', initPopupCaptcha)
+            document.getElementById('popupAutoClose').addEventListener('change', initPopupCaptcha)
+        }
+
+        // Initialize everything
+        function init() {
+            setupEventListeners()
+            initSliderCaptcha()
+            initClickCaptcha()
+            initInvisibleCaptcha()
+            initPopupCaptcha()
+            initCustomCaptcha()
+        }
+
+        // Check if DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init)
+        } else {
+            // DOM is already ready
+            init()
+        }
+    </script>
+</body>
+</html>

@@ -3,19 +3,14 @@ module.exports = {
 		[
 			'@babel/env',
 			{
+				// Browser targets - support IE11 and most modern browsers
 				targets: {
-					node: '12.20',
-					browsers: [
-						'> 1%',
-						'last 2 versions',
-						'not ie < 11',
-						'not ie_mob < 11',
-						'not op_mini all'
-					]
+					browsers: ['>= 0.5%', 'last 2 versions', 'Firefox ESR', 'not dead', 'ie >= 11'],
 				},
-				exclude: ['transform-regenerator']
-			}
+				// Exclude regenerator to reduce bundle size (no async/await in this lib)
+				exclude: ['transform-regenerator'],
+			},
 		],
-		'@babel/typescript'
-	]
+		'@babel/typescript',
+	],
 }
