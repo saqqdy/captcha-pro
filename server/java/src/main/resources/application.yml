@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+captcha:
+  pro:
+    # Security configuration
+    security:
+      # Enable rate limiting
+      enable-rate-limit: true
+      # Max requests per window
+      rate-limit-max: 60
+      # Rate limit window in ms
+      rate-limit-window: 60000
+      # Block duration after rate limit exceeded
+      rate-limit-block-duration: 300000
+
+      # Enable IP blacklist
+      enable-blacklist: true
+      # Default blacklist duration (0 = permanent)
+      blacklist-duration: 0
+
+      # Enable brute-force protection
+      enable-brute-force: true
+      # Max failed attempts before blocking
+      max-failed-attempts: 10
+      # Failed attempts window in ms
+      failed-attempts-window: 300000
+      # Block duration after brute-force detected
+      brute-force-block-duration: 900000
+
+    # Captcha configuration
+    captcha:
+      # Captcha expire time in ms
+      expire-time: 60000
+      # Secret key for signing
+      secret-key: captcha-pro-secret-key
+
+spring:
+  application:
+    name: captcha-pro-server

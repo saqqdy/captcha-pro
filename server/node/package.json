@@ -1,0 +1,58 @@
+{
+  "name": "@captcha-pro/server",
+  "description": "Captcha Pro Server - Backend verification service with image generation",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "scripts": {
+    "dev": "tsx watch src/cli.ts",
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean && tsup src/cli.ts --format cjs,esm --clean --outDir dist",
+    "start": "node dist/cli.js",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "canvas": "^3.1.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.10",
+    "@types/uuid": "^10.0.0",
+    "eslint": "^9.22.0",
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "captcha",
+    "verification",
+    "slider-captcha",
+    "click-captcha",
+    "rotate-captcha",
+    "backend",
+    "express"
+  ],
+  "license": "MIT",
+  "author": "saqqdy",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saqqdy/captcha-pro.git",
+    "directory": "server/node"
+  }
+}
