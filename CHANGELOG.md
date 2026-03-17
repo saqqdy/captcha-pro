@@ -14,13 +14,11 @@ All notable changes to this project will be documented in this file.
   - ✨ Random puzzle shapes: square, triangle, trapezoid, pentagon
   - ✨ Decoy holes with random rotation for anti-bot protection
   - ✨ Enhanced gradient backgrounds with decorative patterns
-  - ✨ AJ-Captcha style status overlay
   - ✨ Simplified hole/piece styling (1px white border + dark overlay)
   - ✨ Black transparent shadow for slider piece visibility
 - 🖱️ **Click Captcha** - Click specified text in sequence
   - ✨ Chinese vocabulary support with 200+ common words/phrases
   - ✨ No duplicate characters per word
-  - ✨ AJ-Captcha style status overlay
   - ✨ Enhanced gradient backgrounds with decorative patterns (matching slider)
 - 👻 **Invisible Captcha** - Risk-based invisible verification
 - 📦 **Popup Captcha** - Modal popup wrapper for captcha
@@ -126,8 +124,6 @@ Three backend implementations are provided:
 
 - 📖 **README** - Complete documentation in English and Chinese
 - 📋 **API Reference** - Detailed API documentation
-- 🔀 **Comparison** - Comparison with AJ-Captcha and Tencent Captcha
-- 🚀 **Upgrade Guide** - Future version upgrade guidance
 
 ---
 
