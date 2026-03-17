@@ -1,10 +1,13 @@
 package com.captcha.pro.controller;
 
 import com.captcha.pro.config.CaptchaProProperties;
+import com.captcha.pro.crypto.AesCrypto;
+import com.captcha.pro.crypto.CaptchaData;
 import com.captcha.pro.model.*;
 import com.captcha.pro.security.SecurityManager;
 import com.captcha.pro.service.CaptchaCache;
 import com.captcha.pro.service.CaptchaGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -104,10 +107,43 @@ public class CaptchaController {
     /**
      * Verify captcha
      * POST /api/captcha/verify
+     *
+     * Supports two modes:
+     * 1. Plain mode: captchaId + type + target
+     * 2. Encrypted mode: signature (AES-GCM encrypted data)
      */
     @PostMapping("/captcha/verify")
     public ResponseEntity<VerifyResponse> verifyCaptcha(@RequestBody VerifyRequest request, HttpServletRequest httpRequest) {
         String ip = securityManager.getClientIP(httpRequest);
+
+        // Handle encrypted signature mode
+        if (request.getSignature() != null && !request.getSignature().isEmpty()) {
+            try {
+                String decrypted = AesCrypto.decrypt(request.getSignature(), properties.getCaptcha().getSecretKey());
+                ObjectMapper mapper = new ObjectMapper();
+                CaptchaData captchaData = mapper.readValue(decrypted, CaptchaData.class);
+
+                // Validate timestamp
+                if (!AesCrypto.validateTimestamp(captchaData.getTimestamp(), properties.getCaptcha().getTimestampTolerance())) {
+                    return ResponseEntity.badRequest()
+                            .body(VerifyResponse.builder()
+                                    .success(false)
+                                    .message("Timestamp expired")
+                                    .build());
+                }
+
+                // Use decrypted data for verification
+                request.setTarget(captchaData.getTarget());
+                request.setType(CaptchaType.valueOf(captchaData.getType().toUpperCase()));
+            } catch (Exception e) {
+                log.error("Decryption failed", e);
+                return ResponseEntity.badRequest()
+                        .body(VerifyResponse.builder()
+                                .success(false)
+                                .message("Invalid encrypted data")
+                                .build());
+            }
+        }
 
         // Validate required fields
         if (request.getCaptchaId() == null || request.getType() == null || request.getTarget() == null) {

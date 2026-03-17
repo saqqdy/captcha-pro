@@ -1,29 +1,37 @@
-# @captcha-pro/server
+# Captcha Pro 服务端示例 (Node.js)
 
 中文 | [English](./README.md)
 
-Captcha Pro 服务端 - 基于 Express 5 的验证码生成与验证服务。
+基于 Express 5 的验证码生成与验证服务示例实现。这是一个参考实现，帮助您将 captcha-pro 集成到自己的后端服务中。
+
+> **注意**：这是一个演示/参考实现，不会作为 npm 包发布。您可以复制并根据需要修改代码来构建自己的后端服务。
 
 ## 功能特性
 
 - 🖼️ **服务端图片生成** - 使用 canvas 在后端生成验证码图片
-- 🔐 **服务端验证** - 防止前端绕过验证
+- 🔐 **AES-GCM 数据加密** - 使用 PBKDF2 密钥派生的安全加密传输
 - 🛡️ **安全防护** - 请求限流、IP黑名单、防暴力破解
 - 📦 **多种验证码类型** - 滑动拼图、点选文字、旋转验证
 - ⚡ **内存缓存** - 快速的内存缓存存储
 - 🔄 **自动过期** - 验证码自动过期清理
 
-## 安装
+## 快速开始
+
+这是一个演示项目，克隆仓库并在本地运行：
 
 ```bash
-# 使用 pnpm
+# 进入服务端目录
+cd server/node
+
+# 安装依赖
 pnpm install
 
-# 使用 npm
-npm install
+# 开发模式
+pnpm dev
 
-# 使用 yarn
-yarn install
+# 生产构建
+pnpm build
+pnpm start
 ```
 
 ## 快速开始
@@ -35,13 +43,6 @@ pnpm dev
 ```
 
 服务将在 `http://localhost:3001` 启动。
-
-### 生产模式
-
-```bash
-pnpm build
-pnpm start
-```
 
 ## API 接口
 
@@ -101,7 +102,7 @@ pnpm start
 
 **POST** `/api/captcha/verify`
 
-请求体：
+### 明文模式
 
 ```json
 {
@@ -115,15 +116,84 @@ pnpm start
 - `click`: target 为 `[{x, y}, {x, y}, ...]`
 - `rotate`: target 为 `[角度]`
 
+### 加密模式 (AES-GCM)
+
+当前端启用 `security.enableSign` 时，发送加密数据：
+
+```json
+{
+  "captchaId": "uuid-string",
+  "signature": "base64编码的加密数据"
+}
+```
+
+签名包含 AES-GCM 加密的 JSON 数据：
+- `type`: 验证码类型
+- `target`: 验证目标
+- `timestamp`: Unix 时间戳 (会验证 `TIMESTAMP_TOLERANCE`)
+- `nonce`: 随机字符串，防止重放攻击
+
 响应示例：
 
 ```json
 {
   "success": true,
-  "message": "Verification successful",
+  "message": "验证成功",
   "data": {
     "verifiedAt": 1700000000000
   }
+}
+```
+
+## AES-GCM 加密
+
+### 算法详情
+
+| 参数 | 值 |
+|------|-----|
+| 加密算法 | AES-256-GCM |
+| 密钥派生 | PBKDF2 |
+| 哈希算法 | SHA-256 |
+| 迭代次数 | 100,000 |
+| 盐值长度 | 16 字节 |
+| IV 长度 | 12 字节 |
+| 认证标签 | 16 字节 (包含在密文中) |
+
+### 数据格式
+
+```
+base64(salt[16] + iv[12] + ciphertext + authTag[16])
+```
+
+### 使用示例
+
+```typescript
+// 前端
+import { SliderCaptcha, decryptCaptchaData } from 'captcha-pro'
+
+const captcha = new SliderCaptcha({
+  el: '#captcha',
+  security: {
+    secretKey: 'your-secret-key',
+    enableSign: true
+  },
+  onSuccess: async () => {
+    const signedData = await captcha.getSignedData()
+    // 将 signedData.signature 发送到后端
+  }
+})
+
+// 后端 (Node.js) - 从 server/node/src/crypto.ts 复制
+import { decryptCaptchaData, validateTimestamp } from './crypto'
+
+async function verifyCaptcha(encryptedData: string, secretKey: string) {
+  const data = await decryptCaptchaData(encryptedData, secretKey)
+
+  if (!validateTimestamp(data.timestamp, 60000)) {
+    throw new Error('时间戳已过期')
+  }
+
+  return data // { type, target, timestamp, nonce }
 }
 ```
 
@@ -157,24 +227,13 @@ curl http://localhost:3001/api/security/blacklist
 - 封锁时长：15 分钟
 - 多次违规自动加入黑名单
 
-### 安全配置参数
-
-| 参数 | 默认值 | 说明 |
-|------|--------|------|
-| `rateLimitMax` | 60 | 每分钟最大请求数 |
-| `rateLimitWindow` | 60000 | 限流窗口 (ms) |
-| `rateLimitBlockDuration` | 300000 | 限流封锁时长 (ms) |
-| `maxFailedAttempts` | 10 | 最大失败尝试次数 |
-| `failedAttemptsWindow` | 300000 | 失败尝试窗口 (ms) |
-| `bruteForceBlockDuration` | 900000 | 暴力破解封锁时长 (ms) |
-
 ## 环境变量
 
 | 变量名 | 默认值 | 说明 |
 |--------|--------|------|
 | PORT | 3001 | 服务端口 |
 | HOST | localhost | 服务主机 |
-| SECRET_KEY | captcha-pro-secret-key | 密钥 |
+| SECRET_KEY | captcha-pro-secret-key | AES-GCM 加密密钥 |
 | EXPIRE_TIME | 60000 | 验证码过期时间 (ms) |
 | TIMESTAMP_TOLERANCE | 60000 | 时间戳容忍度 (ms) |
 
@@ -193,6 +252,10 @@ const captcha = new SliderCaptcha({
       'Content-Type': 'application/json'
     }
   },
+  security: {
+    secretKey: 'your-secret-key',
+    enableSign: true
+  },
   onSuccess: () => {
     console.log('验证成功！')
   },
@@ -208,9 +271,9 @@ const captcha = new SliderCaptcha({
 server/node/
 ├── src/
 │   ├── index.ts              # Express 服务入口
-│   ├── cli.ts                # 命令行入口
 │   ├── captcha-generator.ts  # 验证码生成器
 │   ├── cache.ts              # 内存缓存
+│   ├── crypto.ts             # AES-GCM 加密 (可复制到您的项目)
 │   ├── security.ts           # 安全管理器
 │   └── types.ts              # 类型定义
 ├── dist/                     # 编译输出
@@ -219,6 +282,20 @@ server/node/
 ├── README.md
 └── README_CN.md
 ```
+
+## 集成指南
+
+将此示例集成到您自己的 Node.js 后端：
+
+1. 将 `src/crypto.ts` 复制到您的项目
+2. 使用 `decryptCaptchaData()` 验证前端传来的加密签名
+3. 实现您自己的验证码存储（Redis、数据库等）
+4. 根据需要自定义安全设置
+
+## 其他后端示例
+
+- **Java (Spring Boot)**: 参见 [server/java](../java/)
+- **Go (Gin)**: 参见 [server/go](../go/)
 
 ## License
 

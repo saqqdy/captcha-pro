@@ -9,6 +9,7 @@ import cors from 'cors'
 import express, { type Express, type NextFunction, type Request, type Response } from 'express'
 import { captchaCache } from './cache'
 import { CaptchaGenerator } from './captcha-generator'
+import { decryptCaptchaData, validateTimestamp } from './crypto'
 import { SecurityManager, securityManager } from './security'
 
 // Server configuration
@@ -125,12 +126,44 @@ app.get('/api/captcha', async (req: Request, res: Response) => {
 /**
  * Verify captcha
  * POST /api/captcha/verify
+ *
+ * Supports two modes:
+ * 1. Plain mode: captchaId + type + target
+ * 2. Encrypted mode: signature (AES-GCM encrypted data)
  */
 app.post('/api/captcha/verify', async (req: Request, res: Response) => {
 	const ip = securityManager.getClientIP(req)
 
 	try {
 		const data: VerifyRequest = req.body
+
+		// Handle encrypted signature mode
+		if (data.signature) {
+			try {
+				const decrypted = await decryptCaptchaData(data.signature, config.secretKey)
+
+				// Validate timestamp
+				if (!validateTimestamp(decrypted.timestamp, config.timestampTolerance)) {
+					res.status(400).json({
+						success: false,
+						message: 'Timestamp expired',
+					})
+					return
+				}
+
+				// Use decrypted data for verification
+				data.target = decrypted.target
+				data.type = decrypted.type as CaptchaType
+				// captchaId still needed from request for cache lookup
+			} catch (decryptError) {
+				console.error('Decryption failed:', decryptError)
+				res.status(400).json({
+					success: false,
+					message: 'Invalid encrypted data',
+				})
+				return
+			}
+		}
 
 		// Validate required fields
 		if (!data.captchaId || !data.type || !data.target) {
@@ -256,9 +289,9 @@ app.get('/api/health', (_req: Request, res: Response) => {
  */
 app.get('/api/info', (_req: Request, res: Response) => {
 	res.json({
-		name: '@captcha-pro/server',
+		name: 'captcha-pro-server-demo',
 		version: '1.0.0',
-		description: 'Captcha Pro Backend Server',
+		description: 'Captcha Pro Backend Demo Server (Node.js/Express)',
 		supportedTypes: ['slider', 'click'],
 		features: ['rate-limit', 'ip-blacklist', 'brute-force-protection'],
 		config: {

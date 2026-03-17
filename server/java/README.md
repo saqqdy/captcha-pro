@@ -1,13 +1,15 @@
-# Captcha Pro Spring Boot Starter
+# Captcha Pro Server Demo (Java/Spring Boot)
 
 [中文](./README_CN.md) | English
 
-A Spring Boot Starter for Captcha Pro - Backend verification service with image generation.
+A Java demo implementation for Captcha Pro backend service using Spring Boot 3. This is a reference implementation to help you integrate captcha-pro with your own backend.
+
+> **Note**: This is a demo/reference implementation. It is NOT published as a Maven artifact. You can copy and adapt this code for your own backend service.
 
 ## Features
 
 - 🖼️ **Server-side Image Generation** - Images generated on backend using Java AWT
-- 🔐 **Server-side Verification** - Prevent frontend bypass
+- 🔐 **AES-GCM Data Encryption** - Secure encrypted data transmission with PBKDF2 key derivation
 - 🛡️ **Security Features** - Rate limiting, IP blacklist, brute-force protection
 - 📦 **Multiple Captcha Types** - Slider, click, rotate
 - ⚡ **Memory Cache** - Fast in-memory captcha storage
@@ -39,7 +41,12 @@ implementation 'com.captcha:captcha-pro-spring-boot-starter:1.0.0'
 
 ## Quick Start
 
+This is a demo project. Clone the repository and run locally:
+
 ```bash
+# Navigate to server directory
+cd server/java
+
 # Build
 mvn clean package
 
@@ -68,6 +75,7 @@ captcha:
       brute-force-block-duration: 900000
     captcha:
       expire-time: 60000
+      timestamp-tolerance: 60000
       secret-key: captcha-pro-secret-key
 ```
 
@@ -112,11 +120,70 @@ Query Parameters:
 
 **POST** `/api/captcha/verify`
 
+### Plain Mode
+
 ```json
 {
   "captchaId": "uuid-string",
   "type": "SLIDER",
   "target": [123]
+}
+```
+
+### Encrypted Mode (AES-GCM)
+
+When frontend enables `security.enableSign`, it sends encrypted data:
+
+```json
+{
+  "captchaId": "uuid-string",
+  "signature": "base64-encoded-encrypted-data"
+}
+```
+
+The signature contains AES-GCM encrypted JSON with:
+- `type`: Captcha type
+- `target`: Verification target
+- `timestamp`: Unix timestamp (validated against `timestamp-tolerance`)
+- `nonce`: Random string for replay prevention
+
+## AES-GCM Encryption
+
+### Algorithm Details
+
+| Parameter | Value |
+|-----------|-------|
+| Algorithm | AES-256-GCM |
+| Key Derivation | PBKDF2 |
+| Hash | SHA-256 |
+| Iterations | 100,000 |
+| Salt Length | 16 bytes |
+| IV Length | 12 bytes |
+| GCM Tag Length | 128 bits |
+
+### Data Format
+
+```
+base64(salt[16] + iv[12] + ciphertext + authTag[16])
+```
+
+### Usage Example
+
+```java
+// Decrypt and verify
+import com.captcha.pro.crypto.AesCrypto;
+import com.captcha.pro.crypto.CaptchaData;
+
+public CaptchaData verifyEncrypted(String signature, String secretKey) throws Exception {
+    String decrypted = AesCrypto.decrypt(signature, secretKey);
+    ObjectMapper mapper = new ObjectMapper();
+    CaptchaData data = mapper.readValue(decrypted, CaptchaData.class);
+
+    if (!AesCrypto.validateTimestamp(data.getTimestamp(), 60000)) {
+        throw new Exception("Timestamp expired");
+    }
+
+    return data;
 }
 ```
 
@@ -150,6 +217,10 @@ const captcha = new SliderCaptcha({
   backendVerify: {
     getCaptcha: 'http://localhost:8080/api/captcha?type=slider',
     verify: 'http://localhost:8080/api/captcha/verify'
+  },
+  security: {
+    secretKey: 'captcha-pro-secret-key',
+    enableSign: true
   }
 })
 ```
@@ -165,6 +236,9 @@ server/java/
 │   ├── controller/
 │   │   ├── CaptchaController.java    # Captcha API
 │   │   └── SecurityController.java   # Security API
+│   ├── crypto/
+│   │   ├── AesCrypto.java            # AES-GCM encryption (can be copied to your project)
+│   │   └── CaptchaData.java          # Decrypted data model
 │   ├── model/
 │   │   ├── CaptchaModels.java        # Captcha models
 │   │   └── SecurityModels.java       # Security models
@@ -178,6 +252,20 @@ server/java/
 ├── pom.xml
 └── README.md
 ```
+
+## Integration Guide
+
+To integrate with your own Java backend:
+
+1. Copy `src/main/java/com/captcha/pro/crypto/` to your project
+2. Use `AesCrypto.decrypt()` to verify encrypted signatures from frontend
+3. Implement your own captcha storage (Redis, database, etc.)
+4. Customize security settings in `application.yml`
+
+## Other Backend Demos
+
+- **Node.js (Express)**: See [server/node](../node/)
+- **Go (Gin)**: See [server/go](../go/)
 
 ## License
 

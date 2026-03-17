@@ -1,29 +1,37 @@
-# @captcha-pro/server
+# Captcha Pro Server Demo (Node.js)
 
 [中文](./README_CN.md) | English
 
-Captcha Pro Server - Express 5 based backend service for captcha generation and verification.
+A Node.js demo implementation for Captcha Pro backend service using Express 5. This is a reference implementation to help you integrate captcha-pro with your own backend.
+
+> **Note**: This is a demo/reference implementation. It is NOT published as an npm package. You can copy and adapt this code for your own backend service.
 
 ## Features
 
 - 🖼️ **Server-side Image Generation** - Images generated on backend using canvas
-- 🔐 **Server-side Verification** - Prevent frontend bypass
+- 🔐 **AES-GCM Data Encryption** - Secure encrypted data transmission with PBKDF2 key derivation
 - 🛡️ **Security Features** - Rate limiting, IP blacklist, brute-force protection
 - 📦 **Multiple Captcha Types** - Slider, click, rotate
 - ⚡ **Memory Cache** - Fast in-memory captcha storage
 - 🔄 **Auto Expiration** - Automatic captcha cleanup
 
-## Installation
+## Quick Start
+
+This is a demo project. Clone the repository and run locally:
 
 ```bash
-# pnpm
+# Navigate to server directory
+cd server/node
+
+# Install dependencies
 pnpm install
 
-# npm
-npm install
+# Development mode
+pnpm dev
 
-# yarn
-yarn install
+# Production build
+pnpm build
+pnpm start
 ```
 
 ## Quick Start
@@ -35,13 +43,6 @@ pnpm dev
 ```
 
 Server starts at `http://localhost:3001`.
-
-### Production
-
-```bash
-pnpm build
-pnpm start
-```
 
 ## API Endpoints
 
@@ -101,7 +102,7 @@ Response:
 
 **POST** `/api/captcha/verify`
 
-Request Body:
+### Plain Mode
 
 ```json
 {
@@ -115,6 +116,23 @@ Request Body:
 - `click`: target is `[{x, y}, {x, y}, ...]`
 - `rotate`: target is `[angle]`
 
+### Encrypted Mode (AES-GCM)
+
+When frontend enables `security.enableSign`, it sends encrypted data:
+
+```json
+{
+  "captchaId": "uuid-string",
+  "signature": "base64-encoded-encrypted-data"
+}
+```
+
+The signature contains AES-GCM encrypted JSON with:
+- `type`: Captcha type
+- `target`: Verification target
+- `timestamp`: Unix timestamp (validated against `TIMESTAMP_TOLERANCE`)
+- `nonce`: Random string for replay prevention
+
 Response:
 
 ```json
@@ -124,6 +142,58 @@ Response:
   "data": {
     "verifiedAt": 1700000000000
   }
+}
+```
+
+## AES-GCM Encryption
+
+### Algorithm Details
+
+| Parameter | Value |
+|-----------|-------|
+| Algorithm | AES-256-GCM |
+| Key Derivation | PBKDF2 |
+| Hash | SHA-256 |
+| Iterations | 100,000 |
+| Salt Length | 16 bytes |
+| IV Length | 12 bytes |
+| Auth Tag | 16 bytes (included in ciphertext) |
+
+### Data Format
+
+```
+base64(salt[16] + iv[12] + ciphertext + authTag[16])
+```
+
+### Usage Example
+
+```typescript
+// Frontend
+import { SliderCaptcha, decryptCaptchaData } from 'captcha-pro'
+
+const captcha = new SliderCaptcha({
+  el: '#captcha',
+  security: {
+    secretKey: 'your-secret-key',
+    enableSign: true
+  },
+  onSuccess: async () => {
+    const signedData = await captcha.getSignedData()
+    // Send signedData.signature to backend
+  }
+})
+
+// Backend (Node.js) - Copy crypto.ts from server/node/src/crypto.ts
+import { decryptCaptchaData, validateTimestamp } from './crypto'
+
+async function verifyCaptcha(encryptedData: string, secretKey: string) {
+  const data = await decryptCaptchaData(encryptedData, secretKey)
+
+  if (!validateTimestamp(data.timestamp, 60000)) {
+    throw new Error('Timestamp expired')
+  }
+
+  return data // { type, target, timestamp, nonce }
 }
 ```
 
@@ -163,7 +233,7 @@ curl http://localhost:3001/api/security/blacklist
 |----------|---------|-------------|
 | PORT | 3001 | Server port |
 | HOST | localhost | Server host |
-| SECRET_KEY | captcha-pro-secret-key | Secret key |
+| SECRET_KEY | captcha-pro-secret-key | AES-GCM encryption key |
 | EXPIRE_TIME | 60000 | Captcha expire time (ms) |
 | TIMESTAMP_TOLERANCE | 60000 | Timestamp tolerance (ms) |
 
@@ -182,6 +252,10 @@ const captcha = new SliderCaptcha({
       'Content-Type': 'application/json'
     }
   },
+  security: {
+    secretKey: 'your-secret-key',
+    enableSign: true
+  },
   onSuccess: () => {
     console.log('Verification successful!')
   },
@@ -197,9 +271,9 @@ const captcha = new SliderCaptcha({
 server/node/
 ├── src/
 │   ├── index.ts              # Express server entry
-│   ├── cli.ts                # CLI entry
 │   ├── captcha-generator.ts  # Captcha generator
 │   ├── cache.ts              # Memory cache
+│   ├── crypto.ts             # AES-GCM encryption (can be copied to your project)
 │   ├── security.ts           # Security manager
 │   └── types.ts              # Type definitions
 ├── dist/                     # Build output
@@ -208,6 +282,20 @@ server/node/
 ├── README.md
 └── README_CN.md
 ```
+
+## Integration Guide
+
+To integrate with your own Node.js backend:
+
+1. Copy `src/crypto.ts` to your project
+2. Use `decryptCaptchaData()` to verify encrypted signatures from frontend
+3. Implement your own captcha storage (Redis, database, etc.)
+4. Customize security settings as needed
+
+## Other Backend Demos
+
+- **Java (Spring Boot)**: See [server/java](../java/)
+- **Go (Gin)**: See [server/go](../go/)
 
 ## License
 

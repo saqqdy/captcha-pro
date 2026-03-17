@@ -1,7 +1,8 @@
 {
-  "name": "@captcha-pro/server",
-  "description": "Captcha Pro Server - Backend verification service with image generation",
+  "name": "captcha-pro-server-demo",
+  "description": "Captcha Pro Server Demo - Backend verification service reference implementation (Node.js/Express)",
   "version": "1.0.0",
+  "private": true,
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -13,9 +14,9 @@
     }
   },
   "scripts": {
-    "dev": "tsx watch src/cli.ts",
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean && tsup src/cli.ts --format cjs,esm --clean --outDir dist",
-    "start": "node dist/cli.js",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "start": "node dist/index.js",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
@@ -46,7 +47,8 @@
     "click-captcha",
     "rotate-captcha",
     "backend",
-    "express"
+    "express",
+    "demo"
   ],
   "license": "MIT",
   "author": "saqqdy",
