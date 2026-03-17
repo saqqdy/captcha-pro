@@ -6,7 +6,7 @@
  * Note: Web Crypto API includes authTag at the end of ciphertext
  */
 
-import * as crypto from 'crypto'
+import * as crypto from 'node:crypto'
 
 /**
  * Derive AES key from secret string using PBKDF2
@@ -65,7 +65,7 @@ export function aesDecrypt(ciphertext: string, secretKey: string): string {
 	try {
 		const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()])
 		return decrypted.toString('utf8')
-	} catch (error) {
+	} catch {
 		throw new Error('Decryption failed: invalid ciphertext or wrong key')
 	}
 }

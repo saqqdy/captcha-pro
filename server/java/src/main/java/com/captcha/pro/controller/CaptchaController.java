@@ -9,7 +9,6 @@ import com.captcha.pro.service.CaptchaCache;
 import com.captcha.pro.service.CaptchaGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +23,26 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class CaptchaController {
 
     private final CaptchaGenerator generator;
     private final CaptchaCache cache;
     private final SecurityManager securityManager;
     private final CaptchaProProperties properties;
+
+    /**
+     * Create captcha controller with dependencies
+     */
+    public CaptchaController(
+            CaptchaGenerator generator,
+            CaptchaCache cache,
+            SecurityManager securityManager,
+            CaptchaProProperties properties) {
+        this.generator = generator;
+        this.cache = cache;
+        this.securityManager = securityManager;
+        this.properties = properties;
+    }
 
     /**
      * Generate captcha

@@ -1,0 +1,99 @@
+{
+  "groups": [
+    {
+      "name": "captcha.pro",
+      "type": "com.captcha.pro.config.CaptchaProProperties",
+      "description": "Captcha Pro configuration properties"
+    },
+    {
+      "name": "captcha.pro.captcha",
+      "type": "com.captcha.pro.config.CaptchaProProperties$CaptchaConfig",
+      "description": "Captcha generation configuration"
+    },
+    {
+      "name": "captcha.pro.security",
+      "type": "com.captcha.pro.model.SecurityConfig",
+      "description": "Security configuration for rate limiting, blacklist, and brute-force protection"
+    }
+  ],
+  "properties": [
+    {
+      "name": "captcha.pro.captcha.expire-time",
+      "type": "java.lang.Long",
+      "description": "Captcha expiration time in milliseconds",
+      "defaultValue": 60000
+    },
+    {
+      "name": "captcha.pro.captcha.timestamp-tolerance",
+      "type": "java.lang.Long",
+      "description": "Timestamp tolerance for signature validation in milliseconds",
+      "defaultValue": 60000
+    },
+    {
+      "name": "captcha.pro.captcha.secret-key",
+      "type": "java.lang.String",
+      "description": "Secret key for AES-GCM encryption (must match frontend)",
+      "defaultValue": "captcha-pro-secret-key"
+    },
+    {
+      "name": "captcha.pro.security.enable-rate-limit",
+      "type": "java.lang.Boolean",
+      "description": "Enable rate limiting",
+      "defaultValue": true
+    },
+    {
+      "name": "captcha.pro.security.rate-limit-max",
+      "type": "java.lang.Integer",
+      "description": "Maximum requests per window",
+      "defaultValue": 60
+    },
+    {
+      "name": "captcha.pro.security.rate-limit-window",
+      "type": "java.lang.Long",
+      "description": "Rate limit window in milliseconds",
+      "defaultValue": 60000
+    },
+    {
+      "name": "captcha.pro.security.rate-limit-block-duration",
+      "type": "java.lang.Long",
+      "description": "Rate limit block duration in milliseconds",
+      "defaultValue": 300000
+    },
+    {
+      "name": "captcha.pro.security.enable-blacklist",
+      "type": "java.lang.Boolean",
+      "description": "Enable IP blacklist",
+      "defaultValue": true
+    },
+    {
+      "name": "captcha.pro.security.blacklist-duration",
+      "type": "java.lang.Long",
+      "description": "Default blacklist duration in milliseconds (0 = permanent)",
+      "defaultValue": 0
+    },
+    {
+      "name": "captcha.pro.security.enable-brute-force",
+      "type": "java.lang.Boolean",
+      "description": "Enable brute-force protection",
+      "defaultValue": true
+    },
+    {
+      "name": "captcha.pro.security.max-failed-attempts",
+      "type": "java.lang.Integer",
+      "description": "Maximum failed attempts before blocking",
+      "defaultValue": 10
+    },
+    {
+      "name": "captcha.pro.security.failed-attempts-window",
+      "type": "java.lang.Long",
+      "description": "Failed attempts window in milliseconds",
+      "defaultValue": 300000
+    },
+    {
+      "name": "captcha.pro.security.brute-force-block-duration",
+      "type": "java.lang.Long",
+      "description": "Brute-force block duration in milliseconds",
+      "defaultValue": 900000
+    }
+  ]
+}

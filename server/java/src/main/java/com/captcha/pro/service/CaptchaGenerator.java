@@ -1,7 +1,6 @@
 package com.captcha.pro.service;
 
 import com.captcha.pro.model.*;
-import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,7 +13,6 @@ import java.util.List;
 /**
  * Captcha generator service
  */
-@Service
 public class CaptchaGenerator {
 
     private final Random random = new Random();

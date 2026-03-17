@@ -1,10 +1,10 @@
-# Captcha Pro 服务端示例 (Java/Spring Boot)
+# Captcha Pro Spring Boot Starter
 
 中文 | [English](./README.md)
 
-基于 Spring Boot 3 的验证码生成与验证服务示例实现。这是一个参考实现，帮助您将 captcha-pro 集成到自己的后端服务中。
+基于 Spring Boot 3 的验证码生成与验证服务 Starter。
 
-> **注意**：这是一个演示/参考实现，不会作为 Maven 依赖发布。您可以复制并根据需要修改代码来构建自己的后端服务。
+> **注意**：这是一个演示/参考实现。您可以将其作为本地依赖使用，或将代码复制到自己的项目中。
 
 ## 功能特性
 
@@ -15,6 +15,7 @@
 - ⚡ **内存缓存** - 快速的内存缓存存储
 - 🔄 **自动过期** - 验证码自动过期清理
 - 🍃 **Spring Boot 3** - 基于 Spring Boot 3.2+
+- 🔧 **自动配置** - 零配置即可使用
 
 ## 环境要求
 
@@ -23,7 +24,20 @@
 
 ## 安装
 
-### Maven
+### 方式一：本地安装
+
+克隆并安装到本地：
+
+```bash
+# 克隆仓库
+git clone https://github.com/saqqdy/captcha-pro.git
+cd captcha-pro/server/java
+
+# 安装到本地 Maven 仓库
+mvn clean install
+```
+
+然后在项目中添加依赖：
 
 ```xml
 <dependency>
@@ -33,15 +47,48 @@
 </dependency>
 ```
 
-### Gradle
+### 方式二：复制源代码
 
-```groovy
-implementation 'com.captcha:captcha-pro-spring-boot-starter:1.0.0'
-```
+将以下目录复制到您的项目中：
+- `src/main/java/com/captcha/pro/crypto/` - AES-GCM 加密工具
+- `src/main/java/com/captcha/pro/autoconfigure/` - 自动配置（可选）
 
 ## 快速开始
 
-这是一个演示项目，克隆仓库并在本地运行：
+### 1. 添加依赖
+
+```xml
+<dependency>
+    <groupId>com.captcha</groupId>
+    <artifactId>captcha-pro-spring-boot-starter</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### 2. 配置（可选）
+
+```yaml
+# application.yml
+captcha:
+  pro:
+    captcha:
+      expire-time: 60000           # 验证码过期时间 (ms)
+      timestamp-tolerance: 60000   # 时间戳容忍度 (ms)
+      secret-key: your-secret-key  # AES-GCM 加密密钥
+    security:
+      enable-rate-limit: true
+      rate-limit-max: 60
+      rate-limit-window: 60000
+      rate-limit-block-duration: 300000
+      enable-blacklist: true
+      blacklist-duration: 0        # 0 = 永久
+      enable-brute-force: true
+      max-failed-attempts: 10
+      failed-attempts-window: 300000
+      brute-force-block-duration: 900000
+```
+
+### 3. 运行演示应用
 
 ```bash
 # 进入服务端目录
@@ -55,29 +102,6 @@ java -jar target/captcha-pro-spring-boot-starter-1.0.0.jar
 ```
 
 服务将在 `http://localhost:8080` 启动。
-
-## 配置说明
-
-```yaml
-# application.yml
-captcha:
-  pro:
-    security:
-      enable-rate-limit: true
-      rate-limit-max: 60
-      rate-limit-window: 60000
-      rate-limit-block-duration: 300000
-      enable-blacklist: true
-      blacklist-duration: 0
-      enable-brute-force: true
-      max-failed-attempts: 10
-      failed-attempts-window: 300000
-      brute-force-block-duration: 900000
-    captcha:
-      expire-time: 60000
-      timestamp-tolerance: 60000
-      secret-key: captcha-pro-secret-key
-```
 
 ## API 接口
 
@@ -141,12 +165,6 @@ captcha:
 }
 ```
 
-签名包含 AES-GCM 加密的 JSON 数据：
-- `type`: 验证码类型
-- `target`: 验证目标
-- `timestamp`: Unix 时间戳 (会验证 `timestamp-tolerance`)
-- `nonce`: 随机字符串，防止重放攻击
-
 ## AES-GCM 加密
 
 ### 算法详情
@@ -170,9 +188,9 @@ base64(salt[16] + iv[12] + ciphertext + authTag[16])
 ### 使用示例
 
 ```java
-// 解密并验证
 import com.captcha.pro.crypto.AesCrypto;
 import com.captcha.pro.crypto.CaptchaData;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public CaptchaData verifyEncrypted(String signature, String secretKey) throws Exception {
     String decrypted = AesCrypto.decrypt(signature, secretKey);
@@ -219,7 +237,7 @@ const captcha = new SliderCaptcha({
     verify: 'http://localhost:8080/api/captcha/verify'
   },
   security: {
-    secretKey: 'captcha-pro-secret-key',
+    secretKey: 'your-secret-key',
     enableSign: true
   }
 })
@@ -230,37 +248,62 @@ const captcha = new SliderCaptcha({
 ```
 server/java/
 ├── src/main/java/com/captcha/pro/
-│   ├── CaptchaProApplication.java    # 主应用
+│   ├── CaptchaProApplication.java       # 演示应用
+│   ├── autoconfigure/
+│   │   └── CaptchaProAutoConfiguration.java  # 自动配置
 │   ├── config/
-│   │   └── CaptchaProProperties.java # 配置类
+│   │   └── CaptchaProProperties.java    # 配置属性
 │   ├── controller/
-│   │   ├── CaptchaController.java    # 验证码接口
-│   │   └── SecurityController.java   # 安全接口
+│   │   ├── CaptchaController.java       # 验证码接口
+│   │   └── SecurityController.java      # 安全接口
 │   ├── crypto/
-│   │   ├── AesCrypto.java            # AES-GCM 加密 (可复制到您的项目)
-│   │   └── CaptchaData.java          # 解密数据模型
+│   │   ├── AesCrypto.java               # AES-GCM 加密
+│   │   └── CaptchaData.java             # 解密数据模型
 │   ├── model/
-│   │   ├── CaptchaModels.java        # 验证码模型
-│   │   └── SecurityModels.java       # 安全模型
+│   │   ├── CaptchaModels.java           # 验证码模型
+│   │   └── SecurityModels.java          # 安全模型
 │   ├── security/
-│   │   └── SecurityManager.java      # 安全管理器
+│   │   └── SecurityManager.java         # 安全管理器
 │   └── service/
-│       ├── CaptchaCache.java         # 缓存服务
-│       └── CaptchaGenerator.java     # 生成器服务
+│       ├── CaptchaCache.java            # 缓存服务
+│       └── CaptchaGenerator.java        # 生成器服务
 ├── src/main/resources/
-│   └── application.yml               # 配置文件
+│   ├── META-INF/
+│   │   ├── additional-spring-configuration-metadata.json
+│   │   └── spring/
+│   │       └── org.springframework.boot.autoconfigure.AutoConfiguration.imports
+│   └── application.yml
 ├── pom.xml
 └── README.md
 ```
 
-## 集成指南
+## 自定义
 
-将此示例集成到您自己的 Java 后端：
+### 覆盖 Bean
 
-1. 将 `src/main/java/com/captcha/pro/crypto/` 复制到您的项目
-2. 使用 `AesCrypto.decrypt()` 验证前端传来的加密签名
-3. 实现您自己的验证码存储（Redis、数据库等）
-4. 在 `application.yml` 中自定义安全设置
+您可以通过定义自己的 Bean 来覆盖默认实现：
+
+```java
+@Configuration
+public class MyCaptchaConfig {
+
+    @Bean
+    @Primary
+    public CaptchaCache captchaCache() {
+        // 使用 Redis 替代内存缓存
+        return new RedisCaptchaCache();
+    }
+}
+```
+
+### 禁用自动配置
+
+```java
+@SpringBootApplication(exclude = CaptchaProAutoConfiguration.class)
+public class MyApplication {
+    // ...
+}
+```
 
 ## 其他后端示例
 

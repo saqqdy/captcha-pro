@@ -1,10 +1,10 @@
-# Captcha Pro Server Demo (Java/Spring Boot)
+# Captcha Pro Spring Boot Starter
 
 [中文](./README_CN.md) | English
 
-A Java demo implementation for Captcha Pro backend service using Spring Boot 3. This is a reference implementation to help you integrate captcha-pro with your own backend.
+A Spring Boot Starter for Captcha Pro - Backend verification service with image generation.
 
-> **Note**: This is a demo/reference implementation. It is NOT published as a Maven artifact. You can copy and adapt this code for your own backend service.
+> **Note**: This is a demo/reference implementation. You can either use it as a local dependency or copy the code to your own project.
 
 ## Features
 
@@ -15,6 +15,7 @@ A Java demo implementation for Captcha Pro backend service using Spring Boot 3. 
 - ⚡ **Memory Cache** - Fast in-memory captcha storage
 - 🔄 **Auto Expiration** - Automatic captcha cleanup
 - 🍃 **Spring Boot 3** - Built for Spring Boot 3.2+
+- 🔧 **Auto-Configuration** - Zero-configuration setup
 
 ## Requirements
 
@@ -23,7 +24,20 @@ A Java demo implementation for Captcha Pro backend service using Spring Boot 3. 
 
 ## Installation
 
-### Maven
+### Option 1: Local Installation
+
+Clone and install locally:
+
+```bash
+# Clone the repository
+git clone https://github.com/saqqdy/captcha-pro.git
+cd captcha-pro/server/java
+
+# Install to local Maven repository
+mvn clean install
+```
+
+Then add to your project:
 
 ```xml
 <dependency>
@@ -33,15 +47,48 @@ A Java demo implementation for Captcha Pro backend service using Spring Boot 3. 
 </dependency>
 ```
 
-### Gradle
+### Option 2: Copy Source Files
 
-```groovy
-implementation 'com.captcha:captcha-pro-spring-boot-starter:1.0.0'
-```
+Copy the following directories to your project:
+- `src/main/java/com/captcha/pro/crypto/` - AES-GCM encryption utilities
+- `src/main/java/com/captcha/pro/autoconfigure/` - Auto-configuration (optional)
 
 ## Quick Start
 
-This is a demo project. Clone the repository and run locally:
+### 1. Add Dependency
+
+```xml
+<dependency>
+    <groupId>com.captcha</groupId>
+    <artifactId>captcha-pro-spring-boot-starter</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### 2. Configure (Optional)
+
+```yaml
+# application.yml
+captcha:
+  pro:
+    captcha:
+      expire-time: 60000           # Captcha expiration (ms)
+      timestamp-tolerance: 60000   # Timestamp tolerance (ms)
+      secret-key: your-secret-key  # AES-GCM encryption key
+    security:
+      enable-rate-limit: true
+      rate-limit-max: 60
+      rate-limit-window: 60000
+      rate-limit-block-duration: 300000
+      enable-blacklist: true
+      blacklist-duration: 0        # 0 = permanent
+      enable-brute-force: true
+      max-failed-attempts: 10
+      failed-attempts-window: 300000
+      brute-force-block-duration: 900000
+```
+
+### 3. Run Demo Application
 
 ```bash
 # Navigate to server directory
@@ -55,29 +102,6 @@ java -jar target/captcha-pro-spring-boot-starter-1.0.0.jar
 ```
 
 Server starts at `http://localhost:8080`.
-
-## Configuration
-
-```yaml
-# application.yml
-captcha:
-  pro:
-    security:
-      enable-rate-limit: true
-      rate-limit-max: 60
-      rate-limit-window: 60000
-      rate-limit-block-duration: 300000
-      enable-blacklist: true
-      blacklist-duration: 0
-      enable-brute-force: true
-      max-failed-attempts: 10
-      failed-attempts-window: 300000
-      brute-force-block-duration: 900000
-    captcha:
-      expire-time: 60000
-      timestamp-tolerance: 60000
-      secret-key: captcha-pro-secret-key
-```
 
 ## API Endpoints
 
@@ -141,12 +165,6 @@ When frontend enables `security.enableSign`, it sends encrypted data:
 }
 ```
 
-The signature contains AES-GCM encrypted JSON with:
-- `type`: Captcha type
-- `target`: Verification target
-- `timestamp`: Unix timestamp (validated against `timestamp-tolerance`)
-- `nonce`: Random string for replay prevention
-
 ## AES-GCM Encryption
 
 ### Algorithm Details
@@ -170,9 +188,9 @@ base64(salt[16] + iv[12] + ciphertext + authTag[16])
 ### Usage Example
 
 ```java
-// Decrypt and verify
 import com.captcha.pro.crypto.AesCrypto;
 import com.captcha.pro.crypto.CaptchaData;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public CaptchaData verifyEncrypted(String signature, String secretKey) throws Exception {
     String decrypted = AesCrypto.decrypt(signature, secretKey);
@@ -219,7 +237,7 @@ const captcha = new SliderCaptcha({
     verify: 'http://localhost:8080/api/captcha/verify'
   },
   security: {
-    secretKey: 'captcha-pro-secret-key',
+    secretKey: 'your-secret-key',
     enableSign: true
   }
 })
@@ -230,37 +248,62 @@ const captcha = new SliderCaptcha({
 ```
 server/java/
 ├── src/main/java/com/captcha/pro/
-│   ├── CaptchaProApplication.java    # Main application
+│   ├── CaptchaProApplication.java       # Demo application
+│   ├── autoconfigure/
+│   │   └── CaptchaProAutoConfiguration.java  # Auto-configuration
 │   ├── config/
-│   │   └── CaptchaProProperties.java # Configuration
+│   │   └── CaptchaProProperties.java    # Configuration properties
 │   ├── controller/
-│   │   ├── CaptchaController.java    # Captcha API
-│   │   └── SecurityController.java   # Security API
+│   │   ├── CaptchaController.java       # Captcha API
+│   │   └── SecurityController.java      # Security API
 │   ├── crypto/
-│   │   ├── AesCrypto.java            # AES-GCM encryption (can be copied to your project)
-│   │   └── CaptchaData.java          # Decrypted data model
+│   │   ├── AesCrypto.java               # AES-GCM encryption
+│   │   └── CaptchaData.java             # Decrypted data model
 │   ├── model/
-│   │   ├── CaptchaModels.java        # Captcha models
-│   │   └── SecurityModels.java       # Security models
+│   │   ├── CaptchaModels.java           # Captcha models
+│   │   └── SecurityModels.java          # Security models
 │   ├── security/
-│   │   └── SecurityManager.java      # Security manager
+│   │   └── SecurityManager.java         # Security manager
 │   └── service/
-│       ├── CaptchaCache.java         # Cache service
-│       └── CaptchaGenerator.java     # Generator service
+│       ├── CaptchaCache.java            # Cache service
+│       └── CaptchaGenerator.java        # Generator service
 ├── src/main/resources/
-│   └── application.yml               # Configuration
+│   ├── META-INF/
+│   │   ├── additional-spring-configuration-metadata.json
+│   │   └── spring/
+│   │       └── org.springframework.boot.autoconfigure.AutoConfiguration.imports
+│   └── application.yml
 ├── pom.xml
 └── README.md
 ```
 
-## Integration Guide
+## Customization
 
-To integrate with your own Java backend:
+### Override Beans
 
-1. Copy `src/main/java/com/captcha/pro/crypto/` to your project
-2. Use `AesCrypto.decrypt()` to verify encrypted signatures from frontend
-3. Implement your own captcha storage (Redis, database, etc.)
-4. Customize security settings in `application.yml`
+You can override any bean by defining your own:
+
+```java
+@Configuration
+public class MyCaptchaConfig {
+
+    @Bean
+    @Primary
+    public CaptchaCache captchaCache() {
+        // Use Redis instead of memory cache
+        return new RedisCaptchaCache();
+    }
+}
+```
+
+### Disable Auto-Configuration
+
+```java
+@SpringBootApplication(exclude = CaptchaProAutoConfiguration.class)
+public class MyApplication {
+    // ...
+}
+```
 
 ## Other Backend Demos
 

@@ -2,7 +2,6 @@ package com.captcha.pro.security;
 
 import com.captcha.pro.model.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -12,16 +11,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * Security manager for rate limiting, IP blacklist, and brute-force protection
  */
 @Slf4j
-@Service
 public class SecurityManager {
 
-    private SecurityConfig config = new SecurityConfig();
+    private SecurityConfig config;
 
     private final Map<String, RateLimitRecord> rateLimitStore = new ConcurrentHashMap<>();
     private final Map<String, BlacklistRecord> blacklistStore = new ConcurrentHashMap<>();
     private final Map<String, FailedAttemptRecord> failedAttemptsStore = new ConcurrentHashMap<>();
 
-    public SecurityManager() {
+    /**
+     * Create security manager with configuration
+     */
+    public SecurityManager(SecurityConfig config) {
+        this.config = config != null ? config : new SecurityConfig();
+
         // Cleanup interval (every 5 minutes)
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(new TimerTask() {

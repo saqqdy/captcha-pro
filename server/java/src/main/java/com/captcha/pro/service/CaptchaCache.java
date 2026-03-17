@@ -1,7 +1,6 @@
 package com.captcha.pro.service;
 
 import com.captcha.pro.model.CaptchaCache;
-import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,7 +11,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * Memory cache store for captcha data
  */
-@Service
 public class CaptchaCache {
 
     private final Map<String, CaptchaCache> store = new ConcurrentHashMap<>();

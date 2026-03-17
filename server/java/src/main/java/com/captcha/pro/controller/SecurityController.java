@@ -2,7 +2,6 @@ package com.captcha.pro.controller;
 
 import com.captcha.pro.model.*;
 import com.captcha.pro.security.SecurityManager;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +12,16 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/security")
-@RequiredArgsConstructor
 public class SecurityController {
 
     private final SecurityManager securityManager;
+
+    /**
+     * Create security controller with security manager
+     */
+    public SecurityController(SecurityManager securityManager) {
+        this.securityManager = securityManager;
+    }
 
     /**
      * Get security status for an IP
