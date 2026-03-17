@@ -43,13 +43,17 @@ All notable changes to this project will be documented in this file.
 - Track `totalAttempts`, `successCount`, `failCount`, `successRate`
 - Track `avgVerifyTime`, `avgDragTime`, `avgDragDistance`, `avgClickCount`
 
-### Backend Services
+### Backend Demo Implementations
+
+Reference implementations are provided for quick integration:
 
 | Backend | Framework | Features |
 |---------|-----------|----------|
 | Node.js | Express 5 | Canvas image generation, memory cache |
 | Java | Spring Boot 3 | Java AWT image generation, concurrent map storage |
 | Go | Gin | High-performance, concurrent map storage |
+
+> **Note**: These are demo implementations, not published packages. Copy the crypto code to your own backend project.
 
 ### Build Outputs
 

@@ -13,12 +13,16 @@
 
 ### Captcha-Pro 组件
 
-Captcha-Pro v1.0 包含两个独立的包：
+Captcha-Pro v1.0 是一个前端验证码库，同时提供后端参考实现：
 
-| 包名 | 描述 | 用途 |
+| 组件 | 描述 | 用途 |
 |------|------|------|
-| `captcha-pro` | 前端库 | 前端验证、后端验证前端组件 |
-| `@captcha-pro/server` | Node.js 后端服务 | 服务端图片生成、验证 |
+| `captcha-pro` | 前端库 (NPM发布) | 前端验证、后端验证前端组件 |
+| `server/node` | Node.js 后端示例 | 服务端图片生成、验证参考实现 |
+| `server/java` | Java/Spring Boot 后端示例 | 服务端图片生成、验证参考实现 |
+| `server/go` | Go/Gin 后端示例 | 服务端图片生成、验证参考实现 |
+
+> **注意**：server 目录下的是演示实现，不是发布的包，可以复制代码到自己的后端项目中使用。
 
 ---
 
@@ -259,8 +263,8 @@ async function verify(data, secretKey) {
 |------|------------------|------------|-----------|
 | **前端验证** | ✅ 内置 | ❌ 不支持（需后端） | ❌ 不支持 |
 | **后端验证** | ✅ 可选支持 | ✅ 内置 | ✅ 云端托管 |
-| **后端服务** | ✅ Express 5 (Node.js) | ✅ Spring Boot (Java) | ✅ 云端托管 |
-| **服务端图片生成** | ✅ Canvas (Node.js) | ✅ Java AWT | ✅ 云端生成 |
+| **后端服务** | ✅ 示例实现 (Node/Java/Go) | ✅ Spring Boot (Java) | ✅ 云端托管 |
+| **服务端图片生成** | ✅ Canvas/Java AWT/Go | ✅ Java AWT | ✅ 云端生成 |
 | **验证数据加密** | ✅ AES-GCM | ✅ 支持 | ✅ 支持 |
 | **时间戳验证** | ✅ 支持 | ✅ 支持 | ✅ 支持 |
 | **自定义图片** | ✅ 支持 | ✅ 支持 | ❌ 不支持 |
@@ -269,17 +273,17 @@ async function verify(data, secretKey) {
 | **触摸支持** | ✅ 支持 | ✅ 支持 | ✅ 支持 |
 | **验证精度配置** | ✅ 支持 | ✅ 支持 | ❌ 固定精度 |
 | **数据统计 API** | ✅ 内置统计 | ❌ 不支持 | ✅ 控制台看板 |
-| **内存缓存** | ✅ 支持 (后端) | ✅ 支持 (Redis/本地) | ✅ 云端缓存 |
-| **自动过期** | ✅ 支持 (后端) | ✅ 支持 | ✅ 支持 |
-| **限流防护** | ✅ 支持 (后端内置) | ✅ 支持 | ✅ 云端防护 |
-| **防暴力破解** | ✅ 支持 (后端内置) | ✅ 支持 | ✅ AI 风控 |
+| **内存缓存** | ✅ 支持 (示例后端) | ✅ 支持 (Redis/本地) | ✅ 云端缓存 |
+| **自动过期** | ✅ 支持 (示例后端) | ✅ 支持 | ✅ 支持 |
+| **限流防护** | ✅ 支持 (示例后端) | ✅ 支持 | ✅ 云端防护 |
+| **防暴力破解** | ✅ 支持 (示例后端) | ✅ 支持 | ✅ AI 风控 |
 | **二次验证** | ✅ 支持 | ✅ 支持 | ✅ 必须 |
 
 ### 2.3 UI/UX 体验对比
 
 | UI/UX 特性 | Captcha-Pro v1.0 | AJ-Captcha | 腾讯验证码 |
 |------------|------------------|------------|-----------|
-| **UI 风格** | ✅ 腾讯风格 | 传统风格 | 腾讯原生 |
+| **UI 风格** | ✅ 清爽现代风格 | 传统风格 | 腾讯原生 |
 | **滑块进度条** | ✅ 带边框、颜色同步 | 简单进度条 | 无进度条 |
 | **验证状态覆盖** | ✅ AJ-Captcha风格浮层 | 文字提示 | 覆盖层 |
 | **状态颜色同步** | ✅ 滑块+进度+覆盖层 | 部分同步 | 完全同步 |
@@ -306,9 +310,10 @@ async function verify(data, secretKey) {
 | CommonJS | ✅ `index.cjs` | ❌ | ❌ |
 | IIFE (浏览器) | ✅ `index.global.js` | ✅ 前端 JS | ✅ SDK |
 | TypeScript 类型 | ✅ 内置 `.d.ts` | ❌ | ❌ |
-| **后端包** |
-| Node.js 服务 | ✅ `@captcha-pro/server` | ❌ | ❌ |
-| Java JAR | ❌ | ✅ Spring Boot Starter | ❌ |
+| **后端示例** |
+| Node.js 示例 | ✅ `server/node` | ❌ | ❌ |
+| Java 示例 | ✅ `server/java` | ✅ Spring Boot Starter | ❌ |
+| Go 示例 | ✅ `server/go` | ❌ | ❌ |
 | 云服务 | ❌ | ❌ | ✅ 托管服务 |
 
 ---
@@ -318,15 +323,15 @@ async function verify(data, secretKey) {
 | 安全特性 | Captcha-Pro v1.0 | AJ-Captcha | 腾讯验证码 |
 |---------|------------------|------------|-----------|
 | **验证位置** | 前端 + 后端可选 | 后端验证 | 云端验证 |
-| **服务端图片生成** | ✅ 支持 (@captcha-pro/server) | ✅ 支持 | ✅ 支持 |
+| **服务端图片生成** | ✅ 支持 (示例后端) | ✅ 支持 | ✅ 支持 |
 | **验证码防篡改** | ✅ 签名验证 | ✅ 支持 (服务端生成) | ✅ 支持 |
-| **数据签名** | ✅ HMAC-SHA256 | ✅ 支持 | ✅ 支持 |
+| **数据签名** | ✅ AES-GCM | ✅ 支持 | ✅ 支持 |
 | **时间戳验证** | ✅ 支持 | ✅ 支持 | ✅ 支持 |
-| **验证码缓存** | ✅ 内存缓存 (后端) | ✅ Redis/本地 | ✅ 云端 |
-| **自动过期** | ✅ 支持 (后端 60s 默认) | ✅ 支持 | ✅ 支持 |
-| **请求限流** | ✅ 支持 (后端内置) | ✅ 支持 | ✅ 云端智能限流 |
-| **IP 黑名单** | ✅ 支持 (后端内置) | ✅ 支持 | ✅ 云端管理 |
-| **防暴力破解** | ✅ 支持 (后端内置) | ✅ 支持 | ✅ AI 风控 |
+| **验证码缓存** | ✅ 内存缓存 (示例后端) | ✅ Redis/本地 | ✅ 云端 |
+| **自动过期** | ✅ 支持 (示例后端 60s 默认) | ✅ 支持 | ✅ 支持 |
+| **请求限流** | ✅ 支持 (示例后端) | ✅ 支持 | ✅ 云端智能限流 |
+| **IP 黑名单** | ✅ 支持 (示例后端) | ✅ 支持 | ✅ 云端管理 |
+| **防暴力破解** | ✅ 支持 (示例后端) | ✅ 支持 | ✅ AI 风控 |
 | **防机器人识别** | ✅ 迷惑坑位+迷惑文字 | ❌ 不支持 | ✅ AI 风控 |
 | **管理 API** | ✅ 黑名单管理接口 | ⚠️ 需配置 | ✅ 控制台 |
 | **二次验证** | ✅ 支持 | ✅ 支持 | ✅ 必须 |
@@ -368,8 +373,8 @@ DELETE /api/security/blacklist/:ip  # 移除 IP 黑名单
 
 > **重要提示**：
 > - Captcha-Pro v1.0 支持前端验证和后端验证两种模式
-> - 使用 `@captcha-pro/server` 后端服务可实现服务端图片生成，安全性更高
-> - 后端服务内置请求限流、IP黑名单、防暴力破解功能
+> - 使用 `server/node`、`server/java`、`server/go` 示例后端可实现服务端图片生成，安全性更高
+> - 示例后端内置请求限流、IP黑名单、防暴力破解功能
 > - 启用 `security.enableSign` 可防止数据篡改
 > - 腾讯验证码安全性最高，但依赖第三方服务
 
@@ -385,9 +390,9 @@ DELETE /api/security/blacklist/:ip  # 移除 IP 黑名单
 | **刷新速度 (前端模式)** | 快 (本地生成) | - | - |
 | **刷新速度 (后端模式)** | 中等 (需请求后端) | 中等 (需请求后端) | 快 (CDN 缓存) |
 | **验证速度** | 快 (本地/后端可选) | 中等 (需请求后端) | 快 (云端分布式) |
-| **后端资源占用** | 低 (Node.js) | 中 (Java + Redis) | 无 |
+| **后端资源占用** | 低 (可选后端) | 中 (Java + Redis) | 无 |
 | **并发处理能力** | 无限制 (前端模式) | 受后端性能限制 | 高 (云端弹性扩展) |
-| **后端启动时间** | ~1s (Node.js) | ~10s (Spring Boot) | - |
+| **后端启动时间** | ~1s (Node.js) / 即时 (前端模式) | ~10s (Spring Boot) | - |
 
 ---
 
@@ -403,7 +408,7 @@ DELETE /api/security/blacklist/:ip  # 移除 IP 黑名单
 6. **框架独立需求** - 需要在多种框架中使用
 7. **完全自主可控** - 不想依赖第三方服务
 8. **需要统计功能** - 内置验证统计 API
-9. **Node.js 技术栈** - 使用 @captcha-pro/server 后端服务
+9. **Node.js / Java / Go 技术栈** - 使用对应的后端示例实现
 10. **中小型项目** - 前端验证 + 可选后端增强安全性
 
 ### 选择 AJ-Captcha 的场景：
@@ -448,26 +453,27 @@ DELETE /api/security/blacklist/:ip  # 移除 IP 黑名单
 | 场景 | 推荐方案 |
 |------|---------|
 | 个人项目/小型网站 | Captcha-Pro (前端模式) |
-| 企业内部系统 | AJ-Captcha 或 Captcha-Pro (后端模式) |
-| 中型企业官网 | Captcha-Pro (后端模式) 或 AJ-Captcha |
-| Node.js 技术栈项目 | Captcha-Pro (后端模式) |
-| Java/Spring 技术栈 | AJ-Captcha |
+| 企业内部系统 | AJ-Captcha 或 Captcha-Pro (后端示例) |
+| 中型企业官网 | Captcha-Pro (后端示例) 或 AJ-Captcha |
+| Node.js 技术栈项目 | Captcha-Pro (后端示例 Node.js) |
+| Java/Spring 技术栈 | Captcha-Pro (后端示例 Java) 或 AJ-Captcha |
+| Go 技术栈 | Captcha-Pro (后端示例 Go) |
 | 大型互联网应用 | 腾讯验证码 |
 | 金融/支付系统 | 腾讯验证码 |
-| 政务/医疗系统 | AJ-Captcha (私有化) 或 Captcha-Pro (后端模式) |
+| 政务/医疗系统 | AJ-Captcha (私有化) 或 Captcha-Pro (后端示例) |
 | 开源项目 | Captcha-Pro 或 AJ-Captcha |
 | 静态站点/无后端 | Captcha-Pro (前端模式) |
 
 ### 结论
 
 三者各有优势，选择应根据：
-- **安全要求**：腾讯验证码 ≈ AJ-Captcha ≈ Captcha-Pro (后端模式) > Captcha-Pro (前端模式)
+- **安全要求**：腾讯验证码 ≈ AJ-Captcha ≈ Captcha-Pro (后端示例) > Captcha-Pro (前端模式)
 - **成本敏感**：Captcha-Pro = AJ-Captcha > 腾讯验证码
 - **开发效率**：Captcha-Pro > 腾讯验证码 > AJ-Captcha
 - **功能丰富**：腾讯验证码 > Captcha-Pro ≈ AJ-Captcha
 - **灵活性**：Captcha-Pro > AJ-Captcha > 腾讯验证码
 - **UI/UX 体验**：腾讯验证码 ≈ Captcha-Pro > AJ-Captcha
-- **技术栈匹配**：Captcha-Pro (Node.js/TypeScript) vs AJ-Captcha (Java/Spring)
+- **技术栈匹配**：Captcha-Pro (Node.js/Java/Go) vs AJ-Captcha (Java/Spring)
 
 开发者应根据项目实际需求、团队技术栈、安全等级和预算进行综合评估。
 

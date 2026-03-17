@@ -329,11 +329,19 @@ const popup = createPopupCaptcha({ type: 'slider' })
 </body>
 ```
 
-## Backend Server
+## Backend Server Demos
 
-A complete backend server is provided in `server/node` for server-side image generation and verification.
+Demo implementations are provided in the `server/` directory to help you integrate captcha-pro with your backend:
 
-### Quick Start
+| Directory | Framework | Port | Description |
+|-----------|-----------|------|-------------|
+| `server/node` | Express 5 | 3001 | Node.js backend demo |
+| `server/java` | Spring Boot 3 | 8080 | Java backend demo |
+| `server/go` | Gin | 8082 | Go backend demo |
+
+> **Note**: These are reference implementations, not published packages. Copy the code you need into your own backend project.
+
+### Quick Start (Node.js Demo)
 
 ```bash
 cd server/node
@@ -341,7 +349,7 @@ pnpm install
 pnpm dev
 ```
 
-Server runs at `http://localhost:3001`
+Server runs at `http://localhost:3001`. See each server directory's README for more details.
 
 ### API Endpoints
 
@@ -416,13 +424,13 @@ Response:
 | POST | `/api/security/blacklist` | Add IP to blacklist |
 | DELETE | `/api/security/blacklist/:ip` | Remove IP from blacklist |
 
-### Environment Variables
+### Environment Variables (Demo Servers)
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PORT` | `3001` | Server port |
+| `PORT` | `3001` (Node.js) / `8080` (Java) / `8082` (Go) | Server port |
 | `HOST` | `localhost` | Server host |
-| `SECRET_KEY` | `captcha-pro-secret-key` | Secret key for signing |
+| `SECRET_KEY` | `captcha-pro-secret-key` | AES-GCM encryption key |
 | `EXPIRE_TIME` | `60000` | Captcha expire time (ms) |
 | `TIMESTAMP_TOLERANCE` | `60000` | Timestamp tolerance (ms) |
 

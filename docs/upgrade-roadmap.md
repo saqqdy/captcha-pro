@@ -320,44 +320,58 @@ const captcha = new SliderCaptcha({
 }
 ```
 
----
-
-## 二、v2.0 扩展功能
-
-### 2.1 后端验证 SDK
+### 1.6 后端验证 SDK
 
 提供可选的后端验证组件，保持前后端分离的设计理念。
 
+> **当前状态**: ✅ 已完成 - 后端示例代码已提供在 `server/node`、`server/java`、`server/go` 目录中，可直接复制使用。
+
+**支持的 backend 实现：**
+
+| Backend | 框架 | 文件位置 |
+|---------|------|----------|
+| Node.js | Express 5 | `server/node/src/crypto.ts` |
+| Java | Spring Boot 3 | `server/java/src/main/java/com/captcha/pro/crypto/` |
+| Go | Gin | `server/go/internal/crypto/aes.go` |
+
+**使用示例：**
+
 ```typescript
-// @captcha-pro/server - 独立的后端验证包
-import { CaptchaVerifier } from '@captcha-pro/server'
+// 从 server/node/src/crypto.ts 复制到您的项目
+import { decryptCaptchaData, validateTimestamp } from './crypto'
 
-const verifier = new CaptchaVerifier({
-  secretKey: 'your-secret-key',
-  redis: redisClient,  // 可选，用于分布式
-  tolerance: 60000     // 时间戳容差
-})
+async function verifyCaptcha(encryptedData: string, secretKey: string) {
+  const data = await decryptCaptchaData(encryptedData, secretKey)
 
-// 验证前端提交的数据
-const result = await verifier.verify(captchaData)
-if (result.valid) {
-  // 验证通过
+  if (!validateTimestamp(data.timestamp, 60000)) {
+    return { valid: false, error: '时间戳已过期' }
+  }
+
+  return { valid: true, data }
 }
 ```
 
 ---
 
-### 2.2 Serverless 适配
+## 二、v2.0 扩展功能
+
+### 2.1 Serverless 适配
 
 ```typescript
 // Vercel / Netlify Functions 示例
 // api/verify.ts
-import { CaptchaVerifier } from '@captcha-pro/server'
+// 从 server/node/src/crypto.ts 复制加密模块
+import { decryptCaptchaData, validateTimestamp } from './crypto'
 
 export default async function handler(req, res) {
-  const verifier = new CaptchaVerifier({ secretKey: process.env.CAPTCHA_SECRET })
-  const result = await verifier.verify(req.body)
-  res.json(result)
+  const { signature } = req.body
+  const data = await decryptCaptchaData(signature, process.env.CAPTCHA_SECRET)
+
+  if (!validateTimestamp(data.timestamp, 60000)) {
+    return res.json({ valid: false, error: 'Timestamp expired' })
+  }
+
+  res.json({ valid: true, data })
 }
 ```
 
@@ -480,8 +494,9 @@ const captcha = new SliderCaptcha({
 | 智能无感验证 | 🔴 高 | 5天 | 用户体验提升 |
 | 数据统计 API | 🔴 高 | 2天 | 开发体验提升 |
 | 后端验证模式 | 🔴 高 | 3天 | 安全性完善 |
+| 后端验证 SDK | 🔴 高 | 3天 | 企业级支持 |
 
-**预计总工作量**：约 16 天
+**预计总工作量**：约 19 天
 
 ---
 
@@ -489,11 +504,10 @@ const captcha = new SliderCaptcha({
 
 | 功能 | 优先级 | 工作量 | 价值 |
 |------|--------|--------|------|
-| 后端验证 SDK | 🟡 中 | 5天 | 企业级支持 |
 | Serverless 适配 | 🟡 中 | 2天 | 部署灵活性 |
 | 智能风控增强 | 🟡 中 | 5天 | 防护能力提升 |
 
-**预计总工作量**：约 12 天
+**预计总工作量**：约 7 天
 
 ---
 
@@ -540,7 +554,8 @@ const captcha = new SliderCaptcha({
 | 核心定位 | 轻量级前端库 + 可选后端 | 后端验证方案 | 云服务 |
 | 验证模式 | 前端 + 后端可选 | 仅后端 | 云端 |
 | 无感验证 | ✅ 支持 | ❌ 不支持 | ✅ 支持 |
-| 数据签名 | ✅ 支持 | ✅ 支持 | ✅ 支持 |
+| 数据签名 | ✅ AES-GCM | ✅ 支持 | ✅ 支持 |
+| 后端 SDK | ✅ Node/Java/Go 示例 | ✅ Spring Boot | ❌ 云端托管 |
 | 数据统计 | ✅ 前端统计 | ❌ | ✅ 云端看板 |
 | 优势 | 灵活、轻量、免费 | 安全、功能全 | 安全、智能 |
 | 差异化 | **简单即强大，灵活可选** | 企业级方案 | 云原生 |
@@ -577,6 +592,13 @@ const captcha = new SliderCaptcha({
 1. ✅ 实现后端验证配置
 2. ✅ 实现请求封装
 3. ✅ 编写使用文档
+
+### 第六阶段：后端验证 SDK (第17-19天)
+
+1. ✅ 实现 Node.js 后端示例 (Express 5)
+2. ✅ 实现 Java 后端示例 (Spring Boot 3)
+3. ✅ 实现 Go 后端示例 (Gin)
+4. ✅ 编写各后端 README 文档
 
 ---
 
