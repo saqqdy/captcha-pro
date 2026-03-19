@@ -53,25 +53,30 @@ export interface BackendVerifyOptions {
  */
 export interface BackendCaptchaResponse {
 	/**
-	 * Captcha ID
+	 * Response data
 	 */
-	captchaId: string
-	/**
-	 * Background image (URL or base64)
-	 */
-	bgImage: string
-	/**
-	 * Slider image (for slider captcha)
-	 */
-	sliderImage?: string
-	/**
-	 * Click texts (for click captcha)
-	 */
-	clickTexts?: string[]
-	/**
-	 * Timestamp
-	 */
-	timestamp?: number
+	data: {
+		/**
+		 * Captcha ID
+		 */
+		captchaId: string
+		/**
+		 * Background image (URL or base64)
+		 */
+		bgImage: string
+		/**
+		 * Slider image (for slider captcha)
+		 */
+		sliderImage?: string
+		/**
+		 * Click texts (for click captcha)
+		 */
+		clickTexts?: string[]
+		/**
+		 * Timestamp
+		 */
+		timestamp?: number
+	}
 }
 
 /**

@@ -117,10 +117,10 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			}
 
 			this._backendData = response
-			this.captchaId = response.captchaId
-			this.options.bgImage = response.bgImage
-			if (response.sliderImage) {
-				this.options.sliderImage = response.sliderImage
+			this.captchaId = response.data.captchaId
+			this.options.bgImage = response.data.bgImage
+			if (response.data.sliderImage) {
+				this.options.sliderImage = response.data.sliderImage
 			}
 			await this.loadImages()
 		} catch (error) {

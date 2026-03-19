@@ -168,11 +168,11 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			}
 
 			this._backendData = response
-			this.captchaId = response.captchaId
-			this.options.bgImage = response.bgImage
-			if (response.clickTexts) {
-				this._text = response.clickTexts.join('')
-				this.options.count = response.clickTexts.length
+			this.captchaId = response.data.captchaId
+			this.options.bgImage = response.data.bgImage
+			if (response.data.clickTexts) {
+				this._text = response.data.clickTexts.join('')
+				this.options.count = response.data.clickTexts.length
 			}
 			await this.loadBackgroundImage()
 		} catch (error) {
