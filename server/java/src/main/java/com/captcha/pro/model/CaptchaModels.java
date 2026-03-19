@@ -74,8 +74,10 @@ public class CaptchaResponse {
     private CaptchaType type;
     private String bgImage;
     private String sliderImage;
+    private Integer sliderY;
     private Double targetAngle;
     private List<String> clickTexts;
+    private List<String> clickCharImages;
     private int width;
     private int height;
     private long expiresAt;

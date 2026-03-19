@@ -40,15 +40,17 @@ type CaptchaGenerateOptions struct {
 
 // CaptchaResponse represents the response for frontend
 type CaptchaResponse struct {
-	CaptchaID    string      `json:"captchaId"`
-	Type         CaptchaType `json:"type"`
-	BgImage      string      `json:"bgImage"`
-	SliderImage  string      `json:"sliderImage,omitempty"`
-	TargetAngle  *float64    `json:"targetAngle,omitempty"`
-	ClickTexts   []string    `json:"clickTexts,omitempty"`
-	Width        int         `json:"width"`
-	Height       int         `json:"height"`
-	ExpiresAt    int64       `json:"expiresAt"`
+	CaptchaID      string      `json:"captchaId"`
+	Type           CaptchaType `json:"type"`
+	BgImage        string      `json:"bgImage"`
+	SliderImage    string      `json:"sliderImage,omitempty"`
+	SliderY        *int        `json:"sliderY,omitempty"`
+	TargetAngle    *float64    `json:"targetAngle,omitempty"`
+	ClickTexts     []string    `json:"clickTexts,omitempty"`
+	ClickCharImages []string   `json:"clickCharImages,omitempty"`
+	Width          int         `json:"width"`
+	Height         int         `json:"height"`
+	ExpiresAt      int64       `json:"expiresAt"`
 }
 
 // CaptchaGenerateResult represents captcha generation result

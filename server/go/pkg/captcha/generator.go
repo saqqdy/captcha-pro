@@ -15,6 +15,48 @@ import (
 	"github.com/saqqdy/captcha-pro/server/go/internal/types"
 )
 
+// Chinese vocabulary library (common idioms and words) - no duplicate characters in each word
+var chineseWords = []string{
+	// Common idioms - Blessings and good fortune
+	"一帆风顺", "二龙腾飞", "三阳开泰", "四季平安", "五福临门",
+	"七星高照", "八方来财", "万事如意", "心想事成", "步步高升",
+	"财源广进", "恭喜发财", "龙马精神", "马到成功", "金玉满堂",
+	"花开富贵", "锦绣前程", "吉祥如意", "瑞气盈门", "紫气东来",
+	// Common idioms - Prosperity
+	"风调雨顺", "国泰民安", "繁荣昌盛", "万象更新", "春回大地",
+	"阳光明媚", "奋发图强", "自强不息", "勇往直前", "坚持不懈",
+	"厚德载物", "海纳百川", "宁静致远", "淡泊明志", "天道酬勤",
+	// Common idioms - Virtue and character
+	"实事求是", "与时俱进", "开拓创新", "继往开来", "励精图治",
+	"安居乐业", "幸福美满", "和谐共处", "德才兼备", "品学兼优",
+	"诚实守信", "勤劳致富", "艰苦奋斗", "团结友爱", "尊老爱幼",
+	// Common idioms - Learning and progress
+	"学无止境", "勤奋好学", "刻苦钻研", "博览群书", "学以致用",
+	"融会贯通", "举一反三", "触类旁通", "温故知新", "循序渐进",
+	"厚积薄发", "持之以恒", "孜孜不倦", "废寝忘食", "夜以继日",
+	// Common idioms - Nature and scenery
+	"春暖花开", "秋高气爽", "山清水秀", "鸟语花香", "绿树成荫",
+	"风和日丽", "云淡风轻", "晴空万里", "皓月当空", "繁星闪烁",
+	"波光粼粼", "层峦叠嶂", "悬崖峭壁", "山高水长", "水天一色",
+	// Technology and innovation vocabulary
+	"科技创新", "人工智能", "云计算", "大数据", "物联网",
+	"智慧城市", "数字经济", "智能制造", "绿色发展", "生态环保",
+	"区块链", "元宇宙", "量子计算", "机器学习", "深度学习",
+	"自动驾驶", "智能家居", "工业互联", "数字孪生", "虚拟现实",
+	// Life and emotion vocabulary
+	"健康生活", "快乐工作", "简单实用", "美好时光", "精彩无限",
+	"梦想成真", "未来可期", "热爱生活", "积极向上", "诚信为本",
+	"品质至上", "服务周到", "客户满意", "合作共赢", "互利共赢",
+	// Business and economy vocabulary
+	"商业模式", "品牌价值", "核心竞争", "市场份额", "战略规划",
+	"创新驱动", "转型升级", "经济效益", "企业文化", "团队协作",
+	"人才培养", "绩效管理", "流程优化", "降本增效", "稳健经营",
+	// Four-character auspicious words
+	"福星高照", "鸿运当头", "前途光明", "事业有成", "功成名就",
+	"名利双收", "前程似锦", "大展宏图", "鹏程万里", "旗开得胜",
+	"马到功成", "飞黄腾达", "平步青云", "扶摇直上",
+}
+
 // Generator generates captcha images
 type Generator struct {
 	rand *rand.Rand
@@ -129,6 +171,7 @@ func (g *Generator) generateSlider(opts types.CaptchaGenerateOptions, expireTime
 			Type:        types.CaptchaTypeSlider,
 			BgImage:     bgBase64,
 			SliderImage: sliderBase64,
+			SliderY:     &targetY,
 			Width:       width,
 			Height:      height,
 			ExpiresAt:   now + expireTime,
@@ -173,21 +216,66 @@ func (g *Generator) generateClick(opts types.CaptchaGenerateOptions, expireTime 
 		dc.Fill()
 	}
 
-	// Generate click texts and positions
-	fontSize := 20.0
-	padding := fontSize + 10
-	clickTexts := make([]string, clickCount)
-	targetPoints := make([]map[string]float64, clickCount)
-
-	chars := "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678"
+	// Generate click texts from Chinese vocabulary
+	var chars string
 	if opts.ClickText != "" && len(opts.ClickText) >= clickCount {
 		chars = opts.ClickText
+	} else {
+		randomWord := chineseWords[g.randomInt(0, len(chineseWords)-1)]
+		if len([]rune(randomWord)) >= clickCount {
+			chars = string([]rune(randomWord)[:clickCount])
+		} else {
+			chars = randomWord
+			runes := []rune(chars)
+			for len(runes) < clickCount {
+				extraWord := chineseWords[g.randomInt(0, len(chineseWords)-1)]
+				extraRunes := []rune(extraWord)
+				remaining := clickCount - len(runes)
+				if len(extraRunes) < remaining {
+					remaining = len(extraRunes)
+				}
+				runes = append(runes, extraRunes[:remaining]...)
+			}
+			chars = string(runes)
+		}
 	}
 
-	for i := 0; i < clickCount; i++ {
-		ch := string(chars[g.randomInt(0, len(chars)-1)])
-		clickTexts[i] = ch
+	clickTexts := make([]string, 0, clickCount)
+	charRunes := []rune(chars)
+	for i := 0; i < clickCount && i < len(charRunes); i++ {
+		clickTexts = append(clickTexts, string(charRunes[i]))
+	}
 
+	// Generate 1-2 decoy characters
+	usedChars := make(map[string]bool)
+	for _, ch := range clickTexts {
+		usedChars[ch] = true
+	}
+	decoyCount := g.randomInt(1, 2)
+	decoyTexts := make([]string, 0, decoyCount)
+	for i := 0; i < decoyCount; i++ {
+		for attempts := 0; attempts < 50; attempts++ {
+			randomWord := chineseWords[g.randomInt(0, len(chineseWords)-1)]
+			for _, r := range randomWord {
+				ch := string(r)
+				if !usedChars[ch] {
+					decoyTexts = append(decoyTexts, ch)
+					usedChars[ch] = true
+					break
+				}
+			}
+			if len(decoyTexts) > i {
+				break
+			}
+		}
+	}
+
+	fontSize := 20.0
+	padding := fontSize + 10
+	targetPoints := make([]map[string]float64, len(clickTexts))
+
+	// Draw click target characters
+	for i, ch := range clickTexts {
 		var x, y float64
 		for attempts := 0; attempts < 100; attempts++ {
 			x = g.randomFloat(padding, float64(width)-padding)
@@ -196,6 +284,9 @@ func (g *Generator) generateClick(opts types.CaptchaGenerateOptions, expireTime 
 			// Check overlap
 			overlaps := false
 			for _, p := range targetPoints {
+				if p == nil {
+					continue
+				}
 				dist := math.Sqrt(math.Pow(x-p["x"], 2) + math.Pow(y-p["y"], 2))
 				if dist < fontSize*1.5 {
 					overlaps = true
@@ -210,9 +301,56 @@ func (g *Generator) generateClick(opts types.CaptchaGenerateOptions, expireTime 
 		targetPoints[i] = map[string]float64{"x": x, "y": y}
 
 		// Draw character with rotation
-		dc.SetColor(g.randomColor(30, 80))
+		dc.SetColor(color.RGBA{R: 51, G: 51, B: 51, A: 255}) // #333
 		dc.Push()
 		dc.RotateAbout(g.randomFloat(-0.5, 0.5), x, y)
+		dc.DrawString(ch, x, y)
+		dc.Pop()
+	}
+
+	// Draw decoy characters (lighter color)
+	decoyPoints := make([]map[string]float64, len(decoyTexts))
+	for i, ch := range decoyTexts {
+		var x, y float64
+		for attempts := 0; attempts < 100; attempts++ {
+			x = g.randomFloat(padding, float64(width)-padding)
+			y = g.randomFloat(padding, float64(height)-padding)
+
+			// Check overlap with all points
+			overlaps := false
+			for _, p := range targetPoints {
+				if p == nil {
+					continue
+				}
+				dist := math.Sqrt(math.Pow(x-p["x"], 2) + math.Pow(y-p["y"], 2))
+				if dist < fontSize*1.5 {
+					overlaps = true
+					break
+				}
+			}
+			if !overlaps {
+				for j := 0; j < i; j++ {
+					if decoyPoints[j] == nil {
+						continue
+					}
+					dist := math.Sqrt(math.Pow(x-decoyPoints[j]["x"], 2) + math.Pow(y-decoyPoints[j]["y"], 2))
+					if dist < fontSize*1.5 {
+						overlaps = true
+						break
+					}
+				}
+			}
+			if !overlaps {
+				break
+			}
+		}
+
+		decoyPoints[i] = map[string]float64{"x": x, "y": y}
+
+		// Draw decoy character with lighter color
+		dc.SetColor(color.RGBA{R: 85, G: 85, B: 85, A: 255}) // #555
+		dc.Push()
+		dc.RotateAbout(g.randomFloat(-0.4, 0.4), x, y)
 		dc.DrawString(ch, x, y)
 		dc.Pop()
 	}
@@ -222,6 +360,12 @@ func (g *Generator) generateClick(opts types.CaptchaGenerateOptions, expireTime 
 	now := time.Now().UnixMilli()
 
 	bgBase64 := "data:image/png;base64," + g.imageToBase64(dc.Image())
+
+	// Generate click character images for prompt
+	clickCharImages := make([]string, len(clickTexts))
+	for i, ch := range clickTexts {
+		clickCharImages[i] = g.generateCharImage(ch)
+	}
 
 	return &types.CaptchaGenerateResult{
 		Cache: types.CaptchaCache{
@@ -233,15 +377,37 @@ func (g *Generator) generateClick(opts types.CaptchaGenerateOptions, expireTime 
 			ExpiresAt:  now + expireTime,
 		},
 		Response: types.CaptchaResponse{
-			CaptchaID:  captchaID,
-			Type:       types.CaptchaTypeClick,
-			BgImage:    bgBase64,
-			ClickTexts: clickTexts,
-			Width:      width,
-			Height:     height,
-			ExpiresAt:  now + expireTime,
+			CaptchaID:      captchaID,
+			Type:           types.CaptchaTypeClick,
+			BgImage:        bgBase64,
+			ClickTexts:     clickTexts,
+			ClickCharImages: clickCharImages,
+			Width:          width,
+			Height:         height,
+			ExpiresAt:      now + expireTime,
 		},
 	}
+}
+
+// generateCharImage generates a base64 image for a character (for prompt display)
+func (g *Generator) generateCharImage(ch string) string {
+	fontSize := 16.0
+	padding := 4.0
+	size := int(fontSize + padding*2)
+
+	dc := gg.NewContext(size, size)
+
+	dc.SetColor(color.RGBA{R: 25, G: 145, B: 250, A: 255}) // #1991fa
+
+	// Random slight rotation for anti-bot
+	rotation := g.randomFloat(-0.17, 0.17) // -10 to 10 degrees
+	dc.RotateAbout(rotation, float64(size)/2, float64(size)/2)
+
+	dc.DrawStringAnchored(ch, float64(size)/2, float64(size)/2, 0.5, 0.5)
+
+	var buf bytes.Buffer
+	png.Encode(&buf, dc.Image())
+	return "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
 }
 
 func (g *Generator) generateRotate(opts types.CaptchaGenerateOptions, expireTime int64) *types.CaptchaGenerateResult {
