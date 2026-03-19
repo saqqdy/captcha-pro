@@ -69,9 +69,17 @@ export interface BackendCaptchaResponse {
 		 */
 		sliderImage?: string
 		/**
+		 * Slider Y position (for slider captcha)
+		 */
+		sliderY?: number
+		/**
 		 * Click texts (for click captcha)
 		 */
 		clickTexts?: string[]
+		/**
+		 * Click character images (for click captcha prompt)
+		 */
+		clickCharImages?: string[]
 		/**
 		 * Timestamp
 		 */

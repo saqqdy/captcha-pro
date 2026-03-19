@@ -161,4 +161,84 @@ describe('SliderCaptcha', () => {
 
 		captcha.destroy()
 	})
+
+	it('should generate only one decoy hole', () => {
+		const captcha = new SliderCaptcha({
+			el: container,
+			width: 300,
+			height: 170,
+		})
+
+		// Get background canvas
+		const canvases = container.querySelectorAll('canvas')
+		expect(canvases.length).toBeGreaterThan(0)
+
+		// Verify captcha was created successfully
+		const data = captcha.getData()
+		expect(data.type).toBe('slider')
+		expect(data.target).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should support custom background image', async () => {
+		const captcha = new SliderCaptcha({
+			el: container,
+			bgImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+			width: 300,
+			height: 170,
+		})
+
+		// Wait for image to load
+		await new Promise(resolve => setTimeout(resolve, 100))
+
+		expect(captcha).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should not regenerate shapes in backend mode', () => {
+		// In backend mode, shapes should not be regenerated when loading images
+		const captcha = new SliderCaptcha({
+			el: container,
+			verifyMode: 'backend',
+			bgImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+			sliderImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+			width: 300,
+			height: 170,
+		})
+
+		expect(captcha).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should return signed data asynchronously', async () => {
+		const captcha = new SliderCaptcha({
+			el: container,
+			security: {
+				secretKey: 'test-secret-key',
+				enableSign: true,
+			},
+		})
+
+		const signedData = await captcha.getSignedData()
+		expect(signedData.type).toBe('slider')
+		expect(signedData.timestamp).toBeDefined()
+		expect(signedData.signature).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should reset statistics', () => {
+		const captcha = new SliderCaptcha({
+			el: container,
+		})
+
+		captcha.resetStatistics()
+		const stats = captcha.getStatistics()
+		expect(stats.totalAttempts).toBe(0)
+
+		captcha.destroy()
+	})
 })

@@ -4,6 +4,49 @@ All notable changes to this project will be documented in this file.
 
 ## [1.0.0] - 2025-03-17
 
+### Bug Fixes (2025-03-20)
+
+- **Fixed duplicate decoy holes in slider captcha** - Resolved issue where `generateSliderPiece()` was called twice, causing multiple decoy holes to appear
+- **Fixed frontend regeneration in backend mode** - Frontend no longer regenerates shapes when using backend-generated images
+- **Fixed click captcha regeneration in backend mode** - Frontend no longer redraws characters on backend-generated background images
+
+### Improvements (2025-03-20)
+
+- **Added `sliderY` field to backend response** - Server now returns the Y position of the slider piece for correct positioning
+- **Added `clickCharImages` field to backend response** - Server now returns base64 images for click captcha prompt display
+- **Added Chinese vocabulary library to server** - Server now uses the same CHINESE_WORDS array as frontend for consistent text generation
+- **Added decoy characters to server click captcha** - Server now generates 1-2 random decoy characters matching frontend behavior
+
+### API Changes (2025-03-20)
+
+#### Backend Response (Slider)
+```json
+{
+  "captchaId": "uuid",
+  "type": "slider",
+  "bgImage": "data:image/png;base64,...",
+  "sliderImage": "data:image/png;base64,...",
+  "sliderY": 42,
+  "width": 300,
+  "height": 170,
+  "expiresAt": 1700000000000
+}
+```
+
+#### Backend Response (Click)
+```json
+{
+  "captchaId": "uuid",
+  "type": "click",
+  "bgImage": "data:image/png;base64,...",
+  "clickTexts": ["春", "暖", "花"],
+  "clickCharImages": ["data:image/png;base64,...", ...],
+  "width": 300,
+  "height": 170,
+  "expiresAt": 1700000000000
+}
+```
+
 🎉 **Initial Release** - Captcha Pro v1.0 is officially released!
 
 ### Captcha Types

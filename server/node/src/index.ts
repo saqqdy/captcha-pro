@@ -76,8 +76,8 @@ function securityMiddleware(req: Request, res: Response, next: NextFunction): vo
 	next()
 }
 
-// Apply security middleware to API routes
-app.use('/api', securityMiddleware)
+// Apply security middleware to API routes (excluding security management endpoints)
+app.use('/api/captcha', securityMiddleware)
 
 /**
  * Generate captcha
@@ -86,10 +86,10 @@ app.use('/api', securityMiddleware)
 app.get('/api/captcha', async (req: Request, res: Response) => {
 	try {
 		const type = (req.query.type as CaptchaType) || 'slider'
-		const width = Number(req.query.width) || 280
-		const height = Number(req.query.height) || 155
-		const sliderWidth = Number(req.query.sliderWidth) || 50
-		const sliderHeight = Number(req.query.sliderHeight) || 50
+		const width = Number(req.query.width) || 300
+		const height = Number(req.query.height) || 170
+		const sliderWidth = Number(req.query.sliderWidth) || 42
+		const sliderHeight = Number(req.query.sliderHeight) || 42
 		const precision = Number(req.query.precision) || 5
 		const clickCount = Number(req.query.clickCount) || 3
 		const clickText = req.query.clickText as string | undefined
@@ -212,7 +212,7 @@ app.post('/api/captcha/verify', async (req: Request, res: Response) => {
 
 		// Verify based on type
 		let success = false
-		const precision = 5 // Default precision
+		const precision = 5 // Default precision (pixels), same as frontend
 
 		switch (data.type) {
 			case 'slider': {

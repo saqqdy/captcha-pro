@@ -45,7 +45,9 @@ export interface CaptchaResponse {
   type: CaptchaType
   bgImage: string
   sliderImage?: string
+  sliderY?: number
   clickTexts?: string[]
+  clickCharImages?: string[]
   width: number
   height: number
   expiresAt: number

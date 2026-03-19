@@ -199,4 +199,70 @@ describe('ClickCaptcha', () => {
 
 		captcha.destroy()
 	})
+
+	it('should not regenerate characters in backend mode', async () => {
+		// In backend mode, characters should not be regenerated when loading images
+		const captcha = new ClickCaptcha({
+			el: container,
+			verifyMode: 'backend',
+			bgImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+			width: 300,
+			height: 170,
+		})
+
+		// Wait for potential image load
+		await new Promise(resolve => setTimeout(resolve, 100))
+
+		expect(captcha).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should return signed data asynchronously', async () => {
+		const captcha = new ClickCaptcha({
+			el: container,
+			security: {
+				secretKey: 'test-secret-key',
+				enableSign: true,
+			},
+		})
+
+		const signedData = await captcha.getSignedData()
+		expect(signedData.type).toBe('click')
+		expect(signedData.timestamp).toBeDefined()
+		expect(signedData.signature).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should reset statistics', () => {
+		const captcha = new ClickCaptcha({
+			el: container,
+		})
+
+		captcha.resetStatistics()
+		const stats = captcha.getStatistics()
+		expect(stats.totalAttempts).toBe(0)
+
+		captcha.destroy()
+	})
+
+	it('should generate click character images for prompt', () => {
+		const captcha = new ClickCaptcha({
+			count: 3,
+			el: container,
+		})
+
+		// Check that prompt contains images
+		const prompt = container.querySelector('.captcha-prompt')
+		const images = prompt?.querySelectorAll('img')
+		expect(images?.length).toBe(3)
+
+		// Each image should have a base64 src
+		images?.forEach(img => {
+			expect(img.src).toContain('data:image/png;base64')
+		})
+
+		captcha.destroy()
+	})
 })

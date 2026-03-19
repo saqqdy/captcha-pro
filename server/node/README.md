@@ -91,6 +91,25 @@ Response:
     "type": "slider",
     "bgImage": "data:image/png;base64,...",
     "sliderImage": "data:image/png;base64,...",
+    "sliderY": 42,
+    "width": 280,
+    "height": 155,
+    "expiresAt": 1700000000000
+  }
+}
+```
+
+### Click Captcha Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "captchaId": "uuid-string",
+    "type": "click",
+    "bgImage": "data:image/png;base64,...",
+    "clickTexts": ["春", "暖", "花"],
+    "clickCharImages": ["data:image/png;base64,...", ...],
     "width": 280,
     "height": 155,
     "expiresAt": 1700000000000
