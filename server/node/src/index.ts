@@ -2,7 +2,7 @@
  * Captcha Pro Server - Express 5 Backend
  *
  * A backend service for generating and verifying captcha images.
- * Supports slider and click captcha types.
+ * Supports slider, click, and rotate captcha types.
  */
 import type { CacheStore, CaptchaGenerateOptions, CaptchaType, VerifyRequest } from './types'
 import cors from 'cors'
@@ -238,6 +238,13 @@ app.post('/api/captcha/verify', async (req: Request, res: Response) => {
 				})
 				break
 			}
+			case 'rotate': {
+				const targetAngle = cached.targetAngle ?? (cached.target as number[])[0]
+				const userAngle = (data.target as number[])[0]
+				const anglePrecision = 10 // degrees tolerance
+				success = Math.abs(targetAngle - userAngle) <= anglePrecision
+				break
+			}
 		}
 
 		// Delete used captcha
@@ -292,7 +299,7 @@ app.get('/api/info', (_req: Request, res: Response) => {
 		name: 'captcha-pro-server-demo',
 		version: '1.0.0',
 		description: 'Captcha Pro Backend Demo Server (Node.js/Express)',
-		supportedTypes: ['slider', 'click'],
+		supportedTypes: ['slider', 'click', 'rotate'],
 		features: ['rate-limit', 'ip-blacklist', 'brute-force-protection'],
 		config: {
 			expireTime: config.expireTime,

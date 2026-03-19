@@ -15,6 +15,16 @@ import (
 	"github.com/saqqdy/captcha-pro/server/go/internal/types"
 )
 
+// ShapeType represents the shape type for slider puzzle
+type ShapeType int
+
+const (
+	ShapeTypeSquare ShapeType = iota
+	ShapeTypeTriangle
+	ShapeTypeTrapezoid
+	ShapeTypePentagon
+)
+
 // Chinese vocabulary library (common idioms and words) - no duplicate characters in each word
 var chineseWords = []string{
 	// Common idioms - Blessings and good fortune
@@ -86,6 +96,7 @@ func (g *Generator) generateSlider(opts types.CaptchaGenerateOptions, expireTime
 	height := opts.Height
 	sliderW := opts.SliderWidth
 	sliderH := opts.SliderHeight
+	borderRadius := 8.0
 
 	if width == 0 {
 		width = 280
@@ -103,31 +114,23 @@ func (g *Generator) generateSlider(opts types.CaptchaGenerateOptions, expireTime
 	// Create background image
 	dc := gg.NewContext(width, height)
 
-	// Fill background with gradient
-	grad := gg.NewLinearGradient(0, 0, float64(width), float64(height))
-	grad.AddColorStop(0, g.randomColor(100, 200))
-	grad.AddColorStop(1, g.randomColor(100, 200))
-	dc.SetFillStyle(grad)
-	dc.DrawRectangle(0, 0, float64(width), float64(height))
-	dc.Fill()
+	// Generate rich background
+	g.generateBackground(dc, width, height)
 
-	// Add random shapes
-	for i := 0; i < 20; i++ {
-		dc.SetColor(g.randomColorAlpha(100, 200, 80))
-		x := g.randomFloat(0, float64(width))
-		y := g.randomFloat(0, float64(height))
-		w := g.randomFloat(10, 30)
-		h := g.randomFloat(10, 30)
-		dc.DrawEllipse(x, y, w, h)
-		dc.Fill()
-	}
+	// Random shape type
+	shapeTypes := []ShapeType{ShapeTypeSquare, ShapeTypeTriangle, ShapeTypeTrapezoid, ShapeTypePentagon}
+	currentShape := shapeTypes[g.randomInt(0, len(shapeTypes)-1)]
 
-	// Random target position
+	// Random target position (avoid edges)
 	targetX := g.randomInt(sliderW+20, width-sliderW-20)
-	targetY := g.randomInt(20, height-sliderH-20)
+	targetY := g.randomInt(10, height-sliderH-10)
 
 	// Create slider image
 	sliderDC := gg.NewContext(sliderW, sliderH)
+
+	// Draw shape path and clip for slider
+	g.drawShape(sliderDC, currentShape, 0, 0, float64(sliderW), float64(sliderH), borderRadius)
+	sliderDC.Clip()
 
 	// Copy background area to slider
 	for y := 0; y < sliderH; y++ {
@@ -142,13 +145,23 @@ func (g *Generator) generateSlider(opts types.CaptchaGenerateOptions, expireTime
 		}
 	}
 
-	// Draw puzzle shape on background (hole)
-	dc.SetColor(g.randomColor(200, 255))
-	g.drawPuzzleMask(dc, float64(targetX), float64(targetY), float64(sliderW), float64(sliderH), true)
+	sliderDC.ResetClip()
 
-	// Draw puzzle outline on slider
-	sliderDC.SetColor(g.randomColor(50, 100))
-	g.drawPuzzleMask(sliderDC, 0, 0, float64(sliderW), float64(sliderH), false)
+	// Draw slider border with shadow
+	sliderDC.SetColor(color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	g.drawShape(sliderDC, currentShape, 0, 0, float64(sliderW), float64(sliderH), borderRadius)
+	sliderDC.Stroke()
+
+	// Draw decoy hole (deceptive pit with random rotation)
+	g.drawDecoyHole(dc, currentShape, float64(sliderW), float64(sliderH), borderRadius, width, height, targetX, targetY)
+
+	// Draw hole: white border + dark overlay
+	dc.SetColor(color.RGBA{R: 0, G: 0, B: 0, A: 77}) // rgba(0, 0, 0, 0.3)
+	g.drawShape(dc, currentShape, float64(targetX), float64(targetY), float64(sliderW), float64(sliderH), borderRadius)
+	dc.Fill()
+	dc.SetColor(color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	g.drawShape(dc, currentShape, float64(targetX), float64(targetY), float64(sliderW), float64(sliderH), borderRadius)
+	dc.Stroke()
 
 	// Generate captcha ID
 	captchaID := uuid.New().String()
@@ -179,6 +192,154 @@ func (g *Generator) generateSlider(opts types.CaptchaGenerateOptions, expireTime
 	}
 }
 
+// generateBackground generates a rich background with gradient and decorations
+func (g *Generator) generateBackground(dc *gg.Context, width, height int) {
+	// Generate gradient background using HSL colors
+	hue1 := g.rand.Float64() * 360
+	hue2 := math.Mod(hue1+float64(g.randomInt(30, 60)), 360)
+
+	grad := gg.NewLinearGradient(0, 0, float64(width), float64(height))
+	grad.AddColorStop(0, g.hslToRGB(hue1, 0.7, 0.85))
+	grad.AddColorStop(1, g.hslToRGB(hue2, 0.7, 0.75))
+	dc.SetFillStyle(grad)
+	dc.DrawRectangle(0, 0, float64(width), float64(height))
+	dc.Fill()
+
+	// Add decorative background shapes
+	for i := 0; i < 8; i++ {
+		shapeHue := math.Mod(hue1+g.rand.Float64()*120, 360)
+		dc.SetColor(g.hslToRGBA(shapeHue, 0.6, 0.6, 0.15))
+		shapeType := g.randomInt(0, 2)
+		x := g.randomInt(-20, width-20)
+		y := g.randomInt(-20, height-20)
+		size := float64(g.randomInt(40, 80))
+		dc.NewSubPath()
+		if shapeType == 0 {
+			dc.DrawCircle(float64(x), float64(y), size)
+		} else if shapeType == 1 {
+			dc.DrawRectangle(float64(x), float64(y), size*1.5, size)
+		} else {
+			dc.MoveTo(float64(x)+size/2, float64(y))
+			dc.LineTo(float64(x)+size, float64(y)+size)
+			dc.LineTo(float64(x), float64(y)+size)
+			dc.ClosePath()
+		}
+		dc.Fill()
+	}
+
+	// Add small decorative dots
+	for i := 0; i < 30; i++ {
+		dotHue := math.Mod(hue1+g.rand.Float64()*180, 360)
+		dc.SetColor(g.hslToRGBA(dotHue, 0.5, 0.5, 0.3))
+		dc.DrawCircle(float64(g.randomInt(0, width)), float64(g.randomInt(0, height)), float64(g.randomInt(2, 8)))
+		dc.Fill()
+	}
+
+	// Add some lines
+	for i := 0; i < 5; i++ {
+		lineHue := math.Mod(hue1+g.rand.Float64()*180, 360)
+		dc.SetColor(g.hslToRGBA(lineHue, 0.4, 0.5, 0.2))
+		dc.SetLineWidth(float64(g.randomInt(1, 3)))
+		dc.DrawLine(float64(g.randomInt(0, width)), float64(g.randomInt(0, height)), float64(g.randomInt(0, width)), float64(g.randomInt(0, height)))
+		dc.Stroke()
+	}
+}
+
+// drawDecoyHole draws a decoy hole (deceptive pit with random rotation)
+func (g *Generator) drawDecoyHole(dc *gg.Context, shape ShapeType, w, h, r float64, width, height, targetX, targetY int) {
+	// Random decoy position (avoid overlapping with target)
+	var decoyX, decoyY int
+	for attempts := 0; attempts < 100; attempts++ {
+		decoyX = g.randomInt(int(w)+10, width-int(w)-10)
+		decoyY = g.randomInt(10, height-int(h)-10)
+		if math.Abs(float64(decoyX-targetX)) >= w+20 || math.Abs(float64(decoyY-targetY)) >= h+20 {
+			break
+		}
+	}
+
+	// Random rotation angle (5-15 degrees)
+	rotation := float64(g.randomInt(5, 15)) * math.Pi / 180
+
+	dc.Push()
+	dc.RotateAbout(rotation, float64(decoyX)+w/2, float64(decoyY)+h/2)
+
+	// Draw decoy hole: white border + dark overlay
+	dc.SetColor(color.RGBA{R: 0, G: 0, B: 0, A: 77}) // rgba(0, 0, 0, 0.3)
+	g.drawShape(dc, shape, float64(decoyX), float64(decoyY), w, h, r)
+	dc.Fill()
+	dc.SetColor(color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	g.drawShape(dc, shape, float64(decoyX), float64(decoyY), w, h, r)
+	dc.Stroke()
+
+	dc.Pop()
+}
+
+// drawShape draws a shape based on type
+func (g *Generator) drawShape(dc *gg.Context, shape ShapeType, x, y, w, h, r float64) {
+	dc.NewSubPath()
+	switch shape {
+	case ShapeTypeTriangle:
+		dc.MoveTo(x+w/2, y)
+		dc.LineTo(x+w, y+h)
+		dc.LineTo(x, y+h)
+	case ShapeTypeTrapezoid:
+		inset := w * 0.15
+		dc.MoveTo(x+inset, y)
+		dc.LineTo(x+w-inset, y)
+		dc.LineTo(x+w, y+h)
+		dc.LineTo(x, y+h)
+	case ShapeTypePentagon:
+		centerX := x + w/2
+		centerY := y + h/2
+		radius := math.Min(w, h) / 2
+		for i := 0; i < 5; i++ {
+			angle := float64(i)*2*math.Pi/5 - math.Pi/2
+			px := centerX + radius*math.Cos(angle)
+			py := centerY + radius*math.Sin(angle)
+			if i == 0 {
+				dc.MoveTo(px, py)
+			} else {
+				dc.LineTo(px, py)
+			}
+		}
+	default: // Square
+		dc.DrawRoundedRectangle(x, y, w, h, r)
+	}
+	dc.ClosePath()
+}
+
+// hslToRGB converts HSL to RGB color
+func (g *Generator) hslToRGB(h, s, l float64) color.Color {
+	return g.hslToRGBA(h, s, l, 1.0)
+}
+
+// hslToRGBA converts HSL to RGBA color
+func (g *Generator) hslToRGBA(h, s, l, a float64) color.Color {
+	c := (1 - math.Abs(2*l-1)) * s
+	x := c * (1 - math.Abs(math.Mod(h/60, 2)-1))
+	m := l - c/2
+	var r, g2, b float64
+	if h < 60 {
+		r, g2, b = c, x, 0
+	} else if h < 120 {
+		r, g2, b = x, c, 0
+	} else if h < 180 {
+		r, g2, b = 0, c, x
+	} else if h < 240 {
+		r, g2, b = 0, x, c
+	} else if h < 300 {
+		r, g2, b = x, 0, c
+	} else {
+		r, g2, b = c, 0, x
+	}
+	return color.RGBA{
+		R: uint8((r + m) * 255),
+		G: uint8((g2 + m) * 255),
+		B: uint8((b + m) * 255),
+		A: uint8(a * 255),
+	}
+}
+
 func (g *Generator) generateClick(opts types.CaptchaGenerateOptions, expireTime int64) *types.CaptchaGenerateResult {
 	width := opts.Width
 	height := opts.Height
@@ -197,24 +358,8 @@ func (g *Generator) generateClick(opts types.CaptchaGenerateOptions, expireTime 
 	// Create background image
 	dc := gg.NewContext(width, height)
 
-	// Fill background with gradient
-	grad := gg.NewLinearGradient(0, 0, float64(width), float64(height))
-	grad.AddColorStop(0, g.randomColor(100, 200))
-	grad.AddColorStop(1, g.randomColor(100, 200))
-	dc.SetFillStyle(grad)
-	dc.DrawRectangle(0, 0, float64(width), float64(height))
-	dc.Fill()
-
-	// Add random shapes
-	for i := 0; i < 30; i++ {
-		dc.SetColor(g.randomColorAlpha(100, 200, 80))
-		x := g.randomFloat(0, float64(width))
-		y := g.randomFloat(0, float64(height))
-		w := g.randomFloat(10, 30)
-		h := g.randomFloat(10, 30)
-		dc.DrawEllipse(x, y, w, h)
-		dc.Fill()
-	}
+	// Generate rich background
+	g.generateBackground(dc, width, height)
 
 	// Generate click texts from Chinese vocabulary
 	var chars string
@@ -304,7 +449,7 @@ func (g *Generator) generateClick(opts types.CaptchaGenerateOptions, expireTime 
 		dc.SetColor(color.RGBA{R: 51, G: 51, B: 51, A: 255}) // #333
 		dc.Push()
 		dc.RotateAbout(g.randomFloat(-0.5, 0.5), x, y)
-		dc.DrawString(ch, x, y)
+		dc.DrawStringAnchored(ch, x, y, 0.5, 0.5)
 		dc.Pop()
 	}
 
@@ -351,7 +496,7 @@ func (g *Generator) generateClick(opts types.CaptchaGenerateOptions, expireTime 
 		dc.SetColor(color.RGBA{R: 85, G: 85, B: 85, A: 255}) // #555
 		dc.Push()
 		dc.RotateAbout(g.randomFloat(-0.4, 0.4), x, y)
-		dc.DrawString(ch, x, y)
+		dc.DrawStringAnchored(ch, x, y, 0.5, 0.5)
 		dc.Pop()
 	}
 
@@ -487,32 +632,6 @@ func (g *Generator) generateRotate(opts types.CaptchaGenerateOptions, expireTime
 			Height:      height,
 			ExpiresAt:   now + expireTime,
 		},
-	}
-}
-
-func (g *Generator) drawPuzzleMask(dc *gg.Context, x, y, w, h float64, fill bool) {
-	notch := 10.0
-
-	dc.MoveTo(x+5, y)
-	dc.LineTo(x+w-5, y)
-	dc.LineTo(x+w, y+5)
-	dc.LineTo(x+w, y+h/2-notch/2)
-	dc.LineTo(x+w+notch, y+h/2)
-	dc.LineTo(x+w, y+h/2+notch/2)
-	dc.LineTo(x+w, y+h-5)
-	dc.LineTo(x+w-5, y+h)
-	dc.LineTo(x+w/2+notch, y+h)
-	dc.LineTo(x+w/2, y+h+notch)
-	dc.LineTo(x+w/2-notch, y+h)
-	dc.LineTo(x+5, y+h)
-	dc.LineTo(x, y+h-5)
-	dc.LineTo(x, y+5)
-	dc.ClosePath()
-
-	if fill {
-		dc.Fill()
-	} else {
-		dc.Stroke()
 	}
 }
 
