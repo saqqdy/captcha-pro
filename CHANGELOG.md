@@ -2,25 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.0] - 2026-03-20
-
-### New Features
-
-- 🌍 **i18n Support** - Built-in internationalization support
-  - Supports Chinese (zh-CN) and English (en-US)
-  - Auto-detects browser language on initialization
-  - `setLocale()`, `getLocale()`, `t()` API for global language control
-  - Component-level `locale` option for per-instance language setting
-  - Frontend i18n module (`src/locales/`)
-  - Backend i18n modules for Node.js, Java (Spring Boot), and Go (Gin)
-  - `Accept-Language` header support for backend APIs
-  - Comprehensive i18n documentation (`docs/I18N_SUPPORT.md`)
-
-### Bug Fixes
-
-- Fixed click captcha allowing more clicks than required text count
-- Fixed click captcha verification in backend mode
-
 ## [1.0.0] - 2025-03-17
 
 🎉 **Initial Release** - Captcha Pro v1.0 is officially released!
@@ -51,6 +32,16 @@ All notable changes to this project will be documented in this file.
 - 🚦 **Rate Limiting** - Prevent API abuse (default: 60 requests/min)
 - 🚫 **IP Blacklist** - Block malicious IPs
 - 🛡️ **Brute-Force Protection** - Detect and block brute-force attacks
+
+### Other Features
+
+- 🌍 **i18n Support** - Built-in internationalization
+  - Supports Chinese (zh-CN) and English (en-US)
+  - Auto-detects browser language on initialization
+  - `setLocale()`, `getLocale()`, `t()` API for global language control
+  - Component-level `locale` option for per-instance language setting
+  - Backend i18n modules for Node.js, Java, and Go
+  - `Accept-Language` header support for backend APIs
 
 ### Backend Implementations
 
