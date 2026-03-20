@@ -92,6 +92,16 @@ describe('i18n Locale Module', () => {
 			expect(t('errors.network')).toBe('Network error')
 		})
 
+		it('should translate errors.fetchFailed in zh-CN', () => {
+			setLocale('zh-CN')
+			expect(t('errors.fetchFailed')).toBe('获取验证码失败')
+		})
+
+		it('should translate errors.fetchFailed in en-US', () => {
+			setLocale('en-US')
+			expect(t('errors.fetchFailed')).toBe('Failed to fetch captcha')
+		})
+
 		it('should return key for unknown translation key', () => {
 			expect(t('unknown.key')).toBe('unknown.key')
 		})

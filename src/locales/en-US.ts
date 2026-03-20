@@ -21,5 +21,6 @@ export default {
 		expired: 'Captcha expired',
 		invalid: 'Invalid captcha',
 		notFound: 'Captcha not found',
+		fetchFailed: 'Failed to fetch captcha',
 	},
 }

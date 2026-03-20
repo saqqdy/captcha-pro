@@ -130,7 +130,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			await this.loadImages()
 		} catch (error) {
 			console.error('Failed to fetch captcha from backend', error)
-			const errorMessage = error instanceof Error ? error.message : '获取验证码失败'
+			const errorMessage = error instanceof Error ? error.message : t('errors.fetchFailed')
 			this.showErrorStatus(errorMessage)
 			throw error
 		}
@@ -311,7 +311,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			transition: 'opacity 0.2s ease',
 			zIndex: '1',
 		})
-		hintText.textContent = '向右滑动完成验证'
+		hintText.textContent = t('slider.slide')
 		sliderContainer.appendChild(hintText)
 		this.hintText = hintText
 
@@ -332,7 +332,8 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			transition: 'background 0.2s ease',
 			zIndex: '2',
 		})
-		this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#1991fa" d="M8 5v14l11-7z"/></svg>'
+		// pointer-events: none on svg to allow touch events to pass through to the button
+		this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="pointer-events: none;"><path fill="#1991fa" d="M8 5v14l11-7z"/></svg>'
 		sliderContainer.appendChild(this.sliderBtn)
 
 		// Store slider container for keyboard events
@@ -865,7 +866,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 				background: '#1991fa',
 				borderColor: '#1991fa',
 			})
-			this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#fff" d="M8 5v14l11-7z"/></svg>'
+			this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" style="pointer-events: none;"><path fill="#fff" d="M8 5v14l11-7z"/></svg>'
 		}
 	}
 
@@ -966,7 +967,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 				background: '#52c41a',
 				borderColor: '#52c41a',
 			})
-			this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#fff" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>'
+			this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" style="pointer-events: none;"><path fill="#fff" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>'
 		}
 		if (this.sliderProgress) {
 			const progressWidth = Math.max(40, this.currentX + 40)
@@ -1009,7 +1010,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 				background: '#f5222d',
 				borderColor: '#f5222d',
 			})
-			this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#fff" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>'
+			this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" style="pointer-events: none;"><path fill="#fff" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>'
 		}
 		if (this.sliderProgress) {
 			const progressWidth = Math.max(40, this.currentX + 40)
@@ -1129,7 +1130,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 				background: '#fff',
 				borderColor: '#e1e4e8',
 			})
-			this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#1991fa" d="M8 5v14l11-7z"/></svg>'
+			this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" style="pointer-events: none;"><path fill="#1991fa" d="M8 5v14l11-7z"/></svg>'
 		}
 		if (this.sliderProgress) {
 			setStyle(this.sliderProgress, {

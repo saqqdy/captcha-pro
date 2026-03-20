@@ -111,8 +111,16 @@ export function getEventPosition(event: MouseEvent | TouchEvent, element: HTMLEl
 	let clientX: number, clientY: number
 
 	if ('touches' in event) {
-		clientX = event.touches[0].clientX
-		clientY = event.touches[0].clientY
+		// On touchend, touches is empty, use changedTouches instead
+		const touch = event.touches[0] || event.changedTouches?.[0]
+		if (touch) {
+			clientX = touch.clientX
+			clientY = touch.clientY
+		} else {
+			// fallback for edge cases
+			clientX = 0
+			clientY = 0
+		}
 	} else {
 		clientX = event.clientX
 		clientY = event.clientY

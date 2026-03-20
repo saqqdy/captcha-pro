@@ -21,5 +21,6 @@ export default {
 		expired: '验证码已过期',
 		invalid: '验证码无效',
 		notFound: '验证码不存在',
+		fetchFailed: '获取验证码失败',
 	},
 }

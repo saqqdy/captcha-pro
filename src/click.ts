@@ -182,7 +182,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			await this.loadBackgroundImage()
 		} catch (error) {
 			console.error('Failed to fetch captcha from backend', error)
-			const errorMessage = error instanceof Error ? error.message : '获取验证码失败'
+			const errorMessage = error instanceof Error ? error.message : t('errors.fetchFailed')
 			this.showErrorStatus(errorMessage)
 			throw error
 		}
@@ -752,12 +752,29 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		if (!this.textCanvas) return
 
 		on(this.textCanvas, 'click', this.onClick)
+		on(this.textCanvas, 'touchend', this.onTouchEnd, { passive: false })
+	}
+
+	/**
+	 * Touch end handler (for mobile devices)
+	 */
+	private onTouchEnd = (e: Event): void => {
+		e.preventDefault()
+		// Convert touch event to click event
+		this.handleClick(e as TouchEvent)
 	}
 
 	/**
 	 * Click handler
 	 */
 	private onClick = (e: Event): void => {
+		this.handleClick(e)
+	}
+
+	/**
+	 * Handle click/touch event
+	 */
+	private handleClick(e: Event): void {
 		if (this._verified) return
 
 		// Don't process clicks if clickTexts is not ready (e.g., waiting for backend)
@@ -770,7 +787,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			this.clickStartTime = Date.now()
 		}
 
-		const pos = getEventPosition(e as MouseEvent, this.textCanvas!)
+		const pos = getEventPosition(e as MouseEvent | TouchEvent, this.textCanvas!)
 		this.clickPoints.push(pos)
 
 		// Draw click marker
@@ -947,6 +964,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	destroy(): void {
 		if (this.textCanvas) {
 			off(this.textCanvas, 'click', this.onClick)
+			off(this.textCanvas, 'touchend', this.onTouchEnd)
 		}
 
 		if (this.container) {
