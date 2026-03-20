@@ -16,6 +16,7 @@ A Spring Boot Starter for Captcha Pro - Backend verification service with image 
 - 🔄 **Auto Expiration** - Automatic captcha cleanup
 - 🍃 **Spring Boot 3** - Built for Spring Boot 3.2+
 - 🔧 **Auto-Configuration** - Zero-configuration setup
+- 🌍 **i18n Support** - Built-in internationalization (zh-CN, en-US) via `Accept-Language` header
 
 ## Requirements
 
@@ -259,6 +260,9 @@ server/java/
 │   ├── crypto/
 │   │   ├── AesCrypto.java               # AES-GCM encryption
 │   │   └── CaptchaData.java             # Decrypted data model
+│   ├── i18n/
+│   │   ├── I18nMessages.java            # i18n utility class
+│   │   └── CaptchaLocaleResolver.java   # Locale resolver
 │   ├── model/
 │   │   ├── CaptchaModels.java           # Captcha models
 │   │   └── SecurityModels.java          # Security models
@@ -268,6 +272,9 @@ server/java/
 │       ├── CaptchaCache.java            # Cache service
 │       └── CaptchaGenerator.java        # Generator service
 ├── src/main/resources/
+│   ├── i18n/
+│   │   ├── messages_zh_CN.properties    # Chinese messages
+│   │   └── messages_en_US.properties    # English messages
 │   ├── META-INF/
 │   │   ├── additional-spring-configuration-metadata.json
 │   │   └── spring/
@@ -275,6 +282,27 @@ server/java/
 │   └── application.yml
 ├── pom.xml
 └── README.md
+```
+
+## i18n Support
+
+The server supports internationalization via the `Accept-Language` HTTP header.
+
+### Supported Languages
+
+| Language | Code |
+|----------|------|
+| Chinese (Simplified) | `zh-CN` |
+| English | `en-US` |
+
+### Usage
+
+```bash
+# Chinese response
+curl -H "Accept-Language: zh-CN" http://localhost:8080/api/captcha?type=slider
+
+# English response
+curl -H "Accept-Language: en-US" http://localhost:8080/api/captcha?type=slider
 ```
 
 ## Customization

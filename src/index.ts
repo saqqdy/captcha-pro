@@ -1,6 +1,6 @@
 import ClickCaptcha from './click'
 import InvisibleCaptcha from './invisible'
-import { detectBrowserLocale, getLocale, i18n, setLocale, t } from './locales'
+import { detectBrowserLocale, getLocale, getMessages, i18n, setLocale, t } from './locales'
 import PopupCaptcha from './popup'
 import SliderCaptcha from './slider'
 
@@ -35,7 +35,7 @@ export type {
 export { ClickCaptcha, InvisibleCaptcha, PopupCaptcha, SliderCaptcha }
 
 // i18n exports
-export { i18n, setLocale, getLocale, t, detectBrowserLocale }
+export { detectBrowserLocale, getLocale, getMessages, i18n, setLocale, t }
 
 export const version = '__VERSION__' as string
 
@@ -78,6 +78,7 @@ export default {
 	createSliderCaptcha,
 	detectBrowserLocale,
 	getLocale,
+	getMessages,
 	i18n,
 	setLocale,
 	t,

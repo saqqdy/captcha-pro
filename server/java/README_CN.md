@@ -16,6 +16,7 @@
 - 🔄 **自动过期** - 验证码自动过期清理
 - 🍃 **Spring Boot 3** - 基于 Spring Boot 3.2+
 - 🔧 **自动配置** - 零配置即可使用
+- 🌍 **多语言支持** - 通过 `Accept-Language` 请求头支持中英文国际化
 
 ## 环境要求
 
@@ -252,13 +253,17 @@ server/java/
 │   ├── autoconfigure/
 │   │   └── CaptchaProAutoConfiguration.java  # 自动配置
 │   ├── config/
-│   │   └── CaptchaProProperties.java    # 配置属性
+│   │   ├── CaptchaProProperties.java    # 配置属性
+│   │   └── I18nConfig.java              # i18n 配置
 │   ├── controller/
 │   │   ├── CaptchaController.java       # 验证码接口
 │   │   └── SecurityController.java      # 安全接口
 │   ├── crypto/
 │   │   ├── AesCrypto.java               # AES-GCM 加密
 │   │   └── CaptchaData.java             # 解密数据模型
+│   ├── i18n/
+│   │   ├── I18nMessages.java            # i18n 工具类
+│   │   └── CaptchaLocaleResolver.java   # 语言解析器
 │   ├── model/
 │   │   ├── CaptchaModels.java           # 验证码模型
 │   │   └── SecurityModels.java          # 安全模型
@@ -268,6 +273,9 @@ server/java/
 │       ├── CaptchaCache.java            # 缓存服务
 │       └── CaptchaGenerator.java        # 生成器服务
 ├── src/main/resources/
+│   ├── i18n/
+│   │   ├── messages_zh_CN.properties    # 中文语言包
+│   │   └── messages_en_US.properties    # 英文语言包
 │   ├── META-INF/
 │   │   ├── additional-spring-configuration-metadata.json
 │   │   └── spring/
@@ -275,6 +283,27 @@ server/java/
 │   └── application.yml
 ├── pom.xml
 └── README.md
+```
+
+## 多语言支持 (i18n)
+
+服务端通过 `Accept-Language` HTTP 请求头支持国际化。
+
+### 支持的语言
+
+| 语言 | 代码 |
+|------|------|
+| 简体中文 | `zh-CN` |
+| English | `en-US` |
+
+### 使用方式
+
+```bash
+# 中文响应
+curl -H "Accept-Language: zh-CN" http://localhost:8080/api/captcha?type=slider
+
+# 英文响应
+curl -H "Accept-Language: en-US" http://localhost:8080/api/captcha?type=slider
 ```
 
 ## 自定义

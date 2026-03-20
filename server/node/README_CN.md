@@ -14,6 +14,7 @@
 - 📦 **多种验证码类型** - 滑动拼图、点选文字、旋转验证
 - ⚡ **内存缓存** - 快速的内存缓存存储
 - 🔄 **自动过期** - 验证码自动过期清理
+- 🌍 **多语言支持** - 通过 `Accept-Language` 请求头支持中英文国际化
 
 ## 快速开始
 
@@ -255,6 +256,47 @@ curl http://localhost:3001/api/security/blacklist
 | EXPIRE_TIME | 60000 | 验证码过期时间 (ms) |
 | TIMESTAMP_TOLERANCE | 60000 | 时间戳容忍度 (ms) |
 
+## 多语言支持 (i18n)
+
+服务端通过 `Accept-Language` HTTP 请求头支持国际化。
+
+### 支持的语言
+
+| 语言 | 代码 |
+|------|------|
+| 简体中文 | `zh-CN` |
+| English | `en-US` |
+
+### 使用方式
+
+```bash
+# 中文响应
+curl -H "Accept-Language: zh-CN" http://localhost:3001/api/captcha?type=slider
+
+# 英文响应
+curl -H "Accept-Language: en-US" http://localhost:3001/api/captcha?type=slider
+```
+
+### 响应示例
+
+**中文 (zh-CN):**
+```json
+{
+  "success": true,
+  "message": "操作成功",
+  "data": {...}
+}
+```
+
+**英文 (en-US):**
+```json
+{
+  "success": true,
+  "message": "Success",
+  "data": {...}
+}
+```
+
 ## 前端集成示例
 
 ```typescript
@@ -267,7 +309,8 @@ const captcha = new SliderCaptcha({
     getCaptcha: 'http://localhost:3001/api/captcha?type=slider',
     verify: 'http://localhost:3001/api/captcha/verify',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept-Language': navigator.language || 'zh-CN'  // 自动检测语言
     }
   },
   security: {
@@ -293,7 +336,13 @@ server/node/
 │   ├── cache.ts              # 内存缓存
 │   ├── crypto.ts             # AES-GCM 加密 (可复制到您的项目)
 │   ├── security.ts           # 安全管理器
-│   └── types.ts              # 类型定义
+│   ├── types.ts              # 类型定义
+│   ├── locales/              # 国际化语言文件
+│   │   ├── index.ts          # i18n 核心模块
+│   │   ├── zh-CN.ts          # 中文语言包
+│   │   └── en-US.ts          # 英文语言包
+│   └── middleware/
+│       └── i18n.ts           # i18n 中间件
 ├── dist/                     # 编译输出
 ├── package.json
 ├── tsconfig.json

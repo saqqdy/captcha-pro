@@ -13,6 +13,7 @@
 - ⚡ **内存缓存** - 快速的内存缓存存储
 - 🔄 **自动过期** - 验证码自动过期清理
 - 🚀 **高性能** - Go 原生并发支持
+- 🌍 **多语言支持** - 通过 `Accept-Language` 请求头支持中英文国际化
 
 ## 安装
 
@@ -281,12 +282,39 @@ server/go/
 ├── internal/
 │   ├── crypto/
 │   │   └── aes.go            # AES-GCM 加密
-│   └── types/
-│       └── captcha.go        # 类型定义
+│   ├── types/
+│   │   └── captcha.go        # 类型定义
+│   └── i18n/
+│       ├── i18n.go           # i18n 核心模块
+│       ├── zh-CN.go          # 中文语言包
+│       └── en-US.go          # 英文语言包
+├── middleware/
+│   └── i18n.go               # i18n 中间件
 ├── go.mod
 ├── go.sum
 ├── README.md
 └── README_CN.md
+```
+
+## 多语言支持 (i18n)
+
+服务端通过 `Accept-Language` HTTP 请求头支持国际化。
+
+### 支持的语言
+
+| 语言 | 代码 |
+|------|------|
+| 简体中文 | `zh-CN` |
+| English | `en-US` |
+
+### 使用方式
+
+```bash
+# 中文响应
+curl -H "Accept-Language: zh-CN" http://localhost:8082/api/captcha?type=slider
+
+# 英文响应
+curl -H "Accept-Language: en-US" http://localhost:8082/api/captcha?type=slider
 ```
 
 ## 自定义

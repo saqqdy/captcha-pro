@@ -14,6 +14,7 @@ A Node.js demo implementation for Captcha Pro backend service using Express 5. T
 - 📦 **Multiple Captcha Types** - Slider, click
 - ⚡ **Memory Cache** - Fast in-memory captcha storage
 - 🔄 **Auto Expiration** - Automatic captcha cleanup
+- 🌍 **i18n Support** - Built-in internationalization (zh-CN, en-US) via `Accept-Language` header
 
 ## Quick Start
 
@@ -255,6 +256,47 @@ curl http://localhost:3001/api/security/blacklist
 | EXPIRE_TIME | 60000 | Captcha expire time (ms) |
 | TIMESTAMP_TOLERANCE | 60000 | Timestamp tolerance (ms) |
 
+## i18n Support
+
+The server supports internationalization via the `Accept-Language` HTTP header.
+
+### Supported Languages
+
+| Language | Code |
+|----------|------|
+| Chinese (Simplified) | `zh-CN` |
+| English | `en-US` |
+
+### Usage
+
+```bash
+# Chinese response
+curl -H "Accept-Language: zh-CN" http://localhost:3001/api/captcha?type=slider
+
+# English response
+curl -H "Accept-Language: en-US" http://localhost:3001/api/captcha?type=slider
+```
+
+### Response Example
+
+**Chinese (zh-CN):**
+```json
+{
+  "success": true,
+  "message": "操作成功",
+  "data": {...}
+}
+```
+
+**English (en-US):**
+```json
+{
+  "success": true,
+  "message": "Success",
+  "data": {...}
+}
+```
+
 ## Frontend Integration
 
 ```typescript
@@ -267,7 +309,8 @@ const captcha = new SliderCaptcha({
     getCaptcha: 'http://localhost:3001/api/captcha?type=slider',
     verify: 'http://localhost:3001/api/captcha/verify',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept-Language': navigator.language || 'zh-CN'  // Auto-detect language
     }
   },
   security: {
@@ -293,7 +336,13 @@ server/node/
 │   ├── cache.ts              # Memory cache
 │   ├── crypto.ts             # AES-GCM encryption (can be copied to your project)
 │   ├── security.ts           # Security manager
-│   └── types.ts              # Type definitions
+│   ├── types.ts              # Type definitions
+│   ├── locales/              # i18n language files
+│   │   ├── index.ts          # i18n core module
+│   │   ├── zh-CN.ts          # Chinese messages
+│   │   └── en-US.ts          # English messages
+│   └── middleware/
+│       └── i18n.ts           # i18n middleware
 ├── dist/                     # Build output
 ├── package.json
 ├── tsconfig.json

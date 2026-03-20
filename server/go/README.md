@@ -13,6 +13,7 @@ A Go captcha verification service for Gin framework with server-side image gener
 - ⚡ **Memory Cache** - Fast in-memory captcha storage
 - 🔄 **Auto Expiration** - Automatic captcha cleanup
 - 🚀 **High Performance** - Go's native concurrency
+- 🌍 **i18n Support** - Built-in internationalization (zh-CN, en-US) via `Accept-Language` header
 
 ## Installation
 
@@ -281,12 +282,39 @@ server/go/
 ├── internal/
 │   ├── crypto/
 │   │   └── aes.go            # AES-GCM encryption
-│   └── types/
-│       └── captcha.go        # Type definitions
+│   ├── types/
+│   │   └── captcha.go        # Type definitions
+│   └── i18n/
+│       ├── i18n.go           # i18n core module
+│       ├── zh-CN.go          # Chinese messages
+│       └── en-US.go          # English messages
+├── middleware/
+│   └── i18n.go               # i18n middleware
 ├── go.mod
 ├── go.sum
 ├── README.md
 └── README_CN.md
+```
+
+## i18n Support
+
+The server supports internationalization via the `Accept-Language` HTTP header.
+
+### Supported Languages
+
+| Language | Code |
+|----------|------|
+| Chinese (Simplified) | `zh-CN` |
+| English | `en-US` |
+
+### Usage
+
+```bash
+# Chinese response
+curl -H "Accept-Language: zh-CN" http://localhost:8082/api/captcha?type=slider
+
+# English response
+curl -H "Accept-Language: en-US" http://localhost:8082/api/captcha?type=slider
 ```
 
 ## Customization
