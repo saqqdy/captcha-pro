@@ -26,7 +26,7 @@ Slider Puzzle · Click Verification · Invisible Captcha · Popup Mode
 ## Online Demo
 
 - [StackBlitz](https://stackblitz.com/github/saqqdy/captcha-pro?file=examples/html/index.html)
-- [CodeSandbox](https://codesandbox.io/p/github/saqqdy/captcha-pro/main?file=examples/html/index.html)
+- [CodeSandbox](https://codesandbox.io/p/github/saqqdy/captcha-pro/master?file=examples/html/index.html)
 - [Gitpod](https://gitpod.io/#https://github.com/saqqdy/captcha-pro)
 
 ## Quick Start
