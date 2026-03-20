@@ -26,23 +26,26 @@ captcha-pro          # 框架无关的核心库
 
 ---
 
-### 未来规划：Monorepo 架构
+### Monorepo 架构 ✅ 已完成
 
-**阶段二（规划中）**：改造成 monorepo，子包使用 `@captcha/*` 作用域
+**阶段二（已完成）**：已改造成 monorepo，子包使用 `@captcha/*` 作用域
 
 ```
 captcha-pro/
 ├── packages/
-│   ├── core/                    # @captcha/core - 核心逻辑
-│   ├── vue3/                    # @captcha/vue3 - Vue 3 组件
-│   ├── vue2/                    # @captcha/vue2 - Vue 2 组件
-│   ├── react/                   # @captcha/react - React 组件
-│   ├── svelte/                  # @captcha/svelte - Svelte 组件
-│   └── solid/                   # @captcha/solid - Solid 组件
+│   ├── core/                    # @captcha/core - 核心逻辑 ✅
+│   ├── vue3/                    # @captcha/vue3 - Vue 3 组件 ✅
+│   ├── vue2/                    # @captcha/vue2 - Vue 2 组件 ✅
+│   ├── react/                   # @captcha/react - React 组件 ✅
+│   ├── mp/                      # @captcha/mp - 小程序版本 ✅
+│   ├── svelte/                  # @captcha/svelte - Svelte 组件 (规划中)
+│   └── solid/                   # @captcha/solid - Solid 组件 (规划中)
+├── server/                      # 后端服务 ✅
 ├── examples/                    # 示例项目
 ├── docs/                        # 文档站点
-├── pnpm-workspace.yaml
-└── package.json
+├── pnpm-workspace.yaml          # ✅
+├── turbo.json                   # ✅
+└── package.json                 # ✅
 ```
 
 **包依赖关系**：

@@ -1,0 +1,55 @@
+<view class="captcha-container" style="width: {{width}}px; height: {{height + 60}}px;">
+  <!-- Captcha area -->
+  <view class="captcha-area" style="width: {{width}}px; height: {{height}}px;">
+    <!-- Background canvas -->
+    <canvas
+      type="2d"
+      id="bgCanvas"
+      canvas-id="bgCanvas"
+      class="bg-canvas"
+      style="width: {{width}}px; height: {{height}}px;"
+    />
+
+    <!-- Slider canvas -->
+    <canvas
+      type="2d"
+      id="sliderCanvas"
+      canvas-id="sliderCanvas"
+      class="slider-canvas"
+      style="width: {{sliderWidth}}px; height: {{sliderHeight}}px; top: {{sliderY}}px; left: {{sliderX}}px;"
+      catchtouchstart="onTouchStart"
+      catchtouchmove="onTouchMove"
+      catchtouchend="onTouchEnd"
+    />
+
+    <!-- Refresh button -->
+    <view
+      wx:if="{{showRefresh}}"
+      class="refresh-btn"
+      catchtap="handleRefresh"
+    >
+      <text class="refresh-icon">⟳</text>
+    </view>
+
+    <!-- Status overlay -->
+    <view
+      wx:if="{{status}}"
+      class="status-overlay {{status}}"
+    >
+      <text>{{status === 'success' ? '验证成功' : '验证失败'}}</text>
+    </view>
+  </view>
+
+  <!-- Slider bar -->
+  <view class="slider-bar" style="width: {{width}}px;">
+    <view
+      class="slider-thumb"
+      style="left: {{sliderX}}px;"
+      catchtouchstart="onTouchStart"
+      catchtouchmove="onTouchMove"
+      catchtouchend="onTouchEnd"
+    >
+      <text class="slider-arrow">→</text>
+    </view>
+  </view>
+</view>

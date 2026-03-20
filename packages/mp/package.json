@@ -1,0 +1,68 @@
+{
+  "name": "@captcha/mp",
+  "description": "Mini-program components for captcha-pro (WeChat, uni-app, Taro)",
+  "version": "1.0.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./weixin": "./dist/weixin/index.js",
+    "./uniapp": "./dist/uniapp/index.js",
+    "./taro": "./dist/taro/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "run-s clean build:js",
+    "build:js": "rolldown -c build/rolldown.config.ts",
+    "watch": "rolldown -c build/rolldown.config.ts -w",
+    "clean": "rm-all dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@captcha/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@tarojs/components": "^4.0.0",
+    "@tarojs/taro": "^4.0.0",
+    "@types/node": "^24.12.0",
+    "npm-run-all": "^4.1.5",
+    "rm-all": "^1.1.1",
+    "rolldown": "^1.0.0-rc.9",
+    "typescript": "^5.7.3"
+  },
+  "peerDependencies": {
+    "@tarojs/components": "^3.0.0 || ^4.0.0",
+    "@tarojs/taro": "^3.0.0 || ^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@tarojs/components": {
+      "optional": true
+    },
+    "@tarojs/taro": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "captcha",
+    "miniprogram",
+    "weixin",
+    "uniapp",
+    "taro",
+    "slider-captcha",
+    "click-captcha"
+  ],
+  "license": "MIT",
+  "author": "saqqdy<https://github.com/saqqdy>",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  }
+}

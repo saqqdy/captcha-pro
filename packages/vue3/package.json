@@ -1,0 +1,59 @@
+{
+  "name": "@captcha/vue3",
+  "description": "Vue 3 components for captcha-pro",
+  "version": "1.0.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "run-s clean build:{js,types,style}",
+    "build:js": "rolldown -c build/rolldown.config.ts",
+    "build:types": "tsc -p src/tsconfig.json",
+    "build:style": "cpy 'src/**/*.css' dist --parents",
+    "watch": "rolldown -c build/rolldown.config.ts -w",
+    "clean": "rm-all dist",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@captcha/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.0",
+    "npm-run-all": "^4.1.5",
+    "rm-all": "^1.1.1",
+    "rolldown": "^1.0.0-rc.9",
+    "typescript": "^5.7.3",
+    "vue": "^3.5.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "keywords": [
+    "captcha",
+    "vue3",
+    "vue",
+    "slider-captcha",
+    "click-captcha"
+  ],
+  "license": "MIT",
+  "author": "saqqdy<https://github.com/saqqdy>",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  }
+}

@@ -1,0 +1,93 @@
+.captcha-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.captcha-area {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.bg-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.slider-canvas {
+  position: absolute;
+  z-index: 10;
+}
+
+.refresh-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  z-index: 20;
+}
+
+.refresh-icon {
+  font-size: 16px;
+  color: #666;
+}
+
+.status-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  z-index: 30;
+}
+
+.status-overlay.success {
+  background: rgba(82, 196, 26, 0.9);
+}
+
+.status-overlay.fail {
+  background: rgba(245, 34, 45, 0.9);
+}
+
+.slider-bar {
+  height: 40px;
+  margin-top: 10px;
+  background: #f7f9fa;
+  border-radius: 4px;
+  position: relative;
+}
+
+.slider-thumb {
+  position: absolute;
+  top: 2px;
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-arrow {
+  color: #1890ff;
+  font-size: 16px;
+}
