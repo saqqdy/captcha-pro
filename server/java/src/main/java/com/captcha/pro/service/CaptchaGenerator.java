@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 
 /**
  * Captcha generator service
@@ -17,8 +16,6 @@ import java.util.List;
 public class CaptchaGenerator {
 
     private final Random random = new Random();
-
-    private static final String CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
 
     /**
      * Shape types for slider puzzle
@@ -180,7 +177,7 @@ public class CaptchaGenerator {
         float hue1 = random.nextFloat() * 360;
         float hue2 = (hue1 + randomInt(30, 60)) % 360;
 
-        GradientPaint gradient = new GradientPaint(0, 0, hslToRgb(hue1, 0.7f, 0.85f), width, height, hslToRgb(hue2, 0.7f, 0.75f));
+        GradientPaint gradient = new GradientPaint(0, 0, hslToRgba(hue1, 0.7f, 0.85f, 1.0f), width, height, hslToRgba(hue2, 0.7f, 0.75f, 1.0f));
         g.setPaint(gradient);
         g.fillRect(0, 0, width, height);
 
@@ -308,13 +305,6 @@ public class CaptchaGenerator {
     }
 
     /**
-     * Convert HSL to RGB color
-     */
-    private Color hslToRgb(float h, float s, float l) {
-        return hslToRgba(h, s, l, 1.0f);
-    }
-
-    /**
      * Convert HSL to RGBA color
      */
     private Color hslToRgba(float h, float s, float l, float a) {
@@ -337,7 +327,9 @@ public class CaptchaGenerator {
     private CaptchaGenerateResult generateClick(CaptchaGenerateOptions options) {
         int width = options.getWidth();
         int height = options.getHeight();
-        int clickCount = options.getClickCount();
+        // Auto-generate random count (3-4) if not specified
+        Integer clickCountValue = options.getClickCount();
+        int clickCount = (clickCountValue != null && clickCountValue > 0) ? clickCountValue : randomInt(3, 4);
 
         // Create background image
         BufferedImage bgImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -532,17 +524,14 @@ public class CaptchaGenerator {
         Graphics2D graphics = image.createGraphics();
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Generate random angles
+        // Generate random target angle
         double targetAngle = randomInt(0, 360);
-        double currentAngle = randomInt(0, 360);
 
         // Generate colorful pattern
         GradientPaint gradient = new GradientPaint(
                 centerX, centerY, new Color(randomInt(0, 255), randomInt(0, 255), randomInt(0, 255)),
                 centerX + size / 2, centerY + size / 2, new Color(randomInt(0, 255), randomInt(0, 255), randomInt(0, 255))
         );
-
-        graphics.rotate(Math.toRadians(currentAngle), centerX, centerY);
 
         // Draw background circle
         graphics.setPaint(gradient);
@@ -607,17 +596,6 @@ public class CaptchaGenerator {
      */
     private int randomInt(int min, int max) {
         return random.nextInt(max - min + 1) + min;
-    }
-
-    /**
-     * Generate random string
-     */
-    private String randomString(int length) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            sb.append(CHARS.charAt(randomInt(0, CHARS.length() - 1)));
-        }
-        return sb.toString();
     }
 
     /**

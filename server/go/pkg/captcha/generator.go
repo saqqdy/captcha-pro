@@ -199,8 +199,8 @@ func (g *Generator) generateBackground(dc *gg.Context, width, height int) {
 	hue2 := math.Mod(hue1+float64(g.randomInt(30, 60)), 360)
 
 	grad := gg.NewLinearGradient(0, 0, float64(width), float64(height))
-	grad.AddColorStop(0, g.hslToRGB(hue1, 0.7, 0.85))
-	grad.AddColorStop(1, g.hslToRGB(hue2, 0.7, 0.75))
+	grad.AddColorStop(0, g.hslToRGBA(hue1, 0.7, 0.85, 1.0))
+	grad.AddColorStop(1, g.hslToRGBA(hue2, 0.7, 0.75, 1.0))
 	dc.SetFillStyle(grad)
 	dc.DrawRectangle(0, 0, float64(width), float64(height))
 	dc.Fill()
@@ -308,11 +308,6 @@ func (g *Generator) drawShape(dc *gg.Context, shape ShapeType, x, y, w, h, r flo
 	dc.ClosePath()
 }
 
-// hslToRGB converts HSL to RGB color
-func (g *Generator) hslToRGB(h, s, l float64) color.Color {
-	return g.hslToRGBA(h, s, l, 1.0)
-}
-
 // hslToRGBA converts HSL to RGBA color
 func (g *Generator) hslToRGBA(h, s, l, a float64) color.Color {
 	c := (1 - math.Abs(2*l-1)) * s
@@ -343,16 +338,17 @@ func (g *Generator) hslToRGBA(h, s, l, a float64) color.Color {
 func (g *Generator) generateClick(opts types.CaptchaGenerateOptions, expireTime int64) *types.CaptchaGenerateResult {
 	width := opts.Width
 	height := opts.Height
+	// Auto-generate random count (3-4) if not specified
 	clickCount := opts.ClickCount
+	if clickCount == 0 {
+		clickCount = g.randomInt(3, 4)
+	}
 
 	if width == 0 {
 		width = 280
 	}
 	if height == 0 {
 		height = 155
-	}
-	if clickCount == 0 {
-		clickCount = 3
 	}
 
 	// Create background image
@@ -649,15 +645,6 @@ func (g *Generator) randomColor(min, max int) color.Color {
 		G: uint8(g.randomInt(min, max)),
 		B: uint8(g.randomInt(min, max)),
 		A: 255,
-	}
-}
-
-func (g *Generator) randomColorAlpha(min, max, alpha int) color.Color {
-	return color.RGBA{
-		R: uint8(g.randomInt(min, max)),
-		G: uint8(g.randomInt(min, max)),
-		B: uint8(g.randomInt(min, max)),
-		A: uint8(alpha),
 	}
 }
 

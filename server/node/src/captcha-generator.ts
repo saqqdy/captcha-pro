@@ -242,7 +242,6 @@ export class CaptchaGenerator {
 		sliderWidth: 42,
 		sliderHeight: 42,
 		precision: 5,
-		clickCount: 3,
 		clickText: '',
 	}
 
@@ -400,7 +399,9 @@ export class CaptchaGenerator {
 	 */
 	generateClick(options: CaptchaGenerateOptions = {}): { cache: CaptchaCache; response: CaptchaResponse } {
 		const opts = { ...this.defaultOptions, ...options }
-		const { width, height, clickCount, clickText } = opts
+		const { width, height, clickText } = opts
+		// Auto-generate random count (3-4) if not specified
+		const clickCount = opts.clickCount || random(3, 4)
 
 		// Create background canvas
 		const bgCanvas = createCanvas(width, height)

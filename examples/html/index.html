@@ -446,20 +446,8 @@
         <div class="demo-section">
             <h2>点选文字验证码</h2>
 
-            <div class="options">
-                <div class="options-title">配置选项</div>
-                <div class="option-row">
-                    <label>点击数量:</label>
-                    <select id="clickCount">
-                        <option value="3" selected>3个</option>
-                        <option value="4">4个</option>
-                        <option value="5">5个</option>
-                    </select>
-                </div>
-            </div>
-
             <div class="info-box">
-                💡 使用中文词汇库自动生成，包含200+常用成语和词汇。提示文字以图片形式显示，防止机器识别；同时随机生成1-2个迷惑文字用于防机器人。
+                💡 使用中文词汇库自动生成，包含200+常用成语和词汇。每次随机生成3-4个点击文字，提示文字以图片形式显示防止机器识别；同时随机生成1-2个迷惑文字用于防机器人。
             </div>
 
             <div class="captcha-container">
@@ -592,6 +580,40 @@
             </div>
         </div>
 
+        <!-- Backend Popup Captcha Demo -->
+        <div class="demo-section">
+            <h2>后端验证弹窗演示 <span class="new-badge">服务端生成</span></h2>
+            <p style="color: #666; margin-bottom: 20px;">
+                弹窗模式 + 后端验证，适用于需要高安全性的场景。需要先启动后端服务：<code>cd server/node && pnpm dev</code>
+            </p>
+
+            <div class="options">
+                <div class="options-title">配置选项</div>
+                <div class="option-row">
+                    <label>验证码类型:</label>
+                    <select id="backendPopupType">
+                        <option value="slider" selected>滑动拼图</option>
+                        <option value="click">点选文字</option>
+                    </select>
+                </div>
+                <div class="option-row">
+                    <label>弹窗标题:</label>
+                    <input type="text" id="backendPopupTitle" placeholder="安全验证" style="width: 150px;">
+                </div>
+                <div class="option-row">
+                    <label>自动关闭:</label>
+                    <input type="checkbox" id="backendPopupAutoClose" checked>
+                </div>
+            </div>
+
+            <div class="btn-group" style="margin-bottom: 20px;">
+                <button class="btn btn-primary" id="backend-popup-trigger-btn">点击验证</button>
+                <button class="btn btn-secondary" onclick="showBackendPopupManual()">手动显示弹窗</button>
+            </div>
+
+            <div id="backend-popup-result" class="result"></div>
+        </div>
+
         <!-- Factory Functions Demo -->
         <div class="demo-section">
             <h2>工厂函数</h2>
@@ -639,6 +661,7 @@
         let backendCaptcha = null
         let popupCaptcha = null
         let customCaptcha = null
+        let backendPopupCaptcha = null
 
         // Sample images for custom captcha
         const sampleImages = [
@@ -717,13 +740,10 @@
             const container = document.getElementById('click-captcha')
             container.innerHTML = ''
 
-            const count = parseInt(document.getElementById('clickCount').value)
-
             clickCaptcha = new CaptchaPro.ClickCaptcha({
                 el: container,
                 width: 300,
                 height: 170,
-                count: count,
                 onSuccess: () => {
                     showResult('click-result', '✅ 验证成功！', true)
                 },
@@ -781,6 +801,59 @@
         function showPopupManual() {
             if (popupCaptcha) {
                 popupCaptcha.show()
+            }
+        }
+
+        // Initialize Backend Popup Captcha
+        function initBackendPopupCaptcha() {
+            if (backendPopupCaptcha) {
+                backendPopupCaptcha.destroy()
+            }
+
+            const type = document.getElementById('backendPopupType').value
+            const title = document.getElementById('backendPopupTitle').value || '安全验证'
+            const autoClose = document.getElementById('backendPopupAutoClose').checked
+            const backendUrl = document.getElementById('backendUrl')?.value || 'http://localhost:3001'
+
+            backendPopupCaptcha = new CaptchaPro.PopupCaptcha({
+                trigger: '#backend-popup-trigger-btn',
+                type: type,
+                modal: {
+                    title: title,
+                    maskClosable: true,
+                    escClosable: true,
+                    showClose: true
+                },
+                captchaOptions: {
+                    width: 300,
+                    height: 170,
+                    verifyMode: 'backend',
+                    backendVerify: {
+                        getCaptcha: `${backendUrl}/api/captcha?type=${type}`,
+                        verify: `${backendUrl}/api/captcha/verify`
+                    }
+                },
+                autoClose: autoClose,
+                closeDelay: 500,
+                onOpen: () => {
+                    hideResult('backend-popup-result')
+                },
+                onClose: () => {
+                    console.log('Backend popup closed')
+                },
+                onSuccess: () => {
+                    showResult('backend-popup-result', '✅ 后端弹窗验证成功！', true)
+                },
+                onFail: () => {
+                    showResult('backend-popup-result', '❌ 验证失败，请重试', false)
+                }
+            })
+        }
+
+        // Show backend popup manually
+        function showBackendPopupManual() {
+            if (backendPopupCaptcha) {
+                backendPopupCaptcha.show()
             }
         }
 
@@ -1037,7 +1110,6 @@
             document.getElementById('sliderVerifyMode').addEventListener('change', initSliderCaptcha)
             document.getElementById('sliderImageMode').addEventListener('change', initSliderCaptcha)
             document.getElementById('sliderEnableSign').addEventListener('change', initSliderCaptcha)
-            document.getElementById('clickCount').addEventListener('change', initClickCaptcha)
             document.getElementById('invisibleThreshold').addEventListener('change', () => {
                 if (invisibleCaptcha) invisibleCaptcha.destroy()
                 initInvisibleCaptcha()
@@ -1050,6 +1122,9 @@
             document.getElementById('popupType').addEventListener('change', initPopupCaptcha)
             document.getElementById('popupTitle').addEventListener('change', initPopupCaptcha)
             document.getElementById('popupAutoClose').addEventListener('change', initPopupCaptcha)
+            document.getElementById('backendPopupType').addEventListener('change', initBackendPopupCaptcha)
+            document.getElementById('backendPopupTitle').addEventListener('change', initBackendPopupCaptcha)
+            document.getElementById('backendPopupAutoClose').addEventListener('change', initBackendPopupCaptcha)
         }
 
         // Initialize everything
@@ -1060,6 +1135,7 @@
             initInvisibleCaptcha()
             initPopupCaptcha()
             initCustomCaptcha()
+            initBackendPopupCaptcha()
         }
 
         // Check if DOM is ready

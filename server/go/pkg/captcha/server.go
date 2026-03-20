@@ -3,6 +3,7 @@ package captcha
 import (
 	"math"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -92,7 +93,8 @@ func (s *Server) handleGenerate(c *gin.Context) {
 	sliderWidth := parseIntDefault(c.Query("sliderWidth"), 50)
 	sliderHeight := parseIntDefault(c.Query("sliderHeight"), 50)
 	precision := parseIntDefault(c.Query("precision"), 5)
-	clickCount := parseIntDefault(c.Query("clickCount"), 3)
+	// Don't set default clickCount - let generator randomly generate 3-4
+	clickCount, _ := strconv.Atoi(c.Query("clickCount"))
 	clickText := c.Query("clickText")
 
 	opts := types.CaptchaGenerateOptions{

@@ -82,7 +82,6 @@ const CHINESE_WORDS = [
 const defaultOptions: Partial<ClickCaptchaOptions> = {
 	width: 300,
 	height: 170,
-	count: 3,
 	showRefresh: true,
 	className: 'captcha-click',
 	verifyMode: 'frontend',
@@ -173,6 +172,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			this.options.bgImage = response.data.bgImage
 			if (response.data.clickTexts) {
 				this._text = response.data.clickTexts.join('')
+				this.clickTexts = response.data.clickTexts
 				this.options.count = response.data.clickTexts.length
 			}
 			if (response.data.clickCharImages) {
@@ -181,6 +181,9 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			await this.loadBackgroundImage()
 		} catch (error) {
 			console.error('Failed to fetch captcha from backend', error)
+			const errorMessage = error instanceof Error ? error.message : '获取验证码失败'
+			this.showErrorStatus(errorMessage)
+			throw error
 		}
 	}
 
@@ -350,6 +353,9 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			const ctx = this.bgCanvas.getContext('2d')!
 			const { width, height } = this.options
 
+			// Clear previous content before drawing new image
+			ctx.clearRect(0, 0, width!, height!)
+
 			// Draw image scaled to fit
 			const scale = Math.max(width! / img.width, height! / img.height)
 			const sw = width! / scale
@@ -466,7 +472,10 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	private generateClickPoints(): void {
 		if (!this.bgCanvas) return
 
-		const { width, height, count } = this.options
+		const { width, height } = this.options
+		// Auto-generate random count (3-4) if not specified
+		const count = this.options.count || random(3, 4)
+		this.options.count = count
 		const ctx = this.bgCanvas.getContext('2d')!
 
 		// Generate or use provided text (from backend)
@@ -683,13 +692,27 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	}
 
 	/**
+	 * Show error status (for API errors, without auto refresh)
+	 */
+	private showErrorStatus(message: string): void {
+		if (this.statusOverlay) {
+			this.statusOverlay.innerHTML = `
+				<svg viewBox="0 0 24 24" width="14" height="14"><path fill="#fff" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+				<span style="color: #fff;">${message}</span>
+			`
+			this.statusOverlay.style.background = 'rgba(250, 173, 20, 0.9)'
+			setStyle(this.statusOverlay, { display: 'flex' })
+		}
+	}
+
+	/**
 	 * Show fail status
 	 */
-	private showFailStatus(): void {
+	private showFailStatus(message?: string): void {
 		if (this.statusOverlay) {
 			this.statusOverlay.innerHTML = `
 				<svg viewBox="0 0 24 24" width="14" height="14"><path fill="#fff" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-				<span style="color: #fff;">验证失败</span>
+				<span style="color: #fff;">${message || '验证失败'}</span>
 			`
 			this.statusOverlay.style.background = 'rgba(245, 34, 45, 0.9)'
 			setStyle(this.statusOverlay, { display: 'flex' })
@@ -735,6 +758,9 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	 */
 	private onClick = (e: Event): void => {
 		if (this._verified) return
+
+		// Don't process clicks if clickTexts is not ready (e.g., waiting for backend)
+		if (this.clickTexts.length === 0) return
 
 		if (this.clickPoints.length === 0) {
 			this.clickStartTime = Date.now()
@@ -856,17 +882,18 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			if (response.success) {
 				this._verified = true
 				this.statistics.successCount++
+				this.showSuccessStatus()
 				this.options.onSuccess?.()
 			} else {
 				this.statistics.failCount++
+				this.showFailStatus(response.message)
 				this.options.onFail?.()
-				setTimeout(() => {
-					this.reset()
-				}, 500)
 			}
 		} catch (error) {
 			console.error('Backend verification failed', error)
 			this.statistics.failCount++
+			const errorMessage = error instanceof Error ? error.message : '验证失败'
+			this.showFailStatus(errorMessage)
 			this.options.onFail?.()
 		}
 	}
@@ -934,15 +961,32 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	 */
 	async refresh(): Promise<void> {
 		this.reset()
-		this.clickTexts = []
-		this.clickCharImages = []
+		// Reset count to allow random generation on next refresh
+		this.options.count = undefined as unknown as number
 
 		if (this.options.verifyMode === 'backend' && this.options.backendVerify?.getCaptcha) {
-			await this.fetchBackendCaptcha()
-		} else if (this.options.bgImage) {
-			this.loadBackgroundImage()
+			// Save old data in case fetch fails
+			const oldClickTexts = [...this.clickTexts]
+			const oldClickCharImages = [...this.clickCharImages]
+			this.clickTexts = []
+			this.clickCharImages = []
+
+			try {
+				await this.fetchBackendCaptcha()
+			} catch (error) {
+				// Restore old data if fetch failed
+				this.clickTexts = oldClickTexts
+				this.clickCharImages = oldClickCharImages
+				console.error('Failed to refresh captcha from backend', error)
+			}
 		} else {
-			this.generateCaptcha()
+			this.clickTexts = []
+			this.clickCharImages = []
+			if (this.options.bgImage) {
+				this.loadBackgroundImage()
+			} else {
+				this.generateCaptcha()
+			}
 		}
 	}
 

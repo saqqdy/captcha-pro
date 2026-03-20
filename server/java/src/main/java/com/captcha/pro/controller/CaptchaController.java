@@ -56,7 +56,7 @@ public class CaptchaController {
             @RequestParam(defaultValue = "50") int sliderWidth,
             @RequestParam(defaultValue = "50") int sliderHeight,
             @RequestParam(defaultValue = "5") int precision,
-            @RequestParam(defaultValue = "3") int clickCount,
+            @RequestParam(required = false) Integer clickCount,
             @RequestParam(required = false) String clickText,
             HttpServletRequest request) {
 

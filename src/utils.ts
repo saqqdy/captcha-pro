@@ -529,7 +529,13 @@ export function request<T>(url: string, options: {
 					reject(new Error('Invalid JSON response'))
 				}
 			} else {
-				reject(new Error(`HTTP error: ${xhr.status}`))
+				// Try to extract error message from response
+				try {
+					const errorResponse = JSON.parse(xhr.responseText)
+					reject(new Error(errorResponse.message || `HTTP error: ${xhr.status}`))
+				} catch {
+					reject(new Error(`HTTP error: ${xhr.status}`))
+				}
 			}
 		}
 

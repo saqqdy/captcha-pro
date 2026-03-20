@@ -91,7 +91,8 @@ app.get('/api/captcha', async (req: Request, res: Response) => {
 		const sliderWidth = Number(req.query.sliderWidth) || 42
 		const sliderHeight = Number(req.query.sliderHeight) || 42
 		const precision = Number(req.query.precision) || 5
-		const clickCount = Number(req.query.clickCount) || 3
+		// Don't set default clickCount - let generator randomly generate 3-4
+		const clickCount = req.query.clickCount ? Number(req.query.clickCount) : undefined
 		const clickText = req.query.clickText as string | undefined
 
 		const options: CaptchaGenerateOptions = {

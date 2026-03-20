@@ -58,7 +58,7 @@ public class CaptchaGenerateOptions {
     private int sliderWidth = 50;
     private int sliderHeight = 50;
     private int precision = 5;
-    private int clickCount = 3;
+    private Integer clickCount;
     private String clickText;
 }
 
