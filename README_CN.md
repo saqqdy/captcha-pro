@@ -2,7 +2,9 @@
 
 # captcha-pro
 
-一个轻量级的行为验证码库，支持滑动拼图、点选文字和智能无感验证，框架无关
+**一个轻量级、框架无关的行为验证码库**
+
+滑动拼图 · 点选文字 · 智能无感 · 弹窗模式
 
 [![NPM version][npm-image]][npm-url]
 [![Codacy Badge][codacy-image]][codacy-url]
@@ -17,11 +19,30 @@
 
 <div style="text-align: center; margin-bottom: 20px;" align="center">
 
-### **[更新日志](./CHANGELOG.md)** · **[English](./README.md)**
-
-**[在线体验](https://stackblitz.com/github/saqqdy/captcha-pro?file=examples/html/index.html)**
+**[更新日志](./CHANGELOG.md)** · **[English](./README.md)**
 
 </div>
+
+## 在线体验
+
+- [StackBlitz](https://stackblitz.com/github/saqqdy/captcha-pro?file=examples/html/index.html)
+- [CodeSandbox](https://codesandbox.io/p/github/saqqdy/captcha-pro/main?file=examples/html/index.html)
+- [Gitpod](https://gitpod.io/#https://github.com/saqqdy/captcha-pro)
+
+## 快速开始
+
+```bash
+# 安装
+pnpm add captcha-pro
+
+# 使用
+import { SliderCaptcha } from 'captcha-pro'
+
+new SliderCaptcha({
+  el: '#captcha',
+  onSuccess: () => console.log('验证通过!')
+})
+```
 
 ## 特性
 

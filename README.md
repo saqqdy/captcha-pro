@@ -2,7 +2,9 @@
 
 # captcha-pro
 
-A lightweight behavioral captcha library with slider puzzle, click verification, and invisible captcha support
+**A lightweight, framework-agnostic behavioral captcha library**
+
+Slider Puzzle · Click Verification · Invisible Captcha · Popup Mode
 
 [![NPM version][npm-image]][npm-url]
 [![Codacy Badge][codacy-image]][codacy-url]
@@ -17,11 +19,30 @@ A lightweight behavioral captcha library with slider puzzle, click verification,
 
 <div style="text-align: center; margin-bottom: 20px;" align="center">
 
-### **[Change Log](./CHANGELOG.md)** · **[简体中文](./README_CN.md)**
-
-**[Online Demo](https://stackblitz.com/github/saqqdy/captcha-pro?file=examples/html/index.html)**
+**[Change Log](./CHANGELOG.md)** · **[简体中文](./README_CN.md)**
 
 </div>
+
+## Online Demo
+
+- [StackBlitz](https://stackblitz.com/github/saqqdy/captcha-pro?file=examples/html/index.html)
+- [CodeSandbox](https://codesandbox.io/p/github/saqqdy/captcha-pro/main?file=examples/html/index.html)
+- [Gitpod](https://gitpod.io/#https://github.com/saqqdy/captcha-pro)
+
+## Quick Start
+
+```bash
+# Install
+pnpm add captcha-pro
+
+# Use
+import { SliderCaptcha } from 'captcha-pro'
+
+new SliderCaptcha({
+  el: '#captcha',
+  onSuccess: () => console.log('Passed!')
+})
+```
 
 ## Features
 
