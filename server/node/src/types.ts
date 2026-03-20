@@ -1,7 +1,7 @@
 /**
  * Captcha types
  */
-export type CaptchaType = 'slider' | 'click' | 'rotate'
+export type CaptchaType = 'slider' | 'click'
 
 /**
  * Point coordinate
@@ -19,7 +19,6 @@ export interface CaptchaCache {
   type: CaptchaType
   target: number[] | Point[]
   clickTexts?: string[]
-  targetAngle?: number
   createdAt: number
   expiresAt: number
 }
@@ -49,7 +48,6 @@ export interface CaptchaResponse {
   sliderY?: number
   clickTexts?: string[]
   clickCharImages?: string[]
-  targetAngle?: number
   width: number
   height: number
   expiresAt: number

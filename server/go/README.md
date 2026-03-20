@@ -9,7 +9,7 @@ A Go captcha verification service for Gin framework with server-side image gener
 - 🖼️ **Server-side Image Generation** - Images generated on backend using gg library
 - 🔐 **AES-GCM Data Encryption** - Secure encrypted data transmission with PBKDF2 key derivation
 - 🛡️ **Security Features** - Rate limiting, IP blacklist, brute-force protection
-- 📦 **Multiple Captcha Types** - Slider, click, rotate
+- 📦 **Multiple Captcha Types** - Slider, click
 - ⚡ **Memory Cache** - Fast in-memory captcha storage
 - 🔄 **Auto Expiration** - Automatic captcha cleanup
 - 🚀 **High Performance** - Go's native concurrency
@@ -149,7 +149,7 @@ Query Parameters:
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| type | string | slider | Captcha type: slider, click, rotate |
+| type | string | slider | Captcha type: slider, click |
 | width | number | 280 | Image width |
 | height | number | 155 | Image height |
 | sliderWidth | number | 50 | Slider width (slider only) |

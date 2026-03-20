@@ -331,9 +331,17 @@ const popup = createPopupCaptcha({ type: 'slider' })
 
 ## 后端服务
 
-在 `server/node` 目录下提供了完整的后端服务，用于服务端图片生成和验证。
+在 `server/` 目录下提供了后端服务的参考实现，帮助你将 captcha-pro 集成到自己的后端：
 
-### 快速开始
+| 目录 | 框架 | 端口 | 描述 |
+|------|------|------|------|
+| `server/node` | Express 5 | 3001 | Node.js 后端示例 |
+| `server/java` | Spring Boot 3 | 8080 | Java 后端示例 |
+| `server/go` | Gin | 8082 | Go 后端示例 |
+
+> **注意**：这些是参考实现，不是发布的包。请将所需代码复制到自己的后端项目中。
+
+### 快速开始（Node.js 示例）
 
 ```bash
 cd server/node
@@ -341,7 +349,7 @@ pnpm install
 pnpm dev
 ```
 
-服务运行在 `http://localhost:3001`
+服务运行在 `http://localhost:3001`。详见各服务端目录的 README 文件。
 
 ### API 接口
 
@@ -437,13 +445,13 @@ pnpm dev
 | POST | `/api/security/blacklist` | 添加 IP 到黑名单 |
 | DELETE | `/api/security/blacklist/:ip` | 从黑名单移除 IP |
 
-### 环境变量
+### 环境变量（示例服务）
 
 | 变量 | 默认值 | 描述 |
 |------|---------|------|
-| `PORT` | `3001` | 服务端口 |
+| `PORT` | `3001`（Node.js）/ `8080`（Java）/ `8082`（Go） | 服务端口 |
 | `HOST` | `localhost` | 服务主机 |
-| `SECRET_KEY` | `captcha-pro-secret-key` | 签名密钥 |
+| `SECRET_KEY` | `captcha-pro-secret-key` | AES-GCM 加密密钥 |
 | `EXPIRE_TIME` | `60000` | 验证码过期时间（毫秒） |
 | `TIMESTAMP_TOLERANCE` | `60000` | 时间戳容差（毫秒） |
 

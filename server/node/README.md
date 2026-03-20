@@ -11,7 +11,7 @@ A Node.js demo implementation for Captcha Pro backend service using Express 5. T
 - 🖼️ **Server-side Image Generation** - Images generated on backend using canvas
 - 🔐 **AES-GCM Data Encryption** - Secure encrypted data transmission with PBKDF2 key derivation
 - 🛡️ **Security Features** - Rate limiting, IP blacklist, brute-force protection
-- 📦 **Multiple Captcha Types** - Slider, click, rotate
+- 📦 **Multiple Captcha Types** - Slider, click
 - ⚡ **Memory Cache** - Fast in-memory captcha storage
 - 🔄 **Auto Expiration** - Automatic captcha cleanup
 
@@ -72,7 +72,7 @@ Query Parameters:
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| type | string | slider | Captcha type: slider, click, rotate |
+| type | string | slider | Captcha type: slider, click |
 | width | number | 280 | Image width |
 | height | number | 155 | Image height |
 | sliderWidth | number | 50 | Slider width (slider only) |
@@ -133,7 +133,6 @@ Response:
 
 - `slider`: target is `[x-coordinate]`
 - `click`: target is `[{x, y}, {x, y}, ...]`
-- `rotate`: target is `[angle]`
 
 ### Encrypted Mode (AES-GCM)
 

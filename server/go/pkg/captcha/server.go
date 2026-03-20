@@ -271,30 +271,6 @@ func (s *Server) verifyCaptcha(cached *types.CaptchaCache, req types.VerifyReque
 			}
 		}
 		return true
-
-	case types.CaptchaTypeRotate:
-		var targetAngle float64
-		if cached.TargetAngle != nil {
-			targetAngle = *cached.TargetAngle
-		} else {
-			targetSlice, ok := cached.Target.([]float64)
-			if !ok || len(targetSlice) == 0 {
-				return false
-			}
-			targetAngle = targetSlice[0]
-		}
-
-		reqSlice, ok := req.Target.([]interface{})
-		if !ok || len(reqSlice) == 0 {
-			return false
-		}
-		userAngle := toFloat64(reqSlice[0])
-
-		diff := math.Abs(userAngle - targetAngle)
-		if diff > 180 {
-			diff = 360 - diff
-		}
-		return diff <= precision
 	}
 
 	return false
@@ -315,7 +291,7 @@ func (s *Server) handleInfo(c *gin.Context) {
 		Name:           "captcha-pro-server",
 		Version:        "1.0.0",
 		Description:    "Captcha Pro Go Server (Gin)",
-		SupportedTypes: []string{"slider", "click", "rotate"},
+		SupportedTypes: []string{"slider", "click"},
 		Features:       []string{"rate-limit", "ip-blacklist", "brute-force-protection"},
 		Config: ConfigInfo{
 			ExpireTime:         s.config.ExpireTime,

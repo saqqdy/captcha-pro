@@ -762,6 +762,9 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		// Don't process clicks if clickTexts is not ready (e.g., waiting for backend)
 		if (this.clickTexts.length === 0) return
 
+		// Don't allow more clicks than required
+		if (this.clickPoints.length >= this.clickTexts.length) return
+
 		if (this.clickPoints.length === 0) {
 			this.clickStartTime = Date.now()
 		}

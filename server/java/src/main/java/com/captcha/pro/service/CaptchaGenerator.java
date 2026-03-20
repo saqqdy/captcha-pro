@@ -74,7 +74,6 @@ public class CaptchaGenerator {
     public CaptchaGenerateResult generate(CaptchaGenerateOptions options) {
         return switch (options.getType() != null ? options.getType() : CaptchaType.SLIDER) {
             case CLICK -> generateClick(options);
-            case ROTATE -> generateRotate(options);
             default -> generateSlider(options);
         };
     }
@@ -507,75 +506,6 @@ public class CaptchaGenerator {
 
         graphics.dispose();
         return "data:image/png;base64," + imageToBase64(image);
-    }
-
-    /**
-     * Generate rotate captcha
-     */
-    private CaptchaGenerateResult generateRotate(CaptchaGenerateOptions options) {
-        int width = options.getWidth();
-        int height = options.getHeight();
-        int size = Math.min(width, height);
-        int centerX = width / 2;
-        int centerY = height / 2;
-
-        // Create image
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D graphics = image.createGraphics();
-        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // Generate random target angle
-        double targetAngle = randomInt(0, 360);
-
-        // Generate colorful pattern
-        GradientPaint gradient = new GradientPaint(
-                centerX, centerY, new Color(randomInt(0, 255), randomInt(0, 255), randomInt(0, 255)),
-                centerX + size / 2, centerY + size / 2, new Color(randomInt(0, 255), randomInt(0, 255), randomInt(0, 255))
-        );
-
-        // Draw background circle
-        graphics.setPaint(gradient);
-        graphics.fillOval(centerX - size / 2 + 10, centerY - size / 2 + 10, size - 20, size - 20);
-
-        // Draw arrow indicator
-        graphics.setColor(Color.WHITE);
-        int[] xPoints = {centerX, centerX - 15, centerX + 15};
-        int[] yPoints = {centerY - size / 2 + 30, centerY - size / 2 + 50, centerY - size / 2 + 50};
-        graphics.fillPolygon(xPoints, yPoints, 3);
-
-        // Draw center circle
-        graphics.setColor(Color.WHITE);
-        graphics.fillOval(centerX - 20, centerY - 20, 40, 40);
-
-        graphics.dispose();
-
-        // Generate captcha ID
-        String captchaId = UUID.randomUUID().toString();
-        long now = System.currentTimeMillis();
-        long expireTime = 60000;
-
-        // Create cache entry
-        CaptchaCache cache = CaptchaCache.builder()
-                .id(captchaId)
-                .type(CaptchaType.ROTATE)
-                .target(List.of(targetAngle))
-                .targetAngle(targetAngle)
-                .createdAt(now)
-                .expiresAt(now + expireTime)
-                .build();
-
-        // Create response
-        CaptchaResponse response = CaptchaResponse.builder()
-                .captchaId(captchaId)
-                .type(CaptchaType.ROTATE)
-                .bgImage("data:image/png;base64," + imageToBase64(image))
-                .targetAngle(targetAngle)
-                .width(width)
-                .height(height)
-                .expiresAt(now + expireTime)
-                .build();
-
-        return new CaptchaGenerateResult(cache, response);
     }
 
     /**

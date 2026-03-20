@@ -12,8 +12,7 @@ import java.util.List;
  */
 public enum CaptchaType {
     SLIDER,
-    CLICK,
-    ROTATE
+    CLICK
 }
 
 /**
@@ -38,7 +37,6 @@ public class CaptchaCache {
     private String id;
     private CaptchaType type;
     private Object target;
-    private Double targetAngle;
     private List<String> clickTexts;
     private long createdAt;
     private long expiresAt;
@@ -75,7 +73,6 @@ public class CaptchaResponse {
     private String bgImage;
     private String sliderImage;
     private Integer sliderY;
-    private Double targetAngle;
     private List<String> clickTexts;
     private List<String> clickCharImages;
     private int width;

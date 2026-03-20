@@ -594,80 +594,6 @@ export class CaptchaGenerator {
 	}
 
 	/**
-	 * Generate rotate captcha
-	 */
-	generateRotate(options: CaptchaGenerateOptions = {}): { cache: CaptchaCache; response: CaptchaResponse } {
-		const opts = { ...this.defaultOptions, ...options }
-		const { width, height } = opts
-		const size = Math.min(width, height)
-		const centerX = width / 2
-		const centerY = height / 2
-
-		// Create canvas
-		const canvas = createCanvas(width, height)
-		const ctx = canvas.getContext('2d')
-
-		// Generate random angles
-		const targetAngle = random(0, 360)
-
-		// Fill background
-		ctx.fillStyle = `rgb(${random(200, 240)}, ${random(200, 240)}, ${random(200, 240)})`
-		ctx.fillRect(0, 0, width, height)
-
-		// Draw colorful circle with radial gradient
-		const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, size / 2)
-		gradient.addColorStop(0, `rgb(${random(100, 255)}, ${random(100, 255)}, ${random(100, 255)})`)
-		gradient.addColorStop(1, `rgb(${random(100, 255)}, ${random(100, 255)}, ${random(100, 255)})`)
-		ctx.fillStyle = gradient
-		ctx.beginPath()
-		ctx.arc(centerX, centerY, size / 2 - 10, 0, Math.PI * 2)
-		ctx.fill()
-
-		// Draw arrow indicator (white)
-		ctx.fillStyle = `rgb(${random(200, 255)}, ${random(200, 255)}, ${random(200, 255)})`
-		ctx.beginPath()
-		ctx.moveTo(centerX, centerY - size / 2 + 30)
-		ctx.lineTo(centerX - 15, centerY - size / 2 + 50)
-		ctx.lineTo(centerX + 15, centerY - size / 2 + 50)
-		ctx.closePath()
-		ctx.fill()
-
-		// Draw center circle (white)
-		ctx.fillStyle = `rgb(${random(220, 255)}, ${random(220, 255)}, ${random(220, 255)})`
-		ctx.beginPath()
-		ctx.arc(centerX, centerY, 20, 0, Math.PI * 2)
-		ctx.fill()
-
-		// Generate captcha ID
-		const captchaId = uuidv4()
-		const now = Date.now()
-		const expireTime = 60000 // 60 seconds
-
-		// Create cache entry
-		const cache: CaptchaCache = {
-			id: captchaId,
-			type: 'rotate',
-			target: [targetAngle],
-			targetAngle,
-			createdAt: now,
-			expiresAt: now + expireTime,
-		}
-
-		// Create response
-		const response: CaptchaResponse = {
-			captchaId,
-			type: 'rotate',
-			bgImage: canvas.toDataURL('image/png'),
-			targetAngle,
-			width,
-			height,
-			expiresAt: now + expireTime,
-		}
-
-		return { cache, response }
-	}
-
-	/**
 	 * Generate captcha based on type
 	 */
 	generate(options: CaptchaGenerateOptions = {}): { cache: CaptchaCache; response: CaptchaResponse } {
@@ -676,8 +602,6 @@ export class CaptchaGenerator {
 		switch (type) {
 			case 'click':
 				return this.generateClick(options)
-			case 'rotate':
-				return this.generateRotate(options)
 			case 'slider':
 			default:
 				return this.generateSlider(options)

@@ -31,7 +31,7 @@ interface SliderCaptchaOptions {
 
 // 返回签名后的验证数据
 interface CaptchaData {
-  type: 'slider' | 'click' | 'rotate'
+  type: 'slider' | 'click'
   target: number[] | Point[]
   timestamp: number
   // 签名相关
@@ -86,47 +86,7 @@ private validateTimestamp(timestamp: number): boolean {
 
 ### 1.2 新增验证码类型
 
-#### 1.2.1 文字旋转验证码
-
-```typescript
-interface RotateCaptchaOptions {
-  el: string | HTMLElement
-  width?: number
-  height?: number
-  bgImage?: string
-  precision?: number  // 角度精度，默认 5 度
-  showRefresh?: boolean
-  onSuccess?: () => void
-  onFail?: () => void
-  // 安全配置
-  security?: SecurityOptions
-}
-
-// 使用示例
-const captcha = new RotateCaptcha({
-  el: '#captcha',
-  bgImage: '/image.jpg',
-  precision: 5,
-  security: {
-    secretKey: 'your-secret-key',
-    enableSign: true
-  },
-  onSuccess: () => console.log('旋转正确！')
-})
-
-// 获取验证数据
-const data = captcha.getData()
-// { type: 'rotate', target: [angle], timestamp, signature, nonce }
-```
-
-**实现要点**：
-- 随机生成旋转角度（0-360度）
-- 用户通过拖动/滑动旋转图片
-- 验证角度误差在精度范围内
-
----
-
-#### 1.2.2 序列点选验证码
+#### 1.2.1 序列点选验证码
 
 **方案**：按顺序点击数字/字母序列
 

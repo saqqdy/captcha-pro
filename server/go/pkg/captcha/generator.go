@@ -84,8 +84,6 @@ func (g *Generator) Generate(opts types.CaptchaGenerateOptions, expireTime int64
 	switch opts.Type {
 	case types.CaptchaTypeClick:
 		return g.generateClick(opts, expireTime)
-	case types.CaptchaTypeRotate:
-		return g.generateRotate(opts, expireTime)
 	default:
 		return g.generateSlider(opts, expireTime)
 	}
@@ -549,86 +547,6 @@ func (g *Generator) generateCharImage(ch string) string {
 	var buf bytes.Buffer
 	png.Encode(&buf, dc.Image())
 	return "data:image/png;base64," + base64.StdEncoding.EncodeToString(buf.Bytes())
-}
-
-func (g *Generator) generateRotate(opts types.CaptchaGenerateOptions, expireTime int64) *types.CaptchaGenerateResult {
-	width := opts.Width
-	height := opts.Height
-
-	if width == 0 {
-		width = 280
-	}
-	if height == 0 {
-		height = 155
-	}
-
-	// Create image
-	dc := gg.NewContext(width, height)
-
-	centerX := float64(width) / 2
-	centerY := float64(height) / 2
-	size := float64(min(width, height))
-
-	// Generate random angle
-	targetAngle := float64(g.randomInt(0, 360))
-
-	// Fill background
-	dc.SetColor(g.randomColor(200, 240))
-	dc.DrawRectangle(0, 0, float64(width), float64(height))
-	dc.Fill()
-
-	// Draw colorful circle
-	grad := gg.NewRadialGradient(centerX, centerY, 0, centerX, centerY, size/2)
-	grad.AddColorStop(0, g.randomColor(100, 255))
-	grad.AddColorStop(1, g.randomColor(100, 255))
-	dc.SetFillStyle(grad)
-	dc.DrawCircle(centerX, centerY, size/2-10)
-	dc.Fill()
-
-	// Draw arrow indicator
-	dc.SetColor(g.randomColor(200, 255))
-	arrowPoints := [][]float64{
-		{centerX, centerY - size/2 + 30},
-		{centerX - 15, centerY - size/2 + 50},
-		{centerX + 15, centerY - size/2 + 50},
-	}
-	dc.MoveTo(arrowPoints[0][0], arrowPoints[0][1])
-	for _, p := range arrowPoints[1:] {
-		dc.LineTo(p[0], p[1])
-	}
-	dc.ClosePath()
-	dc.Fill()
-
-	// Draw center circle
-	dc.SetColor(g.randomColor(220, 255))
-	dc.DrawCircle(centerX, centerY, 20)
-	dc.Fill()
-
-	// Generate captcha ID
-	captchaID := uuid.New().String()
-	now := time.Now().UnixMilli()
-
-	bgBase64 := "data:image/png;base64," + g.imageToBase64(dc.Image())
-
-	return &types.CaptchaGenerateResult{
-		Cache: types.CaptchaCache{
-			ID:          captchaID,
-			Type:        types.CaptchaTypeRotate,
-			Target:      []float64{targetAngle},
-			TargetAngle: &targetAngle,
-			CreatedAt:   now,
-			ExpiresAt:   now + expireTime,
-		},
-		Response: types.CaptchaResponse{
-			CaptchaID:   captchaID,
-			Type:        types.CaptchaTypeRotate,
-			BgImage:     bgBase64,
-			TargetAngle: &targetAngle,
-			Width:       width,
-			Height:      height,
-			ExpiresAt:   now + expireTime,
-		},
-	}
 }
 
 func (g *Generator) randomInt(min, max int) int {

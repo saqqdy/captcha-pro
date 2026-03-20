@@ -6,7 +6,6 @@ type CaptchaType string
 const (
 	CaptchaTypeSlider CaptchaType = "slider"
 	CaptchaTypeClick  CaptchaType = "click"
-	CaptchaTypeRotate CaptchaType = "rotate"
 )
 
 // Point represents a coordinate
@@ -17,13 +16,12 @@ type Point struct {
 
 // CaptchaCache represents cached captcha data
 type CaptchaCache struct {
-	ID           string      `json:"id"`
-	Type         CaptchaType `json:"type"`
-	Target       interface{} `json:"target"`
-	TargetAngle  *float64    `json:"targetAngle,omitempty"`
-	ClickTexts   []string    `json:"clickTexts,omitempty"`
-	CreatedAt    int64       `json:"createdAt"`
-	ExpiresAt    int64       `json:"expiresAt"`
+	ID          string      `json:"id"`
+	Type        CaptchaType `json:"type"`
+	Target      interface{} `json:"target"`
+	ClickTexts  []string    `json:"clickTexts,omitempty"`
+	CreatedAt   int64       `json:"createdAt"`
+	ExpiresAt   int64       `json:"expiresAt"`
 }
 
 // CaptchaGenerateOptions represents captcha generation options
@@ -40,17 +38,16 @@ type CaptchaGenerateOptions struct {
 
 // CaptchaResponse represents the response for frontend
 type CaptchaResponse struct {
-	CaptchaID      string      `json:"captchaId"`
-	Type           CaptchaType `json:"type"`
-	BgImage        string      `json:"bgImage"`
-	SliderImage    string      `json:"sliderImage,omitempty"`
-	SliderY        *int        `json:"sliderY,omitempty"`
-	TargetAngle    *float64    `json:"targetAngle,omitempty"`
-	ClickTexts     []string    `json:"clickTexts,omitempty"`
-	ClickCharImages []string   `json:"clickCharImages,omitempty"`
-	Width          int         `json:"width"`
-	Height         int         `json:"height"`
-	ExpiresAt      int64       `json:"expiresAt"`
+	CaptchaID       string      `json:"captchaId"`
+	Type            CaptchaType `json:"type"`
+	BgImage         string      `json:"bgImage"`
+	SliderImage     string      `json:"sliderImage,omitempty"`
+	SliderY         *int        `json:"sliderY,omitempty"`
+	ClickTexts      []string    `json:"clickTexts,omitempty"`
+	ClickCharImages []string    `json:"clickCharImages,omitempty"`
+	Width           int         `json:"width"`
+	Height          int         `json:"height"`
+	ExpiresAt       int64       `json:"expiresAt"`
 }
 
 // CaptchaGenerateResult represents captcha generation result

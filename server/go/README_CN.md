@@ -149,7 +149,7 @@ type SecurityConfig struct {
 
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| type | string | slider | 验证码类型: slider, click, rotate |
+| type | string | slider | 验证码类型: slider, click |
 | width | number | 280 | 图片宽度 |
 | height | number | 155 | 图片高度 |
 | sliderWidth | number | 50 | 滑块宽度 (仅slider) |

@@ -232,14 +232,6 @@ public class CaptchaController {
                     }
                 }
             }
-            case ROTATE -> {
-                double targetAngle = cached.getTargetAngle() != null ? cached.getTargetAngle() : ((Number) ((List<?>) cached.getTarget()).get(0)).doubleValue();
-                List<?> requestList = (List<?>) request.getTarget();
-                double userAngle = ((Number) requestList.get(0)).doubleValue();
-                double diff = Math.abs(userAngle - targetAngle);
-                if (diff > 180) diff = 360 - diff;
-                success = diff <= precision;
-            }
         }
 
         // Delete used captcha
@@ -286,7 +278,7 @@ public class CaptchaController {
                 .name("captcha-pro-spring-boot-starter")
                 .version("1.0.0")
                 .description("Captcha Pro Spring Boot Starter - Backend verification service")
-                .supportedTypes(List.of("slider", "click", "rotate"))
+                .supportedTypes(List.of("slider", "click"))
                 .features(List.of("rate-limit", "ip-blacklist", "brute-force-protection"))
                 .config(new ServerInfoResponse.ConfigInfo(
                         properties.getCaptcha().getExpireTime(),
