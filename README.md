@@ -19,7 +19,7 @@ A lightweight behavioral captcha library with slider puzzle, click verification,
 
 ### **[Change Log](./CHANGELOG.md)** · **[简体中文](./README_CN.md)**
 
-** [Online Demo](https://stackblitz.com/github/saqqdy/captcha-pro?file=examples/html/index.html) **
+**[Online Demo](https://stackblitz.com/github/saqqdy/captcha-pro?file=examples/html/index.html)**
 
 </div>
 
