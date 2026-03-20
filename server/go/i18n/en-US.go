@@ -1,0 +1,18 @@
+package i18n
+
+// English (en-US) locale messages
+var enUS = map[string]string{
+	"common.success":        "Success",
+	"common.fail":           "Failed",
+	"captcha.verifySuccess": "Verification passed",
+	"captcha.verifyFailed":  "Verification failed",
+	"captcha.expired":       "Captcha expired",
+	"captcha.notFound":      "Captcha not found",
+	"captcha.invalid":       "Invalid captcha",
+	"captcha.typeInvalid":   "Invalid captcha type",
+	"error.network":         "Network error",
+	"error.paramMissing":    "Missing parameter",
+	"error.paramInvalid":    "Invalid parameter",
+	"error.ipBlocked":       "IP has been blocked",
+	"error.rateLimited":     "Too many requests",
+}

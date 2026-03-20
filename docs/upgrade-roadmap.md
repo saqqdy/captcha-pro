@@ -4,6 +4,151 @@
 
 ---
 
+## 〇、NPM 包发布策略
+
+### 当前策略：单一包发布
+
+**阶段一（当前）**：仅发布 `captcha-pro` 单一 NPM 包
+
+```
+captcha-pro          # 框架无关的核心库
+├── dist/
+│   ├── index.mjs    # ESM
+│   ├── index.cjs    # CommonJS
+│   └── index.global.min.js  # UMD
+└── package.json
+```
+
+**优势**：
+- 发布流程简单，维护成本低
+- 用户安装方便，一个包即可
+- 适合初期快速迭代
+
+---
+
+### 未来规划：Monorepo 架构
+
+**阶段二（规划中）**：改造成 monorepo，子包使用 `@captcha/*` 作用域
+
+```
+captcha-pro/
+├── packages/
+│   ├── core/                    # @captcha/core - 核心逻辑
+│   ├── vue3/                    # @captcha/vue3 - Vue 3 组件
+│   ├── vue2/                    # @captcha/vue2 - Vue 2 组件
+│   ├── react/                   # @captcha/react - React 组件
+│   ├── svelte/                  # @captcha/svelte - Svelte 组件
+│   └── solid/                   # @captcha/solid - Solid 组件
+├── examples/                    # 示例项目
+├── docs/                        # 文档站点
+├── pnpm-workspace.yaml
+└── package.json
+```
+
+**包依赖关系**：
+
+```
+@captcha/vue3 ─────┐
+@captcha/react ────┼──▶ @captcha/core ──▶ captcha-pro (主包兼容)
+@captcha/svelte ───┘
+```
+
+**迁移策略**：
+
+1. **保持向后兼容**：`captcha-pro` 主包继续存在，内部引用 `@captcha/core`
+2. **渐进式迁移**：新功能优先在框架特定包中开发
+3. **统一版本号**：所有包使用相同版本号，便于管理
+
+**发布配置示例**：
+
+```json
+// packages/core/package.json
+{
+  "name": "@captcha/core",
+  "version": "2.0.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts"
+}
+
+// packages/vue3/package.json
+{
+  "name": "@captcha/vue3",
+  "version": "2.0.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "peerDependencies": {
+    "vue": "^3.0.0",
+    "@captcha/core": "2.0.0"
+  }
+}
+
+// 主包保持兼容
+// captcha-pro/package.json
+{
+  "name": "captcha-pro",
+  "version": "2.0.0",
+  "dependencies": {
+    "@captcha/core": "2.0.0"
+  }
+}
+```
+
+**框架包使用示例**：
+
+```vue
+<!-- @captcha/vue3 -->
+<script setup lang="ts">
+import { SliderCaptcha } from '@captcha/vue3'
+import '@captcha/vue3/dist/style.css'
+</script>
+
+<template>
+  <SliderCaptcha
+    :width="300"
+    :height="200"
+    @success="onSuccess"
+    @fail="onFail"
+  />
+</template>
+```
+
+```tsx
+// @captcha/react
+import { SliderCaptcha } from '@captcha/react'
+import '@captcha/react/dist/style.css'
+
+function App() {
+  return (
+    <SliderCaptcha
+      width={300}
+      height={200}
+      onSuccess={() => console.log('success')}
+      onFail={() => console.log('fail')}
+    />
+  )
+}
+```
+
+**Monorepo 工具选型**：
+
+| 工具 | 用途 | 优势 |
+|------|------|------|
+| pnpm workspace | 包管理 | 依赖共享、磁盘高效 |
+| Turborepo | 构建编排 | 缓存、并行构建 |
+| Changesets | 版本管理 | 自动化版本发布 |
+
+**触发条件**：
+
+当出现以下情况时，考虑迁移到 monorepo：
+- 需要为特定框架提供组件封装
+- 用户反馈框架集成体验不佳
+- 包体积需要进一步优化（tree-shaking）
+- 社区贡献特定框架适配
+
+---
+
 ## 一、v1.0 核心功能 (当前版本)
 
 ### 1.1 安全性增强 🔴 高优先级

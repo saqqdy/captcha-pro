@@ -46,6 +46,7 @@ A lightweight behavioral captcha library with slider puzzle, click verification,
 ### Other Features
 
 - 📊 **Statistics API** - Track verification success rates, timing, and distances
+- 🌍 **i18n Support** - Built-in internationalization (zh-CN, en-US), auto-detect browser language
 - 🚀 **Framework Agnostic** - Works with Vue, React, Angular, or vanilla JS
 - 📦 **Lightweight** - ~35KB minified, no dependencies
 - 🖼️ **Custom Images** - Support custom background and slider images
@@ -307,6 +308,31 @@ const click = createClickCaptcha({ el: '#click' })
 const invisible = createInvisibleCaptcha({ el: '#btn' })
 const popup = createPopupCaptcha({ type: 'slider' })
 ```
+
+### Internationalization (i18n)
+
+captcha-pro supports internationalization with built-in Chinese (zh-CN) and English (en-US) translations.
+
+```javascript
+import { SliderCaptcha, setLocale, getLocale, t } from 'captcha-pro'
+
+// Set language globally
+setLocale('en-US')
+
+// Get current locale
+console.log(getLocale()) // 'en-US'
+
+// Or set locale per component
+const captcha = new SliderCaptcha({
+  el: '#captcha',
+  locale: 'en-US',  // Component-level locale
+})
+
+// Get translated text
+console.log(t('slider.success')) // 'Verification passed'
+```
+
+By default, captcha-pro auto-detects browser language. Chinese browsers show Chinese text, others show English.
 
 ### Browser Direct Import (IIFE)
 

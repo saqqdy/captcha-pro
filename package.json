@@ -1,7 +1,7 @@
 {
 	"name": "captcha-pro",
 	"description": "A lightweight behavioral captcha library with slider puzzle and click verification, framework-agnostic",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"packageManager": "pnpm@9.15.3",
 	"main": "dist/index.cjs",
 	"module": "dist/index.mjs",

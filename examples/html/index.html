@@ -372,21 +372,28 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Captcha Pro <span class="version-badge">v1.0</span></h1>
-        <p class="subtitle">轻量级行为验证码库 - 滑动拼图 · 点选文字 · 智能无感 · 弹窗模式</p>
+        <h1>🔐 Captcha Pro <span class="version-badge">v1.1.0</span></h1>
+        <p class="subtitle">轻量级行为验证码库 - 滑动拼图 · 点选文字 · 智能无感 · 弹窗模式 · 多语言</p>
+
+        <!-- Language Switcher -->
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button class="btn btn-secondary" onclick="switchLanguage('zh-CN')" id="lang-zh" style="padding: 8px 16px;">中文</button>
+            <button class="btn btn-secondary" onclick="switchLanguage('en-US')" id="lang-en" style="padding: 8px 16px;">English</button>
+        </div>
 
         <!-- Features Overview -->
         <div class="demo-section">
-            <h2>功能特性</h2>
+            <h2 id="features-title">功能特性</h2>
             <div class="feature-list">
-                <div class="feature-item">随机滑块形状 (4种)</div>
-                <div class="feature-item">迷惑坑位防机器人</div>
-                <div class="feature-item">渐变背景装饰图案</div>
-                <div class="feature-item">中文词汇库 (200+)</div>
-                <div class="feature-item">弹窗模式支持</div>
-                <div class="feature-item">前后端验证模式</div>
-                <div class="feature-item">数据加密安全</div>
-                <div class="feature-item">统计API接口</div>
+                <div class="feature-item" data-i18n="feature.shapes">随机滑块形状 (4种)</div>
+                <div class="feature-item" data-i18n="feature.decoy">迷惑坑位防机器人</div>
+                <div class="feature-item" data-i18n="feature.gradient">渐变背景装饰图案</div>
+                <div class="feature-item" data-i18n="feature.vocabulary">中文词汇库 (200+)</div>
+                <div class="feature-item" data-i18n="feature.popup">弹窗模式支持</div>
+                <div class="feature-item" data-i18n="feature.mode">前后端验证模式</div>
+                <div class="feature-item" data-i18n="feature.security">数据加密安全</div>
+                <div class="feature-item" data-i18n="feature.stats">统计API接口</div>
+                <div class="feature-item new-badge" data-i18n="feature.i18n">多语言支持 (中/英)</div>
             </div>
         </div>
 
@@ -1102,6 +1109,107 @@
         function hideResult(elementId) {
             const element = document.getElementById(elementId)
             element.className = 'result'
+        }
+
+        // i18n Language Switcher
+        let currentLanguage = 'zh-CN'
+
+        const i18nMessages = {
+            'zh-CN': {
+                title: 'Captcha Pro',
+                subtitle: '轻量级行为验证码库 - 滑动拼图 · 点选文字 · 智能无感 · 弹窗模式 · 多语言',
+                featuresTitle: '功能特性',
+                feature: {
+                    shapes: '随机滑块形状 (4种)',
+                    decoy: '迷惑坑位防机器人',
+                    gradient: '渐变背景装饰图案',
+                    vocabulary: '中文词汇库 (200+)',
+                    popup: '弹窗模式支持',
+                    mode: '前后端验证模式',
+                    security: '数据加密安全',
+                    stats: '统计API接口',
+                    i18n: '多语言支持 (中/英)',
+                },
+                sliderTitle: '滑动拼图验证码',
+                clickTitle: '点选文字验证码',
+                popupTitle: '弹窗验证码',
+                invisibleTitle: '智能无感验证',
+                customTitle: '自定义图片验证码',
+                backendTitle: '后端验证演示',
+                backendPopupTitle: '后端验证弹窗演示',
+                factoryTitle: '工厂函数',
+            },
+            'en-US': {
+                title: 'Captcha Pro',
+                subtitle: 'Lightweight Behavioral Captcha - Slider · Click · Invisible · Popup · i18n',
+                featuresTitle: 'Features',
+                feature: {
+                    shapes: 'Random slider shapes (4 types)',
+                    decoy: 'Decoy holes anti-bot',
+                    gradient: 'Gradient background patterns',
+                    vocabulary: 'Chinese vocabulary (200+)',
+                    popup: 'Popup mode support',
+                    mode: 'Frontend/Backend modes',
+                    security: 'Data encryption security',
+                    stats: 'Statistics API',
+                    i18n: 'Multi-language (zh/en)',
+                },
+                sliderTitle: 'Slider Captcha',
+                clickTitle: 'Click Captcha',
+                popupTitle: 'Popup Captcha',
+                invisibleTitle: 'Invisible Captcha',
+                customTitle: 'Custom Image Captcha',
+                backendTitle: 'Backend Verification Demo',
+                backendPopupTitle: 'Backend Popup Demo',
+                factoryTitle: 'Factory Functions',
+            },
+        }
+
+        function switchLanguage(locale) {
+            currentLanguage = locale
+            CaptchaPro.setLocale(locale)
+
+            // Update language buttons
+            document.getElementById('lang-zh').style.opacity = locale === 'zh-CN' ? '1' : '0.6'
+            document.getElementById('lang-en').style.opacity = locale === 'en-US' ? '1' : '0.6'
+
+            // Update page text
+            const messages = i18nMessages[locale]
+
+            // Update features
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n')
+                if (key.startsWith('feature.')) {
+                    const featureKey = key.replace('feature.', '')
+                    el.textContent = messages.feature[featureKey] || el.textContent
+                }
+            })
+
+            // Reinitialize captchas with new locale
+            if (sliderCaptcha) {
+                sliderCaptcha.destroy()
+                initSliderCaptcha()
+            }
+            if (clickCaptcha) {
+                clickCaptcha.destroy()
+                initClickCaptcha()
+            }
+            if (popupCaptcha) {
+                popupCaptcha.destroy()
+                initPopupCaptcha()
+            }
+            if (invisibleCaptcha) {
+                invisibleCaptcha.destroy()
+                initInvisibleCaptcha()
+            }
+            if (customCaptcha) {
+                customCaptcha.destroy()
+                initCustomCaptcha()
+            }
+            if (backendPopupCaptcha) {
+                backendPopupCaptcha.destroy()
+                initBackendPopupCaptcha()
+            }
         }
 
         // Setup event listeners

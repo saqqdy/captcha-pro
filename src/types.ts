@@ -184,6 +184,37 @@ export interface RiskAssessmentOptions {
 }
 
 /**
+ * Locale type
+ */
+export type Locale = 'zh-CN' | 'en-US'
+
+/**
+ * Locale messages interface
+ */
+export interface LocaleMessages {
+	slider: {
+		success: string
+		fail: string
+		slide: string
+	}
+	click: {
+		prompt: string
+		success: string
+		fail: string
+	}
+	popup: {
+		title: string
+		close: string
+	}
+	errors: {
+		network: string
+		expired: string
+		invalid: string
+		notFound: string
+	}
+}
+
+/**
  * Base captcha options
  */
 export interface BaseCaptchaOptions {
@@ -219,6 +250,10 @@ export interface BaseCaptchaOptions {
 	 * Security options
 	 */
 	security?: SecurityOptions
+	/**
+	 * Locale for internationalization (default: auto-detect from browser)
+	 */
+	locale?: Locale
 	/**
 	 * Success callback
 	 */

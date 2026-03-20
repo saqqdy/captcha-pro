@@ -8,6 +8,7 @@ import type {
 	Point,
 	StatisticsData,
 } from './types'
+import { t } from './locales'
 import {
 	addClass,
 	createElement,
@@ -673,7 +674,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 					.join('')
 			}
 
-			this.promptContainer.innerHTML = `请依次点击: <span style="display: inline-block; margin-left: 4px; vertical-align: middle;">${charImages}</span>`
+			this.promptContainer.innerHTML = `${t('click.prompt')}: <span style="display: inline-block; margin-left: 4px; vertical-align: middle;">${charImages}</span>`
 		}
 	}
 
@@ -684,7 +685,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		if (this.statusOverlay) {
 			this.statusOverlay.innerHTML = `
 				<svg viewBox="0 0 24 24" width="14" height="14"><path fill="#fff" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
-				<span style="color: #fff;">验证成功</span>
+				<span style="color: #fff;">${t('click.success')}</span>
 			`
 			this.statusOverlay.style.background = 'rgba(82, 196, 26, 0.9)'
 			setStyle(this.statusOverlay, { display: 'flex' })
@@ -712,7 +713,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		if (this.statusOverlay) {
 			this.statusOverlay.innerHTML = `
 				<svg viewBox="0 0 24 24" width="14" height="14"><path fill="#fff" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-				<span style="color: #fff;">${message || '验证失败'}</span>
+				<span style="color: #fff;">${message || t('click.fail')}</span>
 			`
 			this.statusOverlay.style.background = 'rgba(245, 34, 45, 0.9)'
 			setStyle(this.statusOverlay, { display: 'flex' })
@@ -895,7 +896,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		} catch (error) {
 			console.error('Backend verification failed', error)
 			this.statistics.failCount++
-			const errorMessage = error instanceof Error ? error.message : '验证失败'
+			const errorMessage = error instanceof Error ? error.message : t('click.fail')
 			this.showFailStatus(errorMessage)
 			this.options.onFail?.()
 		}

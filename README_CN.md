@@ -46,6 +46,7 @@
 ### 其他特性
 
 - 📊 **统计 API** - 追踪验证成功率、耗时、距离
+- 🌍 **多语言支持** - 内置中英文（zh-CN、en-US），自动检测浏览器语言
 - 🚀 **框架无关** - 可用于 Vue、React、Angular 或原生 JS
 - 📦 **轻量级** - 约 35KB 压缩后，无额外依赖
 - 🖼️ **自定义图片** - 支持自定义背景和滑块图片
@@ -306,6 +307,29 @@ const slider = createSliderCaptcha({ el: '#slider' })
 const click = createClickCaptcha({ el: '#click' })
 const invisible = createInvisibleCaptcha({ el: '#btn' })
 const popup = createPopupCaptcha({ type: 'slider' })
+```
+
+### 多语言支持（i18n）
+
+captcha-pro 内置中英文支持，默认自动检测浏览器语言。
+
+```javascript
+import { SliderCaptcha, setLocale, getLocale, t } from 'captcha-pro'
+
+// 全局设置语言
+setLocale('en-US')
+
+// 获取当前语言
+console.log(getLocale()) // 'en-US'
+
+// 或在组件级别设置
+const captcha = new SliderCaptcha({
+  el: '#captcha',
+  locale: 'en-US',  // 组件级别语言设置
+})
+
+// 获取翻译文本
+console.log(t('slider.success')) // 'Verification passed'
 ```
 
 ### 浏览器直接引入（IIFE）

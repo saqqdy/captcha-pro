@@ -4,6 +4,7 @@ export default eslintConfig({
 	ignores: ['examples/**'],
 	markdown: false,
 	rules: {
+		'n/no-unsupported-features/node-builtins': 'off',
 		'perfectionist/sort-interfaces': 'off',
 		'perfectionist/sort-objects': 'off',
 		'perfectionist/sort-named-exports': 'off',
