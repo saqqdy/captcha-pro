@@ -15,6 +15,8 @@
 | Android | Kotlin/Java | ❌ 完全重写 | Canvas/Compose | View Events |
 | iOS | Swift/Objective-C | ❌ 完全重写 | CoreGraphics/UIKit | UIKit Events |
 
+> **注意**：Vue 2 和 Vue 3 采用独立的包发布（`captcha-pro-vue2` 和 `captcha-pro-vue3`），以支持不同的 API 风格和 TypeScript 支持。
+
 ## 二、推荐架构方案：5 套核心代码
 
 ### 整体目录结构
@@ -37,7 +39,20 @@ captcha-pro/
 │   │   ├── test/
 │   │   └── package.json            # captcha-pro
 │   │
-│   ├── vue/                        # Vue 组件封装
+│   ├── vue2/                       # Vue 2 组件封装
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   │   ├── SliderCaptcha.vue
+│   │   │   │   ├── ClickCaptcha.vue
+│   │   │   │   └── PopupCaptcha.vue
+│   │   │   ├── mixins/
+│   │   │   │   ├── sliderCaptcha.js
+│   │   │   │   └── clickCaptcha.js
+│   │   │   └── index.js
+│   │   ├── test/
+│   │   └── package.json            # captcha-pro-vue2
+│   │
+│   ├── vue3/                       # Vue 3 组件封装
 │   │   ├── src/
 │   │   │   ├── components/
 │   │   │   │   ├── SliderCaptcha.vue
@@ -48,7 +63,7 @@ captcha-pro/
 │   │   │   │   └── useClickCaptcha.ts
 │   │   │   └── index.ts
 │   │   ├── test/
-│   │   └── package.json            # captcha-pro-vue
+│   │   └── package.json            # captcha-pro-vue3
 │   │
 │   ├── react/                      # React 组件封装
 │   │   ├── src/
@@ -280,10 +295,129 @@ export class SliderCaptcha {
 
 ### 3.2 Vue 版封装
 
+#### Vue 2 Options API
+
+```vue
+<!-- packages/vue2/src/components/SliderCaptcha.vue -->
+<template>
+  <div class="captcha-container">
+    <canvas ref="bgCanvas" :width="width" :height="height" />
+    <canvas
+      ref="sliderCanvas"
+      :width="sliderWidth"
+      :height="sliderHeight"
+      :style="{ top: sliderY + 'px', left: sliderX + 'px' }"
+    />
+    <button v-if="showRefresh" class="refresh-btn" @click="handleRefresh">
+      ⟳
+    </button>
+    <div v-if="status" class="status-overlay" :class="status">
+      {{ statusText }}
+    </div>
+  </div>
+</template>
+
+<script>
+import { sliderCaptchaMixin } from '../mixins/sliderCaptcha'
+
+export default {
+  name: 'SliderCaptcha',
+  mixins: [sliderCaptchaMixin],
+  props: {
+    width: { type: Number, default: 300 },
+    height: { type: Number, default: 170 },
+    precision: { type: Number, default: 5 },
+    showRefresh: { type: Boolean, default: true },
+  },
+  methods: {
+    handleRefresh() {
+      this.refresh()
+      this.$emit('refresh')
+    },
+  },
+}
+</script>
+```
+
+#### Vue 2 Mixin 实现
+
+```javascript
+// packages/vue2/src/mixins/sliderCaptcha.js
+import { CaptchaGenerator } from 'captcha-pro/core'
+import { WebRenderer } from 'captcha-pro/web'
+
+export const sliderCaptchaMixin = {
+  data() {
+    return {
+      sliderX: 0,
+      sliderY: 0,
+      targetX: 0,
+      verified: false,
+      status: '',
+      generator: null,
+      renderer: null,
+    }
+  },
+
+  computed: {
+    statusText() {
+      if (this.status === 'success') return '验证成功'
+      if (this.status === 'fail') return '验证失败'
+      return ''
+    },
+    sliderWidth() {
+      return 42
+    },
+    sliderHeight() {
+      return 42
+    },
+  },
+
+  mounted() {
+    this.generator = new CaptchaGenerator()
+    this.init()
+  },
+
+  beforeDestroy() {
+    this.destroy()
+  },
+
+  methods: {
+    init() {
+      this.renderer = new WebRenderer({
+        bgCanvas: this.$refs.bgCanvas,
+        sliderCanvas: this.$refs.sliderCanvas,
+      })
+      this.refresh()
+    },
+
+    refresh() {
+      const result = this.generator.generate({
+        type: 'slider',
+        width: this.width,
+        height: this.height,
+        sliderWidth: this.sliderWidth,
+        sliderHeight: this.sliderHeight,
+      })
+
+      this.targetX = result.target[0]
+      this.sliderY = result.sliderY
+      this.sliderX = 0
+      this.verified = false
+      this.status = ''
+
+      this.renderer.render(result)
+    },
+
+    // ... 其他方法
+  },
+}
+```
+
 #### Vue 3 Composition API
 
 ```vue
-<!-- packages/vue/src/components/SliderCaptcha.vue -->
+<!-- packages/vue3/src/components/SliderCaptcha.vue -->
 <template>
   <div ref="containerRef" class="captcha-container">
     <canvas ref="bgCanvasRef" :width="width" :height="height" />
@@ -345,10 +479,10 @@ defineExpose({ refresh, getData, reset })
 </script>
 ```
 
-#### Composable 实现
+#### Vue 3 Composable 实现
 
 ```typescript
-// packages/vue/src/composables/useSliderCaptcha.ts
+// packages/vue3/src/composables/useSliderCaptcha.ts
 import { ref, reactive, computed } from 'vue'
 import { CaptchaGenerator } from 'captcha-pro/core'
 import { WebRenderer } from 'captcha-pro/web'
@@ -2242,7 +2376,8 @@ class SliderCaptchaViewModel: ObservableObject {
 | 包名 | 说明 | 入口文件 |
 |------|------|----------|
 | `captcha-pro` | 核心包 + Web 版 | `packages/core` |
-| `captcha-pro-vue` | Vue 2/3 组件 | `packages/vue` |
+| `captcha-pro-vue2` | Vue 2 组件 | `packages/vue2` |
+| `captcha-pro-vue3` | Vue 3 组件 | `packages/vue3` |
 | `captcha-pro-react` | React 组件 | `packages/react` |
 | `captcha-pro-mp` | 小程序版（微信/uni-app/Taro） | `packages/mp` |
 
@@ -2290,11 +2425,12 @@ PATCH: 向后兼容的问题修复
 
 ### 第二阶段（优先级高）
 
-1. **Vue 组件封装** - 国内主流，需求大
-2. **React 组件封装** - 国际主流
-3. **微信小程序版** - 国内小程序生态
-4. **uni-app 版** - 跨端框架
-5. **Taro 版** - 跨端框架
+1. **Vue 2 组件封装** - Options API + Mixins
+2. **Vue 3 组件封装** - Composition API + Composables
+3. **React 组件封装** - 国际主流
+4. **微信小程序版** - 国内小程序生态
+5. **uni-app 版** - 跨端框架
+6. **Taro 版** - 跨端框架
 
 ### 第三阶段（优先级中）
 
