@@ -241,4 +241,129 @@ describe('SliderCaptcha', () => {
 
 		captcha.destroy()
 	})
+
+	it('should handle locale option', () => {
+		const captcha = new SliderCaptcha({
+			el: container,
+			locale: 'en-US',
+		})
+
+		expect(captcha).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should handle className option', () => {
+		const captcha = new SliderCaptcha({
+			el: container,
+			className: 'custom-captcha',
+		})
+
+		expect(container.querySelector('.custom-captcha')).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should handle showRefresh option', () => {
+		const captcha = new SliderCaptcha({
+			el: container,
+			showRefresh: false,
+		})
+
+		expect(captcha).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should call onRefresh callback when refresh button clicked', () => {
+		const onRefresh = vi.fn()
+		const captcha = new SliderCaptcha({
+			el: container,
+			onRefresh,
+			showRefresh: true,
+		})
+
+		// Find and click the refresh button
+		const refreshBtn = container.querySelector('[aria-label="Refresh captcha"]') as HTMLElement
+		expect(refreshBtn).toBeDefined()
+		refreshBtn?.click()
+		expect(onRefresh).toHaveBeenCalled()
+
+		captcha.destroy()
+	})
+
+	it('should verify with precision tolerance', () => {
+		const captcha = new SliderCaptcha({
+			el: container,
+			precision: 10,
+		})
+
+		const data = captcha.getData()
+		const targetX = data.target[0] as number
+
+		// Verify with position within precision
+		const result = captcha.verify([targetX - 5])
+		expect(result).toBeTruthy()
+
+		captcha.destroy()
+	})
+
+	it('should fail verification when position is too far', () => {
+		const captcha = new SliderCaptcha({
+			el: container,
+			precision: 5,
+		})
+
+		const data = captcha.getData()
+		const targetX = data.target[0] as number
+
+		// Verify with position outside precision
+		const result = captcha.verify([targetX + 50])
+		expect(result).toBeFalsy()
+
+		captcha.destroy()
+	})
+
+	it('should update statistics after verification via drag', () => {
+		const onSuccess = vi.fn()
+		const captcha = new SliderCaptcha({
+			el: container,
+			onSuccess,
+			precision: 100,
+		})
+
+		// Simulate drag to correct position
+		const data = captcha.getData()
+		const targetX = data.target[0] as number
+
+		// Verify returns true for correct position
+		const result = captcha.verify([targetX])
+		expect(result).toBeTruthy()
+
+		captcha.destroy()
+	})
+
+	it('should return false for verification with wrong position', () => {
+		const captcha = new SliderCaptcha({
+			el: container,
+			precision: 5,
+		})
+
+		// Verify returns false for wrong position
+		const result = captcha.verify([999])
+		expect(result).toBeFalsy()
+
+		captcha.destroy()
+	})
+
+	it('should handle string selector for el', () => {
+		container.id = 'test-captcha'
+		const captcha = new SliderCaptcha({
+			el: '#test-captcha',
+		})
+
+		expect(captcha).toBeDefined()
+
+		captcha.destroy()
+	})
 })

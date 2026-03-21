@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ClickCaptcha, createClickCaptcha } from '../src'
 
 describe('ClickCaptcha', () => {
@@ -264,5 +264,141 @@ describe('ClickCaptcha', () => {
 		})
 
 		captcha.destroy()
+	})
+
+	it('should handle locale option', () => {
+		const captcha = new ClickCaptcha({
+			el: container,
+			locale: 'en-US',
+		})
+
+		expect(captcha).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should handle className option', () => {
+		const captcha = new ClickCaptcha({
+			el: container,
+			className: 'custom-click-captcha',
+		})
+
+		expect(container.querySelector('.custom-click-captcha')).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should handle showRefresh option', () => {
+		const captcha = new ClickCaptcha({
+			el: container,
+			showRefresh: false,
+		})
+
+		expect(captcha).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should call onRefresh callback when refresh button clicked', () => {
+		const onRefresh = vi.fn()
+		const captcha = new ClickCaptcha({
+			el: container,
+			onRefresh,
+			showRefresh: true,
+		})
+
+		// Find and click the refresh button
+		const refreshBtn = container.querySelector('[aria-label="Refresh captcha"]') as HTMLElement
+		expect(refreshBtn).toBeDefined()
+		refreshBtn?.click()
+		expect(onRefresh).toHaveBeenCalled()
+
+		captcha.destroy()
+	})
+
+	it('should verify with precision tolerance', () => {
+		const captcha = new ClickCaptcha({
+			el: container,
+			count: 2,
+		})
+
+		const data = captcha.getData()
+		const targetPoints = data.target as { x: number; y: number }[]
+
+		// Verify with positions within precision
+		const adjustedPoints = targetPoints.map(p => ({ x: p.x + 5, y: p.y + 5 }))
+		const result = captcha.verify(adjustedPoints)
+		expect(result).toBeTruthy()
+
+		captcha.destroy()
+	})
+
+	it('should fail verification when points are too far', () => {
+		const captcha = new ClickCaptcha({
+			el: container,
+			count: 2,
+		})
+
+		const data = captcha.getData()
+		const targetPoints = data.target as { x: number; y: number }[]
+
+		// Verify with positions outside precision
+		const wrongPoints = targetPoints.map(p => ({ x: p.x + 100, y: p.y + 100 }))
+		const result = captcha.verify(wrongPoints)
+		expect(result).toBeFalsy()
+
+		captcha.destroy()
+	})
+
+	it('should verify points correctly', () => {
+		const captcha = new ClickCaptcha({
+			el: container,
+		})
+
+		const data = captcha.getData()
+		const targetPoints = data.target as { x: number; y: number }[]
+
+		// Verify returns true for correct points
+		const result = captcha.verify(targetPoints)
+		expect(result).toBeTruthy()
+
+		captcha.destroy()
+	})
+
+	it('should return false for verification with wrong points', () => {
+		const captcha = new ClickCaptcha({
+			el: container,
+		})
+
+		// Verify returns false for wrong points
+		const result = captcha.verify([{ x: 999, y: 999 }])
+		expect(result).toBeFalsy()
+
+		captcha.destroy()
+	})
+
+	it('should handle string selector for el', () => {
+		container.id = 'test-click-captcha'
+		const captcha = new ClickCaptcha({
+			el: '#test-click-captcha',
+		})
+
+		expect(captcha).toBeDefined()
+
+		captcha.destroy()
+	})
+
+	it('should support different click counts', () => {
+		for (const count of [1, 2, 3, 4, 5]) {
+			const captcha = new ClickCaptcha({
+				el: container,
+				count,
+			})
+
+			const data = captcha.getData()
+			expect(data.target).toHaveLength(count)
+
+			captcha.destroy()
+		}
 	})
 })

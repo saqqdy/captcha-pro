@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { detectBrowserLocale, getLocale, getMessages, setLocale, t } from '../src/locales'
+import { detectBrowserLocale, getLocale, getMessages, setLocale, t } from '../src'
 
 describe('i18n Locale Module', () => {
 	const originalNavigator = globalThis.navigator

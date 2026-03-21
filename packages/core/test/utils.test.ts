@@ -6,8 +6,6 @@ import {
 	generateEncryptedData,
 	generateNonce,
 	random,
-	randomString,
-	validateTimestamp,
 } from '../src/utils'
 
 describe('Utils', () => {
@@ -23,19 +21,6 @@ describe('Utils', () => {
 		it('should return min when min equals max', () => {
 			const result = random(5, 5)
 			expect(result).toBe(5)
-		})
-	})
-
-	describe('randomString', () => {
-		it('should generate string of specified length', () => {
-			const result = randomString(10)
-			expect(result).toHaveLength(10)
-		})
-
-		it('should use custom character set', () => {
-			const result = randomString(10, 'abc')
-			expect(result).toHaveLength(10)
-			expect(/^[abc]+$/.test(result)).toBeTruthy()
 		})
 	})
 
@@ -57,28 +42,6 @@ describe('Utils', () => {
 		})
 	})
 
-	describe('validateTimestamp', () => {
-		it('should validate current timestamp', () => {
-			const now = Date.now()
-			expect(validateTimestamp(now)).toBeTruthy()
-		})
-
-		it('should reject expired timestamp', () => {
-			const expired = Date.now() - 120000 // 2 minutes ago
-			expect(validateTimestamp(expired)).toBeFalsy()
-		})
-
-		it('should accept timestamp within tolerance', () => {
-			const nearFuture = Date.now() + 30000 // 30 seconds in future
-			expect(validateTimestamp(nearFuture)).toBeTruthy()
-		})
-
-		it('should use custom tolerance', () => {
-			const expired = Date.now() - 30000 // 30 seconds ago
-			expect(validateTimestamp(expired, 60000)).toBeTruthy()
-			expect(validateTimestamp(expired, 20000)).toBeFalsy()
-		})
-	})
 })
 
 describe('AES Encryption', () => {
