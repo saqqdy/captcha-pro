@@ -11,15 +11,12 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "browser": {
-        "production": "./dist/index.global.min.js",
-        "development": "./dist/index.global.js",
-        "default": "./dist/index.global.min.js"
-      },
       "require": "./dist/index.cjs",
       "import": "./dist/index.mjs",
+      "browser": "./dist/index.global.min.js",
       "default": "./dist/index.mjs"
     },
+    "./style.css": "./dist/style.css",
     "./package.json": "./package.json"
   },
   "directories": {
@@ -30,11 +27,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "run-s clean build:{bundle,types}",
+    "build": "run-s clean build:{bundle,types,css}",
     "build:bundle": "rolldown -c build/rolldown.config.ts",
     "build:types": "tsc -p src/tsconfig.json && pnpm roll-types",
+    "build:css": "cp src/styles/index.css dist/style.css",
     "roll-types": "api-extractor run && rm-all temp",
-    "watch": "rolldown -c build/rolldown.config.ts -w",
+    "watch": "run-s build:css watch:bundle",
+    "watch:bundle": "rolldown -c build/rolldown.config.ts -w",
     "clean": "rm-all dist es lib",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -53,6 +52,7 @@
     "rm-all": "^1.1.1",
     "rolldown": "^1.0.0-rc.9",
     "rollup-plugin-filesize": "^10.0.0",
+    "rollup-plugin-visualizer": "^7.0.1",
     "typescript": "^5.7.3",
     "vitest": "^4.1.0"
   },

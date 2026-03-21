@@ -11,6 +11,7 @@ import type {
 import { t } from './locales'
 import {
 	addClass,
+	buildUrl,
 	createElement,
 	generateNonce,
 	generateSignature,
@@ -106,10 +107,11 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	private decoyPoints: Point[] = [] // Decoy character positions
 	private _verified: boolean = false
 	private captchaId: string = ''
-	// @ts-expect-error - stored for potential future use
+	// stored for potential future use
 	private _backendData: BackendCaptchaResponse | null = null
 	private clickStartTime: number = 0
 	private _text?: string
+	private _readyPromise: Promise<void>
 	private statistics: StatisticsData = {
 		totalAttempts: 0,
 		successCount: 0,
@@ -122,7 +124,14 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 
 	constructor(options: ClickCaptchaOptions) {
 		this.options = { ...defaultOptions, ...options }
-		this.init()
+		this._readyPromise = this.init()
+	}
+
+	/**
+	 * Wait for captcha to be ready
+	 */
+	async ready(): Promise<void> {
+		return this._readyPromise
 	}
 
 	/**
@@ -142,7 +151,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		if (this.options.verifyMode === 'backend' && this.options.backendVerify?.getCaptcha) {
 			await this.fetchBackendCaptcha()
 		} else if (this.options.bgImage) {
-			this.loadBackgroundImage()
+			await this.loadBackgroundImage()
 		} else {
 			this.generateCaptcha()
 		}
@@ -152,7 +161,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	 * Fetch captcha from backend
 	 */
 	private async fetchBackendCaptcha(): Promise<void> {
-		const { backendVerify } = this.options
+		const { backendVerify, width, height } = this.options
 		if (!backendVerify?.getCaptcha) return
 
 		try {
@@ -161,7 +170,13 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			if (typeof backendVerify.getCaptcha === 'function') {
 				response = await backendVerify.getCaptcha({})
 			} else {
-				response = await request<BackendCaptchaResponse>(backendVerify.getCaptcha, {
+				// Build URL with dimension parameters
+				const url = buildUrl(backendVerify.getCaptcha, {
+					width,
+					height,
+				})
+
+				response = await request<BackendCaptchaResponse>(url, {
 					method: 'GET',
 					headers: backendVerify.headers,
 					timeout: backendVerify.timeout,
@@ -179,6 +194,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			if (response.data.clickCharImages) {
 				this.clickCharImages = response.data.clickCharImages
 			}
+
 			await this.loadBackgroundImage()
 		} catch (error) {
 			console.error('Failed to fetch captcha from backend', error)
@@ -357,7 +373,9 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			// Clear previous content before drawing new image
 			ctx.clearRect(0, 0, width!, height!)
 
-			// Draw image scaled to fit
+			// Draw image scaled to fit (cover mode)
+			// For backend mode, image dimensions should match canvas dimensions
+			// For frontend mode with custom bgImage, image may need scaling
 			const scale = Math.max(width! / img.width, height! / img.height)
 			const sw = width! / scale
 			const sh = height! / scale
@@ -1013,21 +1031,27 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	}
 
 	/**
-	 * Get captcha data (synchronous, without signature)
-	 * Returns target points that user needs to click
+	 * Build captcha data with target points
 	 */
-	getData(): CaptchaData {
+	private buildCaptchaData(target: Point[]): CaptchaData {
 		const timestamp = Date.now()
 		const nonce = generateNonce()
-
 		return {
 			type: 'click',
 			captchaId: this.captchaId,
 			bgImage: this.options.bgImage,
-			target: this.targetPoints,
+			target,
 			timestamp,
 			nonce,
 		}
+	}
+
+	/**
+	 * Get captcha data (synchronous, without signature)
+	 * Returns target points that user needs to click
+	 */
+	getData(): CaptchaData {
+		return this.buildCaptchaData(this.targetPoints)
 	}
 
 	/**
@@ -1035,25 +1059,15 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	 * Returns user's clicked points for verification
 	 */
 	async getSignedData(): Promise<CaptchaData> {
-		const timestamp = Date.now()
-		const nonce = generateNonce()
-
-		const data: CaptchaData = {
-			type: 'click',
-			captchaId: this.captchaId,
-			bgImage: this.options.bgImage,
-			target: this.clickPoints,
-			timestamp,
-			nonce,
-		}
+		const data = this.buildCaptchaData(this.clickPoints)
 
 		// Add signature if security is enabled
-		if (this.options.security?.enableSign && this.options.security.secretKey) {
+		if (this.options.security?.enableSign && this.options.security.secretKey && data.nonce) {
 			data.signature = await generateSignature(
 				'click',
 				data.target,
-				timestamp,
-				nonce,
+				data.timestamp,
+				data.nonce,
 				this.options.security.secretKey
 			)
 		}

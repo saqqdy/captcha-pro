@@ -81,6 +81,14 @@ export interface BackendCaptchaResponse {
 		 */
 		clickCharImages?: string[]
 		/**
+		 * Canvas width
+		 */
+		width?: number
+		/**
+		 * Canvas height
+		 */
+		height?: number
+		/**
 		 * Timestamp
 		 */
 		timestamp?: number
@@ -392,6 +400,10 @@ export interface SliderCaptchaInstance extends CaptchaInstance {
 	 * Get slider position
 	 */
 	getSliderPosition: () => number
+	/**
+	 * Ready promise (for backend mode)
+	 */
+	ready?: () => Promise<void>
 }
 
 /**
@@ -402,6 +414,10 @@ export interface ClickCaptchaInstance extends CaptchaInstance {
 	 * Get click points
 	 */
 	getClickPoints: () => Point[]
+	/**
+	 * Ready promise (for backend mode)
+	 */
+	ready?: () => Promise<void>
 }
 
 /**

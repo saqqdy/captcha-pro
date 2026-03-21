@@ -37,7 +37,7 @@ export class InvisibleCaptcha implements InvisibleCaptchaInstance {
 	private tracks: { x: number; y: number; timestamp: number }[] = []
 	private clickCount: number = 0
 	private isMonitoring: boolean = false
-	// @ts-expect-error - stored for potential future use
+	// stored for potential future use
 	private _fingerprint: string = ''
 
 	constructor(options: InvisibleCaptchaOptions) {

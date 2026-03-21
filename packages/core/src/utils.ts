@@ -6,30 +6,16 @@ export function random(min: number, max: number): number {
 }
 
 /**
- * Generate random string
+ * Generate nonce (random string for replay prevention)
  */
 // cspell:disable-next-line
-export function randomString(length: number, chars: string = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'): string {
+export function generateNonce(length: number = 16): string {
+	const chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz234567890'
 	let result = ''
 	for (let i = 0; i < length; i++) {
 		result += chars.charAt(random(0, chars.length - 1))
 	}
 	return result
-}
-
-/**
- * Generate nonce (random string for replay prevention)
- */
-// cspell:disable-next-line
-export function generateNonce(length: number = 16): string {
-	return randomString(length, 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz234567890')
-}
-
-/**
- * Check if element is in DOM
- */
-export function isElementInDOM(element: HTMLElement): boolean {
-	return document.body.contains(element)
 }
 
 /**
@@ -130,28 +116,6 @@ export function getEventPosition(event: MouseEvent | TouchEvent, element: HTMLEl
 		x: clientX - rect.left,
 		y: clientY - rect.top,
 	}
-}
-
-/**
- * Generate canvas with random noise
- */
-export function generateNoiseCanvas(width: number, height: number): HTMLCanvasElement {
-	const canvas = document.createElement('canvas')
-	canvas.width = width
-	canvas.height = height
-	const ctx = canvas.getContext('2d')!
-
-	// Fill background
-	ctx.fillStyle = '#f0f0f0'
-	ctx.fillRect(0, 0, width, height)
-
-	// Add noise
-	for (let i = 0; i < width * height * 0.1; i++) {
-		ctx.fillStyle = `rgba(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)}, ${Math.random() * 0.3})`
-		ctx.fillRect(random(0, width), random(0, height), 1, 1)
-	}
-
-	return canvas
 }
 
 /**
@@ -363,14 +327,6 @@ export async function generateSignature(
 }
 
 /**
- * Validate timestamp
- */
-export function validateTimestamp(timestamp: number, tolerance: number = 60000): boolean {
-	const now = Date.now()
-	return Math.abs(now - timestamp) <= tolerance
-}
-
-/**
  * Simple fingerprint generation (for risk assessment)
  */
 export function generateFingerprint(): string {
@@ -506,6 +462,21 @@ export function calculateBehaviorScore(options: {
 }
 
 /**
+ * Build URL with query parameters
+ */
+export function buildUrl(baseUrl: string, params: Record<string, string | number | undefined>): string {
+	const separator = baseUrl.includes('?') ? '&' : '?'
+	const searchParams = new URLSearchParams()
+	Object.entries(params).forEach(([key, value]) => {
+		if (value !== undefined) {
+			searchParams.append(key, String(value))
+		}
+	})
+	const queryString = searchParams.toString()
+	return queryString ? `${baseUrl}${separator}${queryString}` : baseUrl
+}
+
+/**
  * HTTP request helper
  */
 export function request<T>(url: string, options: {
@@ -564,16 +535,46 @@ export function request<T>(url: string, options: {
 	})
 }
 
-// Shake animation CSS injected flag
-let shakeAnimationInjected = false
-
 // Injected styles cache
 const injectedStylesCache = new Set<string>()
+
+/**
+ * Check if external CSS stylesheet is loaded
+ * Looks for a stylesheet containing captcha-popup-overlay class
+ */
+// function checkExternalCssLoaded(): boolean {
+// 	if (typeof document === 'undefined') return false
+//
+// 	// Check all stylesheets
+// 	for (let i = 0; i < document.styleSheets.length; i++) {
+// 		try {
+// 			const sheet = document.styleSheets[i]
+// 			// Try to access cssRules - this will throw for cross-origin stylesheets
+// 			const rules = sheet.cssRules || (sheet as any).rules
+// 			if (!rules) continue
+//
+// 			for (let j = 0; j < rules.length; j++) {
+// 				const rule = rules[j] as CSSStyleRule
+// 				// Check if this stylesheet contains our captcha classes
+// 				if (rule.selectorText && rule.selectorText.includes('captcha-popup-overlay')) {
+// 					return true
+// 				}
+// 			}
+// 		} catch {
+// 			// Cross-origin stylesheet, skip
+// 			continue
+// 		}
+// 	}
+// 	return false
+// }
 
 /**
  * Inject CSS styles to document head
  */
 export function injectStyles(id: string, css: string): void {
+	// Skip if external CSS is loaded (auto-detected)
+	// if (checkExternalCssLoaded()) return
+
 	if (injectedStylesCache.has(id)) return
 
 	const style = document.createElement('style')
@@ -587,8 +588,6 @@ export function injectStyles(id: string, css: string): void {
  * Inject shake animation CSS
  */
 export function injectShakeAnimation(): void {
-	if (shakeAnimationInjected) return
-
 	injectStyles('captcha-shake-animation', `
 		@keyframes captchaShake {
 			0%, 100% { transform: translateX(0); }
@@ -596,5 +595,4 @@ export function injectShakeAnimation(): void {
 			20%, 40%, 60%, 80% { transform: translateX(4px); }
 		}
 	`)
-	shakeAnimationInjected = true
 }

@@ -4,6 +4,10 @@ import { detectBrowserLocale, getLocale, getMessages, i18n, setLocale, t } from 
 import PopupCaptcha from './popup'
 import SliderCaptcha from './slider'
 
+export { detectBrowserLocale, getLocale, getMessages, i18n, setLocale, t } from './locales'
+
+export { ClickCaptcha, InvisibleCaptcha, PopupCaptcha, SliderCaptcha }
+
 export type {
 	BackendCaptchaResponse,
 	BackendVerifyOptions,
@@ -31,11 +35,6 @@ export type {
 	StatisticsData,
 	VerifyMode,
 } from './types'
-
-export { ClickCaptcha, InvisibleCaptcha, PopupCaptcha, SliderCaptcha }
-
-// i18n exports
-export { detectBrowserLocale, getLocale, getMessages, i18n, setLocale, t }
 
 export const version = '__VERSION__' as string
 

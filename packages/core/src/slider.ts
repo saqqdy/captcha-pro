@@ -11,6 +11,7 @@ import type {
 import { t } from './locales'
 import {
 	addClass,
+	buildUrl,
 	createElement,
 	generateNonce,
 	generateSignature,
@@ -58,8 +59,9 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 	private dragStartTime: number = 0
 	private _verified: boolean = false
 	private captchaId: string = ''
-	// @ts-expect-error - stored for potential future use
+	// stored for potential future use
 	private _backendData: BackendCaptchaResponse | null = null
+	private _readyPromise: Promise<void>
 	private statistics: StatisticsData = {
 		totalAttempts: 0,
 		successCount: 0,
@@ -72,7 +74,14 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 
 	constructor(options: SliderCaptchaOptions) {
 		this.options = { ...defaultOptions, ...options }
-		this.init()
+		this._readyPromise = this.init()
+	}
+
+	/**
+	 * Wait for captcha to be ready
+	 */
+	async ready(): Promise<void> {
+		return this._readyPromise
 	}
 
 	/**
@@ -92,7 +101,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		if (this.options.verifyMode === 'backend' && this.options.backendVerify?.getCaptcha) {
 			await this.fetchBackendCaptcha()
 		} else if (this.options.bgImage) {
-			this.loadImages()
+			await this.loadImages()
 		} else {
 			this.generateCaptcha()
 		}
@@ -102,7 +111,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 	 * Fetch captcha from backend
 	 */
 	private async fetchBackendCaptcha(): Promise<void> {
-		const { backendVerify } = this.options
+		const { backendVerify, width, height, sliderWidth, sliderHeight } = this.options
 		if (!backendVerify?.getCaptcha) return
 
 		try {
@@ -111,7 +120,15 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			if (typeof backendVerify.getCaptcha === 'function') {
 				response = await backendVerify.getCaptcha({})
 			} else {
-				response = await request<BackendCaptchaResponse>(backendVerify.getCaptcha, {
+				// Build URL with dimension parameters
+				const url = buildUrl(backendVerify.getCaptcha, {
+					width,
+					height,
+					sliderWidth,
+					sliderHeight,
+				})
+
+				response = await request<BackendCaptchaResponse>(url, {
 					method: 'GET',
 					headers: backendVerify.headers,
 					timeout: backendVerify.timeout,
@@ -127,6 +144,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			if (response.data.sliderY !== undefined) {
 				this.sliderY = response.data.sliderY
 			}
+
 			await this.loadImages()
 		} catch (error) {
 			console.error('Failed to fetch captcha from backend', error)
@@ -463,7 +481,9 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		// Clear previous content before drawing new image
 		ctx.clearRect(0, 0, width!, height!)
 
-		// Draw image scaled to fit
+		// Draw image scaled to fit (cover mode)
+		// For backend mode, image dimensions should match canvas dimensions
+		// For frontend mode with custom bgImage, image may need scaling
 		const scale = Math.max(width! / img.width, height! / img.height)
 		const sw = width! / scale
 		const sh = height! / scale
@@ -705,12 +725,12 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		const ctx = this.sliderCanvas.getContext('2d')!
 		// Clear previous content before drawing new image
 		ctx.clearRect(0, 0, this.options.sliderWidth!, this.options.sliderHeight!)
+
+		// Draw slider image
 		ctx.drawImage(img, 0, 0, this.options.sliderWidth!, this.options.sliderHeight!)
 
-		// Position slider canvas at correct Y position in backend mode
-		if (this.options.verifyMode === 'backend' && this.sliderY !== undefined) {
-			setStyle(this.sliderCanvas, { top: `${this.sliderY}px` })
-		}
+		// Position slider canvas at correct Y position
+		setStyle(this.sliderCanvas, { top: `${this.sliderY}px` })
 	}
 
 	/**
@@ -1200,22 +1220,28 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 	}
 
 	/**
-	 * Get captcha data (synchronous, without signature)
-	 * Returns target position for verification
+	 * Build captcha data with target position
 	 */
-	getData(): CaptchaData {
+	private buildCaptchaData(target: number[]): CaptchaData {
 		const timestamp = Date.now()
 		const nonce = generateNonce()
-
 		return {
 			type: 'slider',
 			captchaId: this.captchaId,
 			bgImage: this.options.bgImage,
 			sliderImage: this.options.sliderImage,
-			target: [this.targetX],
+			target,
 			timestamp,
 			nonce,
 		}
+	}
+
+	/**
+	 * Get captcha data (synchronous, without signature)
+	 * Returns target position for verification
+	 */
+	getData(): CaptchaData {
+		return this.buildCaptchaData([this.targetX])
 	}
 
 	/**
@@ -1223,26 +1249,15 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 	 * Returns user's slider position for backend verification
 	 */
 	async getSignedData(): Promise<CaptchaData> {
-		const timestamp = Date.now()
-		const nonce = generateNonce()
-
-		const data: CaptchaData = {
-			type: 'slider',
-			captchaId: this.captchaId,
-			bgImage: this.options.bgImage,
-			sliderImage: this.options.sliderImage,
-			target: [this.currentX],
-			timestamp,
-			nonce,
-		}
+		const data = this.buildCaptchaData([this.currentX])
 
 		// Add signature if security is enabled
-		if (this.options.security?.enableSign && this.options.security.secretKey) {
+		if (this.options.security?.enableSign && this.options.security.secretKey && data.nonce) {
 			data.signature = await generateSignature(
 				'slider',
 				data.target,
-				timestamp,
-				nonce,
+				data.timestamp,
+				data.nonce,
 				this.options.security.secretKey
 			)
 		}

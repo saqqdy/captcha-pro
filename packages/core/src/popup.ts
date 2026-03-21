@@ -248,7 +248,7 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 	/**
 	 * Create captcha instance
 	 */
-	private createCaptcha(): void {
+	private async createCaptcha(): Promise<void> {
 		if (!this.captchaContainer) return
 
 		// Clear previous captcha
@@ -284,6 +284,9 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 		} else {
 			this.captcha = new SliderCaptcha(captchaOptions as SliderCaptchaOptions) as SliderCaptchaInstance
 		}
+
+		// Wait for captcha to be ready (backend mode needs to fetch images)
+		await this.captcha.ready?.()
 	}
 
 	/**

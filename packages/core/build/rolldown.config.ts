@@ -1,6 +1,5 @@
 import { defineConfig } from 'rolldown'
 import filesize from 'rollup-plugin-filesize'
-import { visualizer } from 'rollup-plugin-visualizer'
 import { banner, reporter, version } from './config'
 
 export interface Config {
@@ -87,8 +86,6 @@ export default defineConfig(
 			plugins: [
 				// File size reporter
 				filesize({ reporter }),
-				// Bundle visualizer
-				visualizer(),
 			],
 			// Treeshaking
 			treeshake: {
