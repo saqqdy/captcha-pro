@@ -1,12 +1,12 @@
 import {
+  type BackendVerifyOptions,
   type CaptchaData,
   type CaptchaStatistics,
   ClickCaptcha as ClickCaptchaCore,
   type ClickCaptchaInstance,
   type ClickCaptchaOptions,
-  type BackendVerifyOptions,
 } from '@captcha/core'
-import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import React, { useEffect, useImperativeHandle, useRef } from 'react'
 
 export interface ClickCaptchaProps {
   width?: number
@@ -32,8 +32,7 @@ export interface ClickCaptchaRef {
   getInstance: () => ClickCaptchaInstance | null
 }
 
-export const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(
-  (props, ref) => {
+export const ClickCaptcha = ({ ref, ...props }: ClickCaptchaProps & { ref?: React.RefObject<ClickCaptchaRef | null> }): React.ReactElement => {
     const {
       width = 300,
       height = 170,
@@ -95,6 +94,5 @@ export const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(
       </div>
     )
   }
-)
 
 ClickCaptcha.displayName = 'ClickCaptcha'

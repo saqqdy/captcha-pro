@@ -1,10 +1,12 @@
+import type { RefObject } from 'react'
 import {
+  type CaptchaData,
+  type CaptchaStatistics,
   ClickCaptcha as ClickCaptchaCore,
   type ClickCaptchaInstance,
   type ClickCaptchaOptions,
-  type CaptchaData,
-  type CaptchaStatistics,
 } from '@captcha/core'
+
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export interface UseClickCaptchaOptions {
@@ -22,7 +24,7 @@ export interface UseClickCaptchaOptions {
 }
 
 export interface UseClickCaptchaReturn {
-  containerRef: React.RefObject<HTMLDivElement | null>
+  containerRef: RefObject<HTMLDivElement | null>
   status: '' | 'success' | 'fail'
   statusText: string
   refresh: () => void

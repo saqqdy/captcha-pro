@@ -1,10 +1,12 @@
+import type { RefObject } from 'react'
 import {
+  type CaptchaData,
+  type CaptchaStatistics,
   SliderCaptcha as SliderCaptchaCore,
   type SliderCaptchaInstance,
   type SliderCaptchaOptions,
-  type CaptchaData,
-  type CaptchaStatistics,
 } from '@captcha/core'
+
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 export interface UseSliderCaptchaOptions {
@@ -25,7 +27,7 @@ export interface UseSliderCaptchaOptions {
 }
 
 export interface UseSliderCaptchaReturn {
-  containerRef: React.RefObject<HTMLDivElement | null>
+  containerRef: RefObject<HTMLDivElement | null>
   status: '' | 'success' | 'fail'
   statusText: string
   refresh: () => void

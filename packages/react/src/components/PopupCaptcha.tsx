@@ -3,7 +3,7 @@ import {
   type PopupCaptchaInstance,
   type PopupCaptchaOptions,
 } from '@captcha/core'
-import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import React, { useEffect, useImperativeHandle, useRef } from 'react'
 
 export interface PopupCaptchaProps {
   type?: 'slider' | 'click'
@@ -32,8 +32,7 @@ export interface PopupCaptchaRef {
   getInstance: () => PopupCaptchaInstance | null
 }
 
-export const PopupCaptcha = forwardRef<PopupCaptchaRef, PopupCaptchaProps>(
-  (props, ref) => {
+export const PopupCaptcha = ({ ref, ...props }: PopupCaptchaProps & { ref?: React.RefObject<PopupCaptchaRef | null> }): React.ReactElement => {
     const {
       type = 'slider',
       trigger,
@@ -82,6 +81,5 @@ export const PopupCaptcha = forwardRef<PopupCaptchaRef, PopupCaptchaProps>(
 
     return <>{props.children}</>
   }
-)
 
 PopupCaptcha.displayName = 'PopupCaptcha'

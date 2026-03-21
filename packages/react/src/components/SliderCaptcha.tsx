@@ -1,12 +1,12 @@
 import {
+  type BackendVerifyOptions,
   type CaptchaData,
   type CaptchaStatistics,
   SliderCaptcha as SliderCaptchaCore,
   type SliderCaptchaInstance,
   type SliderCaptchaOptions,
-  type BackendVerifyOptions,
 } from '@captcha/core'
-import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import React, { useEffect, useImperativeHandle, useRef } from 'react'
 
 export interface SliderCaptchaProps {
   width?: number
@@ -35,8 +35,7 @@ export interface SliderCaptchaRef {
   getInstance: () => SliderCaptchaInstance | null
 }
 
-export const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
-  (props, ref) => {
+export const SliderCaptcha = ({ ref, ...props }: SliderCaptchaProps & { ref?: React.RefObject<SliderCaptchaRef | null> }): React.ReactElement => {
     const {
       width = 300,
       height = 170,
@@ -104,6 +103,5 @@ export const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
       </div>
     )
   }
-)
 
 SliderCaptcha.displayName = 'SliderCaptcha'
