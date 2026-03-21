@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import {
   ClickCaptcha as ClickCaptchaCore,
   type ClickCaptchaOptions,
   type ClickCaptchaInstance,
   type CaptchaData,
   type CaptchaStatistics,
+  type BackendVerifyOptions,
 } from '@captcha/core'
 
 export interface Props {
@@ -17,6 +18,7 @@ export interface Props {
   verifyMode?: 'frontend' | 'backend'
   locale?: 'zh-CN' | 'en-US'
   secretKey?: string
+  backendVerify?: BackendVerifyOptions
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -36,13 +38,6 @@ const emit = defineEmits<{
 
 const containerRef = ref<HTMLElement | null>(null)
 const captchaInstance = ref<ClickCaptchaInstance | null>(null)
-const status = ref<'' | 'success' | 'fail'>('')
-
-const statusText = computed(() => {
-  if (status.value === 'success') return props.locale === 'zh-CN' ? '验证成功' : 'Success'
-  if (status.value === 'fail') return props.locale === 'zh-CN' ? '验证失败' : 'Failed'
-  return ''
-})
 
 const initCaptcha = () => {
   if (!containerRef.value) return
@@ -57,16 +52,14 @@ const initCaptcha = () => {
     verifyMode: props.verifyMode,
     locale: props.locale,
     security: props.secretKey ? { secretKey: props.secretKey } : undefined,
+    backendVerify: props.backendVerify,
     onSuccess: () => {
-      status.value = 'success'
       emit('success')
     },
     onFail: () => {
-      status.value = 'fail'
       emit('fail')
     },
     onRefresh: () => {
-      status.value = ''
       emit('refresh')
     },
   }
@@ -118,9 +111,6 @@ defineExpose({
 <template>
   <div class="captcha-vue3-wrapper">
     <div ref="containerRef" class="captcha-container" />
-    <div v-if="status" class="captcha-status" :class="status">
-      {{ statusText }}
-    </div>
   </div>
 </template>
 
@@ -132,27 +122,5 @@ defineExpose({
 
 .captcha-container {
   position: relative;
-}
-
-.captcha-status {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 14px;
-  z-index: 10;
-}
-
-.captcha-status.success {
-  background: rgba(82, 196, 26, 0.9);
-}
-
-.captcha-status.fail {
-  background: rgba(245, 34, 45, 0.9);
 }
 </style>
