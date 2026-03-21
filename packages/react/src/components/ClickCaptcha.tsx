@@ -4,8 +4,9 @@ import {
   ClickCaptcha as ClickCaptchaCore,
   type ClickCaptchaInstance,
   type ClickCaptchaOptions,
+  type BackendVerifyOptions,
 } from '@captcha/core'
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
 export interface ClickCaptchaProps {
   width?: number
@@ -16,6 +17,7 @@ export interface ClickCaptchaProps {
   verifyMode?: 'frontend' | 'backend'
   locale?: 'zh-CN' | 'en-US'
   secretKey?: string
+  backendVerify?: BackendVerifyOptions
   onSuccess?: () => void
   onFail?: () => void
   onRefresh?: () => void
@@ -41,6 +43,7 @@ export const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(
       verifyMode = 'frontend',
       locale = 'zh-CN',
       secretKey,
+      backendVerify,
       onSuccess,
       onFail,
       onRefresh,
@@ -50,10 +53,6 @@ export const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(
 
     const containerRef = useRef<HTMLDivElement>(null)
     const captchaInstance = useRef<ClickCaptchaInstance | null>(null)
-    const [status, setStatus] = useState<'' | 'success' | 'fail'>('')
-
-    const statusText =
-      status === 'success' ? (locale === 'zh-CN' ? '验证成功' : 'Success') : status === 'fail' ? (locale === 'zh-CN' ? '验证失败' : 'Failed') : ''
 
     useEffect(() => {
       if (!containerRef.current) return
@@ -68,18 +67,10 @@ export const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(
         verifyMode,
         locale,
         security: secretKey ? { secretKey } : undefined,
-        onSuccess: () => {
-          setStatus('success')
-          onSuccess?.()
-        },
-        onFail: () => {
-          setStatus('fail')
-          onFail?.()
-        },
-        onRefresh: () => {
-          setStatus('')
-          onRefresh?.()
-        },
+        backendVerify,
+        onSuccess,
+        onFail,
+        onRefresh,
       }
 
       captchaInstance.current = new ClickCaptchaCore(options) as ClickCaptchaInstance
@@ -89,11 +80,7 @@ export const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(
         captchaInstance.current?.destroy()
         captchaInstance.current = null
       }
-    }, [])
-
-    useEffect(() => {
-      captchaInstance.current?.refresh()
-    }, [bgImage])
+    }, [width, height, bgImage, count, showRefresh, verifyMode, locale, secretKey, backendVerify, onSuccess, onFail, onRefresh, onReady])
 
     useImperativeHandle(ref, () => ({
       refresh: () => captchaInstance.current?.refresh(),
@@ -105,11 +92,6 @@ export const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(
     return (
       <div className={`captcha-react-wrapper ${className || ''}`}>
         <div ref={containerRef} className="captcha-container" />
-        {status && (
-          <div className={`captcha-status ${status}`}>
-            {statusText}
-          </div>
-        )}
       </div>
     )
   }

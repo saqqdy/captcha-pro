@@ -4,8 +4,9 @@ import {
   SliderCaptcha as SliderCaptchaCore,
   type SliderCaptchaInstance,
   type SliderCaptchaOptions,
+  type BackendVerifyOptions,
 } from '@captcha/core'
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
 export interface SliderCaptchaProps {
   width?: number
@@ -19,6 +20,7 @@ export interface SliderCaptchaProps {
   verifyMode?: 'frontend' | 'backend'
   locale?: 'zh-CN' | 'en-US'
   secretKey?: string
+  backendVerify?: BackendVerifyOptions
   onSuccess?: () => void
   onFail?: () => void
   onRefresh?: () => void
@@ -47,6 +49,7 @@ export const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
       verifyMode = 'frontend',
       locale = 'zh-CN',
       secretKey,
+      backendVerify,
       onSuccess,
       onFail,
       onRefresh,
@@ -56,10 +59,6 @@ export const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
 
     const containerRef = useRef<HTMLDivElement>(null)
     const captchaInstance = useRef<SliderCaptchaInstance | null>(null)
-    const [status, setStatus] = useState<'' | 'success' | 'fail'>('')
-
-    const statusText =
-      status === 'success' ? (locale === 'zh-CN' ? '验证成功' : 'Success') : status === 'fail' ? (locale === 'zh-CN' ? '验证失败' : 'Failed') : ''
 
     useEffect(() => {
       if (!containerRef.current) return
@@ -77,18 +76,10 @@ export const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
         verifyMode,
         locale,
         security: secretKey ? { secretKey } : undefined,
-        onSuccess: () => {
-          setStatus('success')
-          onSuccess?.()
-        },
-        onFail: () => {
-          setStatus('fail')
-          onFail?.()
-        },
-        onRefresh: () => {
-          setStatus('')
-          onRefresh?.()
-        },
+        backendVerify,
+        onSuccess,
+        onFail,
+        onRefresh,
       }
 
       captchaInstance.current = new SliderCaptchaCore(options) as SliderCaptchaInstance
@@ -98,11 +89,7 @@ export const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
         captchaInstance.current?.destroy()
         captchaInstance.current = null
       }
-    }, [])
-
-    useEffect(() => {
-      captchaInstance.current?.refresh()
-    }, [bgImage, sliderImage])
+    }, [width, height, bgImage, sliderImage, sliderWidth, sliderHeight, precision, showRefresh, verifyMode, locale, secretKey, backendVerify, onSuccess, onFail, onRefresh, onReady])
 
     useImperativeHandle(ref, () => ({
       refresh: () => captchaInstance.current?.refresh(),
@@ -114,11 +101,6 @@ export const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
     return (
       <div className={`captcha-react-wrapper ${className || ''}`}>
         <div ref={containerRef} className="captcha-container" />
-        {status && (
-          <div className={`captcha-status ${status}`}>
-            {statusText}
-          </div>
-        )}
       </div>
     )
   }
