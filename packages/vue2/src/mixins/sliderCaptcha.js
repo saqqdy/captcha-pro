@@ -1,9 +1,17 @@
-<script>
+/**
+ * Slider Captcha Mixin for Vue 2
+ *
+ * Usage:
+ * import { sliderCaptchaMixin } from 'captcha-pro-vue2/mixins'
+ *
+ * export default {
+ *   mixins: [sliderCaptchaMixin],
+ *   // ...
+ * }
+ */
 import { SliderCaptcha } from '@captcha/core'
 
-export default {
-  name: 'SliderCaptcha',
-
+export const sliderCaptchaMixin = {
   props: {
     width: { type: Number, default: 300 },
     height: { type: Number, default: 170 },
@@ -16,13 +24,21 @@ export default {
     verifyMode: { type: String, default: 'frontend' },
     locale: { type: String, default: 'zh-CN' },
     secretKey: { type: String, default: undefined },
-    backendVerify: { type: Object, default: undefined },
   },
 
   data() {
     return {
       captchaInstance: null,
+      status: '',
     }
+  },
+
+  computed: {
+    statusText() {
+      if (this.status === 'success') return this.locale === 'zh-CN' ? '验证成功' : 'Success'
+      if (this.status === 'fail') return this.locale === 'zh-CN' ? '验证失败' : 'Failed'
+      return ''
+    },
   },
 
   mounted() {
@@ -30,7 +46,7 @@ export default {
   },
 
   beforeDestroy() {
-    this.destroy()
+    this.destroyCaptcha()
   },
 
   methods: {
@@ -50,14 +66,16 @@ export default {
         verifyMode: this.verifyMode,
         locale: this.locale,
         security: this.secretKey ? { secretKey: this.secretKey } : undefined,
-        backendVerify: this.backendVerify,
         onSuccess: () => {
+          this.status = 'success'
           this.$emit('success')
         },
         onFail: () => {
+          this.status = 'fail'
           this.$emit('fail')
         },
         onRefresh: () => {
+          this.status = ''
           this.$emit('refresh')
         },
       }
@@ -78,11 +96,7 @@ export default {
       return this.captchaInstance?.getStatistics()
     },
 
-    getInstance() {
-      return this.captchaInstance
-    },
-
-    destroy() {
+    destroyCaptcha() {
       this.captchaInstance?.destroy()
       this.captchaInstance = null
     },
@@ -97,21 +111,5 @@ export default {
     },
   },
 }
-</script>
 
-<template>
-  <div class="captcha-vue2-wrapper">
-    <div ref="containerRef" class="captcha-container" />
-  </div>
-</template>
-
-<style scoped>
-.captcha-vue2-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.captcha-container {
-  position: relative;
-}
-</style>
+export default sliderCaptchaMixin

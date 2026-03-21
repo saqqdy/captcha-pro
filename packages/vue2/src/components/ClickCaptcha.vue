@@ -1,12 +1,3 @@
-<template>
-  <div class="captcha-vue2-wrapper">
-    <div ref="containerRef" class="captcha-container" />
-    <div v-if="status" class="captcha-status" :class="status">
-      {{ statusText }}
-    </div>
-  </div>
-</template>
-
 <script>
 import { ClickCaptcha } from '@captcha/core'
 
@@ -22,21 +13,13 @@ export default {
     verifyMode: { type: String, default: 'frontend' },
     locale: { type: String, default: 'zh-CN' },
     secretKey: { type: String, default: undefined },
+    backendVerify: { type: Object, default: undefined },
   },
 
   data() {
     return {
       captchaInstance: null,
-      status: '',
     }
-  },
-
-  computed: {
-    statusText() {
-      if (this.status === 'success') return this.locale === 'zh-CN' ? '验证成功' : 'Success'
-      if (this.status === 'fail') return this.locale === 'zh-CN' ? '验证失败' : 'Failed'
-      return ''
-    },
   },
 
   mounted() {
@@ -61,16 +44,14 @@ export default {
         verifyMode: this.verifyMode,
         locale: this.locale,
         security: this.secretKey ? { secretKey: this.secretKey } : undefined,
+        backendVerify: this.backendVerify,
         onSuccess: () => {
-          this.status = 'success'
           this.$emit('success')
         },
         onFail: () => {
-          this.status = 'fail'
           this.$emit('fail')
         },
         onRefresh: () => {
-          this.status = ''
           this.$emit('refresh')
         },
       }
@@ -91,6 +72,10 @@ export default {
       return this.captchaInstance?.getStatistics()
     },
 
+    getInstance() {
+      return this.captchaInstance
+    },
+
     destroy() {
       this.captchaInstance?.destroy()
       this.captchaInstance = null
@@ -105,6 +90,12 @@ export default {
 }
 </script>
 
+<template>
+  <div class="captcha-vue2-wrapper">
+    <div ref="containerRef" class="captcha-container" />
+  </div>
+</template>
+
 <style scoped>
 .captcha-vue2-wrapper {
   position: relative;
@@ -113,27 +104,5 @@ export default {
 
 .captcha-container {
   position: relative;
-}
-
-.captcha-status {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 14px;
-  z-index: 10;
-}
-
-.captcha-status.success {
-  background: rgba(82, 196, 26, 0.9);
-}
-
-.captcha-status.fail {
-  background: rgba(245, 34, 45, 0.9);
 }
 </style>

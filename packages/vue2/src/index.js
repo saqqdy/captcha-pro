@@ -1,23 +1,31 @@
-import ClickCaptcha from './components/ClickCaptcha.vue'
 // Components
+import ClickCaptcha from './components/ClickCaptcha.vue'
+import PopupCaptcha from './components/PopupCaptcha.vue'
 import SliderCaptcha from './components/SliderCaptcha.vue'
 
-// Re-export core
+// Mixins (for advanced usage)
+import { clickCaptchaMixin } from './mixins/clickCaptcha'
+import { sliderCaptchaMixin } from './mixins/sliderCaptcha'
+
+// Re-export components
+export { ClickCaptcha, PopupCaptcha, SliderCaptcha }
+
+// Re-export mixins
+export { clickCaptchaMixin, sliderCaptchaMixin }
+
+// Re-export types and core
 export * from '@captcha/core'
 
-// Export components
-export { SliderCaptcha, ClickCaptcha }
+// Version
+export const version = '__VERSION__'
 
 // Install function for Vue.use()
 export const CaptchaPro = {
   install(Vue) {
     Vue.component('SliderCaptcha', SliderCaptcha)
     Vue.component('ClickCaptcha', ClickCaptcha)
+    Vue.component('PopupCaptcha', PopupCaptcha)
   },
 }
 
-// Version
-export const version = '1.0.0'
-
-// Default export
 export default CaptchaPro

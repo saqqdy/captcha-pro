@@ -1,28 +1,41 @@
-<script>
-import { SliderCaptcha } from '@captcha/core'
+/**
+ * Click Captcha Mixin for Vue 2
+ *
+ * Usage:
+ * import { clickCaptchaMixin } from 'captcha-pro-vue2/mixins'
+ *
+ * export default {
+ *   mixins: [clickCaptchaMixin],
+ *   // ...
+ * }
+ */
+import { ClickCaptcha } from '@captcha/core'
 
-export default {
-  name: 'SliderCaptcha',
-
+export const clickCaptchaMixin = {
   props: {
     width: { type: Number, default: 300 },
     height: { type: Number, default: 170 },
     bgImage: { type: String, default: undefined },
-    sliderImage: { type: String, default: undefined },
-    sliderWidth: { type: Number, default: 42 },
-    sliderHeight: { type: Number, default: 42 },
-    precision: { type: Number, default: 5 },
+    count: { type: Number, default: 3 },
     showRefresh: { type: Boolean, default: true },
     verifyMode: { type: String, default: 'frontend' },
     locale: { type: String, default: 'zh-CN' },
     secretKey: { type: String, default: undefined },
-    backendVerify: { type: Object, default: undefined },
   },
 
   data() {
     return {
       captchaInstance: null,
+      status: '',
     }
+  },
+
+  computed: {
+    statusText() {
+      if (this.status === 'success') return this.locale === 'zh-CN' ? '验证成功' : 'Success'
+      if (this.status === 'fail') return this.locale === 'zh-CN' ? '验证失败' : 'Failed'
+      return ''
+    },
   },
 
   mounted() {
@@ -30,7 +43,7 @@ export default {
   },
 
   beforeDestroy() {
-    this.destroy()
+    this.destroyCaptcha()
   },
 
   methods: {
@@ -42,27 +55,26 @@ export default {
         width: this.width,
         height: this.height,
         bgImage: this.bgImage,
-        sliderImage: this.sliderImage,
-        sliderWidth: this.sliderWidth,
-        sliderHeight: this.sliderHeight,
-        precision: this.precision,
+        count: this.count,
         showRefresh: this.showRefresh,
         verifyMode: this.verifyMode,
         locale: this.locale,
         security: this.secretKey ? { secretKey: this.secretKey } : undefined,
-        backendVerify: this.backendVerify,
         onSuccess: () => {
+          this.status = 'success'
           this.$emit('success')
         },
         onFail: () => {
+          this.status = 'fail'
           this.$emit('fail')
         },
         onRefresh: () => {
+          this.status = ''
           this.$emit('refresh')
         },
       }
 
-      this.captchaInstance = new SliderCaptcha(options)
+      this.captchaInstance = new ClickCaptcha(options)
       this.$emit('ready', this.captchaInstance)
     },
 
@@ -78,11 +90,7 @@ export default {
       return this.captchaInstance?.getStatistics()
     },
 
-    getInstance() {
-      return this.captchaInstance
-    },
-
-    destroy() {
+    destroyCaptcha() {
       this.captchaInstance?.destroy()
       this.captchaInstance = null
     },
@@ -92,26 +100,7 @@ export default {
     bgImage() {
       this.refresh()
     },
-    sliderImage() {
-      this.refresh()
-    },
   },
 }
-</script>
 
-<template>
-  <div class="captcha-vue2-wrapper">
-    <div ref="containerRef" class="captcha-container" />
-  </div>
-</template>
-
-<style scoped>
-.captcha-vue2-wrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.captcha-container {
-  position: relative;
-}
-</style>
+export default clickCaptchaMixin
