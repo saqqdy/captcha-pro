@@ -1,57 +1,3 @@
-<template>
-  <view class="captcha-container" :style="{ width: width + 'px', height: height + 60 + 'px' }">
-    <!-- Captcha area -->
-    <view class="captcha-area" :style="{ width: width + 'px', height: height + 'px' }">
-      <!-- Background canvas -->
-      <canvas
-        canvas-id="bgCanvas"
-        id="bgCanvas"
-        class="bg-canvas"
-        :style="{ width: width + 'px', height: height + 'px' }"
-      />
-
-      <!-- Slider canvas -->
-      <canvas
-        canvas-id="sliderCanvas"
-        id="sliderCanvas"
-        class="slider-canvas"
-        :style="{
-          width: sliderWidth + 'px',
-          height: sliderHeight + 'px',
-          top: sliderY + 'px',
-          left: sliderX + 'px'
-        }"
-        @touchstart="onTouchStart"
-        @touchmove="onTouchMove"
-        @touchend="onTouchEnd"
-      />
-
-      <!-- Refresh button -->
-      <view v-if="showRefresh" class="refresh-btn" @tap="refresh">
-        <text class="refresh-icon">⟳</text>
-      </view>
-
-      <!-- Status overlay -->
-      <view v-if="status" class="status-overlay" :class="status">
-        <text>{{ status === 'success' ? '验证成功' : '验证失败' }}</text>
-      </view>
-    </view>
-
-    <!-- Slider bar -->
-    <view class="slider-bar" :style="{ width: width + 'px' }">
-      <view
-        class="slider-thumb"
-        :style="{ left: sliderX + 'px' }"
-        @touchstart="onTouchStart"
-        @touchmove="onTouchMove"
-        @touchend="onTouchEnd"
-      >
-        <text class="slider-arrow">→</text>
-      </view>
-    </view>
-  </view>
-</template>
-
 <script>
 export default {
   name: 'SliderCaptcha',
@@ -158,6 +104,60 @@ export default {
   },
 }
 </script>
+
+<template>
+  <view class="captcha-container" :style="{ width: `${width  }px`, height: `${height + 60  }px` }">
+    <!-- Captcha area -->
+    <view class="captcha-area" :style="{ width: `${width  }px`, height: `${height  }px` }">
+      <!-- Background canvas -->
+      <canvas
+        canvas-id="bgCanvas"
+        id="bgCanvas"
+        class="bg-canvas"
+        :style="{ width: `${width  }px`, height: `${height  }px` }"
+      />
+
+      <!-- Slider canvas -->
+      <canvas
+        canvas-id="sliderCanvas"
+        id="sliderCanvas"
+        class="slider-canvas"
+        :style="{
+          width: `${sliderWidth  }px`,
+          height: `${sliderHeight  }px`,
+          top: `${sliderY  }px`,
+          left: `${sliderX  }px`
+        }"
+        @touchstart="onTouchStart"
+        @touchmove="onTouchMove"
+        @touchend="onTouchEnd"
+      />
+
+      <!-- Refresh button -->
+      <view v-if="showRefresh" class="refresh-btn" @tap="refresh">
+        <text class="refresh-icon">⟳</text>
+      </view>
+
+      <!-- Status overlay -->
+      <view v-if="status" class="status-overlay" :class="status">
+        <text>{{ status === 'success' ? '验证成功' : '验证失败' }}</text>
+      </view>
+    </view>
+
+    <!-- Slider bar -->
+    <view class="slider-bar" :style="{ width: `${width  }px` }">
+      <view
+        class="slider-thumb"
+        :style="{ left: `${sliderX  }px` }"
+        @touchstart="onTouchStart"
+        @touchmove="onTouchMove"
+        @touchend="onTouchEnd"
+      >
+        <text class="slider-arrow">→</text>
+      </view>
+    </view>
+  </view>
+</template>
 
 <style scoped>
 .captcha-container {

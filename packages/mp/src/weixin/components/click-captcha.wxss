@@ -1,0 +1,102 @@
+.captcha-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.captcha-area {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.bg-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.click-point {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: rgba(24, 144, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.click-point text {
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.refresh-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  z-index: 20;
+}
+
+.refresh-icon {
+  font-size: 16px;
+  color: #666;
+}
+
+.status-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  z-index: 30;
+}
+
+.status-overlay.success {
+  background: rgba(82, 196, 26, 0.9);
+}
+
+.status-overlay.fail {
+  background: rgba(245, 34, 45, 0.9);
+}
+
+.info-bar {
+  height: 40px;
+  margin-top: 10px;
+  padding: 0 12px;
+  background: #f7f9fa;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info-text {
+  font-size: 14px;
+  color: #333;
+}
+
+.progress {
+  font-size: 14px;
+  color: #1890ff;
+  font-weight: bold;
+}

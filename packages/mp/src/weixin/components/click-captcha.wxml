@@ -1,0 +1,47 @@
+<view class="captcha-container" style="width: {{width}}px; height: {{height + 60}}px;">
+  <!-- Captcha area -->
+  <view class="captcha-area" style="width: {{width}}px; height: {{height}}px;">
+    <!-- Background canvas -->
+    <canvas
+      type="2d"
+      id="bgCanvas"
+      canvas-id="bgCanvas"
+      class="bg-canvas"
+      style="width: {{width}}px; height: {{height}}px;"
+      catchtap="onCanvasTap"
+    />
+
+    <!-- Click points indicators -->
+    <view
+      wx:for="{{clickPoints}}"
+      wx:key="index"
+      class="click-point"
+      style="left: {{item.x - 12}}px; top: {{item.y - 12}}px;"
+    >
+      <text>{{index + 1}}</text>
+    </view>
+
+    <!-- Refresh button -->
+    <view
+      wx:if="{{showRefresh}}"
+      class="refresh-btn"
+      catchtap="handleRefresh"
+    >
+      <text class="refresh-icon">⟳</text>
+    </view>
+
+    <!-- Status overlay -->
+    <view
+      wx:if="{{status}}"
+      class="status-overlay {{status}}"
+    >
+      <text>{{status === 'success' ? '验证成功' : '验证失败'}}</text>
+    </view>
+  </view>
+
+  <!-- Info bar -->
+  <view class="info-bar" style="width: {{width}}px;">
+    <text class="info-text">请依次点击: {{tipText}}</text>
+    <text class="progress">{{clickPoints.length}}/{{count}}</text>
+  </view>
+</view>
