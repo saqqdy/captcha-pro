@@ -1,0 +1,26 @@
+name: captcha_pro
+description: A Flutter captcha verification package with slider and click captcha support.
+version: 1.0.0
+homepage: https://github.com/saqqdy/captcha-pro
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.captcha.pro
+        pluginClass: CaptchaProPlugin
+      ios:
+        pluginClass: CaptchaProPlugin
