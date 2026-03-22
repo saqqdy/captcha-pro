@@ -1,0 +1,167 @@
+/* Click page styles - using rpx */
+
+.click-page {
+  padding: 24rpx;
+  background: #f5f5f5;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0 32rpx;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.locale-btn {
+  padding: 12rpx 24rpx;
+  background: #f0f0f0;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* Info card */
+.info-card {
+  background: #e6f7ff;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.info-text {
+  font-size: 26rpx;
+  color: #1890ff;
+  line-height: 1.5;
+}
+
+/* Options card */
+.options-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0;
+}
+
+.option-row:not(:last-child) {
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.option-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* Picker */
+.picker {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 20rpx;
+  background: #f7f9fa;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  color: #333;
+}
+
+.picker-arrow {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* Switch */
+.switch {
+  width: 80rpx;
+  height: 44rpx;
+  background: #ddd;
+  border-radius: 22rpx;
+  padding: 4rpx;
+  box-sizing: border-box;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.switch.on {
+  background: #1890ff;
+}
+
+.switch-dot {
+  width: 36rpx;
+  height: 36rpx;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.switch.on .switch-dot {
+  transform: translateX(36rpx);
+}
+
+/* Captcha box */
+.captcha-box {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24rpx;
+}
+
+/* Buttons */
+.btn-group {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.btn:active {
+  opacity: 0.85;
+}
+
+/* Status card */
+.status-card {
+  padding: 24rpx;
+  border-radius: 12rpx;
+  text-align: center;
+  font-size: 28rpx;
+}
+
+.status-card.success {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.status-card.fail {
+  background: #fff2f0;
+  color: #ff4d4f;
+}
