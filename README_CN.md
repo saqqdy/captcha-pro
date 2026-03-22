@@ -29,6 +29,26 @@
 - [CodeSandbox](https://codesandbox.io/p/github/saqqdy/captcha-pro/master?file=examples/html/index.html)
 - [Gitpod](https://gitpod.io/#https://github.com/saqqdy/captcha-pro)
 
+## 多平台支持
+
+Captcha Pro 支持 **10+ 平台**，API 保持一致：
+
+| 平台 | 包名 | 描述 |
+|------|------|------|
+| Web (原生 JS) | `captcha-pro` | 核心包，通用支持 |
+| Vue 2 | `captcha-pro-vue2` | Options API + Mixins |
+| Vue 3 | `captcha-pro-vue3` | Composition API + Composables |
+| React | `captcha-pro-react` | Hooks 组件 |
+| 微信小程序 | `captcha-pro-mp` | WXML/WXSS/JS |
+| uni-app | `captcha-pro-mp` | Vue 跨端 |
+| Taro 3 | `captcha-pro-mp` | React 跨端 |
+| Flutter | `captcha_pro` | Dart Widgets |
+| Android | `captcha-sdk` | 原生 Kotlin SDK |
+| Android Compose | `captcha-compose` | Jetpack Compose |
+| iOS | `CaptchaPro` | Swift SDK (UIKit + SwiftUI) |
+
+详见 [PLATFORM_ROADMAP.md](./docs/PLATFORM_ROADMAP.md)。
+
 ## 快速开始
 
 ```bash
@@ -80,14 +100,78 @@ new SliderCaptcha({
 ## 安装
 
 ```bash
-# 使用 pnpm
-$ pnpm install captcha-pro
+# 核心包 (Web/原生 JS)
+$ pnpm add captcha-pro
 
-# 使用 npm
-$ npm install captcha-pro --save
+# Vue 2
+$ pnpm add captcha-pro-vue2
 
-# 使用 yarn
-$ yarn add captcha-pro
+# Vue 3
+$ pnpm add captcha-pro-vue3
+
+# React
+$ pnpm add captcha-pro-react
+
+# 小程序 (微信/uni-app/Taro)
+$ pnpm add captcha-pro-mp
+
+# Flutter - 添加到 pubspec.yaml
+captcha_pro: ^1.1.0
+
+# Android - 添加到 build.gradle
+implementation 'com.captcha.pro:captcha-sdk:1.1.0'
+
+# iOS - CocoaPods
+pod 'CaptchaPro', '~> 1.1.0'
+```
+
+## 框架使用
+
+### Vue 3
+
+```vue
+<template>
+  <SliderCaptcha
+    :width="300"
+    :height="170"
+    @success="onSuccess"
+    @fail="onFail"
+  />
+</template>
+
+<script setup lang="ts">
+import { SliderCaptcha } from 'captcha-pro-vue3'
+
+const onSuccess = () => console.log('验证通过!')
+</script>
+```
+
+### React
+
+```tsx
+import { SliderCaptcha } from 'captcha-pro-react'
+
+function App() {
+  return (
+    <SliderCaptcha
+      width={300}
+      height={170}
+      onSuccess={() => console.log('验证通过!')}
+    />
+  )
+}
+```
+
+### Flutter
+
+```dart
+import 'package:captcha_pro/captcha_pro.dart';
+
+SliderCaptcha(
+  width: 300,
+  height: 170,
+  onSuccess: () => print('验证通过!'),
+)
 ```
 
 ## 使用

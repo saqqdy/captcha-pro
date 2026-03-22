@@ -16,6 +16,11 @@
     "prettier": "prettier --write \"**/*.{js,ts,jsx,tsx,vue,yml,json,md}\"",
     "clean": "turbo clean && rm -rf node_modules",
     "dev": "pnpm --filter @captcha/core watch",
+    "dev:core": "pnpm --filter @captcha/core watch",
+    "dev:vue3": "pnpm --filter @captcha/vue3 watch",
+    "dev:vue2": "pnpm --filter @captcha/vue2 watch",
+    "dev:react": "pnpm --filter @captcha/react watch",
+    "dev:mp": "pnpm --filter @captcha/mp watch",
     "pub": "pnpm -r publish --access public",
     "changeset": "changeset",
     "version": "changeset version"

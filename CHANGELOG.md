@@ -2,6 +2,77 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-03-20
+
+🚀 **Multi-Platform Release** - Captcha Pro now supports 10+ platforms!
+
+### New Packages
+
+#### Web Frameworks
+- **`captcha-pro-vue2`** - Vue 2 component library with Options API + Mixins
+  - `SliderCaptcha`, `ClickCaptcha`, `PopupCaptcha` components
+  - `sliderCaptchaMixin`, `clickCaptchaMixin` mixins
+- **`captcha-pro-vue3`** - Vue 3 component library with Composition API
+  - `SliderCaptcha`, `ClickCaptcha`, `PopupCaptcha` components
+  - `useSliderCaptcha`, `useClickCaptcha` composables
+- **`captcha-pro-react`** - React component library with Hooks
+  - `SliderCaptcha`, `ClickCaptcha`, `PopupCaptcha` components
+  - `useSliderCaptcha`, `useClickCaptcha` hooks
+
+#### Mini-Program Platforms
+- **`captcha-pro-mp`** - Mini-program package supporting:
+  - **WeChat Mini-Program** - WXML/WXSS/JS components
+  - **uni-app** - Vue-based cross-platform components
+  - **Taro 3** - React-based cross-platform components
+
+#### Mobile Platforms
+- **Flutter** (`captcha_pro`) - Dart package with widgets
+  - `SliderCaptcha`, `ClickCaptcha`, `PopupCaptcha` widgets
+  - `CaptchaGenerator` for image generation
+  - `SliderPainter`, `ClickPainter` custom painters
+- **Android SDK** (`captcha-sdk`) - Native Kotlin SDK
+  - `SliderCaptchaView`, `ClickCaptchaView`, `CaptchaDialog` views
+  - `CaptchaGenerator` for bitmap generation
+  - `CanvasRenderer`, `ShapeDrawer` for custom rendering
+- **Android Compose** (`captcha-compose`) - Jetpack Compose components
+  - `SliderCaptcha`, `ClickCaptcha` composables
+- **iOS SDK** (`CaptchaPro`) - Native Swift SDK
+  - UIKit: `SliderCaptchaView`, `ClickCaptchaView`
+  - SwiftUI: `SliderCaptcha`, `ClickCaptcha` views
+  - `CaptchaGenerator`, `CanvasRenderer` for image generation
+  - CocoaPods and Swift Package Manager support
+
+### Platform Compatibility Matrix
+
+| Platform | Package | Tech Stack | Status |
+|----------|---------|------------|--------|
+| Web (Vanilla JS) | `captcha-pro` | TypeScript/Canvas | ✅ Stable |
+| Vue 2 | `captcha-pro-vue2` | Options API + Mixins | ✅ Stable |
+| Vue 3 | `captcha-pro-vue3` | Composition API | ✅ Stable |
+| React 17/18 | `captcha-pro-react` | Hooks | ✅ Stable |
+| WeChat Mini-Program | `captcha-pro-mp/weixin` | WXML/WXSS/JS | ✅ Stable |
+| uni-app | `captcha-pro-mp/uniapp` | Vue | ✅ Stable |
+| Taro 3 | `captcha-pro-mp/taro` | React | ✅ Stable |
+| Flutter | `captcha_pro` | Dart/CustomPainter | ✅ Stable |
+| Android | `captcha-sdk` | Kotlin/Canvas | ✅ Stable |
+| Android Compose | `captcha-compose` | Jetpack Compose | ✅ Stable |
+| iOS | `CaptchaPro` | Swift/CoreGraphics | ✅ Stable |
+
+### Architecture Improvements
+
+- **Abstract Renderer Interface** - Unified rendering API for all platforms
+- **Core Logic Separation** - Framework-agnostic core with platform adapters
+- **Type Definitions** - Full TypeScript support across all packages
+- **Monorepo Structure** - Organized with pnpm workspaces
+
+### Documentation
+
+- Added `PLATFORM_ROADMAP.md` - Detailed multi-platform implementation guide
+- Updated README with multi-platform installation instructions
+- Added code examples for each platform
+
+---
+
 ## [1.0.0] - 2025-03-17
 
 🎉 **Initial Release** - Captcha Pro v1.0 is officially released!

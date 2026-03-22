@@ -13,7 +13,7 @@ export const banner =
 	`/*!\n` +
 	` * ${pkg.name} v${pkg.version}\n` +
 	` * ${pkg.description}\n` +
-	` * (c) 2021-${new Date().getFullYear()} saqqdy <https://github.com/saqqdy> \n` +
+	` * (c) 2021-present saqqdy <https://github.com/saqqdy> \n` +
 	` * Released under the MIT License.\n` +
 	` */`
 

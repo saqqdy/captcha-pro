@@ -8,3 +8,4 @@ coverage/
 *.bak
 *_bak
 stats.html
+.turbo/

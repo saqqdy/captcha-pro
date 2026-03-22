@@ -29,6 +29,26 @@ Slider Puzzle · Click Verification · Invisible Captcha · Popup Mode
 - [CodeSandbox](https://codesandbox.io/p/github/saqqdy/captcha-pro/master?file=examples/html/index.html)
 - [Gitpod](https://gitpod.io/#https://github.com/saqqdy/captcha-pro)
 
+## Multi-Platform Support
+
+Captcha Pro supports **10+ platforms** with consistent APIs:
+
+| Platform | Package | Description |
+|----------|---------|-------------|
+| Web (Vanilla JS) | `captcha-pro` | Core package, works everywhere |
+| Vue 2 | `captcha-pro-vue2` | Options API + Mixins |
+| Vue 3 | `captcha-pro-vue3` | Composition API + Composables |
+| React | `captcha-pro-react` | Hooks-based components |
+| WeChat Mini-Program | `captcha-pro-mp` | WXML/WXSS/JS |
+| uni-app | `captcha-pro-mp` | Vue cross-platform |
+| Taro 3 | `captcha-pro-mp` | React cross-platform |
+| Flutter | `captcha_pro` | Dart widgets |
+| Android | `captcha-sdk` | Native Kotlin SDK |
+| Android Compose | `captcha-compose` | Jetpack Compose |
+| iOS | `CaptchaPro` | Swift SDK (UIKit + SwiftUI) |
+
+See [PLATFORM_ROADMAP.md](./docs/PLATFORM_ROADMAP.md) for detailed implementation.
+
 ## Quick Start
 
 ```bash
@@ -80,14 +100,78 @@ new SliderCaptcha({
 ## Installing
 
 ```bash
-# use pnpm
-$ pnpm install captcha-pro
+# Core package (Web/Vanilla JS)
+$ pnpm add captcha-pro
 
-# use npm
-$ npm install captcha-pro --save
+# Vue 2
+$ pnpm add captcha-pro-vue2
 
-# use yarn
-$ yarn add captcha-pro
+# Vue 3
+$ pnpm add captcha-pro-vue3
+
+# React
+$ pnpm add captcha-pro-react
+
+# Mini-program (WeChat/uni-app/Taro)
+$ pnpm add captcha-pro-mp
+
+# Flutter - add to pubspec.yaml
+captcha_pro: ^1.1.0
+
+# Android - add to build.gradle
+implementation 'com.captcha.pro:captcha-sdk:1.1.0'
+
+# iOS - CocoaPods
+pod 'CaptchaPro', '~> 1.1.0'
+```
+
+## Framework Usage
+
+### Vue 3
+
+```vue
+<template>
+  <SliderCaptcha
+    :width="300"
+    :height="170"
+    @success="onSuccess"
+    @fail="onFail"
+  />
+</template>
+
+<script setup lang="ts">
+import { SliderCaptcha } from 'captcha-pro-vue3'
+
+const onSuccess = () => console.log('Passed!')
+</script>
+```
+
+### React
+
+```tsx
+import { SliderCaptcha } from 'captcha-pro-react'
+
+function App() {
+  return (
+    <SliderCaptcha
+      width={300}
+      height={170}
+      onSuccess={() => console.log('Passed!')}
+    />
+  )
+}
+```
+
+### Flutter
+
+```dart
+import 'package:captcha_pro/captcha_pro.dart';
+
+SliderCaptcha(
+  width: 300,
+  height: 170,
+  onSuccess: () => print('Passed!'),
+)
 ```
 
 ## Usage
