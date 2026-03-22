@@ -1,0 +1,9 @@
+{
+  "name": "captcha-weixin-example",
+  "version": "1.0.0",
+  "description": "微信小程序验证码示例",
+  "private": true,
+  "dependencies": {
+    "@captcha/mp": "workspace:*"
+  }
+}

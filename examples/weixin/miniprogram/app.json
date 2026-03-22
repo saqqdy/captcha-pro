@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/slider/slider",
+    "pages/click/click"
+  ],
+  "window": {
+    "navigationBarTitleText": "验证码示例",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f5f5f5"
+  },
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
+}

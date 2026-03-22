@@ -1,0 +1,13 @@
+<view class="container">
+  <view class="title">验证码示例</view>
+
+  <view class="section">
+    <view class="section-title">滑块验证码</view>
+    <navigator url="/pages/slider/slider" class="btn">打开滑块验证</navigator>
+  </view>
+
+  <view class="section">
+    <view class="section-title">点击验证码</view>
+    <navigator url="/pages/click/click" class="btn">打开点击验证</navigator>
+  </view>
+</view>

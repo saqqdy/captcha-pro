@@ -1,0 +1,18 @@
+<view class="container">
+  <view class="title">点击验证码</view>
+
+  <view class="section">
+    <click-captcha
+      width="{{300}}"
+      height="{{170}}"
+      count="{{3}}"
+      show-refresh="{{true}}"
+      bind:success="onSuccess"
+      bind:fail="onFail"
+    />
+  </view>
+
+  <view class="section" wx:if="{{status}}">
+    <text>验证结果: {{status}}</text>
+  </view>
+</view>

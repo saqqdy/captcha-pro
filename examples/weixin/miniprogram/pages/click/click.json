@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "点击验证码",
+  "usingComponents": {
+    "click-captcha": "@captcha/mp/weixin/components/click-captcha"
+  }
+}
