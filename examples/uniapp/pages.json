@@ -1,0 +1,28 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "验证码示例"
+      }
+    },
+    {
+      "path": "pages/slider/index",
+      "style": {
+        "navigationBarTitleText": "滑块验证码"
+      }
+    },
+    {
+      "path": "pages/click/index",
+      "style": {
+        "navigationBarTitleText": "点击验证码"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "验证码示例",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f5f5f5"
+  }
+}
