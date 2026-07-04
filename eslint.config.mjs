@@ -14,4 +14,25 @@ export default eslintConfig({
 	stylistic: false,
 	type: 'lib',
 	typescript: true,
-})
+}).then(configs => [
+	...configs,
+	// WeChat Mini-program globals (Component, wx)
+	{
+		files: ['packages/mp/src/weixin/**/*.{js,ts}'],
+		languageOptions: {
+			globals: {
+				Component: 'readonly',
+				wx: 'readonly',
+			},
+		},
+	},
+	// uni-app globals (uni)
+	{
+		files: ['packages/mp/src/uniapp/**/*.{js,ts,vue}'],
+		languageOptions: {
+			globals: {
+				uni: 'readonly',
+			},
+		},
+	},
+])
