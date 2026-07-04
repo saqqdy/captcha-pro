@@ -1,47 +1,34 @@
-<view class="captcha-container" style="width: {{width}}px; height: {{height + 60}}px;">
-  <!-- Captcha area -->
-  <view class="captcha-area" style="width: {{width}}px; height: {{height}}px;">
-    <!-- Background canvas -->
-    <canvas
-      type="2d"
-      id="bgCanvas"
-      canvas-id="bgCanvas"
-      class="bg-canvas"
-      style="width: {{width}}px; height: {{height}}px;"
-    />
+<view class="captcha-container" style="width: {{width}}px;">
+  <view class="captcha-area" style="width: {{width}}px; height: {{height}}px; border-radius: 8rpx;">
+    <image wx:if="{{bgImage}}" src="{{bgImage}}" mode="aspectFill" class="bg-image" style="width: {{width}}px; height: {{height}}px;" />
+    <view wx:else class="captcha-loading" style="width: {{width}}px; height: {{height}}px;">
+      <text>{{errorMsg || '加载中...'}}</text>
+    </view>
 
-    <!-- Slider canvas -->
-    <canvas
-      type="2d"
-      id="sliderCanvas"
-      canvas-id="sliderCanvas"
-      class="slider-canvas"
+    <!-- Slider block (transparent镂空图 from backend) -->
+    <image
+      wx:if="{{sliderImage && !loading}}"
+      src="{{sliderImage}}"
+      class="slider-block"
       style="width: {{sliderWidth}}px; height: {{sliderHeight}}px; top: {{sliderY}}px; left: {{sliderX}}px;"
-      catchtouchstart="onTouchStart"
-      catchtouchmove="onTouchMove"
-      catchtouchend="onTouchEnd"
     />
 
     <!-- Refresh button -->
-    <view
-      wx:if="{{showRefresh}}"
-      class="refresh-btn"
-      catchtap="handleRefresh"
-    >
+    <view wx:if="{{showRefresh && !loading}}" class="refresh-btn" catchtap="handleRefresh">
       <text class="refresh-icon">⟳</text>
     </view>
 
     <!-- Status overlay -->
-    <view
-      wx:if="{{status}}"
-      class="status-overlay {{status}}"
-    >
-      <text>{{status === 'success' ? '验证成功' : '验证失败'}}</text>
+    <view wx:if="{{status}}" class="status-overlay {{status}}">
+      <view class="status-icon"><text>{{status === 'success' ? '✓' : '✕'}}</text></view>
+      <text class="status-text">{{status === 'success' ? '验证成功' : '验证失败'}}</text>
     </view>
   </view>
 
   <!-- Slider bar -->
-  <view class="slider-bar" style="width: {{width}}px;">
+  <view class="slider-bar" style="width: {{width}}px; height: 40px;">
+    <view class="slider-progress" style="width: {{sliderX + sliderWidth}}px;" />
+    <view class="slider-hint"><text>→ 按住滑块，拖动完成验证</text></view>
     <view
       class="slider-thumb"
       style="left: {{sliderX}}px;"

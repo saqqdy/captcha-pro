@@ -2,92 +2,114 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 10px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  align-items: center;
 }
 
 .captcha-area {
   position: relative;
   overflow: hidden;
-  border-radius: 4px;
 }
 
-.bg-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
+.bg-image { display: block; }
+
+.captcha-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 28rpx;
 }
 
-.slider-canvas {
+/* Slider block — transparent镂空图 from backend */
+.slider-block {
   position: absolute;
-  z-index: 10;
+  z-index: 5;
 }
 
 .refresh-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
+  top: 16rpx;
+  right: 16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 4px;
-  z-index: 20;
+  z-index: 10;
+  border: none;
 }
 
-.refresh-icon {
-  font-size: 16px;
-  color: #666;
-}
+.refresh-icon { color: #666; font-size: 28rpx; font-weight: bold; }
 
+/* Status overlay */
 .status-overlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 28px;
+  top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 14px;
+  gap: 16rpx;
+  background: rgba(255, 255, 255, 0.75);
   z-index: 30;
+  animation: captcha-fade-in 0.2s ease;
 }
 
-.status-overlay.success {
-  background: rgba(82, 196, 26, 0.9);
+.status-icon {
+  width: 64rpx; height: 64rpx;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36rpx; color: #fff;
 }
 
-.status-overlay.fail {
-  background: rgba(245, 34, 45, 0.9);
+.status-overlay.success .status-icon { background: rgba(82, 196, 26, 0.85); }
+.status-overlay.fail .status-icon { background: rgba(255, 77, 79, 0.85); }
+
+.status-text { font-size: 26rpx; font-weight: 500; letter-spacing: 1rpx; color: #333; }
+.status-overlay.success .status-text { color: #389e0d; }
+.status-overlay.fail .status-text { color: #cf1322; }
+
+@keyframes captcha-fade-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
 }
 
+/* Slider bar — aligned with core/vue2 */
 .slider-bar {
-  height: 40px;
-  margin-top: 10px;
-  background: #f7f9fa;
-  border-radius: 4px;
   position: relative;
+  background: #f7f9fa;
+  border-radius: 8rpx;
+  margin-top: 10rpx;
+  user-select: none;
 }
+
+.slider-progress {
+  position: absolute; left: 0; top: 0; height: 100%;
+  border: 2rpx solid #f7f9fa; background: #f7f9fa;
+  pointer-events: none; z-index: 1; border-radius: 8rpx;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.slider-hint {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; z-index: 1; white-space: nowrap;
+}
+
+.slider-hint text { font-size: 28rpx; color: #999; }
 
 .slider-thumb {
-  position: absolute;
-  top: 2px;
-  width: 36px;
-  height: 36px;
-  background: #fff;
-  border: 1px solid #e1e4e8;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute; top: 2rpx;
+  width: 36px; height: 36px;
+  background: #fff; border: 2rpx solid #e1e4e8;
+  border-radius: 8rpx;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s ease;
+  z-index: 2;
 }
 
-.slider-arrow {
-  color: #1890ff;
-  font-size: 16px;
-}
+.slider-thumb:active { background: #f5f5f5; }
+.slider-arrow { color: #1991fa; font-size: 32rpx; font-weight: bold; }

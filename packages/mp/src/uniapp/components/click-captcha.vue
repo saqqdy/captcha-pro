@@ -1,468 +1,121 @@
 <script>
-// Chinese vocabulary library (common idioms and words)
-const CHINESE_WORDS = [
-  '一帆风顺', '二龙腾飞', '三阳开泰', '四季平安', '五福临门',
-  '七星高照', '八方来财', '万事如意', '心想事成', '步步高升',
-  '财源广进', '恭喜发财', '龙马精神', '马到成功', '金玉满堂',
-  '花开富贵', '锦绣前程', '吉祥如意', '瑞气盈门', '紫气东来',
-  '风调雨顺', '国泰民安', '繁荣昌盛', '万象更新', '春回大地',
-  '阳光明媚', '奋发图强', '自强不息', '勇往直前', '坚持不懈',
-  '厚德载物', '海纳百川', '宁静致远', '淡泊明志', '天道酬勤',
-  '实事求是', '与时俱进', '开拓创新', '继往开来', '励精图治',
-  '安居乐业', '幸福美满', '和谐共处', '德才兼备', '品学兼优',
-  '诚实守信', '勤劳致富', '艰苦奋斗', '团结友爱', '尊老爱幼',
-  '学无止境', '勤奋好学', '刻苦钻研', '博览群书', '学以致用',
-  '融会贯通', '举一反三', '触类旁通', '温故知新', '循序渐进',
-  '厚积薄发', '持之以恒', '孜孜不倦', '废寝忘食', '夜以继日',
-  '春暖花开', '秋高气爽', '山清水秀', '鸟语花香', '绿树成荫',
-  '风和日丽', '云淡风轻', '晴空万里', '皓月当空', '繁星闪烁',
-  '科技创新', '人工智能', '云计算', '大数据', '物联网',
-  '智慧城市', '数字经济', '智能制造', '绿色发展', '生态环保',
-]
-
 export default {
   name: 'ClickCaptcha',
-
   props: {
     width: { type: Number, default: 300 },
     height: { type: Number, default: 170 },
-    bgImage: { type: String, default: '' },
-    count: { type: Number, default: 3 },
     showRefresh: { type: Boolean, default: true },
-    precision: { type: Number, default: 25 },
+    backend: { type: Object, required: true },
   },
-
   data() {
     return {
-      status: '',
-      targetPoints: [],
-      clickPoints: [],
+      bgImage: '',
+      captchaId: '',
       clickTexts: [],
       clickCharImages: [],
-      decoyTexts: [],
-      decoyPoints: [],
+      clickMarkers: [],
+      status: '',
+      loading: true,
+      errorMsg: '',
     }
   },
-
-  mounted() {
-    this.initCanvas()
-  },
-
+  mounted() { this.loadCaptcha() },
   methods: {
-    initCanvas() {
-      this.bgCtx = uni.createCanvasContext('bgCanvas', this)
-      this.clickCtx = uni.createCanvasContext('clickCanvas', this)
-      this.refresh()
+    async loadCaptcha() {
+      this.loading = true; this.errorMsg = ''; this.status = ''; this.clickMarkers = []; this.clickTexts = []; this.clickCharImages = []
+      try {
+        const res = await this._fetch('getCaptcha', { type: 'click', width: this.width, height: this.height })
+        if (!res.success || !res.data) throw new Error(res.message || 'Failed to get captcha')
+        this.bgImage = res.data.bgImage; this.captchaId = res.data.captchaId
+        this.clickTexts = res.data.clickTexts || []; this.clickCharImages = res.data.clickCharImages || []
+      } catch (err) { this.errorMsg = err.message || 'Network error'; this.$emit('error', err) } finally { this.loading = false }
     },
-
-    refresh() {
-      this.clickPoints = []
-      this.targetPoints = []
-      this.clickTexts = []
-      this.clickCharImages = []
-      this.decoyTexts = []
-      this.decoyPoints = []
-      this.status = ''
-
-      if (this.bgImage) {
-        this.loadBackgroundImage()
-      } else {
-        this.generateCaptcha()
-      }
-
-      this.$emit('refresh')
+    onAreaTap(e) {
+      if (this.status || this.loading) return
+      if (this.clickMarkers.length >= this.clickTexts.length) return
+      const query = uni.createSelectorQuery().in(this)
+      query.select('.captcha-area').boundingClientRect((rect) => {
+        if (!rect) return
+        const touch = e.detail
+        const clientX = touch.clientX ?? touch.x ?? 0
+        const clientY = touch.clientY ?? touch.y ?? 0
+        const x = clientX - rect.left
+        const y = clientY - rect.top
+        const newMarkers = [...this.clickMarkers, { x, y, index: this.clickMarkers.length + 1 }]
+        this.clickMarkers = newMarkers
+        if (newMarkers.length >= this.clickTexts.length) setTimeout(() => this.verify(), 200)
+      }).exec()
     },
-
-    loadBackgroundImage() {
-      // In real app, load image and draw
-      this.generateCaptcha()
+    async verify() {
+      if (this.status || this.loading || !this.captchaId) return; this.loading = true
+      try {
+        const pts = this.clickMarkers.map(m => ({ x: m.x, y: m.y }))
+        const res = await this._fetch('verify', { captchaId: this.captchaId, type: 'click', target: pts })
+        if (res.success) { this.status = 'success'; this.$emit('success', res.data) }
+        else { this.status = 'fail'; this.$emit('fail'); setTimeout(() => this.loadCaptcha(), 800) }
+      } catch (err) { this.$emit('error', err); this.status = 'fail'; setTimeout(() => this.loadCaptcha(), 800) } finally { this.loading = false }
     },
-
-    generateCaptcha() {
-      const { width, height, count } = this
-
-      // Generate random text
-      const randomWord = CHINESE_WORDS[Math.floor(Math.random() * CHINESE_WORDS.length)]
-      let chars = ''
-      if (randomWord.length >= count) {
-        chars = randomWord.slice(0, count)
-      } else {
-        chars = randomWord
-        while (chars.length < count) {
-          const extraWord = CHINESE_WORDS[Math.floor(Math.random() * CHINESE_WORDS.length)]
-          chars += extraWord.slice(0, count - chars.length)
-        }
-      }
-
-      this.clickTexts = chars.split('').slice(0, count)
-      this.generateClickPoints()
-    },
-
-    generateClickPoints() {
-      const { width, height } = this
-      const ctx = this.bgCtx
-      const fontSize = 20
-      const padding = fontSize + 10
-
-      // Draw gradient background
-      const hue1 = Math.floor(Math.random() * 360)
-      const hue2 = (hue1 + Math.floor(Math.random() * 60)) % 360
-
-      // Create gradient (uni-app doesn't support createLinearGradient well, use solid color)
-      ctx.setFillStyle(`hsl(${hue1}, 70%, 85%)`)
-      ctx.fillRect(0, 0, width, height)
-
-      // Draw decorative shapes
-      for (let i = 0; i < 8; i++) {
-        const shapeHue = (hue1 + Math.floor(Math.random() * 120)) % 360
-        ctx.setFillStyle(`hsla(${shapeHue}, 60%, 60%, 0.15)`)
-        const x = Math.floor(Math.random() * (width - 40))
-        const y = Math.floor(Math.random() * (height - 40))
-        const size = Math.floor(Math.random() * 40) + 40
-        ctx.beginPath()
-        ctx.arc(x, y, size / 2, 0, Math.PI * 2)
-        ctx.fill()
-      }
-
-      // Generate decoy characters
-      const decoyCount = Math.floor(Math.random() * 2) + 1
-      const usedChars = new Set(this.clickTexts)
-
-      for (let i = 0; i < decoyCount; i++) {
-        let decoyChar = '', attempts = 0
-        while (!decoyChar && attempts < 50) {
-          const randomWord = CHINESE_WORDS[Math.floor(Math.random() * CHINESE_WORDS.length)]
-          for (const char of randomWord) {
-            if (!usedChars.has(char)) {
-              decoyChar = char
-              usedChars.add(char)
-              break
-            }
-          }
-          attempts++
-        }
-        if (decoyChar) {
-          this.decoyTexts.push(decoyChar)
-        }
-      }
-
-      // Generate target positions
-      for (let i = 0; i < this.clickTexts.length; i++) {
-        let x, y, attempts = 0
-        do {
-          x = Math.floor(Math.random() * (width - padding * 2)) + padding
-          y = Math.floor(Math.random() * (height - padding * 2)) + padding
-          attempts++
-        } while (this.isOverlapping(x, y, fontSize) && attempts < 100)
-
-        this.targetPoints.push({ x, y })
-
-        // Draw character
-        ctx.save()
-        ctx.setFontSize(fontSize)
-        ctx.setFillStyle('#333')
-        ctx.setTextAlign('center')
-        ctx.setTextBaseline('middle')
-
-        // Random rotation
-        const rotation = (Math.floor(Math.random() * 40) - 20) * Math.PI / 180
-        ctx.translate(x, y)
-        ctx.rotate(rotation)
-        ctx.fillText(this.clickTexts[i], 0, 0)
-        ctx.restore()
-      }
-
-      // Draw decoy characters
-      for (let i = 0; i < this.decoyTexts.length; i++) {
-        let x, y, attempts = 0
-        do {
-          x = Math.floor(Math.random() * (width - padding * 2)) + padding
-          y = Math.floor(Math.random() * (height - padding * 2)) + padding
-          attempts++
-        } while (this.isOverlapping(x, y, fontSize, true) && attempts < 100)
-
-        this.decoyPoints.push({ x, y })
-
-        ctx.save()
-        ctx.setFontSize(fontSize)
-        ctx.setFillStyle('#555')
-        ctx.setTextAlign('center')
-        ctx.setTextBaseline('middle')
-
-        const rotation = (Math.floor(Math.random() * 50) - 25) * Math.PI / 180
-        ctx.translate(x, y)
-        ctx.rotate(rotation)
-        ctx.fillText(this.decoyTexts[i], 0, 0)
-        ctx.restore()
-      }
-
-      ctx.draw()
-
-      // Generate character images for prompt
-      this.generateCharImages()
-    },
-
-    isOverlapping(x, y, size, checkDecoys = false) {
-      for (const point of this.targetPoints) {
-        const distance = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2)
-        if (distance < size * 1.5) return true
-      }
-      if (checkDecoys) {
-        for (const point of this.decoyPoints) {
-          const distance = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2)
-          if (distance < size * 1.5) return true
-        }
-      }
-      return false
-    },
-
-    generateCharImages() {
-      // In uni-app, we'll use text instead of images for simplicity
-      // Real implementation could use canvas to generate images
-      this.clickCharImages = this.clickTexts.map(char => {
-        // Return a data URL placeholder or use a different approach
-        // For uni-app, we'll display text directly
-        return char
+    handleRefresh() { this.loadCaptcha(); this.$emit('refresh') },
+    _fetch(apiKey, data) {
+      const config = this.backend; const fn = config[apiKey]
+      if (typeof fn === 'function') return Promise.resolve(fn(data))
+      const isGet = apiKey === 'getCaptcha'
+      const qs = isGet ? '?' + Object.entries(data).filter(([, v]) => v != null).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&') : ''
+      return new Promise((resolve, reject) => {
+        uni.request({ url: `${fn}${qs}`, method: isGet ? 'GET' : 'POST', data: isGet ? undefined : data, header: { 'Content-Type': 'application/json', ...(config.headers || {}) }, timeout: config.timeout || 10000, success: r => resolve(r.data), fail: reject })
       })
-    },
-
-    onTap(e) {
-      if (this.status) return
-      if (this.clickPoints.length >= this.clickTexts.length) return
-
-      const touch = e.touches[0] || e.detail
-      const x = touch.x
-      const y = touch.y
-
-      this.clickPoints.push({ x, y })
-      this.drawClickMarker(x, y, this.clickPoints.length)
-
-      if (this.clickPoints.length >= this.clickTexts.length) {
-        this.verify()
-      }
-    },
-
-    drawClickMarker(x, y, index) {
-      const ctx = this.clickCtx
-
-      // Draw circle
-      ctx.beginPath()
-      ctx.arc(x, y, 14, 0, Math.PI * 2)
-      ctx.setFillStyle('#1991fa')
-      ctx.fill()
-
-      // Draw border
-      ctx.setStrokeStyle('#fff')
-      ctx.setLineWidth(2)
-      ctx.stroke()
-
-      // Draw number
-      ctx.setFontSize(12)
-      ctx.setFillStyle('#fff')
-      ctx.setTextAlign('center')
-      ctx.setTextBaseline('middle')
-      ctx.fillText(String(index), x, y)
-
-      ctx.draw(true)
-    },
-
-    verify() {
-      const { precision, targetPoints, clickPoints } = this
-
-      if (clickPoints.length !== targetPoints.length) {
-        this.status = 'fail'
-        this.$emit('fail')
-        this.autoRefresh()
-        return
-      }
-
-      // Check each click point
-      for (let i = 0; i < targetPoints.length; i++) {
-        const target = targetPoints[i]
-        const clicked = clickPoints[i]
-        const distance = Math.sqrt((clicked.x - target.x) ** 2 + (clicked.y - target.y) ** 2)
-
-        if (distance > precision) {
-          this.status = 'fail'
-          this.$emit('fail')
-          this.autoRefresh()
-          return
-        }
-      }
-
-      this.status = 'success'
-      this.$emit('success')
-    },
-
-    autoRefresh() {
-      setTimeout(() => this.refresh(), 500)
-    },
-
-    getData() {
-      return {
-        type: 'click',
-        target: this.targetPoints,
-        clickPoints: this.clickPoints,
-        clickTexts: this.clickTexts,
-      }
-    },
-
-    reset() {
-      this.clickPoints = []
-      this.status = ''
-
-      if (this.clickCtx) {
-        this.clickCtx.clearRect(0, 0, this.width, this.height)
-        this.clickCtx.draw()
-      }
     },
   },
 }
 </script>
 
 <template>
-  <view class="captcha-container" :style="{ width: `${width  }px` }">
-    <!-- Captcha area -->
-    <view class="captcha-area" :style="{ width: `${width  }px`, height: `${height  }px` }">
-      <!-- Background canvas -->
-      <canvas
-        canvas-id="bgCanvas"
-        id="bgCanvas"
-        class="bg-canvas"
-        :style="{ width: `${width  }px`, height: `${height  }px` }"
-      />
-
-      <!-- Click canvas (overlay for click markers) -->
-      <canvas
-        canvas-id="clickCanvas"
-        id="clickCanvas"
-        class="click-canvas"
-        :style="{ width: `${width  }px`, height: `${height  }px` }"
-        @tap="onTap"
-      />
-
-      <!-- Refresh button -->
-      <view v-if="showRefresh" class="refresh-btn" @tap="refresh">
-        <text class="refresh-icon">⟳</text>
-      </view>
-
-      <!-- Status overlay -->
+  <view class="captcha-container" :style="{ width: `${width}px` }">
+    <view class="captcha-area" :style="{ width: `${width}px`, height: `${height}px`, borderRadius: '8rpx' }" @tap="onAreaTap">
+      <image v-if="bgImage" :src="bgImage" mode="aspectFill" class="bg-image" :style="{ width: `${width}px`, height: `${height}px` }" />
+      <view v-else class="captcha-loading" :style="{ width: `${width}px`, height: `${height}px` }"><text>{{ errorMsg || '加载中...' }}</text></view>
+      <view v-for="(m, i) in clickMarkers" :key="i" class="click-marker" :style="{ left: `${m.x}px`, top: `${m.y}px` }"><text class="marker-text">{{ m.index }}</text></view>
+      <view v-if="showRefresh && !loading" class="refresh-btn" @tap.stop="handleRefresh"><text class="refresh-icon">⟳</text></view>
       <view v-if="status" class="status-overlay" :class="status">
-        <text>{{ status === 'success' ? '验证成功' : '验证失败' }}</text>
+        <view class="status-icon"><text>{{ status === 'success' ? '✓' : '✕' }}</text></view>
+        <text class="status-text">{{ status === 'success' ? '验证成功' : '验证失败' }}</text>
       </view>
     </view>
-
-    <!-- Prompt bar -->
-    <view class="prompt-bar" :style="{ width: `${width  }px` }">
+    <view class="prompt-bar" :style="{ width: `${width}px` }">
       <text class="prompt-text">请依次点击：</text>
       <view class="prompt-chars">
-        <image
-          v-for="(img, index) in clickCharImages"
-          :key="index"
-          :src="img"
-          class="char-image"
-          mode="aspectFit"
-        />
+        <template v-if="clickCharImages.length > 0">
+          <view v-for="(img, i) in clickCharImages" :key="`img${i}`" class="char-item"><image :src="img" class="char-img" mode="aspectFit" /></view>
+        </template>
+        <template v-else>
+          <view v-for="(t, i) in clickTexts" :key="`txt${i}`" class="char-item"><text class="char-text">{{ t }}</text></view>
+        </template>
       </view>
     </view>
   </view>
 </template>
 
 <style scoped>
-.captcha-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
-
-.captcha-area {
-  position: relative;
-  overflow: hidden;
-  border-radius: 4px;
-}
-
-.bg-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.click-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
-}
-
-.refresh-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 4px;
-  z-index: 20;
-}
-
-.refresh-icon {
-  font-size: 16px;
-  color: #666;
-}
-
-.status-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 14px;
-  z-index: 30;
-}
-
-.status-overlay.success {
-  background: rgba(82, 196, 26, 0.9);
-}
-
-.status-overlay.fail {
-  background: rgba(245, 34, 45, 0.9);
-}
-
-.prompt-bar {
-  height: 40px;
-  margin-top: 5px;
-  background: #f7f9fa;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.prompt-text {
-  font-size: 14px;
-  color: #333;
-}
-
-.prompt-chars {
-  display: flex;
-  flex-direction: row;
-  margin-left: 4px;
-}
-
-.char-image {
-  width: 24px;
-  height: 24px;
-  margin: 0 2px;
-}
+.captcha-container { position: relative; display: flex; flex-direction: column; align-items: center; }
+.captcha-area { position: relative; overflow: hidden; }
+.bg-image { display: block; }
+.captcha-loading { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; font-size: 28rpx; }
+.click-marker { position: absolute; width: 48rpx; height: 48rpx; background: #1991fa; border: 3rpx solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translate(-50%,-50%); z-index: 5; }
+.marker-text { font-size: 32rpx; color: #fff; font-weight: bold; }
+.refresh-btn { position: absolute; top: 16rpx; right: 16rpx; width: 56rpx; height: 56rpx; background: rgba(255,255,255,0.9); border-radius: 8rpx; display: flex; align-items: center; justify-content: center; z-index: 10; border: none; }
+.refresh-icon { color: #666; font-size: 28rpx; font-weight: bold; }
+.status-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16rpx; background: rgba(255,255,255,0.75); z-index: 30; animation: fadeIn .2s ease; }
+.status-icon { width: 64rpx; height: 64rpx; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36rpx; color: #fff; }
+.status-overlay.success .status-icon { background: rgba(82,196,26,0.85); }
+.status-overlay.fail .status-icon { background: rgba(255,77,79,0.85); }
+.status-text { font-size: 26rpx; font-weight: 500; letter-spacing: 1rpx; color: #333; }
+.status-overlay.success .status-text { color: #389e0d; }
+.status-overlay.fail .status-text { color: #cf1322; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+.prompt-bar { display: flex; align-items: center; padding: 20rpx 24rpx; background: #f7f9fa; border-radius: 16rpx; margin-top: 24rpx; border: 2rpx solid #e8e8e8; box-sizing: border-box; }
+.prompt-text { font-size: 28rpx; color: #666; white-space: nowrap; margin-right: 16rpx; }
+.prompt-chars { display: flex; gap: 12rpx; }
+.char-item { width: 56rpx; height: 56rpx; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8rpx; display: flex; align-items: center; justify-content: center; box-shadow: 0 2rpx 8rpx rgba(102,126,234,0.3); }
+.char-text { font-size: 32rpx; color: #fff; font-weight: 500; }
+.char-img { width: 100%; height: 100%; }
 </style>

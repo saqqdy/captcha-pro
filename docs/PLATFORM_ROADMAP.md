@@ -78,32 +78,26 @@ captcha-pro/
 │   │   ├── test/
 │   │   └── package.json            # captcha-pro-react
 │   │
-│   ├── mp/                         # 小程序版本
+│   ├── mp/                         # 小程序版本（backend-only 模式）
 │   │   ├── src/
-│   │   │   ├── core/               # 共享核心逻辑
-│   │   │   │   ├── generator.ts
-│   │   │   │   ├── renderer.ts     # 抽象渲染接口
-│   │   │   │   └── utils.ts
 │   │   │   ├── weixin/             # 微信小程序适配
 │   │   │   │   ├── components/
-│   │   │   │   │   ├── slider-captcha.wxml
-│   │   │   │   │   ├── slider-captcha.wxss
-│   │   │   │   │   ├── slider-captcha.js
-│   │   │   │   │   └── slider-captcha.json
-│   │   │   │   ├── renderer.ts     # 微信 Canvas 渲染
+│   │   │   │   │   ├── slider-captcha.{wxml,wxss,js,json}
+│   │   │   │   │   └── click-captcha.{wxml,wxss,js,json}
 │   │   │   │   └── index.ts
 │   │   │   ├── uniapp/             # uni-app 适配
 │   │   │   │   ├── components/
-│   │   │   │   │   └── captcha/
-│   │   │   │   │       ├── slider-captcha.vue
-│   │   │   │   │       └── click-captcha.vue
-│   │   │   │   ├── renderer.ts     # uni-app Canvas 渲染
+│   │   │   │   │   ├── slider-captcha.vue
+│   │   │   │   │   └── click-captcha.vue
 │   │   │   │   └── index.ts
 │   │   │   ├── taro/               # Taro 适配
 │   │   │   │   ├── components/
 │   │   │   │   │   ├── SliderCaptcha.tsx
-│   │   │   │   │   └── ClickCaptcha.tsx
-│   │   │   │   ├── renderer.ts     # Taro Canvas 渲染
+│   │   │   │   │   ├── ClickCaptcha.tsx
+│   │   │   │   │   └── PopupCaptcha.tsx
+│   │   │   │   ├── request.ts      # 后端 API 请求封装
+│   │   │   │   ├── types.ts        # backend-only 类型定义
+│   │   │   │   ├── styles/captcha.scss
 │   │   │   │   └── index.ts
 │   │   │   └── index.ts
 │   │   ├── test/
@@ -645,9 +639,20 @@ export const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
 )
 ```
 
-### 3.4 小程序版（微信/uni-app/Taro）
+### 3.4 小程序版（微信/uni-app/Taro）— Backend-Only 模式
 
-#### 抽象渲染接口
+> **架构决策**：小程序端（weixin / uniapp / taro）统一采用 **backend-only 模式**，不再支持前端 Canvas 渲染。
+>
+> **原因**：
+> 1. 小程序 Canvas API 兼容性差（wx vs uni vs taro 差异大），维护成本高
+> 2. 前端生成验证码安全性低（解暴露在客户端）
+> 3. Backend-only 模式更可靠、更安全，且与主流业务场景一致
+>
+> **影响**：
+> - `core/renderer.ts` 及各平台 `renderer.ts` 已移除
+> - `backend` 配置变为**必填**参数
+> - 组件直接使用 `<image>` 渲染后端返回的图片 URL
+> - 验证逻辑完全由后端处理
 
 ```typescript
 // packages/mp/src/core/renderer.ts

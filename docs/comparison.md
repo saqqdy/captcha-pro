@@ -4,7 +4,7 @@
 
 | 特性 | Captcha-Pro v1.0 | AJ-Captcha | 腾讯验证码 (TCaptcha) |
 |------|------------------|------------|----------------------|
-| **项目类型** | 前端库 + 可选后端服务 | 后端 + 前端全栈方案 | 云服务 SaaS |
+| **项目类型** | 前端库 + 后端服务（Taro 仅后端模式） | 后端 + 前端全栈方案 | 云服务 SaaS |
 | **主要语言** | TypeScript (前端) + Node.js (后端) | Java (后端) + JavaScript (前端) | 托管服务 |
 | **仓库地址** | [GitHub: saqqdy/captcha-pro](https://github.com/saqqdy/captcha-pro) | [Gitee: anji-plus/captcha](https://gitee.com/anji-plus/captcha) | [腾讯云控制台](https://console.cloud.tencent.com/captcha) |
 | **开源协议** | MIT | MIT | 商业服务 |
@@ -33,13 +33,13 @@ Captcha-Pro v1.0 是一个前端验证码库，同时提供后端参考实现：
 | 维度 | Captcha-Pro | AJ-Captcha | 腾讯验证码 |
 |------|-------------|------------|-----------|
 | **初始化方式** | `new SliderCaptcha({ el: '#id' })` | `jigsaw.init({ element: '#id' })` | `new TencentCaptcha(appId, callback)` |
-| **是否需要后端** | ❌ 可选 | ✅ 必须 | ✅ 必须（云端） |
+| **是否需要后端** | ✅ 必须（Taro）/ ❌ 可选（Web） | ✅ 必须 | ✅ 必须（云端） |
 | **是否需要注册** | ❌ 不需要 | ❌ 不需要 | ✅ 需要腾讯云账号 |
 | **验证触发** | 自动（滑动完成） | 自动（滑动完成） | 手动调用 `show()` |
 | **结果获取** | `onSuccess` 回调 + `getData()` | 回调函数 | 回调函数 + ticket |
 | **是否支持弹窗** | ✅ PopupCaptcha | ✅ popup/fixed | ✅ 弹窗模式 |
 | **自定义图片** | ✅ 支持 | ✅ 支持 | ❌ 不支持 |
-| **离线可用** | ✅ 支持（前端模式） | ❌ 不支持 | ❌ 不支持 |
+| **离线可用** | ✅ 支持（Web 前端模式）/ ❌ 不支持（Taro） | ❌ 不支持 | ❌ 不支持 |
 
 ### 1.2 核心使用流程对比
 
@@ -261,7 +261,7 @@ async function verify(data, secretKey) {
 
 | 功能 | Captcha-Pro v1.0 | AJ-Captcha | 腾讯验证码 |
 |------|------------------|------------|-----------|
-| **前端验证** | ✅ 内置 | ❌ 不支持（需后端） | ❌ 不支持 |
+| **前端验证** | ✅ 内置（Web）/ ❌ 不支持（Taro，仅后端验证） | ❌ 不支持（需后端） | ❌ 不支持 |
 | **后端验证** | ✅ 可选支持 | ✅ 内置 | ✅ 云端托管 |
 | **后端服务** | ✅ 示例实现 (Node/Java/Go) | ✅ Spring Boot (Java) | ✅ 云端托管 |
 | **服务端图片生成** | ✅ Canvas/Java AWT/Go | ✅ Java AWT | ✅ 云端生成 |
@@ -400,9 +400,9 @@ DELETE /api/security/blacklist/:ip  # 移除 IP 黑名单
 
 ### 选择 Captcha-Pro 的场景：
 
-1. **快速原型开发** - 无需搭建后端，开箱即用
-2. **静态站点** - 无后端服务器的网站 (前端模式)
-3. **灵活验证模式** - 需要前端验证或后端验证可选
+1. **快速原型开发** - 无需搭建后端，开箱即用（Web 端）
+2. **静态站点** - 无后端服务器的网站 (Web 前端模式)
+3. **灵活验证模式** - 需要前端验证或后端验证可选（Web 端）
 4. **轻量级需求** - 对包体积敏感的项目
 5. **学习/教学项目** - 理解验证码原理
 6. **框架独立需求** - 需要在多种框架中使用
@@ -467,7 +467,7 @@ DELETE /api/security/blacklist/:ip  # 移除 IP 黑名单
 ### 结论
 
 三者各有优势，选择应根据：
-- **安全要求**：腾讯验证码 ≈ AJ-Captcha ≈ Captcha-Pro (后端示例) > Captcha-Pro (前端模式)
+- **安全要求**：腾讯验证码 ≈ AJ-Captcha ≈ Captcha-Pro (后端示例/Taro) > Captcha-Pro (前端模式，仅Web)
 - **成本敏感**：Captcha-Pro = AJ-Captcha > 腾讯验证码
 - **开发效率**：Captcha-Pro > 腾讯验证码 > AJ-Captcha
 - **功能丰富**：腾讯验证码 > Captcha-Pro ≈ AJ-Captcha

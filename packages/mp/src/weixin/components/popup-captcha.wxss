@@ -1,0 +1,56 @@
+.popup-captcha {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-mask {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.popup-content {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+  max-width: 90vw;
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.popup-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.popup-close {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-close text {
+  font-size: 40rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.popup-body {
+  padding: 32rpx;
+}
