@@ -39,9 +39,9 @@ Captcha Pro supports **10+ platforms** with consistent APIs:
 | Vue 2 | `captcha-pro-vue2` | Options API + Mixins |
 | Vue 3 | `captcha-pro-vue3` | Composition API + Composables |
 | React | `captcha-pro-react` | Hooks-based components |
-| WeChat Mini-Program | `captcha-pro-mp` | WXML/WXSS/JS |
-| uni-app | `captcha-pro-mp` | Vue cross-platform |
-| Taro 3 | `captcha-pro-mp` | React cross-platform |
+| WeChat Mini-Program | `captcha-pro-mp` | WXML/WXSS/JS, backend-only |
+| uni-app | `captcha-pro-mp` | Vue cross-platform, backend-only |
+| Taro 3 | `captcha-pro-mp` | React cross-platform, backend-only |
 | Flutter | `captcha_pro` | Dart widgets |
 | Android | `captcha-sdk` | Native Kotlin SDK |
 | Android Compose | `captcha-compose` | Jetpack Compose |

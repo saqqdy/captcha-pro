@@ -91,7 +91,7 @@ pnpm --filter @captcha/mp watch
 | @captcha/vue3 | Vite 8 + vue-tsc | Vue 3 组件，支持 SFC |
 | @captcha/vue2 | Vite 4 + vite-plugin-vue2 | Vue 2 组件，支持 SFC |
 | @captcha/react | Vite 8 + tsc | React 组件，支持 TSX |
-| @captcha/mp | Vite 8 | 小程序组件，支持 Vue/React/原生 |
+| @captcha/mp | Vite 8 | 小程序组件，支持 Vue/React/原生，backend-only 模式 |
 
 ### 构建所有包
 

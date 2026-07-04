@@ -83,12 +83,18 @@ captcha-pro/
 │   │   │   ├── weixin/             # 微信小程序适配
 │   │   │   │   ├── components/
 │   │   │   │   │   ├── slider-captcha.{wxml,wxss,js,json}
-│   │   │   │   │   └── click-captcha.{wxml,wxss,js,json}
+│   │   │   │   │   ├── click-captcha.{wxml,wxss,js,json}
+│   │   │   │   │   └── popup-captcha.{wxml,wxss,js,json}
+│   │   │   │   ├── types.ts        # 后端 API 类型定义
+│   │   │   │   ├── request.ts      # wx.request 封装
 │   │   │   │   └── index.ts
 │   │   │   ├── uniapp/             # uni-app 适配
 │   │   │   │   ├── components/
 │   │   │   │   │   ├── slider-captcha.vue
-│   │   │   │   │   └── click-captcha.vue
+│   │   │   │   │   ├── click-captcha.vue
+│   │   │   │   │   └── popup-captcha.vue
+│   │   │   │   ├── types.ts        # 后端 API 类型定义
+│   │   │   │   ├── request.ts      # uni.request 封装
 │   │   │   │   └── index.ts
 │   │   │   ├── taro/               # Taro 适配
 │   │   │   │   ├── components/
@@ -161,7 +167,8 @@ captcha-pro/
 │       │   │   └── ShapeDrawer.swift
 │       │   ├── SwiftUI/            # SwiftUI 版本
 │       │   │   ├── SliderCaptcha.swift
-│       │   │   └── ClickCaptcha.swift
+│       │   │   ├── ClickCaptcha.swift
+│       │   │   └── PopupCaptcha.swift
 │       │   └── CaptchaPro.swift
 │       ├── Tests/
 │       ├── Package.swift           # SPM
@@ -649,272 +656,258 @@ export const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
 > 3. Backend-only 模式更可靠、更安全，且与主流业务场景一致
 >
 > **影响**：
-> - `core/renderer.ts` 及各平台 `renderer.ts` 已移除
-> - `backend` 配置变为**必填**参数
+> - `core/renderer.ts` 及各平台 `renderer.ts` 已全部移除
+> - `backend` 配置变为**必填**参数，不传则 TypeScript 编译报错
 > - 组件直接使用 `<image>` 渲染后端返回的图片 URL
 > - 验证逻辑完全由后端处理
+> - 三平台（weixin / uniapp / taro）架构对齐，共享同一套后端 API 类型契约
+
+#### 共享后端类型契约
+
+三平台（weixin / uniapp / taro）共享同一套 `BackendConfig` 和 API 类型定义，确保前后端契约一致：
 
 ```typescript
-// packages/mp/src/core/renderer.ts
-export interface Point {
-  x: number
-  y: number
+// packages/mp/src/taro/types.ts（weixin/uniapp 同构同字段）
+/**
+ * 后端 API 配置（必填）
+ */
+export interface BackendConfig {
+  /** 获取验证码的 URL 或自定义函数 */
+  getCaptcha: string | ((params?: BackendCaptchaParams) => Promise<BackendCaptchaResponse>)
+  /** 验证验证码的 URL 或自定义函数 */
+  verify: string | ((data: BackendVerifyRequest) => Promise<BackendVerifyResponse>)
+  /** 请求头 */
+  headers?: Record<string, string>
+  /** 超时时间（ms），默认 10000 */
+  timeout?: number
 }
 
-export interface Size {
-  width: number
-  height: number
+/** getCaptcha 响应 */
+export interface BackendCaptchaResponse {
+  success: boolean
+  data: {
+    captchaId: string
+    type: CaptchaType
+    bgImage: string
+    sliderImage?: string
+    sliderY?: number
+    clickTexts?: string[]
+    clickCharImages?: string[]
+    width: number
+    height: number
+    expiresAt: number
+  }
+  message?: string
 }
 
-export interface CaptchaRenderer {
-  // 基础绘制
-  clear(): void
-  drawImage(image: string | ImageData, x: number, y: number, width?: number, height?: number): void
-  drawText(text: string, x: number, y: number, options?: DrawTextOptions): void
-  drawShape(type: ShapeType, x: number, y: number, width: number, height: number, options?: DrawShapeOptions): void
-
-  // 样式设置
-  setFillStyle(color: string): void
-  setStrokeStyle(color: string): void
-  setLineWidth(width: number): void
-  setFont(font: string): void
-
-  // 变换
-  translate(x: number, y: number): void
-  rotate(angle: number): void
-  save(): void
-  restore(): void
-
-  // 裁剪
-  clip(): void
-
-  // 获取图像数据
-  getImageData(x: number, y: number, width: number, height: number): Promise<ImageData>
+/** verify 请求体 */
+export interface BackendVerifyRequest {
+  captchaId: string
+  type: CaptchaType
+  target: number[] | Point[]
 }
 
-export interface DrawTextOptions {
-  color?: string
-  fontSize?: number
-  fontFamily?: string
-  align?: 'left' | 'center' | 'right'
-  baseline?: 'top' | 'middle' | 'bottom'
-}
-
-export interface DrawShapeOptions {
-  fill?: boolean
-  stroke?: boolean
-  borderRadius?: number
+/** verify 响应 */
+export interface BackendVerifyResponse {
+  success: boolean
+  message?: string
+  data?: { verifiedAt: number }
 }
 ```
 
-#### 微信小程序实现
+#### 微信小程序请求封装
 
 ```typescript
-// packages/mp/src/weixin/renderer.ts
-import type { CaptchaRenderer, DrawTextOptions, DrawShapeOptions } from '../core/renderer'
+// packages/mp/src/weixin/request.ts
+import type { BackendCaptchaParams, BackendCaptchaResponse, BackendConfig, BackendVerifyRequest, BackendVerifyResponse } from './types'
 
-export class WxRenderer implements CaptchaRenderer {
-  private ctx: WechatMiniprogram.CanvasContext
+export async function fetchCaptcha(config: BackendConfig, params: BackendCaptchaParams): Promise<BackendCaptchaResponse> {
+  if (typeof config.getCaptcha === 'function') return config.getCaptcha(params)
+  return new Promise((resolve, reject) => {
+    wx.request({ url: `${config.getCaptcha}${buildQS(params)}`, method: 'GET', header: config.headers, timeout: config.timeout ?? 10000, success: (r) => resolve(r.data), fail: reject })
+  })
+}
 
-  constructor(canvas: WechatMiniprogram.Canvas, width: number, height: number) {
-    this.ctx = canvas.getContext('2d')
-  }
-
-  clear(): void {
-    const { width, height } = this.ctx.canvas
-    this.ctx.clearRect(0, 0, width, height)
-  }
-
-  drawImage(image: string, x: number, y: number, width?: number, height?: number): void {
-    this.ctx.drawImage(image, x, y, width || 0, height || 0)
-  }
-
-  drawText(text: string, x: number, y: number, options?: DrawTextOptions): void {
-    if (options?.color) {
-      this.ctx.setFillStyle(options.color)
-    }
-    if (options?.fontSize || options?.fontFamily) {
-      this.ctx.setFontSize(options?.fontSize || 14)
-    }
-    this.ctx.fillText(text, x, y)
-  }
-
-  drawShape(type: string, x: number, y: number, width: number, height: number, options?: DrawShapeOptions): void {
-    this.ctx.beginPath()
-
-    switch (type) {
-      case 'roundedRect':
-        const r = options?.borderRadius || 0
-        this.ctx.moveTo(x + r, y)
-        this.ctx.lineTo(x + width - r, y)
-        this.ctx.arcTo(x + width, y, x + width, y + r, r)
-        this.ctx.lineTo(x + width, y + height - r)
-        this.ctx.arcTo(x + width, y + height, x + width - r, y + height, r)
-        this.ctx.lineTo(x + r, y + height)
-        this.ctx.arcTo(x, y + height, x, y + height - r, r)
-        this.ctx.lineTo(x, y + r)
-        this.ctx.arcTo(x, y, x + r, y, r)
-        break
-      case 'triangle':
-        this.ctx.moveTo(x + width / 2, y)
-        this.ctx.lineTo(x + width, y + height)
-        this.ctx.lineTo(x, y + height)
-        break
-      // ... 其他形状
-    }
-
-    this.ctx.closePath()
-
-    if (options?.fill !== false) {
-      this.ctx.fill()
-    }
-    if (options?.stroke) {
-      this.ctx.stroke()
-    }
-  }
-
-  async getImageData(x: number, y: number, width: number, height: number): Promise<ImageData> {
-    // 微信小程序 Canvas 2D API
-    return this.ctx.getImageData(x, y, width, height)
-  }
-
-  // ... 其他方法实现
+export async function verifyCaptcha(config: BackendConfig, data: BackendVerifyRequest): Promise<BackendVerifyResponse> {
+  if (typeof config.verify === 'function') return config.verify(data)
+  return new Promise((resolve, reject) => {
+    wx.request({ url: config.verify as string, method: 'POST', data, header: { 'Content-Type': 'application/json', ...config.headers }, timeout: config.timeout ?? 10000, success: (r) => resolve(r.data), fail: reject })
+  })
 }
 ```
 
-#### 微信小程序组件
+#### 微信小程序组件（backend-only 模式）
 
 ```javascript
 // packages/mp/src/weixin/components/slider-captcha/slider-captcha.js
-import { CaptchaGenerator } from '../../core/generator'
-import { WxRenderer } from '../renderer'
-
 Component({
   properties: {
     width: { type: Number, value: 300 },
     height: { type: Number, value: 170 },
-    precision: { type: Number, value: 5 },
+    sliderWidth: { type: Number, value: 42 },
+    sliderHeight: { type: Number, value: 42 },
     showRefresh: { type: Boolean, value: true },
-    verifyMode: { type: String, value: 'frontend' },
-    backendUrl: { type: String, value: '' },
+    backend: { type: Object, value: null },  // 必填
   },
 
   data: {
-    sliderX: 0,
+    bgImage: '',        // 后端返回的背景图 URL/base64
+    sliderImage: '',    // 后端返回的滑块图 URL/base64
     sliderY: 0,
-    status: '',
-    startX: 0,
-    currentX: 0,
-    isDragging: false,
+    sliderX: 0,
+    captchaId: '',      // 后端返回的 captchaId
+    status: '',         // '' | 'success' | 'fail'
+    loading: true,
+    errorMsg: '',
   },
 
   lifetimes: {
-    attached() {
-      this.generator = new CaptchaGenerator()
-      this.initCanvas()
-    },
+    attached() { this.loadCaptcha() },
   },
 
   methods: {
-    initCanvas() {
-      const query = this.createSelectorQuery()
-      query.select('#bgCanvas')
-        .fields({ node: true, size: true })
-        .exec((res) => {
-          const canvas = res[0].node
-          this.renderer = new WxRenderer(canvas, this.data.width, this.data.height)
-          this.refresh()
+    async loadCaptcha() {
+      if (!this.data.backend) {
+        this.setData({ errorMsg: 'backend config is required', loading: false })
+        return
+      }
+      this.setData({ loading: true, errorMsg: '', status: '', sliderX: 0 })
+      try {
+        const res = await this._fetch('getCaptcha', {
+          type: 'slider', width: this.data.width, height: this.data.height,
+          sliderWidth: this.data.sliderWidth, sliderHeight: this.data.sliderHeight,
         })
+        if (!res.success || !res.data) throw new Error(res.message || 'Failed to get captcha')
+        this.setData({
+          captchaId: res.data.captchaId, bgImage: res.data.bgImage,
+          sliderImage: res.data.sliderImage || '', sliderY: res.data.sliderY || 0,
+        })
+      } catch (err) {
+        this.setData({ errorMsg: err.message || 'Network error' })
+        this.triggerEvent('error', err)
+      } finally {
+        this.setData({ loading: false })
+      }
     },
 
-    refresh() {
-      const result = this.generator.generate({
-        type: 'slider',
-        width: this.data.width,
-        height: this.data.height,
+    async verify() {
+      // 将 sliderX 发送到后端验证
+      const res = await this._fetch('verify', {
+        captchaId: this.data.captchaId, type: 'slider', target: [this.data.sliderX],
       })
-
-      this.setData({
-        sliderY: result.sliderY,
-        targetX: result.target[0],
-        sliderX: 0,
-        status: '',
-      })
-
-      this.renderer.render(result)
-      this.triggerEvent('refresh')
-    },
-
-    onTouchStart(e) {
-      if (this.data.status) return
-      this.setData({
-        isDragging: true,
-        startX: e.touches[0].clientX - this.data.sliderX,
-      })
-    },
-
-    onTouchMove(e) {
-      if (!this.data.isDragging) return
-
-      const newX = e.touches[0].clientX - this.data.startX
-      const maxX = this.data.width - this.data.sliderWidth
-
-      this.setData({
-        sliderX: Math.max(0, Math.min(newX, maxX)),
-      })
-    },
-
-    onTouchEnd() {
-      if (!this.data.isDragging) return
-
-      this.setData({ isDragging: false })
-      this.verify()
-    },
-
-    verify() {
-      const diff = Math.abs(this.data.sliderX - this.data.targetX)
-
-      if (diff <= this.data.precision) {
+      if (res.success) {
         this.setData({ status: 'success' })
-        this.triggerEvent('success')
+        this.triggerEvent('success', res.data)
       } else {
         this.setData({ status: 'fail' })
         this.triggerEvent('fail')
-        setTimeout(() => this.refresh(), 500)
+        setTimeout(() => this.loadCaptcha(), 800)
       }
+    },
+
+    handleRefresh() {
+      this.loadCaptcha()
+      this.triggerEvent('refresh')
+    },
+
+    onTouchStart(e) { /* 记录起始位置 */ },
+    onTouchMove(e)  { /* 更新 sliderX */ },
+    onTouchEnd()    { this.verify() },
+
+    _fetch(apiKey, data) {
+      // 封装 wx.request，支持 URL 字符串或自定义函数
     },
   },
 })
 ```
 
-#### uni-app 组件
+对应 WXML 用 `<image>` 渲染后端图片（非 Canvas）：
+
+```xml
+<!-- slider-captcha.wxml -->
+<view class="captcha-container" style="width:{{width}}px;height:{{height}}px;">
+  <image class="bg-image" src="{{bgImage}}" mode="aspectFill" />
+  <image class="slider-image" src="{{sliderImage}}" style="top:{{sliderY}}px;left:{{sliderX}}px;" />
+  <view wx:if="{{showRefresh}}" class="refresh-btn" bindtap="handleRefresh">⟳</view>
+  <view wx:if="{{status}}" class="status-overlay {{status}}">
+    {{status === 'success' ? '验证成功' : '验证失败'}}
+  </view>
+</view>
+```
+
+#### Taro 组件（backend-only 模式）
+
+```tsx
+// packages/mp/src/taro/components/SliderCaptcha.tsx
+import { View, Image, Text } from '@tarojs/components'
+import type { SliderCaptchaProps } from '../types'
+
+export default function SliderCaptcha({
+  width = 650, height = 380, sliderWidth = 80, sliderHeight = 80,
+  showRefresh = true, backend, onSuccess, onFail, onRefresh, onError,
+}: SliderCaptchaProps) {
+  const [bgImage, setBgImage] = useState('')
+  const [sliderImage, setSliderImage] = useState('')
+  const [sliderY, setSliderY] = useState(0)
+  const [sliderX, setSliderX] = useState(0)
+  const [captchaId, setCaptchaId] = useState('')
+  const [status, setStatus] = useState('')
+
+  const loadCaptcha = useCallback(async () => {
+    if (!backend) return
+    try {
+      const res = await fetchCaptcha(backend, { type: 'slider', width, height, sliderWidth, sliderHeight })
+      if (!res.success) throw new Error(res.message)
+      setCaptchaId(res.data.captchaId)
+      setBgImage(res.data.bgImage)
+      setSliderImage(res.data.sliderImage || '')
+      setSliderY(res.data.sliderY || 0)
+      setSliderX(0)
+      setStatus('')
+    } catch (err) {
+      onError?.(err as Error)
+    }
+  }, [backend, width, height])
+
+  useEffect(() => { loadCaptcha() }, [])
+
+  const verify = useCallback(async () => {
+    try {
+      const res = await verifyCaptcha(backend!, { captchaId, type: 'slider', target: [sliderX] })
+      if (res.success) { setStatus('success'); onSuccess?.(res.data) }
+      else { setStatus('fail'); onFail?.(); setTimeout(loadCaptcha, 800) }
+    } catch { onFail?.() }
+  }, [captchaId, sliderX])
+
+  return (
+    <View className="captcha-container">
+      <Image className="bg-image" src={bgImage} mode="aspectFill" />
+      <Image className="slider-image" src={sliderImage}
+        style={{ top: `${sliderY}rpx`, left: `${sliderX}rpx` }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={() => verify()}
+      />
+      {showRefresh && <Text className="refresh-btn" onClick={() => { loadCaptcha(); onRefresh?.() }}>⟳</Text>}
+      {status && <View className={`status-overlay ${status}`}>
+        {status === 'success' ? '验证成功' : '验证失败'}
+      </View>}
+    </View>
+  )
+}
+```
+
+#### uni-app 组件（backend-only 模式）
 
 ```vue
 <!-- packages/mp/src/uniapp/components/slider-captcha.vue -->
 <template>
-  <view class="captcha-container">
-    <canvas
-      canvas-id="bgCanvas"
-      id="bgCanvas"
-      :style="{ width: width + 'px', height: height + 'px' }"
-    />
-    <canvas
-      canvas-id="sliderCanvas"
-      id="sliderCanvas"
-      :style="{
-        width: sliderWidth + 'px',
-        height: sliderHeight + 'px',
-        position: 'absolute',
-        top: sliderY + 'px',
-        left: sliderX + 'px'
-      }"
-      @touchstart="onTouchStart"
-      @touchmove="onTouchMove"
-      @touchend="onTouchEnd"
-    />
-    <view v-if="showRefresh" class="refresh-btn" @tap="refresh">
-      <text>⟳</text>
-    </view>
+  <view class="captcha-container" :style="{ width: width + 'px', height: height + 'px' }">
+    <image class="bg-image" :src="bgImage" mode="aspectFill" />
+    <image class="slider-image" :src="sliderImage"
+      :style="{ top: sliderY + 'px', left: sliderX + 'px' }"
+      @touchstart="onTouchStart" @touchmove="onTouchMove" @touchend="onVerify" />
+    <view v-if="showRefresh" class="refresh-btn" @tap="handleRefresh">⟳</view>
     <view v-if="status" class="status-overlay" :class="status">
       {{ status === 'success' ? '验证成功' : '验证失败' }}
     </view>
@@ -922,192 +915,40 @@ Component({
 </template>
 
 <script>
-import { CaptchaGenerator } from '../../core/generator'
-import { UniRenderer } from '../renderer'
+import { fetchCaptcha, verifyCaptcha } from '../request'
 
 export default {
-  name: 'SliderCaptcha',
   props: {
     width: { type: Number, default: 300 },
     height: { type: Number, default: 170 },
-    precision: { type: Number, default: 5 },
     showRefresh: { type: Boolean, default: true },
+    backend: { type: Object, required: true },  // 必填
   },
   data() {
-    return {
-      sliderX: 0,
-      sliderY: 0,
-      targetX: 0,
-      status: '',
-      isDragging: false,
-      startX: 0,
-    }
+    return { bgImage: '', sliderImage: '', sliderY: 0, sliderX: 0, captchaId: '', status: '' }
   },
-  computed: {
-    sliderWidth() {
-      return 42
-    },
-    sliderHeight() {
-      return 42
-    },
-  },
-  mounted() {
-    this.generator = new CaptchaGenerator()
-    this.initCanvas()
-  },
+  mounted() { this.loadCaptcha() },
   methods: {
-    initCanvas() {
-      this.bgCtx = uni.createCanvasContext('bgCanvas', this)
-      this.sliderCtx = uni.createCanvasContext('sliderCanvas', this)
-      this.renderer = new UniRenderer(this.bgCtx, this.sliderCtx)
-      this.refresh()
-    },
-    refresh() {
-      const result = this.generator.generate({
-        type: 'slider',
-        width: this.width,
-        height: this.height,
-      })
-
-      this.sliderY = result.sliderY
-      this.targetX = result.target[0]
+    async loadCaptcha() {
+      const res = await fetchCaptcha(this.backend, { type: 'slider', width: this.width, height: this.height })
+      this.captchaId = res.data.captchaId
+      this.bgImage = res.data.bgImage
+      this.sliderImage = res.data.sliderImage || ''
+      this.sliderY = res.data.sliderY || 0
       this.sliderX = 0
       this.status = ''
-
-      this.renderer.render(result)
-      this.$emit('refresh')
     },
-    // ... 触摸事件处理
+    async onVerify() {
+      const res = await verifyCaptcha(this.backend, { captchaId: this.captchaId, type: 'slider', target: [this.sliderX] })
+      if (res.success) { this.status = 'success'; this.$emit('success', res.data) }
+      else { this.status = 'fail'; this.$emit('fail'); setTimeout(() => this.loadCaptcha(), 800) }
+    },
+    handleRefresh() { this.loadCaptcha(); this.$emit('refresh') },
+    onTouchStart(e) { /* 记录起始位置 */ },
+    onTouchMove(e)  { /* 更新 sliderX */ },
   },
 }
 </script>
-
-<style scoped>
-.captcha-container {
-  position: relative;
-  overflow: hidden;
-}
-/* ... */
-</style>
-```
-
-#### Taro 组件
-
-```tsx
-// packages/mp/src/taro/components/SliderCaptcha.tsx
-import { View, Canvas } from '@tarojs/components'
-import { useEffect, useRef, useState } from 'react'
-import Taro from '@tarojs/taro'
-import { CaptchaGenerator } from '../../core/generator'
-import { TaroRenderer } from '../renderer'
-import type { SliderCaptchaProps } from '../types'
-
-export default function SliderCaptcha(props: SliderCaptchaProps) {
-  const {
-    width = 300,
-    height = 170,
-    precision = 5,
-    showRefresh = true,
-    onSuccess,
-    onFail,
-    onRefresh,
-  } = props
-
-  const generatorRef = useRef<CaptchaGenerator>()
-  const rendererRef = useRef<TaroRenderer>()
-
-  const [sliderX, setSliderX] = useState(0)
-  const [sliderY, setSliderY] = useState(0)
-  const [status, setStatus] = useState('')
-  const [targetX, setTargetX] = useState(0)
-
-  useEffect(() => {
-    generatorRef.current = new CaptchaGenerator()
-    initCanvas()
-  }, [])
-
-  const initCanvas = async () => {
-    // Taro Canvas 初始化
-    const bgCtx = Taro.createCanvasContext('bgCanvas')
-    const sliderCtx = Taro.createCanvasContext('sliderCanvas')
-
-    rendererRef.current = new TaroRenderer(bgCtx, sliderCtx)
-    refresh()
-  }
-
-  const refresh = () => {
-    const result = generatorRef.current!.generate({
-      type: 'slider',
-      width,
-      height,
-    })
-
-    setSliderY(result.sliderY)
-    setTargetX(result.target[0])
-    setSliderX(0)
-    setStatus('')
-
-    rendererRef.current?.render(result)
-    onRefresh?.()
-  }
-
-  const handleTouchStart = (e) => {
-    // 触摸开始处理
-  }
-
-  const handleTouchMove = (e) => {
-    // 触摸移动处理
-  }
-
-  const handleTouchEnd = () => {
-    // 触摸结束处理
-    verify()
-  }
-
-  const verify = () => {
-    const diff = Math.abs(sliderX - targetX)
-    if (diff <= precision) {
-      setStatus('success')
-      onSuccess?.()
-    } else {
-      setStatus('fail')
-      onFail?.()
-      setTimeout(refresh, 500)
-    }
-  }
-
-  return (
-    <View className="captcha-container">
-      <Canvas
-        canvasId="bgCanvas"
-        style={{ width: `${width}px`, height: `${height}px` }}
-      />
-      <Canvas
-        canvasId="sliderCanvas"
-        style={{
-          width: '42px',
-          height: '42px',
-          position: 'absolute',
-          top: `${sliderY}px`,
-          left: `${sliderX}px`,
-        }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      />
-      {showRefresh && (
-        <View className="refresh-btn" onClick={refresh}>
-          ⟳
-        </View>
-      )}
-      {status && (
-        <View className={`status-overlay ${status}`}>
-          {status === 'success' ? '验证成功' : '验证失败'}
-        </View>
-      )}
-    </View>
-  )
-}
 ```
 
 ### 3.5 Flutter 版本
@@ -2454,11 +2295,12 @@ PATCH: 向后兼容的问题修复
 
 | 难点 | 解决方案 |
 |------|----------|
-| 小程序 Canvas API 差异 | 抽象 Renderer 接口，各平台实现适配器 |
+| ~~小程序 Canvas API 差异~~ | ~~抽象 Renderer 接口，各平台实现适配器~~ → 已移除 Canvas 渲染，改为 backend-only 模式 |
 | 跨框架状态管理 | 使用各自框架的响应式系统（Vue reactive / React hooks） |
-| 原生平台图形绘制 | Android Canvas / iOS CoreGraphics 对齐实现 |
+| 原生平台图形绘制 | Android Canvas / iOS CoreGraphics 对齐实现（保留，原生端仍前端渲染） |
 | 跨平台一致性测试 | 建立统一的测试用例，各平台实现对比测试 |
+| 小程序端三平台请求 API 差异 | 共享 types.ts 类型契约，各平台 request.ts 封装各自 API |
 
 ---
 
-*文档更新时间: 2026-03-20*
+*文档更新时间: 2026-07-04*
