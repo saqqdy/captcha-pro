@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, watch } from 'vue'
 import {
-  SliderCaptcha as SliderCaptchaCore,
-  type SliderCaptchaOptions,
   type SliderCaptchaInstance,
-  type CaptchaData,
-  type CaptchaStatistics,
   type BackendVerifyOptions,
 } from '@captcha/core'
+import { useSliderCaptcha, type UseSliderCaptchaOptions } from '../composables/useSliderCaptcha'
 
 export interface Props {
   width?: number
@@ -42,77 +39,37 @@ const emit = defineEmits<{
 }>()
 
 const containerRef = ref<HTMLElement | null>(null)
-const captchaInstance = ref<SliderCaptchaInstance | null>(null)
 
-const initCaptcha = () => {
-  if (!containerRef.value) return
-
-  const options: SliderCaptchaOptions = {
-    el: containerRef.value,
-    width: props.width,
-    height: props.height,
-    bgImage: props.bgImage,
-    sliderImage: props.sliderImage,
-    sliderWidth: props.sliderWidth,
-    sliderHeight: props.sliderHeight,
-    precision: props.precision,
-    showRefresh: props.showRefresh,
-    verifyMode: props.verifyMode,
-    locale: props.locale,
-    security: props.secretKey ? { secretKey: props.secretKey } : undefined,
-    backendVerify: props.backendVerify,
-    onSuccess: () => {
-      emit('success')
-    },
-    onFail: () => {
-      emit('fail')
-    },
-    onRefresh: () => {
-      emit('refresh')
-    },
-  }
-
-  captchaInstance.value = new SliderCaptchaCore(options) as SliderCaptchaInstance
-  emit('ready', captchaInstance.value)
-}
-
-const refresh = () => {
-  captchaInstance.value?.refresh()
-}
-
-const getData = (): CaptchaData => {
-  return captchaInstance.value?.getData() as CaptchaData
-}
-
-const getStatistics = (): CaptchaStatistics => {
-  return captchaInstance.value?.getStatistics() as CaptchaStatistics
-}
-
-const destroy = () => {
-  captchaInstance.value?.destroy()
-  captchaInstance.value = null
-}
-
-watch(
-  () => [props.bgImage, props.sliderImage],
-  () => {
-    refresh()
-  }
-)
-
-onMounted(() => {
-  initCaptcha()
+const { instance, isReady, refresh, getData, getStatistics, destroy } = useSliderCaptcha({
+  el: () => containerRef.value ?? undefined,
+  width: props.width,
+  height: props.height,
+  bgImage: props.bgImage,
+  sliderImage: props.sliderImage,
+  sliderWidth: props.sliderWidth,
+  sliderHeight: props.sliderHeight,
+  precision: props.precision,
+  showRefresh: props.showRefresh,
+  verifyMode: props.verifyMode,
+  locale: props.locale,
+  secretKey: props.secretKey,
+  backendVerify: props.backendVerify,
+  onSuccess: () => emit('success'),
+  onFail: () => emit('fail'),
+  onRefresh: () => emit('refresh'),
 })
 
-onUnmounted(() => {
-  destroy()
+watch(isReady, (ready) => {
+  if (ready && instance.value) {
+    emit('ready', instance.value)
+  }
 })
 
 defineExpose({
   refresh,
   getData,
   getStatistics,
-  getInstance: () => captchaInstance.value,
+  getInstance: () => instance.value,
 })
 </script>
 

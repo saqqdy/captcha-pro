@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, watch } from 'vue'
 import {
-  ClickCaptcha as ClickCaptchaCore,
-  type ClickCaptchaOptions,
   type ClickCaptchaInstance,
-  type CaptchaData,
-  type CaptchaStatistics,
   type BackendVerifyOptions,
 } from '@captcha/core'
+import { useClickCaptcha, type UseClickCaptchaOptions } from '../composables/useClickCaptcha'
 
 export interface Props {
   width?: number
@@ -37,74 +34,34 @@ const emit = defineEmits<{
 }>()
 
 const containerRef = ref<HTMLElement | null>(null)
-const captchaInstance = ref<ClickCaptchaInstance | null>(null)
 
-const initCaptcha = () => {
-  if (!containerRef.value) return
-
-  const options: ClickCaptchaOptions = {
-    el: containerRef.value,
-    width: props.width,
-    height: props.height,
-    bgImage: props.bgImage,
-    count: props.count,
-    showRefresh: props.showRefresh,
-    verifyMode: props.verifyMode,
-    locale: props.locale,
-    security: props.secretKey ? { secretKey: props.secretKey } : undefined,
-    backendVerify: props.backendVerify,
-    onSuccess: () => {
-      emit('success')
-    },
-    onFail: () => {
-      emit('fail')
-    },
-    onRefresh: () => {
-      emit('refresh')
-    },
-  }
-
-  captchaInstance.value = new ClickCaptchaCore(options) as ClickCaptchaInstance
-  emit('ready', captchaInstance.value)
-}
-
-const refresh = () => {
-  captchaInstance.value?.refresh()
-}
-
-const getData = (): CaptchaData => {
-  return captchaInstance.value?.getData() as CaptchaData
-}
-
-const getStatistics = (): CaptchaStatistics => {
-  return captchaInstance.value?.getStatistics() as CaptchaStatistics
-}
-
-const destroy = () => {
-  captchaInstance.value?.destroy()
-  captchaInstance.value = null
-}
-
-watch(
-  () => props.bgImage,
-  () => {
-    refresh()
-  }
-)
-
-onMounted(() => {
-  initCaptcha()
+const { instance, isReady, refresh, getData, getStatistics, destroy } = useClickCaptcha({
+  el: () => containerRef.value ?? undefined,
+  width: props.width,
+  height: props.height,
+  bgImage: props.bgImage,
+  count: props.count,
+  showRefresh: props.showRefresh,
+  verifyMode: props.verifyMode,
+  locale: props.locale,
+  secretKey: props.secretKey,
+  backendVerify: props.backendVerify,
+  onSuccess: () => emit('success'),
+  onFail: () => emit('fail'),
+  onRefresh: () => emit('refresh'),
 })
 
-onUnmounted(() => {
-  destroy()
+watch(isReady, (ready) => {
+  if (ready && instance.value) {
+    emit('ready', instance.value)
+  }
 })
 
 defineExpose({
   refresh,
   getData,
   getStatistics,
-  getInstance: () => captchaInstance.value,
+  getInstance: () => instance.value,
 })
 </script>
 
