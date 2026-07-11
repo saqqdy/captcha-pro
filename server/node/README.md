@@ -81,6 +81,7 @@ Query Parameters:
 | precision | number | 5 | Verification precision |
 | clickCount | number | 3 | Click count (click only) |
 | clickText | string | - | Custom click text (click only) |
+| imageQuality | number | 0.5 | JPEG quality for background (0.0-1.0) |
 
 Response:
 
@@ -90,7 +91,7 @@ Response:
   "data": {
     "captchaId": "uuid-string",
     "type": "slider",
-    "bgImage": "data:image/png;base64,...",
+    "bgImage": "data:image/jpeg;base64,...",
     "sliderImage": "data:image/png;base64,...",
     "sliderY": 42,
     "width": 280,
@@ -99,6 +100,8 @@ Response:
   }
 }
 ```
+
+> **Note**: Background images use JPEG format for smaller file sizes, while slider images use PNG for transparency support.
 
 ### Click Captcha Response
 

@@ -242,7 +242,9 @@ export class CaptchaGenerator {
 		sliderWidth: 42,
 		sliderHeight: 42,
 		precision: 5,
+		clickCount: 0,
 		clickText: '',
+		imageQuality: 0.5, // JPEG quality for background (0.0-1.0)
 	}
 
 	/**
@@ -341,8 +343,8 @@ export class CaptchaGenerator {
 		const response: CaptchaResponse = {
 			captchaId,
 			type: 'slider',
-			bgImage: bgCanvas.toDataURL('image/png'),
-			sliderImage: sliderCanvas.toDataURL('image/png'),
+			bgImage: bgCanvas.toDataURL('image/jpeg', opts.imageQuality), // JPEG for smaller background
+			sliderImage: sliderCanvas.toDataURL('image/png'), // PNG for transparency
 			sliderY: targetY,
 			width,
 			height,
@@ -367,11 +369,14 @@ export class CaptchaGenerator {
 		targetY: number
 	): void {
 		// Random decoy position (avoid overlapping with target)
-		let decoyX: number, decoyY: number
+		let decoyX: number, decoyY: number,
+		 attempts = 0
+		const maxAttempts = 50
 		do {
 			decoyX = random(w + 10, width - w - 10)
 			decoyY = random(10, height - h - 10)
-		} while (Math.abs(decoyX - targetX) < w + 20 && Math.abs(decoyY - targetY) < h + 20)
+			attempts++
+		} while (Math.abs(decoyX - targetX) < w + 20 && Math.abs(decoyY - targetY) < h + 20 && attempts < maxAttempts)
 
 		// Random rotation angle (5-15 degrees)
 		const rotation = (random(5, 15) * Math.PI) / 180
@@ -577,7 +582,7 @@ export class CaptchaGenerator {
 		charCtx.rotate(rotation)
 		charCtx.fillText(char, 0, 0)
 
-		return charCanvas.toDataURL('image/png')
+		return charCanvas.toDataURL('image/png') // Keep PNG for small char images with transparency
 	}
 
 	/**

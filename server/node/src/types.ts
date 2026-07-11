@@ -35,6 +35,8 @@ export interface CaptchaGenerateOptions {
   precision?: number
   clickCount?: number
   clickText?: string
+  /** JPEG image quality (0.0-1.0), default 0.8. Lower values = smaller files but lower quality */
+  imageQuality?: number
 }
 
 /**

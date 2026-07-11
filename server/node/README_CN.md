@@ -81,6 +81,7 @@ pnpm dev
 | precision | number | 5 | 验证精度 |
 | clickCount | number | 3 | 点击数量 (仅click) |
 | clickText | string | - | 自定义点击文字 (仅click) |
+| imageQuality | number | 0.5 | 背景图JPEG质量 (0.0-1.0) |
 
 响应示例：
 
@@ -90,7 +91,7 @@ pnpm dev
   "data": {
     "captchaId": "uuid-string",
     "type": "slider",
-    "bgImage": "data:image/png;base64,...",
+    "bgImage": "data:image/jpeg;base64,...",
     "sliderImage": "data:image/png;base64,...",
     "sliderY": 42,
     "width": 280,
@@ -99,6 +100,8 @@ pnpm dev
   }
 }
 ```
+
+> **注意**：背景图片使用JPEG格式以减小文件大小，滑块图片使用PNG格式以支持透明度。
 
 ### 点选验证码响应
 
