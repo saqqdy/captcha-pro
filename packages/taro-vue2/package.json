@@ -1,0 +1,54 @@
+{
+  "name": "@captcha-pro/taro-vue2",
+  "description": "Taro + Vue 2 captcha components for captcha-pro (backend-only mode)",
+  "version": "1.0.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "vite build -c build/vite.config.ts",
+    "watch": "vite build -c build/vite.config.ts -w",
+    "clean": "rm-all dist",
+    "test": "echo 'no tests'"
+  },
+  "dependencies": {
+    "@captcha-pro/mp-shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@tarojs/components": "^3.6.40",
+    "@tarojs/taro": "^3.6.40",
+    "@types/node": "^24.13.3",
+    "@vitejs/plugin-vue2": "^2.3.4",
+    "@vue/compiler-sfc": "2.7.16",
+    "rm-all": "^1.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.19",
+    "vue": "^2.7.16"
+  },
+  "peerDependencies": {
+    "@tarojs/components": "^3.0.0 || ^4.0.0",
+    "@tarojs/taro": "^3.0.0 || ^4.0.0",
+    "vue": "^2.7.0"
+  },
+  "peerDependenciesMeta": {
+    "@tarojs/components": { "optional": true },
+    "@tarojs/taro": { "optional": true }
+  },
+  "keywords": ["captcha", "taro", "vue2", "slider-captcha", "click-captcha"],
+  "license": "MIT",
+  "author": "saqqdy<https://github.com/saqqdy>",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  }
+}
