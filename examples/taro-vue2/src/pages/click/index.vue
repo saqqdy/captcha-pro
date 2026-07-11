@@ -1,4 +1,5 @@
 <script>
+import Taro from '@tarojs/taro'
 import { ClickCaptcha } from '@captcha-pro/taro-vue2'
 
 export default {
@@ -17,18 +18,18 @@ export default {
   methods: {
     onSuccess() {
       this.status = '验证成功'
-      wx.showToast({ title: '验证成功', icon: 'success' })
+      Taro.showToast({ title: '验证成功', icon: 'success' })
     },
     onFail() {
       this.status = '验证失败'
-      wx.showToast({ title: '验证失败', icon: 'error' })
+      Taro.showToast({ title: '验证失败', icon: 'error' })
     },
     onRefresh() {
       this.status = ''
     },
     onError(err) {
       console.error('captcha error:', err)
-      wx.showToast({ title: '加载失败', icon: 'error' })
+      Taro.showToast({ title: '加载失败', icon: 'error' })
     },
   },
 }

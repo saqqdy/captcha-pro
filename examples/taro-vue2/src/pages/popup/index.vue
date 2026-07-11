@@ -1,4 +1,5 @@
 <script>
+import Taro from '@tarojs/taro'
 import { PopupCaptcha } from '@captcha-pro/taro-vue2'
 
 export default {
@@ -23,11 +24,11 @@ export default {
     },
     onSuccess() {
       this.status = '验证成功'
-      wx.showToast({ title: '验证成功', icon: 'success' })
+      Taro.showToast({ title: '验证成功', icon: 'success' })
     },
     onFail() {
       this.status = '验证失败'
-      wx.showToast({ title: '验证失败', icon: 'error' })
+      Taro.showToast({ title: '验证失败', icon: 'error' })
     },
     onRefresh() {
       this.status = ''

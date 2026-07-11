@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import Taro from '@tarojs/taro'
 import { PopupCaptcha } from '@captcha-pro/taro-vue'
 import type { BackendConfig, PopupCaptchaRef } from '@captcha-pro/taro-vue'
 
@@ -23,12 +24,12 @@ const showClick = () => {
 
 const onSuccess = () => {
   status.value = '验证成功'
-  wx.showToast({ title: '验证成功', icon: 'success' })
+  Taro.showToast({ title: '验证成功', icon: 'success' })
 }
 
 const onFail = () => {
   status.value = '验证失败'
-  wx.showToast({ title: '验证失败', icon: 'error' })
+  Taro.showToast({ title: '验证失败', icon: 'error' })
 }
 
 const onRefresh = () => {
