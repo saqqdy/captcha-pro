@@ -307,7 +307,7 @@
           ]
         },
         {
-          "source": "@captcha/react",
+          "source": "@captcha-pro/react",
           "specifiers": [
             "setLocale",
             "getLocale"
@@ -346,7 +346,7 @@
           ]
         },
         {
-          "source": "@captcha/react/style.css",
+          "source": "@captcha-pro/react/style.css",
           "specifiers": []
         },
         {
@@ -379,7 +379,7 @@
           ]
         },
         {
-          "source": "@captcha/react",
+          "source": "@captcha-pro/react",
           "specifiers": [
             "SliderCaptcha",
             "ClickCaptcha",
@@ -423,7 +423,7 @@
           ]
         },
         {
-          "source": "@captcha/react",
+          "source": "@captcha-pro/react",
           "specifiers": [
             "ClickCaptcha",
             "ClickCaptchaInstance"
@@ -463,7 +463,7 @@
           ]
         },
         {
-          "source": "@captcha/react",
+          "source": "@captcha-pro/react",
           "specifiers": [
             "SliderCaptcha",
             "SliderCaptchaInstance"
@@ -504,7 +504,7 @@
           ]
         },
         {
-          "source": "@captcha/react",
+          "source": "@captcha-pro/react",
           "specifiers": [
             "createInvisibleCaptcha",
             "InvisibleCaptchaInstance"
@@ -544,7 +544,7 @@
           ]
         },
         {
-          "source": "@captcha/react",
+          "source": "@captcha-pro/react",
           "specifiers": [
             "PopupCaptcha",
             "PopupCaptchaInstance"
@@ -584,7 +584,7 @@
           ]
         },
         {
-          "source": "@captcha/react",
+          "source": "@captcha-pro/react",
           "specifiers": [
             "SliderCaptcha",
             "SliderCaptchaInstance",
@@ -1311,7 +1311,7 @@
       "classes": [],
       "imports": [
         {
-          "source": "@captcha/vue2",
+          "source": "@captcha-pro/vue2",
           "specifiers": [
             "setLocale",
             "getLocale"
@@ -1462,7 +1462,7 @@
           ]
         },
         {
-          "source": "@captcha/vue3",
+          "source": "@captcha-pro/vue3",
           "specifiers": [
             "setLocale",
             "getLocale"
@@ -1488,7 +1488,7 @@
           ]
         },
         {
-          "source": "@captcha/vue3/style.css",
+          "source": "@captcha-pro/vue3/style.css",
           "specifiers": []
         },
         {
@@ -3564,7 +3564,7 @@
       "classes": [],
       "imports": [
         {
-          "source": "@captcha/core",
+          "source": "@captcha-pro/core",
           "specifiers": [
             "BackendVerifyOptions",
             "CaptchaData",
@@ -3607,7 +3607,7 @@
       "classes": [],
       "imports": [
         {
-          "source": "@captcha/core",
+          "source": "@captcha-pro/core",
           "specifiers": [
             "PopupCaptchaCore",
             "PopupCaptchaInstance",
@@ -3647,7 +3647,7 @@
       "classes": [],
       "imports": [
         {
-          "source": "@captcha/core",
+          "source": "@captcha-pro/core",
           "specifiers": [
             "BackendVerifyOptions",
             "CaptchaData",
@@ -3696,7 +3696,7 @@
           ]
         },
         {
-          "source": "@captcha/core",
+          "source": "@captcha-pro/core",
           "specifiers": [
             "CaptchaData",
             "CaptchaStatistics",
@@ -3744,7 +3744,7 @@
           ]
         },
         {
-          "source": "@captcha/core",
+          "source": "@captcha-pro/core",
           "specifiers": [
             "CaptchaData",
             "CaptchaStatistics",
@@ -3882,7 +3882,7 @@
       "classes": [],
       "imports": [
         {
-          "source": "@captcha/core",
+          "source": "@captcha-pro/core",
           "specifiers": [
             "ClickCaptcha"
           ]
@@ -3901,7 +3901,7 @@
       "classes": [],
       "imports": [
         {
-          "source": "@captcha/core",
+          "source": "@captcha-pro/core",
           "specifiers": [
             "SliderCaptcha"
           ]

@@ -1,16 +1,22 @@
 {
 	"cSpell.words": [
+		"automator",
 		"corejs",
+		"dcloudio",
 		"demi",
 		"filesize",
+		"hbuilderx",
 		"iife",
 		"onwarn",
 		"reinstaller",
 		"saqqdy",
+		"tarojs",
 		"tscjs",
 		"tsnd",
+		"uniapp",
 		"unpub",
-		"unpublish"
+		"unpublish",
+		"weixin"
 	],
 	"typescript.tsdk": "node_modules/typescript/lib"
 }

@@ -1034,7 +1034,7 @@
       "type": "file",
       "name": "useLocale.tsx",
       "filePath": "examples/react/src/hooks/useLocale.tsx",
-      "summary": "React context and hook providing i18n functionality with locale switching, translation helper, and persistence via @captcha/react.",
+      "summary": "React context and hook providing i18n functionality with locale switching, translation helper, and persistence via @captcha-pro/react.",
       "tags": [
         "hook",
         "context",
@@ -4627,7 +4627,7 @@
       "type": "config",
       "name": "package.json",
       "filePath": "examples/weixin/package.json",
-      "summary": "Package configuration for the WeChat mini-program example project, declaring workspace dependency on @captcha/mp.",
+      "summary": "Package configuration for the WeChat mini-program example project, declaring workspace dependency on @captcha-pro/mp.",
       "tags": [
         "configuration",
         "weixin",
@@ -4656,7 +4656,7 @@
       "type": "document",
       "name": "README.md",
       "filePath": "packages/core/README.md",
-      "summary": "English documentation for the @captcha/core package, covering installation and usage of four captcha types (slider, click, popup, invisible) with code examples, security utilities, and API reference.",
+      "summary": "English documentation for the @captcha-pro/core package, covering installation and usage of four captcha types (slider, click, popup, invisible) with code examples, security utilities, and API reference.",
       "tags": [
         "documentation",
         "captcha",
@@ -4670,7 +4670,7 @@
       "type": "document",
       "name": "README_CN.md",
       "filePath": "packages/core/README_CN.md",
-      "summary": "Chinese documentation for the @captcha/core package, providing installation instructions and usage examples for slider, click, popup, and invisible captcha types with security features.",
+      "summary": "Chinese documentation for the @captcha-pro/core package, providing installation instructions and usage examples for slider, click, popup, and invisible captcha types with security features.",
       "tags": [
         "documentation",
         "captcha",
@@ -4698,7 +4698,7 @@
       "type": "config",
       "name": "package.json",
       "filePath": "packages/core/package.json",
-      "summary": "Package manifest for @captcha/core defining build outputs (CJS, ESM, browser global), exports, scripts for building with Rolldown and API Extractor, and runtime dependencies.",
+      "summary": "Package manifest for @captcha-pro/core defining build outputs (CJS, ESM, browser global), exports, scripts for building with Rolldown and API Extractor, and runtime dependencies.",
       "tags": [
         "configuration",
         "npm",
@@ -4755,7 +4755,7 @@
       "type": "config",
       "name": "package.json",
       "filePath": "packages/mp/package.json",
-      "summary": "Package manifest for @captcha/mp mini-program components with multi-platform export paths for WeChat, uni-app, and Taro, defining build scripts, dependencies on @captcha/core, and optional Taro peer dependencies.",
+      "summary": "Package manifest for @captcha-pro/mp mini-program components with multi-platform export paths for WeChat, uni-app, and Taro, defining build scripts, dependencies on @captcha-pro/core, and optional Taro peer dependencies.",
       "tags": [
         "configuration",
         "npm-package",
@@ -4801,7 +4801,7 @@
       "type": "config",
       "name": "package.json",
       "filePath": "packages/react/package.json",
-      "summary": "NPM package configuration for @captcha/react, defining build outputs (CJS/ESM), TypeScript declarations, Vite-based build system, and dependency on @captcha/core workspace package.",
+      "summary": "NPM package configuration for @captcha-pro/react, defining build outputs (CJS/ESM), TypeScript declarations, Vite-based build system, and dependency on @captcha-pro/core workspace package.",
       "tags": [
         "configuration",
         "npm",
@@ -4847,7 +4847,7 @@
       "type": "config",
       "name": "package.json",
       "filePath": "packages/vue2/package.json",
-      "summary": "Package configuration for @captcha/vue2, defining dual ESM/CJS exports, TypeScript declarations, build scripts using Vite, dependency on @captcha/core workspace package, and Vue 2.6+ peer dependency.",
+      "summary": "Package configuration for @captcha-pro/vue2, defining dual ESM/CJS exports, TypeScript declarations, build scripts using Vite, dependency on @captcha-pro/core workspace package, and Vue 2.6+ peer dependency.",
       "tags": [
         "configuration",
         "npm-package",
@@ -4892,7 +4892,7 @@
       "type": "config",
       "name": "package.json",
       "filePath": "packages/vue3/package.json",
-      "summary": "Vue 3 package configuration defining the @captcha/vue3 library with dual ESM/CJS exports, TypeScript declarations, build scripts using Vite and vue-tsc, and a workspace dependency on @captcha/core.",
+      "summary": "Vue 3 package configuration defining the @captcha-pro/vue3 library with dual ESM/CJS exports, TypeScript declarations, build scripts using Vite and vue-tsc, and a workspace dependency on @captcha-pro/core.",
       "tags": [
         "configuration",
         "vue3",
@@ -5233,7 +5233,7 @@
       "type": "config",
       "name": "package.json",
       "filePath": "examples/react/package.json",
-      "summary": "React example package configuration with workspace dependency on @captcha/react and Vite build tooling.",
+      "summary": "React example package configuration with workspace dependency on @captcha-pro/react and Vite build tooling.",
       "tags": [
         "configuration",
         "react",
@@ -5855,7 +5855,7 @@
       "type": "config",
       "name": "package.json",
       "filePath": "examples/vue3/package.json",
-      "summary": "Package configuration for Vue 3 example with dependencies on @captcha/vue3 and Vue 3.5.",
+      "summary": "Package configuration for Vue 3 example with dependencies on @captcha-pro/vue3 and Vue 3.5.",
       "tags": [
         "configuration",
         "package",
