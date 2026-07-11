@@ -1,0 +1,248 @@
+/* Captcha component styles - optimized for mini-program */
+
+.captcha-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.captcha-area {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.15);
+}
+
+.bg-image {
+  display: block;
+}
+
+/* Slider block overlay - the draggable piece (transparent镂空图 from backend) */
+.slider-block {
+  position: absolute;
+  z-index: 5;
+}
+
+/* Refresh button - matches core/vue2 style: small square, white background */
+.refresh-btn {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border: none;
+}
+
+.refresh-btn:active {
+  transform: scale(0.9);
+}
+
+.refresh-icon {
+  color: #666;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* Status overlay */
+.status-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  background: rgba(255, 255, 255, 0.75);
+  z-index: 30;
+  animation: captcha-fade-in 0.2s ease;
+}
+
+.status-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #fff;
+}
+
+.status-overlay.success .status-icon {
+  background: rgba(82, 196, 26, 0.85);
+}
+
+.status-overlay.fail .status-icon {
+  background: rgba(255, 77, 79, 0.85);
+}
+
+.status-text {
+  font-size: 26rpx;
+  font-weight: 500;
+  letter-spacing: 1rpx;
+  color: #333;
+}
+
+.status-overlay.success .status-text {
+  color: #389e0d;
+}
+
+.status-overlay.fail .status-text {
+  color: #cf1322;
+}
+
+@keyframes captcha-fade-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Slider bar - aligned with core/vue2 */
+.slider-bar {
+  position: relative;
+  background: #f7f9fa;
+  border-radius: 8rpx;
+  margin-top: 10rpx;
+  user-select: none;
+}
+
+.slider-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border: 2rpx solid #f7f9fa;
+  background: #f7f9fa;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 8rpx;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.slider-hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.slider-hint text {
+  font-size: 28rpx;
+  color: #999;
+  transition: opacity 0.2s ease;
+}
+
+.slider-area {
+  position: relative;
+  z-index: 2;
+}
+
+.slider-thumb {
+  background: #fff;
+  border: 2rpx solid #e1e4e8;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  position: absolute;
+}
+
+.slider-thumb:active {
+  background: #f5f5f5;
+}
+
+.slider-arrow {
+  font-size: 40rpx;
+  color: #1991fa;
+  font-weight: bold;
+}
+
+/* Prompt bar (for click captcha) */
+.prompt-bar {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  background: #f7f9fa;
+  border-radius: 16rpx;
+  margin-top: 24rpx;
+  border: 2rpx solid #e8e8e8;
+}
+
+.prompt-text {
+  font-size: 28rpx;
+  color: #666;
+  white-space: nowrap;
+  margin-right: 16rpx;
+}
+
+.prompt-chars {
+  display: flex;
+  gap: 12rpx;
+}
+
+.char-item {
+  width: 56rpx;
+  height: 56rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.3);
+}
+
+.char-text {
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: 500;
+}
+
+.char-img {
+  width: 100%;
+  height: 100%;
+}
+
+/* Loading state */
+.captcha-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 28rpx;
+}
+
+/* Click marker */
+.click-marker {
+  position: absolute;
+  width: 48rpx;
+  height: 48rpx;
+  background: #1991fa;
+  border: 3rpx solid #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+
+.marker-text {
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: bold;
+}

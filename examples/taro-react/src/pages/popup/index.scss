@@ -1,0 +1,49 @@
+.container {
+  padding: 40px 30px;
+}
+
+.title {
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.captcha-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.btn {
+  display: block;
+  padding: 24px 0;
+  margin-bottom: 20px;
+  background: #1991fa;
+  color: #fff;
+  font-size: 30px;
+  font-weight: 500;
+  text-align: center;
+  border-radius: 12px;
+}
+
+.btn-secondary {
+  background: #667eea;
+}
+
+.desc {
+  font-size: 26px;
+  color: #666;
+  line-height: 1.6;
+}
