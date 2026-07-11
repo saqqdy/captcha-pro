@@ -1,7 +1,7 @@
 import type { ClickCaptchaProps, ClickCaptchaRef, Point } from '../types'
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { Image, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { fetchCaptcha, verifyCaptcha } from '../request'
 import '../styles/captcha.scss'
 
@@ -35,18 +35,28 @@ const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(({
 
 	const loadCaptcha = useCallback(async () => {
 		const seq = ++loadSeqRef.current
-		setLoading(true); setErrorMsg(''); setStatus(''); setClickMarkers([]); setClickTexts([]); setClickCharImages([])
+		setLoading(true)
+		setErrorMsg('')
+		setStatus('')
+		setClickMarkers([])
+		setClickTexts([])
+		setClickCharImages([])
 		try {
 			const res = await fetchCaptcha(backend, { type: 'click', width: widthPx, height: heightPx })
 			if (seq !== loadSeqRef.current) return
 			if (!res.success || !res.data) throw new Error(res.message || 'Failed')
-			setCaptchaId(res.data.captchaId); setBgImage(res.data.bgImage)
-			setClickTexts(res.data.clickTexts ?? []); setClickCharImages(res.data.clickCharImages ?? [])
+			setCaptchaId(res.data.captchaId)
+			setBgImage(res.data.bgImage)
+			setClickTexts(res.data.clickTexts ?? [])
+			setClickCharImages(res.data.clickCharImages ?? [])
 		} catch (err) {
 			if (seq !== loadSeqRef.current) return
 			const error = err instanceof Error ? err : new Error(String(err))
-			setErrorMsg(error.message); onError?.(error)
-		} finally { if (seq === loadSeqRef.current) setLoading(false) }
+			setErrorMsg(error.message)
+			onError?.(error)
+		} finally {
+			if (seq === loadSeqRef.current) setLoading(false)
+		}
 	}, [backend, widthPx, heightPx, onError])
 
 	useEffect(() => { if (widthPx && heightPx) loadCaptcha() }, [widthPx, heightPx, loadCaptcha])
@@ -65,14 +75,17 @@ const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(({
 					try {
 						const res = await verifyCaptcha(backend, { captchaId, type: 'click', target: newMarkers.map(m => ({ x: m.x, y: m.y })) })
 						if (res.success) {
-							setStatus('success'); onSuccessRef.current?.(res.data)
+							setStatus('success')
+							onSuccessRef.current?.(res.data)
 						} else {
-							setStatus('fail'); onFailRef.current?.()
+							setStatus('fail')
+							onFailRef.current?.()
 							setTimeout(() => { loadCaptcha(); onRefreshRef.current?.() }, 800)
 						}
 					} catch (err) {
-						console.error("[ClickCaptcha] 错误", err)
-						setStatus('fail'); setTimeout(loadCaptcha, 800)
+						console.error('[ClickCaptcha] 错误', err)
+						setStatus('fail')
+						setTimeout(loadCaptcha, 800)
 					} finally { setLoading(false) }
 				}, 200)
 			}
@@ -86,15 +99,42 @@ const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(({
 
 	return (
 		<View className="captcha-container">
-			<View className="captcha-area" style={{ width: widthPx + 'px', height: heightPx + 'px' }} onClick={handleClick}>
-				{bgImage ? <Image src={bgImage} mode="aspectFill" className="bg-image" style={{ width: widthPx + 'px', height: heightPx + 'px' }} /> : <View className="captcha-loading"><Text>{errorMsg || '加载中...'}</Text></View>}
-				{clickMarkers.map(m => <View key={m.index} className="click-marker" style={{ left: m.x + 'px', top: m.y + 'px' }}><Text className="marker-text">{m.index}</Text></View>)}
-				{showRefresh && !loading && <View className="refresh-btn" onClick={e => { e.stopPropagation(); refresh() }}><Text className="refresh-icon">⟳</Text></View>}
-				{status && <View className={'status-overlay ' + status}><View className="status-icon"><Text>{status === 'success' ? '✓' : '✕'}</Text></View><Text className="status-text">{status === 'success' ? '验证成功' : '验证失败'}</Text></View>}
+			<View className="captcha-area" style={{ width: `${widthPx}px`, height: `${heightPx}px` }} onClick={handleClick}>
+				{bgImage
+					? <Image src={bgImage} mode="aspectFill" className="bg-image" style={{ width: `${widthPx}px`, height: `${heightPx}px` }} />
+					: <View className="captcha-loading"><Text>{errorMsg || '加载中...'}</Text></View>}
+				{clickMarkers.map(m => (
+					<View key={m.index} className="click-marker" style={{ left: `${m.x}px`, top: `${m.y}px` }}>
+						<Text className="marker-text">{m.index}</Text>
+					</View>
+				))}
+				{showRefresh && !loading && (
+					<View className="refresh-btn" onClick={e => { e.stopPropagation(); refresh() }}>
+						<Text className="refresh-icon">⟳</Text>
+					</View>
+				)}
+				{status && (
+					<View className={`status-overlay ${status}`}>
+						<View className="status-icon"><Text>{status === 'success' ? '✓' : '✕'}</Text></View>
+						<Text className="status-text">{status === 'success' ? '验证成功' : '验证失败'}</Text>
+					</View>
+				)}
 			</View>
-			<View className="prompt-bar" style={{ width: widthPx + 'px' }}>
+			<View className="prompt-bar" style={{ width: `${widthPx}px` }}>
 				<Text className="prompt-text">请依次点击：</Text>
-				<View className="prompt-chars">{clickCharImages.length > 0 ? clickCharImages.map(img => <View key={img} className="char-item"><Image src={img} className="char-img" mode="aspectFit" /></View>) : clickTexts.map(char => <View key={char} className="char-item"><Text className="char-text">{char}</Text></View>)}</View>
+				<View className="prompt-chars">
+					{clickCharImages.length > 0
+						? clickCharImages.map(img => (
+							<View key={img} className="char-item">
+								<Image src={img} className="char-img" mode="aspectFit" />
+							</View>
+						))
+						: clickTexts.map(char => (
+							<View key={char} className="char-item">
+								<Text className="char-text">{char}</Text>
+							</View>
+						))}
+				</View>
 			</View>
 		</View>
 	)

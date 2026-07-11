@@ -1,7 +1,7 @@
 import type { SliderCaptchaProps, SliderCaptchaRef } from '../types'
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { Image, MovableArea, MovableView, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { fetchCaptcha, verifyCaptcha } from '../request'
 import '../styles/captcha.scss'
 

@@ -12,15 +12,15 @@ export { useSliderCaptcha, type UseSliderCaptchaOptions } from './hooks/useSlide
 export { fetchCaptcha, verifyCaptcha } from './request'
 
 export type {
-	BackendConfig,
-	BackendCaptchaParams,
-	BackendCaptchaResponse,
-	BackendVerifyRequest,
-	BackendVerifyResponse,
-	SliderCaptchaProps,
-	SliderCaptchaRef,
-	ClickCaptchaProps,
-	ClickCaptchaRef,
-	PopupCaptchaProps,
-	PopupCaptchaRef,
+  BackendCaptchaParams,
+  BackendCaptchaResponse,
+  BackendConfig,
+  BackendVerifyRequest,
+  BackendVerifyResponse,
+  ClickCaptchaProps,
+  ClickCaptchaRef,
+  PopupCaptchaProps,
+  PopupCaptchaRef,
+  SliderCaptchaProps,
+  SliderCaptchaRef,
 } from './types'
