@@ -21,6 +21,7 @@ export default defineConfig(async (merge) => {
     compiler: 'webpack5',
     cache: { enable: false },
     mini: {
+      prebundle: { enable: false },
       postcss: {
         pxtransform: { enable: true, config: {} },
         url: { enable: true, config: { limit: 1024 } },

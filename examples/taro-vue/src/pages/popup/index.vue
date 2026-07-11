@@ -1,49 +1,7 @@
-<template>
-  <view class="container">
-    <view class="title">弹窗验证码</view>
-
-    <view class="section captcha-section">
-      <view class="btn" @tap="showSlider">弹出滑块验证</view>
-      <view class="btn btn-secondary" @tap="showClick">弹出点击验证</view>
-    </view>
-
-    <view class="section" v-if="status">
-      <text>验证结果: {{ status }}</text>
-    </view>
-
-    <view class="section">
-      <view class="section-title">使用说明</view>
-      <text class="desc">弹窗验证码将滑块或点击验证码包裹在弹窗中，通过 ref 调用 show()/hide() 方法控制显示隐藏。</text>
-    </view>
-
-    <popup-captcha
-      ref="sliderPopupRef"
-      type="slider"
-      :backend="backend"
-      @success="onSuccess"
-      @fail="onFail"
-      @refresh="onRefresh"
-      @open="onOpen"
-      @close="onClose"
-    />
-
-    <popup-captcha
-      ref="clickPopupRef"
-      type="click"
-      :backend="backend"
-      @success="onSuccess"
-      @fail="onFail"
-      @refresh="onRefresh"
-      @open="onOpen"
-      @close="onClose"
-    />
-  </view>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
-import { PopupCaptcha } from '@captcha/mp/taro-vue'
-import type { BackendConfig, PopupCaptchaRef } from '@captcha/mp/taro-vue'
+import { PopupCaptcha } from '@captcha-pro/taro-vue'
+import type { BackendConfig, PopupCaptchaRef } from '@captcha-pro/taro-vue'
 
 const backend: BackendConfig = {
   getCaptcha: 'http://localhost:3001/api/captcha',
@@ -85,6 +43,48 @@ const onClose = () => {
   console.log('popup closed')
 }
 </script>
+
+<template>
+  <view class="container">
+    <view class="title">弹窗验证码</view>
+
+    <view class="section captcha-section">
+      <view class="btn" @tap="showSlider">弹出滑块验证</view>
+      <view class="btn btn-secondary" @tap="showClick">弹出点击验证</view>
+    </view>
+
+    <view class="section" v-if="status">
+      <text>验证结果: {{ status }}</text>
+    </view>
+
+    <view class="section">
+      <view class="section-title">使用说明</view>
+      <text class="desc">弹窗验证码将滑块或点击验证码包裹在弹窗中，通过 ref 调用 show()/hide() 方法控制显示隐藏。</text>
+    </view>
+
+    <PopupCaptcha
+      ref="sliderPopupRef"
+      type="slider"
+      :backend="backend"
+      @success="onSuccess"
+      @fail="onFail"
+      @refresh="onRefresh"
+      @open="onOpen"
+      @close="onClose"
+    />
+
+    <PopupCaptcha
+      ref="clickPopupRef"
+      type="click"
+      :backend="backend"
+      @success="onSuccess"
+      @fail="onFail"
+      @refresh="onRefresh"
+      @open="onOpen"
+      @close="onClose"
+    />
+  </view>
+</template>
 
 <style lang="scss">
 .container {

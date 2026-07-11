@@ -1,35 +1,7 @@
-<template>
-  <view class="container">
-    <view class="title">滑块验证码</view>
-
-    <view class="section captcha-section">
-      <slider-captcha
-        :width="650"
-        :height="380"
-        :show-refresh="true"
-        :backend="backend"
-        @success="onSuccess"
-        @fail="onFail"
-        @refresh="onRefresh"
-        @error="onError"
-      />
-    </view>
-
-    <view class="section" v-if="status">
-      <text>验证结果: {{ status }}</text>
-    </view>
-
-    <view class="section">
-      <view class="section-title">使用说明</view>
-      <text class="desc">滑块验证码采用后端服务模式，需要配置 backend 参数。{{ '\n' }}将滑块拖动至缺口位置完成验证。</text>
-    </view>
-  </view>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
-import { SliderCaptcha } from '@captcha/mp/taro-vue'
-import type { BackendConfig } from '@captcha/mp/taro-vue'
+import { SliderCaptcha } from '@captcha-pro/taro-vue'
+import type { BackendConfig } from '@captcha-pro/taro-vue'
 
 const backend: BackendConfig = {
   getCaptcha: 'http://localhost:3001/api/captcha',
@@ -58,6 +30,34 @@ const onError = (err: unknown) => {
   wx.showToast({ title: '加载失败', icon: 'error' })
 }
 </script>
+
+<template>
+  <view class="container">
+    <view class="title">滑块验证码</view>
+
+    <view class="section captcha-section">
+      <SliderCaptcha
+        :width="650"
+        :height="380"
+        :show-refresh="true"
+        :backend="backend"
+        @success="onSuccess"
+        @fail="onFail"
+        @refresh="onRefresh"
+        @error="onError"
+      />
+    </view>
+
+    <view class="section" v-if="status">
+      <text>验证结果: {{ status }}</text>
+    </view>
+
+    <view class="section">
+      <view class="section-title">使用说明</view>
+      <text class="desc">滑块验证码采用后端服务模式，需要配置 backend 参数。{{ '\n' }}将滑块拖动至缺口位置完成验证。</text>
+    </view>
+  </view>
+</template>
 
 <style lang="scss">
 .container {

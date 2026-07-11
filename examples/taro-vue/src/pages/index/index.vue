@@ -1,3 +1,6 @@
+<script setup lang="ts">
+</script>
+
 <template>
   <view class="index">
     <view class="title">Captcha Pro</view>
@@ -16,9 +19,6 @@
     </navigator>
   </view>
 </template>
-
-<script setup lang="ts">
-</script>
 
 <style lang="scss">
 .index {
