@@ -1,14 +1,13 @@
-import type { FC, Ref } from 'react'
 import type { ClickCaptchaProps, ClickCaptchaRef, Point } from '../types'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { Image, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { fetchCaptcha, verifyCaptcha } from '../request'
 import '../styles/captcha.scss'
 
-const ClickCaptcha: FC<ClickCaptchaProps & { ref?: Ref<ClickCaptchaRef> }> = ({
+const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(({
 	width = 650, height = 380, showRefresh = true, backend, onSuccess, onFail, onRefresh, onError,
-}) => {
+}, ref) => {
 	const [captchaId, setCaptchaId] = useState('')
 	const [bgImage, setBgImage] = useState('')
 	const [clickTexts, setClickTexts] = useState<string[]>([])
@@ -62,16 +61,12 @@ const ClickCaptcha: FC<ClickCaptchaProps & { ref?: Ref<ClickCaptchaRef> }> = ({
 			setClickMarkers(newMarkers)
 			if (newMarkers.length >= clickTexts.length) {
 				setTimeout(async () => {
-					console.log("[ClickCaptcha] 开始验证", { captchaId })
 					setLoading(true)
 					try {
 						const res = await verifyCaptcha(backend, { captchaId, type: 'click', target: newMarkers.map(m => ({ x: m.x, y: m.y })) })
-						console.log("[ClickCaptcha] 验证结果", res)
 						if (res.success) {
-							console.log("[ClickCaptcha] ✅ 成功")
 							setStatus('success'); onSuccessRef.current?.(res.data)
 						} else {
-							console.log("[ClickCaptcha] ❌ 失败")
 							setStatus('fail'); onFailRef.current?.()
 							setTimeout(() => { loadCaptcha(); onRefreshRef.current?.() }, 800)
 						}
@@ -85,6 +80,9 @@ const ClickCaptcha: FC<ClickCaptchaProps & { ref?: Ref<ClickCaptchaRef> }> = ({
 	}, [status, loading, clickMarkers, clickTexts, captchaId, backend, loadCaptcha])
 
 	const refresh = useCallback(() => { loadCaptcha(); onRefreshRef.current?.() }, [loadCaptcha])
+
+	// Expose refresh method via ref
+	useImperativeHandle(ref, () => ({ refresh }), [refresh])
 
 	return (
 		<View className="captcha-container">
@@ -100,6 +98,8 @@ const ClickCaptcha: FC<ClickCaptchaProps & { ref?: Ref<ClickCaptchaRef> }> = ({
 			</View>
 		</View>
 	)
-}
+})
+
+ClickCaptcha.displayName = 'ClickCaptcha'
 
 export default ClickCaptcha

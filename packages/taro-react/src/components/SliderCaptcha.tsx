@@ -1,13 +1,12 @@
-import type { FC, Ref } from 'react'
 import type { SliderCaptchaProps, SliderCaptchaRef } from '../types'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { Image, MovableArea, MovableView, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { fetchCaptcha, verifyCaptcha } from '../request'
 import '../styles/captcha.scss'
 
 /** SliderCaptcha — backend-only mode */
-const SliderCaptcha: FC<SliderCaptchaProps & { ref?: Ref<SliderCaptchaRef> }> = ({
+const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(({
 	width = 650,
 	height = 380,
 	sliderWidth = 80,
@@ -18,7 +17,7 @@ const SliderCaptcha: FC<SliderCaptchaProps & { ref?: Ref<SliderCaptchaRef> }> = 
 	onFail,
 	onRefresh,
 	onError,
-}) => {
+}, ref) => {
 	// Backend data
 	const [captchaId, setCaptchaId] = useState('')
 	const [bgImage, setBgImage] = useState('')
@@ -152,6 +151,9 @@ const SliderCaptcha: FC<SliderCaptchaProps & { ref?: Ref<SliderCaptchaRef> }> = 
 		onRefreshRef.current?.()
 	}, [loadCaptcha])
 
+	// Expose refresh method via ref
+	useImperativeHandle(ref, () => ({ refresh }), [refresh])
+
 	const actualSliderWidth = rpxToPx(sliderWidth)
 	const actualSliderHeight = rpxToPx(sliderHeight)
 	const sliderBarHeight = rpxToPx(80)
@@ -239,6 +241,8 @@ const SliderCaptcha: FC<SliderCaptchaProps & { ref?: Ref<SliderCaptchaRef> }> = 
 			</View>
 		</View>
 	)
-}
+})
+
+SliderCaptcha.displayName = 'SliderCaptcha'
 
 export default SliderCaptcha

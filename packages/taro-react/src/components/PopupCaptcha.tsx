@@ -1,4 +1,3 @@
-import type { ReactNode, Ref } from 'react'
 import type { ClickCaptchaProps, PopupCaptchaProps, PopupCaptchaRef, SliderCaptchaProps } from '../types'
 import { Text, View } from '@tarojs/components'
 import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react'
@@ -65,24 +64,24 @@ const PopupCaptcha = forwardRef<PopupCaptchaRef, PopupCaptchaProps>((props, ref)
   const clickProps: ClickCaptchaProps = { ...props.clickOptions, backend: props.backend, onSuccess: handleSuccess, onFail: handleFail, onRefresh: props.onRefresh }
 
   return (
-    <View class="popup-captcha" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <View className="popup-captcha" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <View
-        class="popup-mask"
+        className="popup-mask"
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)' }}
         onClick={handleMaskClick}
       />
       <View
-        class="popup-content"
+        className="popup-content"
         style={{ position: 'relative', zIndex: 1, background: '#fff', borderRadius: '24rpx', overflow: 'hidden', boxShadow: '0 8rpx 32rpx rgba(0, 0, 0, 0.2)', maxWidth: '90vw' }}
       >
         <View
-          class="popup-header"
+          className="popup-header"
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24rpx 32rpx', borderBottom: '1rpx solid #eee' }}
         >
           <Text style={{ fontSize: '32rpx', fontWeight: '600', color: '#333' }}>{title}</Text>
           {showClose && (
             <View
-              class="popup-close"
+              className="popup-close"
               style={{ width: '48rpx', height: '48rpx', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               onClick={() => { setVisible(false); onClose?.() }}
             >
@@ -90,7 +89,7 @@ const PopupCaptcha = forwardRef<PopupCaptchaRef, PopupCaptchaProps>((props, ref)
             </View>
           )}
         </View>
-        <View class="popup-body" style={{ padding: '32rpx' }}>
+        <View className="popup-body" style={{ padding: '32rpx' }}>
           {type === 'slider' ? <SliderCaptcha {...sliderProps} /> : <ClickCaptcha {...clickProps} />}
         </View>
       </View>

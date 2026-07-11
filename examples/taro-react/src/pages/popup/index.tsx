@@ -41,11 +41,11 @@ export default function Popup(): React.ReactNode {
   }
 
   const handleOpen = (): void => {
-    console.info('popup opened')
+    // popup opened
   }
 
   const handleClose = (): void => {
-    console.info('popup closed')
+    // popup closed
   }
 
   return (
