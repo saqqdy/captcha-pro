@@ -10,4 +10,5 @@ export type {
 	SliderCaptchaRef,
 	ClickCaptchaRef,
 	PopupCaptchaRef,
+	Point,
 } from '@captcha-pro/mp-shared'
