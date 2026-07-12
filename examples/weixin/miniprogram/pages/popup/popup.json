@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "弹出验证码",
+  "usingComponents": {
+    "popup-captcha": "@captcha-pro/weixin/components/popup-captcha/popup-captcha"
+  }
+}

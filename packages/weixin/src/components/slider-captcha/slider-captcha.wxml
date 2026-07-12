@@ -1,0 +1,38 @@
+<view class="captcha-container">
+  <view class="captcha-area" style="width: {{width}}rpx; height: {{height}}rpx; border-radius: 8rpx;">
+    <image wx:if="{{bgImage}}" src="{{bgImage}}" mode="aspectFill" class="bg-image" style="width: {{width}}rpx; height: {{height}}rpx;" />
+    <view wx:else class="captcha-loading" style="width: {{width}}rpx; height: {{height}}rpx;">
+      <text>{{errorMsg || '加载中...'}}</text>
+    </view>
+
+    <image
+      wx:if="{{sliderImage && !loading}}"
+      src="{{sliderImage}}"
+      class="slider-block"
+      style="width: {{sliderWidth}}rpx; height: {{sliderHeight}}rpx; top: {{sliderY}}rpx; left: {{sliderX}}rpx;"
+    />
+
+    <view wx:if="{{showRefresh && !loading}}" class="refresh-btn" catchtap="handleRefresh">
+      <text class="refresh-icon">⟳</text>
+    </view>
+
+    <view wx:if="{{status}}" class="status-overlay {{status}}">
+      <view class="status-icon"><text>{{status === 'success' ? '✓' : '✕'}}</text></view>
+      <text class="status-text">{{status === 'success' ? '验证成功' : '验证失败'}}</text>
+    </view>
+  </view>
+
+  <view class="slider-bar" style="width: {{width}}rpx; height: 80rpx;">
+    <view class="slider-progress" style="width: {{sliderX + sliderWidth}}rpx;" />
+    <view class="slider-hint"><text>→ 按住滑块，拖动完成验证</text></view>
+    <view
+      class="slider-thumb"
+      style="left: {{sliderX}}rpx;"
+      catchtouchstart="onTouchStart"
+      catchtouchmove="onTouchMove"
+      catchtouchend="onTouchEnd"
+    >
+      <text class="slider-arrow">→</text>
+    </view>
+  </view>
+</view>

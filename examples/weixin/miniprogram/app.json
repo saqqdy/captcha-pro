@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/slider/slider",
-    "pages/click/click"
+    "pages/click/click",
+    "pages/popup/popup"
   ],
   "window": {
     "navigationBarTitleText": "验证码示例",

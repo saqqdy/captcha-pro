@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "slider-captcha": "../slider-captcha/slider-captcha",
+    "click-captcha": "../click-captcha/click-captcha"
+  }
+}

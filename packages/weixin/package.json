@@ -1,0 +1,41 @@
+{
+  "name": "@captcha-pro/weixin",
+  "description": "WeChat mini-program captcha components for captcha-pro (backend-only mode)",
+  "version": "1.0.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "miniprogram": "dist",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "vite build -c build/vite.config.ts",
+    "watch": "vite build -c build/vite.config.ts -w",
+    "clean": "rm-all dist",
+    "test": "echo 'no tests'"
+  },
+  "dependencies": {
+    "@captcha-pro/mp-shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "miniprogram-api-typings": "^4.1.3",
+    "rm-all": "^1.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.19"
+  },
+  "keywords": ["captcha", "weixin", "miniprogram", "slider-captcha", "click-captcha"],
+  "license": "MIT",
+  "author": "saqqdy<https://github.com/saqqdy>",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  }
+}

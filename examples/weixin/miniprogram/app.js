@@ -1,5 +1,6 @@
+/* global App */
 App({
   onLaunch() {
-    console.log('App launched')
+    console.info('App launched')
   }
 })

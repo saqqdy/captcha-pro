@@ -1,1 +1,2 @@
+/* global Page */
 Page({})

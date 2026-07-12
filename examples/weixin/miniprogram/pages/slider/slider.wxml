@@ -3,16 +3,21 @@
 
   <view class="section">
     <slider-captcha
-      width="{{300}}"
-      height="{{170}}"
-      precision="{{5}}"
       show-refresh="{{true}}"
+      backend="{{backend}}"
       bind:success="onSuccess"
       bind:fail="onFail"
+      bind:refresh="onRefresh"
+      bind:error="onError"
     />
   </view>
 
   <view class="section" wx:if="{{status}}">
     <text>验证结果: {{status}}</text>
+  </view>
+
+  <view class="section">
+    <view class="section-title">使用说明</view>
+    <text class="desc">滑块验证码采用后端服务模式，需要配置 backend 参数。\n将滑块拖动至缺口位置完成验证。</text>
   </view>
 </view>

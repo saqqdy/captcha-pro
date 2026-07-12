@@ -1,6 +1,6 @@
 {
   "navigationBarTitleText": "滑块验证码",
   "usingComponents": {
-    "slider-captcha": "@captcha/mp/weixin/components/slider-captcha"
+    "slider-captcha": "@captcha-pro/weixin/components/slider-captcha/slider-captcha"
   }
 }

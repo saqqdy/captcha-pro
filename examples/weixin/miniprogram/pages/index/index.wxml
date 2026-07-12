@@ -10,4 +10,9 @@
     <view class="section-title">点击验证码</view>
     <navigator url="/pages/click/click" class="btn">打开点击验证</navigator>
   </view>
+
+  <view class="section">
+    <view class="section-title">弹出验证码</view>
+    <navigator url="/pages/popup/popup" class="btn">打开弹出验证</navigator>
+  </view>
 </view>

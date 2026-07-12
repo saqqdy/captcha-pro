@@ -1,0 +1,42 @@
+<view class="captcha-container">
+  <view class="captcha-area" style="width: {{width}}rpx; height: {{height}}rpx; border-radius: 8rpx;" bindtap="onAreaTap">
+    <image wx:if="{{bgImage}}" src="{{bgImage}}" mode="aspectFill" class="bg-image" style="width: {{width}}rpx; height: {{height}}rpx;" />
+    <view wx:else class="captcha-loading" style="width: {{width}}rpx; height: {{height}}rpx;">
+      <text>{{errorMsg || '加载中...'}}</text>
+    </view>
+
+    <view
+      wx:for="{{clickMarkers}}"
+      wx:key="index"
+      class="click-marker"
+      style="left: {{item.x}}rpx; top: {{item.y}}rpx;"
+    >
+      <text class="marker-text">{{item.index}}</text>
+    </view>
+
+    <view wx:if="{{showRefresh && !loading}}" class="refresh-btn" catchtap="handleRefresh">
+      <text class="refresh-icon">⟳</text>
+    </view>
+
+    <view wx:if="{{status}}" class="status-overlay {{status}}">
+      <view class="status-icon"><text>{{status === 'success' ? '✓' : '✕'}}</text></view>
+      <text class="status-text">{{status === 'success' ? '验证成功' : '验证失败'}}</text>
+    </view>
+  </view>
+
+  <view class="prompt-bar" style="width: {{width}}rpx;">
+    <text class="prompt-text">请依次点击：</text>
+    <view class="prompt-chars">
+      <block wx:if="{{clickCharImages.length > 0}}">
+        <view wx:for="{{clickCharImages}}" wx:key="index" class="char-item">
+          <image src="{{item}}" class="char-img" mode="aspectFit" />
+        </view>
+      </block>
+      <block wx:else>
+        <view wx:for="{{clickTexts}}" wx:key="index" class="char-item">
+          <text class="char-text">{{item}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>

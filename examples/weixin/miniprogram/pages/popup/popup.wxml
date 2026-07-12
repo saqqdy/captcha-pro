@@ -1,0 +1,39 @@
+<view class="container">
+  <view class="title">弹出验证码</view>
+
+  <view class="section">
+    <view class="section-title">滑块弹出模式</view>
+    <view class="btn" bindtap="onShowSliderPopup">点击弹出滑块验证</view>
+  </view>
+
+  <view class="section">
+    <view class="section-title">点选弹出模式</view>
+    <view class="btn" bindtap="onShowClickPopup">点击弹出点选验证</view>
+  </view>
+
+  <view class="section" wx:if="{{status}}">
+    <text>验证结果: {{status}}</text>
+  </view>
+
+  <view class="section">
+    <view class="section-title">使用说明</view>
+    <text class="desc">弹出验证码将滑块/点击验证封装在弹窗中，适合在登录、提交等操作前触发验证。\n点击按钮弹出验证码，验证成功后自动关闭。</text>
+  </view>
+
+  <popup-captcha
+    id="popupCaptcha"
+    type="{{captchaType}}"
+    title="请完成安全验证"
+    mask-closable="{{true}}"
+    show-close="{{true}}"
+    auto-close="{{true}}"
+    close-delay="{{500}}"
+    backend="{{backend}}"
+    bind:success="onSuccess"
+    bind:fail="onFail"
+    bind:open="onOpen"
+    bind:close="onClose"
+    bind:refresh="onRefresh"
+    bind:error="onError"
+  />
+</view>
