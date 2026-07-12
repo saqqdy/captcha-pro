@@ -49,30 +49,33 @@ export default function Popup(): React.ReactNode {
   }
 
   return (
-    <View className='container'>
-      <View className='title'>弹窗验证码</View>
+    <View class="container">
+      <View class="title">弹窗验证码</View>
 
-      <View className='section captcha-section'>
-        <View className='btn' onClick={showSlider}>
+      <View class="section captcha-section">
+        <View class="btn" onClick={showSlider}>
           弹出滑块验证
         </View>
-        <View className='btn btn-secondary' onClick={showClick}>
+        <View class="btn btn-secondary" onClick={showClick}>
           弹出点击验证
         </View>
       </View>
 
-      <View className='section'>
-        <Text>验证结果: {status}</Text>
+      <View class="section">
+        <Text>
+          验证结果:
+          {status}
+        </Text>
       </View>
 
-      <View className='section'>
-        <View className='section-title'>使用说明</View>
-        <Text className='desc'>弹窗验证码将滑块或点击验证码包裹在弹窗中，通过 ref 调用 show()/hide() 方法控制显示隐藏。</Text>
+      <View class="section">
+        <View class="section-title">使用说明</View>
+        <Text class="desc">弹窗验证码将滑块或点击验证码包裹在弹窗中，通过 ref 调用 show()/hide() 方法控制显示隐藏。</Text>
       </View>
 
       <PopupCaptcha
         ref={sliderRef}
-        type='slider'
+        type="slider"
         backend={backend}
         onSuccess={handleSuccess}
         onFail={handleFail}
@@ -83,7 +86,7 @@ export default function Popup(): React.ReactNode {
 
       <PopupCaptcha
         ref={clickRef}
-        type='click'
+        type="click"
         backend={backend}
         onSuccess={handleSuccess}
         onFail={handleFail}

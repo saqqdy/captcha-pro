@@ -2,245 +2,248 @@ import type { SliderCaptchaProps, SliderCaptchaRef } from '../types'
 import { Image, MovableArea, MovableView, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { Show } from 'solid-js'
 import { fetchCaptcha, verifyCaptcha } from '../request'
 import '../styles/captcha.scss'
 
 /** SliderCaptcha — backend-only mode */
 const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(({
-	width = 650,
-	height = 380,
-	sliderWidth = 80,
-	sliderHeight = 80,
-	showRefresh = true,
-	backend,
-	onSuccess,
-	onFail,
-	onRefresh,
-	onError,
+  width = 650,
+  height = 380,
+  sliderWidth = 80,
+  sliderHeight = 80,
+  showRefresh = true,
+  backend,
+  onSuccess,
+  onFail,
+  onRefresh,
+  onError,
 }, ref) => {
-	// Backend data
-	const [captchaId, setCaptchaId] = useState('')
-	const [bgImage, setBgImage] = useState('')
-	const [sliderImage, setSliderImage] = useState('')
-	const [sliderY, setSliderY] = useState(0)
+  // Backend data
+  const [captchaId, setCaptchaId] = useState('')
+  const [bgImage, setBgImage] = useState('')
+  const [sliderImage, setSliderImage] = useState('')
+  const [sliderY, setSliderY] = useState(0)
 
-	// UI state
-	const [sliderX, setSliderX] = useState(0)
-	const [status, setStatus] = useState<'' | 'success' | 'fail'>('')
-	const [loading, setLoading] = useState(true)
-	const [errorMsg, setErrorMsg] = useState('')
+  // UI state
+  const [sliderX, setSliderX] = useState(0)
+  const [status, setStatus] = useState<'' | 'success' | 'fail'>('')
+  const [loading, setLoading] = useState(true)
+  const [errorMsg, setErrorMsg] = useState('')
 
-	// Track loading to avoid race conditions
-	const loadSeqRef = useRef(0)
+  // Track loading to avoid race conditions
+  const loadSeqRef = useRef(0)
 
-	// Use refs for callbacks to avoid dependency issues
-	const onSuccessRef = useRef(onSuccess)
-	const onFailRef = useRef(onFail)
-	const onRefreshRef = useRef(onRefresh)
-	const onErrorRef = useRef(onError)
+  // Use refs for callbacks to avoid dependency issues
+  const onSuccessRef = useRef(onSuccess)
+  const onFailRef = useRef(onFail)
+  const onRefreshRef = useRef(onRefresh)
+  const onErrorRef = useRef(onError)
 
-	// Update refs when props change
-	useEffect(() => {
-		onSuccessRef.current = onSuccess
-		onFailRef.current = onFail
-		onRefreshRef.current = onRefresh
-		onErrorRef.current = onError
-	}, [onSuccess, onFail, onRefresh, onError])
+  // Update refs when props change
+  useEffect(() => {
+    onSuccessRef.current = onSuccess
+    onFailRef.current = onFail
+    onRefreshRef.current = onRefresh
+    onErrorRef.current = onError
+  }, [onSuccess, onFail, onRefresh, onError])
 
-	// Convert rpx to px
-	const rpxToPx = useCallback((rpx: number) => {
-		return Math.floor(rpx * Taro.getWindowInfo().screenWidth / 750)
-	}, [])
+  // Convert rpx to px
+  const rpxToPx = useCallback((rpx: number) => {
+    return Math.floor(rpx * Taro.getWindowInfo().screenWidth / 750)
+  }, [])
 
-	// Container size in px (computed from rpx)
-	const widthPx = useMemo(() => rpxToPx(width), [width, rpxToPx])
-	const heightPx = useMemo(() => rpxToPx(height), [height, rpxToPx])
+  // Container size in px (computed from rpx)
+  const widthPx = useMemo(() => rpxToPx(width), [width, rpxToPx])
+  const heightPx = useMemo(() => rpxToPx(height), [height, rpxToPx])
 
-	// Load captcha from backend
-	const loadCaptcha = useCallback(async () => {
-		const seq = ++loadSeqRef.current
-		setLoading(true)
-		setErrorMsg('')
-		setStatus('')
-		setSliderX(0)
+  // Load captcha from backend
+  const loadCaptcha = useCallback(async () => {
+    const seq = ++loadSeqRef.current
+    setLoading(true)
+    setErrorMsg('')
+    setStatus('')
+    setSliderX(0)
 
-		try {
-			const res = await fetchCaptcha(backend, {
-				type: 'slider',
-				width: widthPx || rpxToPx(width),
-				height: heightPx || rpxToPx(height),
-				sliderWidth: rpxToPx(sliderWidth),
-				sliderHeight: rpxToPx(sliderHeight),
-			})
+    try {
+      const res = await fetchCaptcha(backend, {
+        type: 'slider',
+        width: widthPx || rpxToPx(width),
+        height: heightPx || rpxToPx(height),
+        sliderWidth: rpxToPx(sliderWidth),
+        sliderHeight: rpxToPx(sliderHeight),
+      })
 
-			// Skip if a newer load was triggered
-			if (seq !== loadSeqRef.current) return
+      // Skip if a newer load was triggered
+      if (seq !== loadSeqRef.current) return
 
-			if (!res.success || !res.data) {
-				throw new Error(res.message || 'Failed to get captcha')
-			}
+      if (!res.success || !res.data) {
+        throw new Error(res.message || 'Failed to get captcha')
+      }
 
-			const { captchaId: id, bgImage: bg, sliderImage: slider, sliderY: y } = res.data
-			setCaptchaId(id)
-			setBgImage(bg)
-			setSliderImage(slider ?? '')
-			setSliderY(y ?? 0)
-		} catch (err) {
-			if (seq !== loadSeqRef.current) return
-			const error = err instanceof Error ? err : new Error(String(err))
-			setErrorMsg(error.message)
-			onError?.(error)
-		} finally {
-			if (seq === loadSeqRef.current) {
-				setLoading(false)
-			}
-		}
-	}, [backend, widthPx, heightPx, width, height, sliderWidth, sliderHeight, rpxToPx, onError])
+      const { captchaId: id, bgImage: bg, sliderImage: slider, sliderY: y } = res.data
+      setCaptchaId(id)
+      setBgImage(bg)
+      setSliderImage(slider ?? '')
+      setSliderY(y ?? 0)
+    } catch (err) {
+      if (seq !== loadSeqRef.current) return
+      const error = err instanceof Error ? err : new Error(String(err))
+      setErrorMsg(error.message)
+      onError?.(error)
+    } finally {
+      if (seq === loadSeqRef.current) {
+        setLoading(false)
+      }
+    }
+  }, [backend, widthPx, heightPx, width, height, sliderWidth, sliderHeight, rpxToPx, onError])
 
-	// Load on mount
-	useEffect(() => {
-		if (widthPx && heightPx) {
-			loadCaptcha()
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [widthPx, heightPx])
+  // Load on mount
+  useEffect(() => {
+    if (widthPx && heightPx) {
+      loadCaptcha()
+    }
+  }, [widthPx, heightPx])
 
-	// Handle slider drag
-	const handleSliderChange = useCallback((e: { detail: { x: number } }): void => {
-		if (status || loading) return
-		setSliderX(e.detail.x)
-	}, [status, loading])
+  // Handle slider drag
+  const handleSliderChange = useCallback((e: { detail: { x: number } }): void => {
+    if (status || loading) return
+    setSliderX(e.detail.x)
+  }, [status, loading])
 
-	// Handle slider release → verify
-	const handleSliderEnd = useCallback(async (): Promise<void> => {
-		if (status || loading || !captchaId) return
+  // Handle slider release → verify
+  const handleSliderEnd = useCallback(async (): Promise<void> => {
+    if (status || loading || !captchaId) return
 
-		setLoading(true)
-		try {
-			const res = await verifyCaptcha(backend, {
-				captchaId,
-				type: 'slider',
-				target: [sliderX],
-			})
+    setLoading(true)
+    try {
+      const res = await verifyCaptcha(backend, {
+        captchaId,
+        type: 'slider',
+        target: [sliderX],
+      })
 
-			if (res.success) {
-				setStatus('success')
-				onSuccessRef.current?.(res.data)
-			} else {
-				setStatus('fail')
-				onFailRef.current?.()
-				// Auto refresh after failure
-				setTimeout(() => {
-					loadCaptcha()
-					onRefreshRef.current?.()
-				}, 800)
-			}
-		} catch (err) {
-			const error = err instanceof Error ? err : new Error(String(err))
-			onError?.(error)
-			setStatus('fail')
-			setTimeout(() => loadCaptcha(), 800)
-		} finally {
-			setLoading(false)
-		}
-	}, [status, loading, captchaId, sliderX, backend, loadCaptcha, onSuccess, onError])
+      if (res.success) {
+        setStatus('success')
+        onSuccessRef.current?.(res.data)
+      } else {
+        setStatus('fail')
+        onFailRef.current?.()
+        // Auto refresh after failure
+        setTimeout(() => {
+          loadCaptcha()
+          onRefreshRef.current?.()
+        }, 800)
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err))
+      onError?.(error)
+      setStatus('fail')
+      setTimeout(() => loadCaptcha(), 800)
+    } finally {
+      setLoading(false)
+    }
+  }, [status, loading, captchaId, sliderX, backend, loadCaptcha, onSuccess, onError])
 
-	// Manual refresh
-	const refresh = useCallback(() => {
-		loadCaptcha()
-		onRefreshRef.current?.()
-	}, [loadCaptcha])
+  // Manual refresh
+  const refresh = useCallback(() => {
+    loadCaptcha()
+    onRefreshRef.current?.()
+  }, [loadCaptcha])
 
-	// Expose refresh method via ref
-	useImperativeHandle(ref, () => ({ refresh }), [refresh])
+  // Expose refresh method via ref
+  useImperativeHandle(ref, () => ({ refresh }), [refresh])
 
-	const actualSliderWidth = rpxToPx(sliderWidth)
-	const actualSliderHeight = rpxToPx(sliderHeight)
-	const sliderBarHeight = rpxToPx(80)
+  const actualSliderWidth = rpxToPx(sliderWidth)
+  const actualSliderHeight = rpxToPx(sliderHeight)
+  const sliderBarHeight = rpxToPx(80)
 
-	return (
-		<View className="captcha-container">
-			{/* Captcha area */}
-			<View
-				className="captcha-area"
-				style={{
-					width: `${widthPx}px`,
-					height: `${heightPx}px`,
-					borderRadius: '16rpx',
-				}}
-			>
-				{/* Background image from backend */}
-				{bgImage ? (
-					<Image
-						src={bgImage}
-						mode="aspectFill"
-						className="bg-image"
-						style={{ width: `${widthPx}px`, height: `${heightPx}px` }}
-					/>
-				) : (
-					<View className="captcha-loading" style={{ width: `${widthPx}px`, height: `${heightPx}px` }}>
-						<Text>{errorMsg || '加载中...'}</Text>
-					</View>
-				)}
+  return (
+    <View class="captcha-container">
+      {/* Captcha area */}
+      <View
+        class="captcha-area"
+        style={{
+          width: `${widthPx}px`,
+          height: `${heightPx}px`,
+          'border-radius': '16rpx',
+        }}
+      >
+        {/* Background image from backend */}
+        <Show
+          when={bgImage}
+          fallback={(
+            <View class="captcha-loading" style={{ width: `${widthPx}px`, height: `${heightPx}px` }}>
+              <Text>{errorMsg || '加载中...'}</Text>
+            </View>
+          )}
+        >
+          <Image
+            src={bgImage}
+            mode="aspectFill"
+            class="bg-image"
+            style={{ width: `${widthPx}px`, height: `${heightPx}px` }}
+          />
+        </Show>
 
-				{/* Slider block overlay from backend */}
-				{sliderImage && !loading && (
-					<Image
-						src={sliderImage}
-						className="slider-block"
-						style={{
-							width: `${actualSliderWidth}px`,
-							height: `${actualSliderHeight}px`,
-							top: `${sliderY}px`,
-							left: `${sliderX}px`,
-						}}
-					/>
-				)}
+        {/* Slider block overlay from backend */}
+        <Show when={sliderImage && !loading}>
+          <Image
+            src={sliderImage}
+            class="slider-block"
+            style={{
+              width: `${actualSliderWidth}px`,
+              height: `${actualSliderHeight}px`,
+              top: `${sliderY}px`,
+              left: `${sliderX}px`,
+            }}
+          />
+        </Show>
 
-				{/* Refresh button */}
-				{showRefresh && !loading && (
-					<View className="refresh-btn" onClick={refresh}>
-						<Text className="refresh-icon">⟳</Text>
-					</View>
-				)}
+        {/* Refresh button */}
+        <Show when={showRefresh && !loading}>
+          <View class="refresh-btn" onClick={refresh}>
+            <Text class="refresh-icon">⟳</Text>
+          </View>
+        </Show>
 
-				{/* Status overlay */}
-				{status && (
-					<View className={`status-overlay ${status}`}>
-						<View className="status-icon"><Text>{status === 'success' ? '✓' : '✕'}</Text></View>
-						<Text className="status-text">{status === 'success' ? '验证成功' : '验证失败'}</Text>
-					</View>
-				)}
-			</View>
+        {/* Status overlay */}
+        <Show when={status}>
+          <View class={`status-overlay ${status}`}>
+            <View class="status-icon"><Text>{status === 'success' ? '✓' : '✕'}</Text></View>
+            <Text class="status-text">{status === 'success' ? '验证成功' : '验证失败'}</Text>
+          </View>
+        </Show>
+      </View>
 
-			{/* Slider bar */}
-			<View
-				className="slider-bar"
-				style={{ width: `${widthPx}px`, height: `${sliderBarHeight}px` }}
-			>
-				<View className="slider-track" />
-				<View className="slider-hint">
-					<Text>→ 按住滑块，拖动完成验证</Text>
-				</View>
-				<MovableArea
-					className="slider-area"
-					style={{ width: `${widthPx}px`, height: `${sliderBarHeight}px` }}
-				>
-					<MovableView
-						className="slider-thumb"
-						direction="horizontal"
-						x={sliderX}
-						damping={40}
-						onChange={handleSliderChange}
-						onTouchEnd={handleSliderEnd}
-						style={{ width: `${actualSliderWidth}px`, height: `${sliderBarHeight}px` }}
-					>
-						<Text className="slider-arrow">→</Text>
-					</MovableView>
-				</MovableArea>
-			</View>
-		</View>
-	)
+      {/* Slider bar */}
+      <View
+        class="slider-bar"
+        style={{ width: `${widthPx}px`, height: `${sliderBarHeight}px` }}
+      >
+        <View class="slider-track" />
+        <View class="slider-hint">
+          <Text>→ 按住滑块，拖动完成验证</Text>
+        </View>
+        <MovableArea
+          class="slider-area"
+          style={{ width: `${widthPx}px`, height: `${sliderBarHeight}px` }}
+        >
+          <MovableView
+            class="slider-thumb"
+            direction="horizontal"
+            x={sliderX}
+            damping={40}
+            onChange={handleSliderChange}
+            onTouchEnd={handleSliderEnd}
+            style={{ width: `${actualSliderWidth}px`, height: `${sliderBarHeight}px` }}
+          >
+            <Text class="slider-arrow">→</Text>
+          </MovableView>
+        </MovableArea>
+      </View>
+    </View>
+  )
 })
 
 SliderCaptcha.displayName = 'SliderCaptcha'

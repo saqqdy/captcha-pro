@@ -12,15 +12,15 @@ export { useSliderCaptcha, type UseSliderCaptchaOptions } from './composables/us
 export { fetchCaptcha, verifyCaptcha } from './request'
 
 export type {
-	BackendConfig,
 	BackendCaptchaParams,
 	BackendCaptchaResponse,
+	BackendConfig,
 	BackendVerifyRequest,
 	BackendVerifyResponse,
-	SliderCaptchaProps,
-	SliderCaptchaRef,
 	ClickCaptchaProps,
 	ClickCaptchaRef,
 	PopupCaptchaProps,
 	PopupCaptchaRef,
+	SliderCaptchaProps,
+	SliderCaptchaRef,
 } from './types'

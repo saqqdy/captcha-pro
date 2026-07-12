@@ -1,13 +1,13 @@
 export type {
-	BackendConfig,
 	BackendCaptchaParams,
 	BackendCaptchaResponse,
+	BackendConfig,
 	BackendVerifyRequest,
 	BackendVerifyResponse,
-	SliderCaptchaProps,
 	ClickCaptchaProps,
-	PopupCaptchaProps,
-	SliderCaptchaRef,
 	ClickCaptchaRef,
+	PopupCaptchaProps,
 	PopupCaptchaRef,
+	SliderCaptchaProps,
+	SliderCaptchaRef,
 } from '@captcha-pro/mp-shared'

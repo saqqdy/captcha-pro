@@ -2,7 +2,7 @@ import { defineConfig } from '@tarojs/cli'
 import devConfig from './dev'
 import prodConfig from './prod'
 
-export default defineConfig(async (merge) => {
+export default defineConfig(async merge => {
   const baseConfig = {
     projectName: 'taro-react',
     date: '2026-7-5',
@@ -10,7 +10,7 @@ export default defineConfig(async (merge) => {
     deviceRatio: {
       640: 2.34 / 2,
       750: 1,
-      828: 1.81 / 2
+      828: 1.81 / 2,
     },
     sourceRoot: 'src',
     outputRoot: 'dist',
@@ -26,9 +26,9 @@ export default defineConfig(async (merge) => {
         url: { enable: true, config: { limit: 1024 } },
         cssModules: {
           enable: false,
-          config: { namingPattern: 'module', generateScopedName: '[name]__[local]___[hash:base64:5]' }
-        }
-      }
+          config: { namingPattern: 'module', generateScopedName: '[name]__[local]___[hash:base64:5]' },
+        },
+      },
     },
     h5: {
       publicPath: '/',
@@ -37,13 +37,13 @@ export default defineConfig(async (merge) => {
         autoprefixer: { enable: true, config: {} },
         cssModules: {
           enable: false,
-          config: { namingPattern: 'module', generateScopedName: '[name]__[local]___[hash:base64:5]' }
-        }
-      }
+          config: { namingPattern: 'module', generateScopedName: '[name]__[local]___[hash:base64:5]' },
+        },
+      },
     },
     alias: {
-      '@': './src'
-    }
+      '@': './src',
+    },
   }
 
   if (process.env.NODE_ENV === 'development') {

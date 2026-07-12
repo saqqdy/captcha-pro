@@ -36,10 +36,10 @@ export default function Slider(): React.ReactNode {
   }
 
   return (
-    <View className='container'>
-      <View className='title'>滑块验证码</View>
+    <View class="container">
+      <View class="title">滑块验证码</View>
 
-      <View className='section captcha-section'>
+      <View class="section captcha-section">
         <SliderCaptcha
           width={650}
           height={380}
@@ -52,13 +52,20 @@ export default function Slider(): React.ReactNode {
         />
       </View>
 
-      <View className='section'>
-        <Text>验证结果: {status}</Text>
+      <View class="section">
+        <Text>
+          验证结果:
+          {status}
+        </Text>
       </View>
 
-      <View className='section'>
-        <View className='section-title'>使用说明</View>
-        <Text className='desc'>滑块验证码采用后端服务模式，需要配置 backend 参数。{'\n'}将滑块拖动至缺口位置完成验证。</Text>
+      <View class="section">
+        <View class="section-title">使用说明</View>
+        <Text class="desc">
+          滑块验证码采用后端服务模式，需要配置 backend 参数。
+          {'\n'}
+          将滑块拖动至缺口位置完成验证。
+        </Text>
       </View>
     </View>
   )
