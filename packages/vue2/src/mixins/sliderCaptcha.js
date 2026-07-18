@@ -9,7 +9,7 @@
  *   // ...
  * }
  */
-import { SliderCaptcha } from '@captcha/core'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 export const sliderCaptchaMixin = {
   props: {

@@ -1,5 +1,5 @@
 <script>
-import { PopupCaptcha } from '@captcha/core'
+import { PopupCaptcha } from '@captcha-pro/core'
 
 export default {
   name: 'PopupCaptcha',

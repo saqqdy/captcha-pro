@@ -9,7 +9,7 @@
  *   // ...
  * }
  */
-import { ClickCaptcha } from '@captcha/core'
+import { ClickCaptcha } from '@captcha-pro/core'
 
 export const clickCaptchaMixin = {
   props: {

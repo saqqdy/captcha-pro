@@ -1,5 +1,5 @@
 <script>
-import { ClickCaptcha } from '@captcha/core'
+import { ClickCaptcha } from '@captcha-pro/core'
 
 export default {
   name: 'ClickCaptcha',

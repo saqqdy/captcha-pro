@@ -14,7 +14,7 @@ export { ClickCaptcha, PopupCaptcha, SliderCaptcha }
 export { clickCaptchaMixin, sliderCaptchaMixin }
 
 // Re-export types and core
-export * from '@captcha/core'
+export * from '@captcha-pro/core'
 
 // Version
 export const version = '__VERSION__'
