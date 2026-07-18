@@ -4,7 +4,7 @@ import {
   PopupCaptcha as PopupCaptchaCore,
   type PopupCaptchaOptions,
   type PopupCaptchaInstance,
-} from '@captcha/core'
+} from '@captcha-pro/core'
 
 export interface Props {
   type?: 'slider' | 'click'

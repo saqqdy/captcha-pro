@@ -30,7 +30,7 @@ export default defineConfig({
       fileName: (format) => `index.${format === 'es' ? 'mjs' : 'cjs'}`,
     },
     rollupOptions: {
-      external: ['vue', '@captcha/core'],
+      external: ['vue', '@captcha-pro/core'],
       output: [
         {
           format: 'es',

@@ -6,7 +6,7 @@ import {
   SliderCaptcha as SliderCaptchaCore,
   type SliderCaptchaInstance,
   type SliderCaptchaOptions,
-} from '@captcha/core'
+} from '@captcha-pro/core'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 export interface UseSliderCaptchaOptions {
@@ -26,9 +26,9 @@ export interface UseSliderCaptchaOptions {
   onSuccess?: () => void
   onFail?: () => void
   onRefresh?: () => void
+  onError?: (err: Error) => void
 }
 
-// eslint-disable-next-line @eslint-react/hooks-extra/no-unnecessary-use-prefix -- calls onMounted/onUnmounted/watch internally
 export function useSliderCaptcha(options: UseSliderCaptchaOptions): {
   instance: Ref<SliderCaptchaInstance | null>
   isReady: Ref<boolean>

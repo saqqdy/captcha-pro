@@ -8,7 +8,7 @@ export { useClickCaptcha, type UseClickCaptchaOptions } from './composables/useC
 export { useSliderCaptcha, type UseSliderCaptchaOptions } from './composables/useSliderCaptcha'
 
 // Re-export types and core
-export * from '@captcha/core'
+export * from '@captcha-pro/core'
 
 // Version
 export const version = '1.0.0'

@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import {
   type ClickCaptchaInstance,
   type BackendVerifyOptions,
-} from '@captcha/core'
+} from '@captcha-pro/core'
 import { useClickCaptcha, type UseClickCaptchaOptions } from '../composables/useClickCaptcha'
 
 export interface Props {

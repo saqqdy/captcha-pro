@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 import {
   type SliderCaptchaInstance,
   type BackendVerifyOptions,
-} from '@captcha/core'
+} from '@captcha-pro/core'
 import { useSliderCaptcha, type UseSliderCaptchaOptions } from '../composables/useSliderCaptcha'
 
 export interface Props {

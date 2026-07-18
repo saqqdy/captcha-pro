@@ -6,7 +6,7 @@ import {
   ClickCaptcha as ClickCaptchaCore,
   type ClickCaptchaInstance,
   type ClickCaptchaOptions,
-} from '@captcha/core'
+} from '@captcha-pro/core'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 
 export interface UseClickCaptchaOptions {
@@ -23,9 +23,9 @@ export interface UseClickCaptchaOptions {
   onSuccess?: () => void
   onFail?: () => void
   onRefresh?: () => void
+  onError?: (err: Error) => void
 }
 
-// eslint-disable-next-line @eslint-react/hooks-extra/no-unnecessary-use-prefix -- calls onMounted/onUnmounted/watch internally
 export function useClickCaptcha(options: UseClickCaptchaOptions): {
   instance: Ref<ClickCaptchaInstance | null>
   isReady: Ref<boolean>
