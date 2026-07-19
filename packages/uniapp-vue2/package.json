@@ -1,0 +1,47 @@
+{
+  "name": "@captcha-pro/uniapp-vue2",
+  "description": "uni-app + Vue 2 captcha components for captcha-pro (backend-only mode)",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    },
+    "./slider-captcha.vue": "./src/components/slider-captcha.vue",
+    "./click-captcha.vue": "./src/components/click-captcha.vue",
+    "./popup-captcha.vue": "./src/components/popup-captcha.vue",
+    "./request": "./dist/request.js",
+    "./types": "./dist/types.js"
+  },
+  "files": ["src/components", "src/index.ts", "dist"],
+  "scripts": {
+    "build": "vite build -c build/vite.config.ts",
+    "watch": "vite build -c build/vite.config.ts -w",
+    "clean": "rm-all dist",
+    "test": "echo 'no tests'"
+  },
+  "dependencies": {
+    "@captcha-pro/mp-shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "rm-all": "^1.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.19"
+  },
+  "peerDependencies": {
+    "vue": "^2.7.0"
+  },
+  "keywords": ["captcha", "uniapp", "vue2", "slider-captcha", "click-captcha"],
+  "license": "MIT",
+  "author": "saqqdy<https://github.com/saqqdy>",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  }
+}
