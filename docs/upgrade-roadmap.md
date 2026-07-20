@@ -28,18 +28,18 @@ captcha-pro          # 框架无关的核心库
 
 ### Monorepo 架构 ✅ 已完成
 
-**阶段二（已完成）**：已改造成 monorepo，子包使用 `@captcha/*` 作用域
+**阶段二（已完成）**：已改造成 monorepo，子包使用 `@captcha-pro/*` 作用域
 
 ```
 captcha-pro/
 ├── packages/
-│   ├── core/                    # @captcha/core - 核心逻辑 ✅
-│   ├── vue3/                    # @captcha/vue3 - Vue 3 组件 ✅
-│   ├── vue2/                    # @captcha/vue2 - Vue 2 组件 ✅
-│   ├── react/                   # @captcha/react - React 组件 ✅
-│   ├── mp/                      # @captcha/mp - 小程序版本 ✅
-│   ├── svelte/                  # @captcha/svelte - Svelte 组件 (规划中)
-│   └── solid/                   # @captcha/solid - Solid 组件 (规划中)
+│   ├── core/                    # @captcha-pro/core - 核心逻辑 ✅
+│   ├── vue3/                    # @captcha-pro/vue3 - Vue 3 组件 ✅
+│   ├── vue2/                    # @captcha-pro/vue2 - Vue 2 组件 ✅
+│   ├── react/                   # @captcha-pro/react - React 组件 ✅
+│   ├── mp/                      # @captcha-pro/mp - 小程序版本 ✅
+│   ├── svelte/                  # @captcha-pro/svelte - Svelte 组件 (规划中)
+│   └── solid/                   # @captcha-pro/solid - Solid 组件 (规划中)
 ├── server/                      # 后端服务 ✅
 ├── examples/                    # 示例项目
 ├── docs/                        # 文档站点
@@ -51,14 +51,14 @@ captcha-pro/
 **包依赖关系**：
 
 ```
-@captcha/vue3 ─────┐
-@captcha/react ────┼──▶ @captcha/core ──▶ captcha-pro (主包兼容)
-@captcha/svelte ───┘
+@captcha-pro/vue3 ─────┐
+@captcha-pro/react ────┼──▶ @captcha-pro/core ──▶ captcha-pro (主包兼容)
+@captcha-pro/svelte ───┘
 ```
 
 **迁移策略**：
 
-1. **保持向后兼容**：`captcha-pro` 主包继续存在，内部引用 `@captcha/core`
+1. **保持向后兼容**：`captcha-pro` 主包继续存在，内部引用 `@captcha-pro/core`
 2. **渐进式迁移**：新功能优先在框架特定包中开发
 3. **统一版本号**：所有包使用相同版本号，便于管理
 
@@ -67,7 +67,7 @@ captcha-pro/
 ```json
 // packages/core/package.json
 {
-  "name": "@captcha/core",
+  "name": "@captcha-pro/core",
   "version": "2.0.0",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -76,14 +76,14 @@ captcha-pro/
 
 // packages/vue3/package.json
 {
-  "name": "@captcha/vue3",
+  "name": "@captcha-pro/vue3",
   "version": "2.0.0",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "peerDependencies": {
     "vue": "^3.0.0",
-    "@captcha/core": "2.0.0"
+    "@captcha-pro/core": "2.0.0"
   }
 }
 
@@ -93,7 +93,7 @@ captcha-pro/
   "name": "captcha-pro",
   "version": "2.0.0",
   "dependencies": {
-    "@captcha/core": "2.0.0"
+    "@captcha-pro/core": "2.0.0"
   }
 }
 ```
@@ -101,10 +101,10 @@ captcha-pro/
 **框架包使用示例**：
 
 ```vue
-<!-- @captcha/vue3 -->
+<!-- @captcha-pro/vue3 -->
 <script setup lang="ts">
-import { SliderCaptcha } from '@captcha/vue3'
-import '@captcha/vue3/dist/style.css'
+import { SliderCaptcha } from '@captcha-pro/vue3'
+import '@captcha-pro/vue3/dist/style.css'
 </script>
 
 <template>
@@ -118,9 +118,9 @@ import '@captcha/vue3/dist/style.css'
 ```
 
 ```tsx
-// @captcha/react
-import { SliderCaptcha } from '@captcha/react'
-import '@captcha/react/dist/style.css'
+// @captcha-pro/react
+import { SliderCaptcha } from '@captcha-pro/react'
+import '@captcha-pro/react/dist/style.css'
 
 function App() {
   return (

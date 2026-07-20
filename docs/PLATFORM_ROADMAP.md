@@ -15,57 +15,38 @@
 | Android | Kotlin/Java | ❌ 完全重写 | Canvas/Compose | View Events |
 | iOS | Swift/Objective-C | ❌ 完全重写 | CoreGraphics/UIKit | UIKit Events |
 
-> **注意**：Vue 2 和 Vue 3 采用独立的包发布（`captcha-pro-vue2` 和 `captcha-pro-vue3`），以支持不同的 API 风格和 TypeScript 支持。
+> **注意**：Vue 2 和 Vue 3 采用独立的包发布（`@captcha-pro/vue2` 和 `@captcha-pro/vue3`），以支持不同的 API 风格和 TypeScript 支持。
 
-## 二、推荐架构方案：5 套核心代码
+## 二、推荐架构方案：14 套核心代码
 
 ### 整体目录结构
 
 ```
 captcha-pro/
-├── packages/
-│   ├── core/                        # 核心 JS/TS 代码（当前）
+├── packages/                        # 核心包目录
+│   ├── core/                        # 核心 JS/TS 代码
 │   │   ├── src/
 │   │   │   ├── core/               # 核心逻辑（框架无关）
-│   │   │   │   ├── generator.ts    # 验证码生成器
-│   │   │   │   ├── validator.ts    # 验证器
-│   │   │   │   ├── types.ts        # 类型定义
-│   │   │   │   └── utils.ts        # 工具函数
 │   │   │   ├── web/                # Web 平台适配
-│   │   │   │   ├── renderer/       # Canvas 渲染器
-│   │   │   │   ├── events/         # DOM 事件处理
-│   │   │   │   └── index.ts
 │   │   │   └── index.ts
 │   │   ├── test/
-│   │   └── package.json            # captcha-pro
+│   │   └── package.json            # @captcha-pro/core
 │   │
 │   ├── vue2/                       # Vue 2 组件封装
-│   │   ├── src/
-│   │   │   ├── components/
-│   │   │   │   ├── SliderCaptcha.vue
-│   │   │   │   ├── ClickCaptcha.vue
-│   │   │   │   └── PopupCaptcha.vue
-│   │   │   ├── mixins/
-│   │   │   │   ├── sliderCaptcha.js
-│   │   │   │   └── clickCaptcha.js
-│   │   │   └── index.js
-│   │   ├── test/
-│   │   └── package.json            # captcha-pro-vue2
-│   │
 │   ├── vue3/                       # Vue 3 组件封装
+│   ├── react/                      # React 组件封装
+│   │
+│   ├── mp-shared/                   # 小程序共享代码（backend-only 模式）
 │   │   ├── src/
-│   │   │   ├── components/
-│   │   │   │   ├── SliderCaptcha.vue
-│   │   │   │   ├── ClickCaptcha.vue
-│   │   │   │   └── PopupCaptcha.vue
-│   │   │   ├── composables/
-│   │   │   │   ├── useSliderCaptcha.ts
-│   │   │   │   └── useClickCaptcha.ts
+│   │   │   ├── captcha-logic.ts    # 验证码逻辑（平台无关）
+│   │   │   ├── constants.ts        # 常量定义
+│   │   │   ├── types.ts            # 共享类型定义（BackendConfig 等）
+│   │   │   ├── utils.ts            # 工具函数
 │   │   │   └── index.ts
 │   │   ├── test/
-│   │   └── package.json            # captcha-pro-vue3
+│   │   └── package.json            # captcha-pro-mp-shared
 │   │
-│   ├── react/                      # React 组件封装
+│   ├── taro-react/                 # Taro + React 组件（backend-only 模式）
 │   │   ├── src/
 │   │   │   ├── components/
 │   │   │   │   ├── SliderCaptcha.tsx
@@ -73,41 +54,82 @@ captcha-pro/
 │   │   │   │   └── PopupCaptcha.tsx
 │   │   │   ├── hooks/
 │   │   │   │   ├── useSliderCaptcha.ts
-│   │   │   │   └── useClickCaptcha.ts
+│   │   │   │   ├── useClickCaptcha.ts
+│   │   │   │   └── usePopupCaptcha.ts
+│   │   │   ├── request.ts          # Taro.request 封装
+│   │   │   ├── types.ts            # Taro React 专有类型
+│   │   │   ├── styles/captcha.scss
 │   │   │   └── index.ts
 │   │   ├── test/
-│   │   └── package.json            # captcha-pro-react
+│   │   └── package.json            # captcha-pro-taro-react
 │   │
-│   ├── mp/                         # 小程序版本（backend-only 模式）
+│   ├── taro-vue2/                  # Taro + Vue 2 组件（backend-only 模式）
 │   │   ├── src/
-│   │   │   ├── weixin/             # 微信小程序适配
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── slider-captcha.{wxml,wxss,js,json}
-│   │   │   │   │   ├── click-captcha.{wxml,wxss,js,json}
-│   │   │   │   │   └── popup-captcha.{wxml,wxss,js,json}
-│   │   │   │   ├── types.ts        # 后端 API 类型定义
-│   │   │   │   ├── request.ts      # wx.request 封装
-│   │   │   │   └── index.ts
-│   │   │   ├── uniapp/             # uni-app 适配
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── slider-captcha.vue
-│   │   │   │   │   ├── click-captcha.vue
-│   │   │   │   │   └── popup-captcha.vue
-│   │   │   │   ├── types.ts        # 后端 API 类型定义
-│   │   │   │   ├── request.ts      # uni.request 封装
-│   │   │   │   └── index.ts
-│   │   │   ├── taro/               # Taro 适配
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── SliderCaptcha.tsx
-│   │   │   │   │   ├── ClickCaptcha.tsx
-│   │   │   │   │   └── PopupCaptcha.tsx
-│   │   │   │   ├── request.ts      # 后端 API 请求封装
-│   │   │   │   ├── types.ts        # backend-only 类型定义
-│   │   │   │   ├── styles/captcha.scss
-│   │   │   │   └── index.ts
+│   │   │   ├── components/
+│   │   │   │   ├── slider-captcha.vue
+│   │   │   │   ├── click-captcha.vue
+│   │   │   │   └── popup-captcha.vue
+│   │   │   ├── request.ts          # Taro.request 封装
+│   │   │   ├── types.ts            # Taro Vue 2 专有类型
+│   │   │   ├── styles/captcha.scss
 │   │   │   └── index.ts
 │   │   ├── test/
-│   │   └── package.json            # captcha-pro-mp
+│   │   └── package.json            # captcha-pro-taro-vue2
+│   │
+│   ├── taro-vue/                   # Taro + Vue 3 组件（backend-only 模式）
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   │   ├── slider-captcha.vue
+│   │   │   │   ├── click-captcha.vue
+│   │   │   │   └── popup-captcha.vue
+│   │   │   ├── composables/
+│   │   │   │   ├── useSliderCaptcha.ts
+│   │   │   │   ├── useClickCaptcha.ts
+│   │   │   │   └── usePopupCaptcha.ts
+│   │   │   ├── request.ts          # Taro.request 封装
+│   │   │   ├── types.ts            # Taro Vue 3 专有类型
+│   │   │   ├── styles/captcha.scss
+│   │   │   └── index.ts
+│   │   ├── test/
+│   │   └── package.json            # captcha-pro-taro-vue
+│   │
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   │   ├── slider-captcha.vue
+│   │   │   │   ├── click-captcha.vue
+│   │   │   │   └── popup-captcha.vue
+│   │   │   ├── request.ts          # uni.request 封装
+│   │   │   ├── types.ts            # uni-app Vue 2 专有类型
+│   │   │   └── index.ts
+│   │   ├── test/
+│   │
+│   ├── uniapp-vue/                 # uni-app + Vue 3 组件（backend-only 模式）
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   │   ├── slider-captcha.vue
+│   │   │   │   ├── click-captcha.vue
+│   │   │   │   └── popup-captcha.vue
+│   │   │   ├── composables/
+│   │   │   │   ├── useSliderCaptcha.ts
+│   │   │   │   ├── useClickCaptcha.ts
+│   │   │   │   └── usePopupCaptcha.ts
+│   │   │   ├── request.ts          # uni.request 封装
+│   │   │   ├── types.ts            # uni-app Vue 3 专有类型
+│   │   │   └── index.ts
+│   │   ├── test/
+│   │   └── package.json            # captcha-pro-uniapp-vue
+│   │
+│   ├── weixin/                     # 微信小程序原生组件（backend-only 模式）
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   │   ├── slider-captcha/{wxml,wxss,js,json}
+│   │   │   │   ├── click-captcha/{wxml,wxss,js,json}
+│   │   │   │   └── popup-captcha/{wxml,wxss,js,json}
+│   │   │   ├── request.ts          # wx.request 封装
+│   │   │   ├── types.ts            # 微信小程序专有类型
+│   │   │   └── index.ts
+│   │   ├── test/
+│   │   └── package.json            # captcha-pro-weixin
 │   │
 │   ├── flutter/                    # Flutter 版本
 │   │   ├── lib/
@@ -191,7 +213,7 @@ captcha-pro/
     │   └── src/
     ├── weixin-miniprogram/
     │   └── pages/
-    ├── uniapp/
+    ├── uniapp-vue/
     │   └── pages/
     ├── taro/
     │   └── src/
@@ -648,26 +670,41 @@ export const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
 
 ### 3.4 小程序版（微信/uni-app/Taro）— Backend-Only 模式
 
-> **架构决策**：小程序端（weixin / uniapp / taro）统一采用 **backend-only 模式**，不再支持前端 Canvas 渲染。
+> **架构决策**：小程序端统一采用 **backend-only 模式**，不再支持前端 Canvas 渲染。原 `packages/mp` 单包已拆分为 7 个独立包，按平台/框架解耦发布。
+>
+> **拆分方案**（`packages/mp` → 7 包）：
+>
+> | 包目录 | npm 包名 | 说明 |
+> |--------|----------|------|
+> | `packages/mp-shared` | `@captcha-pro/mp-shared` | 平台无关的共享代码（类型契约、验证逻辑、常量、工具） |
+> | `packages/weixin` | `@captcha-pro/weixin` | 微信小程序原生组件 |
+> | `packages/uniapp-vue` | `@captcha-pro/uniapp-vue` | uni-app + Vue 3 组件 |
+> | `packages/uniapp-vue2` | `@captcha-pro/uniapp-vue2` | uni-app + Vue 2 组件 |
+> | `packages/taro-react` | `@captcha-pro/taro-react` | Taro + React 组件 |
+> | `packages/taro-vue` | `@captcha-pro/taro-vue` | Taro + Vue 3 组件 |
+> | `packages/taro-vue2` | `@captcha-pro/taro-vue2` | Taro + Vue 2 组件 |
+>
+> **依赖关系**：6 个平台包均依赖 `@captcha-pro/mp-shared`，共享同一套后端类型契约与验证逻辑；各平台包仅保留各自的组件、请求封装（`wx.request` / `uni.request` / `Taro.request`）和框架专有类型。
 >
 > **原因**：
 > 1. 小程序 Canvas API 兼容性差（wx vs uni vs taro 差异大），维护成本高
 > 2. 前端生成验证码安全性低（解暴露在客户端）
 > 3. Backend-only 模式更可靠、更安全，且与主流业务场景一致
+> 4. 单包发布会让用户安装无关平台的依赖（如 Taro 用户被迫安装 uni-app 依赖），拆分后按需安装
 >
 > **影响**：
 > - `core/renderer.ts` 及各平台 `renderer.ts` 已全部移除
 > - `backend` 配置变为**必填**参数，不传则 TypeScript 编译报错
 > - 组件直接使用 `<image>` 渲染后端返回的图片 URL
 > - 验证逻辑完全由后端处理
-> - 三平台（weixin / uniapp / taro）架构对齐，共享同一套后端 API 类型契约
+> - 七包架构对齐，共享 `mp-shared` 的后端 API 类型契约
 
 #### 共享后端类型契约
 
-三平台（weixin / uniapp / taro）共享同一套 `BackendConfig` 和 API 类型定义，确保前后端契约一致：
+七包通过 `@captcha-pro/mp-shared` 共享同一套 `BackendConfig` 和 API 类型定义，确保前后端契约一致：
 
 ```typescript
-// packages/mp/src/taro/types.ts（weixin/uniapp 同构同字段）
+// packages/mp-shared/src/types.ts（所有平台包由此导入）
 /**
  * 后端 API 配置（必填）
  */
@@ -718,8 +755,8 @@ export interface BackendVerifyResponse {
 #### 微信小程序请求封装
 
 ```typescript
-// packages/mp/src/weixin/request.ts
-import type { BackendCaptchaParams, BackendCaptchaResponse, BackendConfig, BackendVerifyRequest, BackendVerifyResponse } from './types'
+// packages/weixin/src/request.ts
+import type { BackendCaptchaParams, BackendCaptchaResponse, BackendConfig, BackendVerifyRequest, BackendVerifyResponse } from '@captcha-pro/mp-shared'
 
 export async function fetchCaptcha(config: BackendConfig, params: BackendCaptchaParams): Promise<BackendCaptchaResponse> {
   if (typeof config.getCaptcha === 'function') return config.getCaptcha(params)
@@ -739,7 +776,7 @@ export async function verifyCaptcha(config: BackendConfig, data: BackendVerifyRe
 #### 微信小程序组件（backend-only 模式）
 
 ```javascript
-// packages/mp/src/weixin/components/slider-captcha/slider-captcha.js
+// packages/weixin/src/components/slider-captcha/slider-captcha.js
 Component({
   properties: {
     width: { type: Number, value: 300 },
@@ -838,7 +875,7 @@ Component({
 #### Taro 组件（backend-only 模式）
 
 ```tsx
-// packages/mp/src/taro/components/SliderCaptcha.tsx
+// packages/taro-react/src/components/SliderCaptcha.tsx
 import { View, Image, Text } from '@tarojs/components'
 import type { SliderCaptchaProps } from '../types'
 
@@ -900,7 +937,6 @@ export default function SliderCaptcha({
 #### uni-app 组件（backend-only 模式）
 
 ```vue
-<!-- packages/mp/src/uniapp/components/slider-captcha.vue -->
 <template>
   <view class="captcha-container" :style="{ width: width + 'px', height: height + 'px' }">
     <image class="bg-image" :src="bgImage" mode="aspectFill" />
@@ -2221,11 +2257,17 @@ class SliderCaptchaViewModel: ObservableObject {
 
 | 包名 | 说明 | 入口文件 |
 |------|------|----------|
-| `captcha-pro` | 核心包 + Web 版 | `packages/core` |
-| `captcha-pro-vue2` | Vue 2 组件 | `packages/vue2` |
-| `captcha-pro-vue3` | Vue 3 组件 | `packages/vue3` |
-| `captcha-pro-react` | React 组件 | `packages/react` |
-| `captcha-pro-mp` | 小程序版（微信/uni-app/Taro） | `packages/mp` |
+| `@captcha-pro/core` | 核心包 + Web 版 | `packages/core` |
+| `@captcha-pro/vue2` | Vue 2 组件 | `packages/vue2` |
+| `@captcha-pro/vue3` | Vue 3 组件 | `packages/vue3` |
+| `@captcha-pro/react` | React 组件 | `packages/react` |
+| `@captcha-pro/mp-shared` | 小程序共享代码（类型契约、验证逻辑、工具） | `packages/mp-shared` |
+| `@captcha-pro/weixin` | 微信小程序原生组件 | `packages/weixin` |
+| `@captcha-pro/uniapp-vue` | uni-app + Vue 3 组件 | `packages/uniapp-vue` |
+| `@captcha-pro/uniapp-vue2` | uni-app + Vue 2 组件 | `packages/uniapp-vue2` |
+| `@captcha-pro/taro-react` | Taro + React 组件 | `packages/taro-react` |
+| `@captcha-pro/taro-vue` | Taro + Vue 3 组件 | `packages/taro-vue` |
+| `@captcha-pro/taro-vue2` | Taro + Vue 2 组件 | `packages/taro-vue2` |
 
 ### Flutter 包
 
@@ -2275,8 +2317,8 @@ PATCH: 向后兼容的问题修复
 - [x] **Vue 3 组件封装** - Composition API + Composables
 - [x] **React 组件封装** - 国际主流
 - [x] **微信小程序版** - 国内小程序生态
-- [x] **uni-app 版** - 跨端框架
-- [x] **Taro 版** - 跨端框架
+- [x] **uni-app 版（Vue 2 & Vue 3）** - 跨端框架
+- [x] **Taro 版（React & Vue 2 & Vue 3）** - 跨端框架
 
 ### 第三阶段（已完成）
 
@@ -2299,8 +2341,8 @@ PATCH: 向后兼容的问题修复
 | 跨框架状态管理 | 使用各自框架的响应式系统（Vue reactive / React hooks） |
 | 原生平台图形绘制 | Android Canvas / iOS CoreGraphics 对齐实现（保留，原生端仍前端渲染） |
 | 跨平台一致性测试 | 建立统一的测试用例，各平台实现对比测试 |
-| 小程序端三平台请求 API 差异 | 共享 types.ts 类型契约，各平台 request.ts 封装各自 API |
+| 小程序端六平台请求 API 差异 | `mp-shared` 共享 types.ts 类型契约，各平台包各自 request.ts 封装各自 API |
 
 ---
 
-*文档更新时间: 2026-07-04*
+*文档更新时间: 2026-07-12*

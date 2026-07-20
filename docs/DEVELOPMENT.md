@@ -17,11 +17,11 @@
 ```
 captcha-pro/
 ├── packages/
-│   ├── core/          # @captcha/core - 核心库（框架无关）
-│   ├── vue3/          # @captcha/vue3 - Vue 3 组件
-│   ├── vue2/          # @captcha/vue2 - Vue 2 组件
-│   ├── react/         # @captcha/react - React 组件
-│   └── mp/            # @captcha/mp - 小程序组件
+│   ├── core/          # @captcha-pro/core - 核心库（框架无关）
+│   ├── vue3/          # @captcha-pro/vue3 - Vue 3 组件
+│   ├── vue2/          # @captcha-pro/vue2 - Vue 2 组件
+│   ├── react/         # @captcha-pro/react - React 组件
+│   └── mp/            # @captcha-pro/mp - 小程序组件
 ├── pnpm-workspace.yaml    # pnpm workspace 配置
 ├── turbo.json             # Turborepo 任务配置
 ├── package.json           # 根 package.json
@@ -54,23 +54,23 @@ pnpm install --force
 pnpm dev
 
 # 等同于
-pnpm --filter @captcha/core watch
+pnpm --filter @captcha-pro/core watch
 ```
 
 ### 单独开发某个包
 
 ```bash
 # 开发 Vue 3 包
-pnpm --filter @captcha/vue3 watch
+pnpm --filter @captcha-pro/vue3 watch
 
 # 开发 React 包
-pnpm --filter @captcha/react watch
+pnpm --filter @captcha-pro/react watch
 
 # 开发 Vue 2 包
-pnpm --filter @captcha/vue2 watch
+pnpm --filter @captcha-pro/vue2 watch
 
 # 开发小程序包
-pnpm --filter @captcha/mp watch
+pnpm --filter @captcha-pro/mp watch
 ```
 
 ### 开发流程
@@ -87,11 +87,11 @@ pnpm --filter @captcha/mp watch
 
 | 包 | 构建工具 | 说明 |
 |---|---------|------|
-| @captcha/core | Rolldown | 框架无关核心库，输出 ESM/CJS/IIFE |
-| @captcha/vue3 | Vite 8 + vue-tsc | Vue 3 组件，支持 SFC |
-| @captcha/vue2 | Vite 4 + vite-plugin-vue2 | Vue 2 组件，支持 SFC |
-| @captcha/react | Vite 8 + tsc | React 组件，支持 TSX |
-| @captcha/mp | Vite 8 | 小程序组件，支持 Vue/React/原生，backend-only 模式 |
+| @captcha-pro/core | Rolldown | 框架无关核心库，输出 ESM/CJS/IIFE |
+| @captcha-pro/vue3 | Vite 8 + vue-tsc | Vue 3 组件，支持 SFC |
+| @captcha-pro/vue2 | Vite 4 + vite-plugin-vue2 | Vue 2 组件，支持 SFC |
+| @captcha-pro/react | Vite 8 + tsc | React 组件，支持 TSX |
+| @captcha-pro/mp | Vite 8 | 小程序组件，支持 Vue/React/原生，backend-only 模式 |
 
 ### 构建所有包
 
@@ -127,10 +127,10 @@ pnpm build:mp
 
 ```bash
 # 构建指定包及其依赖
-pnpm --filter @captcha/vue3 build
+pnpm --filter @captcha-pro/vue3 build
 
 # 只构建指定包（不含依赖）
-pnpm --filter @captcha/vue3... build
+pnpm --filter @captcha-pro/vue3... build
 
 # 构建所有包（跳过缓存）
 pnpm build --force
@@ -157,13 +157,13 @@ pnpm test
 
 ```bash
 # Core 包测试
-pnpm --filter @captcha/core test
+pnpm --filter @captcha-pro/core test
 
 # 监听模式
-pnpm --filter @captcha/core test:watch
+pnpm --filter @captcha-pro/core test:watch
 
 # 覆盖率报告
-pnpm --filter @captcha/core test:coverage
+pnpm --filter @captcha-pro/core test:coverage
 ```
 
 ---
@@ -213,7 +213,7 @@ pnpm pub
 ```bash
 # 1. 添加变更记录
 pnpm changeset
-# 选择: @captcha/core, @captcha/vue3
+# 选择: @captcha-pro/core, @captcha-pro/vue3
 # 类型: minor (1.0.0 -> 1.1.0)
 # 描述: 新增滑块验证码功能
 
@@ -261,21 +261,21 @@ git push --follow-tags
 ## 包依赖关系
 
 ```
-@captcha/core      (基础核心，无依赖其他包)
+@captcha-pro/core      (基础核心，无依赖其他包)
     ↑
-    ├── @captcha/vue3
-    ├── @captcha/vue2
-    ├── @captcha/react
-    └── @captcha/mp
+    ├── @captcha-pro/vue3
+    ├── @captcha-pro/vue2
+    ├── @captcha-pro/react
+    └── @captcha-pro/mp
 ```
 
-所有框架包都依赖 `@captcha/core`，构建时会自动先构建 core。
+所有框架包都依赖 `@captcha-pro/core`，构建时会自动先构建 core。
 
 ---
 
-## @captcha/core 核心库
+## @captcha-pro/core 核心库
 
-`@captcha/core` 是框架无关的核心库，包含所有验证码的核心逻辑。
+`@captcha-pro/core` 是框架无关的核心库，包含所有验证码的核心逻辑。
 
 ### 源码结构
 
@@ -351,19 +351,19 @@ interface PopupCaptchaInstance { ... }
 
 ```bash
 # npm
-npm install @captcha/core
+npm install @captcha-pro/core
 
 # pnpm
-pnpm add @captcha/core
+pnpm add @captcha-pro/core
 
 # yarn
-yarn add @captcha/core
+yarn add @captcha-pro/core
 ```
 
 ### 基础用法 - 滑块验证码
 
 ```typescript
-import { createSliderCaptcha } from '@captcha/core'
+import { createSliderCaptcha } from '@captcha-pro/core'
 
 const captcha = createSliderCaptcha({
   el: '#captcha-container',
@@ -393,7 +393,7 @@ console.log(stats.successRate)
 ### 基础用法 - 点击验证码
 
 ```typescript
-import { createClickCaptcha } from '@captcha/core'
+import { createClickCaptcha } from '@captcha-pro/core'
 
 const captcha = createClickCaptcha({
   el: '#captcha-container',
@@ -414,7 +414,7 @@ const captcha = createClickCaptcha({
 ### 基础用法 - 弹窗验证码
 
 ```typescript
-import { createPopupCaptcha } from '@captcha/core'
+import { createPopupCaptcha } from '@captcha-pro/core'
 
 const popup = createPopupCaptcha({
   trigger: '#verify-btn',   // 触发按钮
@@ -439,7 +439,7 @@ popup.hide()
 ### 后端验证模式
 
 ```typescript
-import { createSliderCaptcha } from '@captcha/core'
+import { createSliderCaptcha } from '@captcha-pro/core'
 
 const captcha = createSliderCaptcha({
   el: '#captcha-container',
@@ -464,7 +464,7 @@ const captcha = createSliderCaptcha({
 ### 安全签名
 
 ```typescript
-import { createSliderCaptcha } from '@captcha/core'
+import { createSliderCaptcha } from '@captcha-pro/core'
 
 const captcha = createSliderCaptcha({
   el: '#captcha-container',
@@ -483,7 +483,7 @@ const signedData = await captcha.getSignedData()
 ### 国际化
 
 ```typescript
-import { setLocale, getLocale, t } from '@captcha/core'
+import { setLocale, getLocale, t } from '@captcha-pro/core'
 
 // 设置语言
 setLocale('en-US')
@@ -497,20 +497,20 @@ const text = t('slider.success')  // 'Verification successful!'
 
 ### 使用框架组件
 
-除了直接使用 `@captcha/core`，也可以使用各框架的封装组件：
+除了直接使用 `@captcha-pro/core`，也可以使用各框架的封装组件：
 
 ```bash
 # Vue 3
-pnpm add @captcha/vue3
+pnpm add @captcha-pro/vue3
 
 # Vue 2
-pnpm add @captcha/vue2
+pnpm add @captcha-pro/vue2
 
 # React
-pnpm add @captcha/react
+pnpm add @captcha-pro/react
 
 # 小程序
-pnpm add @captcha/mp
+pnpm add @captcha-pro/mp
 ```
 
 #### Vue 3 使用示例
@@ -526,8 +526,8 @@ pnpm add @captcha/mp
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from '@captcha/vue3'
-import '@captcha/vue3/style.css'
+import { SliderCaptcha } from '@captcha-pro/vue3'
+import '@captcha-pro/vue3/style.css'
 
 const onSuccess = (data: any) => {
   console.log('验证成功', data)
@@ -542,8 +542,8 @@ const onFail = () => {
 #### React 使用示例
 
 ```tsx
-import { SliderCaptcha } from '@captcha/react'
-import '@captcha/react/style.css'
+import { SliderCaptcha } from '@captcha-pro/react'
+import '@captcha-pro/react/style.css'
 
 function App() {
   const handleSuccess = (data: any) => {
@@ -563,7 +563,7 @@ function App() {
 ### CDN 引入
 
 ```html
-<script src="https://unpkg.com/@captcha/core/dist/index.global.min.js"></script>
+<script src="https://unpkg.com/@captcha-pro/core/dist/index.global.min.js"></script>
 <script>
   const captcha = CaptchaCore.createSliderCaptcha({
     el: '#captcha-container',
