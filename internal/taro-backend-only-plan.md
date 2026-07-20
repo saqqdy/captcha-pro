@@ -99,7 +99,7 @@ packages/mp/src/
 三平台的 `types.ts` 使用完全相同的接口定义，仅文件位置不同：
 
 ```typescript
-import type { CaptchaType, Point } from '@captcha/core'
+import type { CaptchaType, Point } from '@captcha-pro/core'
 
 /** 后端 API 配置（必填） */
 export interface BackendConfig {

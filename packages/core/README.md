@@ -1,4 +1,4 @@
-# @captcha/core
+# @captcha-pro/core
 
 Core package for Captcha Pro - A lightweight, framework-agnostic behavioral captcha library.
 
@@ -7,7 +7,7 @@ Core package for Captcha Pro - A lightweight, framework-agnostic behavioral capt
 ## Installation
 
 ```bash
-pnpm add @captcha/core
+pnpm add @captcha-pro/core
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ pnpm add @captcha/core
 ### Slider Captcha
 
 ```javascript
-import { SliderCaptcha } from '@captcha/core'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -37,7 +37,7 @@ captcha.getStatistics()
 ### Click Captcha
 
 ```javascript
-import { ClickCaptcha } from '@captcha/core'
+import { ClickCaptcha } from '@captcha-pro/core'
 
 const captcha = new ClickCaptcha({
   el: '#captcha',
@@ -51,7 +51,7 @@ const captcha = new ClickCaptcha({
 ### Popup Captcha
 
 ```javascript
-import { PopupCaptcha } from '@captcha/core'
+import { PopupCaptcha } from '@captcha-pro/core'
 
 const popup = new PopupCaptcha({
   trigger: '#submit-btn',
@@ -66,7 +66,7 @@ popup.hide()
 ### Invisible Captcha
 
 ```javascript
-import { InvisibleCaptcha } from '@captcha/core'
+import { InvisibleCaptcha } from '@captcha-pro/core'
 
 const captcha = new InvisibleCaptcha({
   el: '#submit-btn',
@@ -79,7 +79,7 @@ const captcha = new InvisibleCaptcha({
 ## Security
 
 ```javascript
-import { aesEncrypt, aesDecrypt, decryptCaptchaData, validateTimestamp } from '@captcha/core'
+import { aesEncrypt, aesDecrypt, decryptCaptchaData, validateTimestamp } from '@captcha-pro/core'
 
 // Encryption
 const encrypted = await aesEncrypt(data, secretKey)

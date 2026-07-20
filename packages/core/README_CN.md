@@ -1,11 +1,11 @@
-# @captcha/core
+# @captcha-pro/core
 
 Captcha Pro 核心包 - 一个轻量级、框架无关的行为验证码库。
 
 ## 安装
 
 ```bash
-pnpm add @captcha/core
+pnpm add @captcha-pro/core
 ```
 
 ## 使用
@@ -13,7 +13,7 @@ pnpm add @captcha/core
 ### 滑动拼图验证码
 
 ```javascript
-import { SliderCaptcha } from '@captcha/core'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -35,7 +35,7 @@ captcha.getStatistics()
 ### 点选文字验证码
 
 ```javascript
-import { ClickCaptcha } from '@captcha/core'
+import { ClickCaptcha } from '@captcha-pro/core'
 
 const captcha = new ClickCaptcha({
   el: '#captcha',
@@ -49,7 +49,7 @@ const captcha = new ClickCaptcha({
 ### 弹窗验证码
 
 ```javascript
-import { PopupCaptcha } from '@captcha/core'
+import { PopupCaptcha } from '@captcha-pro/core'
 
 const popup = new PopupCaptcha({
   trigger: '#submit-btn',
@@ -64,7 +64,7 @@ popup.hide()
 ### 智能无感验证
 
 ```javascript
-import { InvisibleCaptcha } from '@captcha/core'
+import { InvisibleCaptcha } from '@captcha-pro/core'
 
 const captcha = new InvisibleCaptcha({
   el: '#submit-btn',
@@ -77,7 +77,7 @@ const captcha = new InvisibleCaptcha({
 ## 安全特性
 
 ```javascript
-import { aesEncrypt, aesDecrypt, decryptCaptchaData, validateTimestamp } from '@captcha/core'
+import { aesEncrypt, aesDecrypt, decryptCaptchaData, validateTimestamp } from '@captcha-pro/core'
 
 // 加密
 const encrypted = await aesEncrypt(data, secretKey)
