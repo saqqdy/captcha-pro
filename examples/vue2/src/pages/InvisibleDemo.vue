@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { createInvisibleCaptcha } from '@captcha/vue2'
+import { createInvisibleCaptcha } from '@captcha-pro/vue2'
 
 export default {
   name: 'InvisibleDemo',

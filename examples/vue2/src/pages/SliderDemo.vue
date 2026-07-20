@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { SliderCaptcha } from '@captcha/vue2'
+import { SliderCaptcha } from '@captcha-pro/vue2'
 
 export default {
   name: 'SliderDemo',

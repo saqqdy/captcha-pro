@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onUnmounted } from 'vue'
-import { createInvisibleCaptcha, type InvisibleCaptchaInstance } from '@captcha/vue3'
+import { createInvisibleCaptcha, type InvisibleCaptchaInstance } from '@captcha-pro/vue3'
 import { useLocale } from '../composables/useLocale'
 
 const { currentLocale, t } = useLocale()

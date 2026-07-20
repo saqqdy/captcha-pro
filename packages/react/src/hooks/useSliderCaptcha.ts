@@ -5,7 +5,7 @@ import {
   SliderCaptcha as SliderCaptchaCore,
   type SliderCaptchaInstance,
   type SliderCaptchaOptions,
-} from '@captcha/core'
+} from '@captcha-pro/core'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -24,6 +24,7 @@ export interface UseSliderCaptchaOptions {
   onSuccess?: () => void
   onFail?: () => void
   onRefresh?: () => void
+  onError?: (err: Error) => void
 }
 
 export interface UseSliderCaptchaReturn {

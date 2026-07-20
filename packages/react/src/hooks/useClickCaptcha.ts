@@ -5,7 +5,7 @@ import {
   ClickCaptcha as ClickCaptchaCore,
   type ClickCaptchaInstance,
   type ClickCaptchaOptions,
-} from '@captcha/core'
+} from '@captcha-pro/core'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -21,6 +21,7 @@ export interface UseClickCaptchaOptions {
   onSuccess?: () => void
   onFail?: () => void
   onRefresh?: () => void
+  onError?: (err: Error) => void
 }
 
 export interface UseClickCaptchaReturn {

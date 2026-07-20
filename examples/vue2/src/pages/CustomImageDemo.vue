@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { SliderCaptcha } from '@captcha/vue2'
+import { SliderCaptcha } from '@captcha-pro/vue2'
 
 const images = [
   'https://picsum.photos/seed/captcha1/300/170',

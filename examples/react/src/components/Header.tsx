@@ -1,26 +1,31 @@
+import type { ReactElement } from 'react'
 import { useLocale } from '../hooks/useLocale'
 
-export function Header() {
+export function Header(): ReactElement {
   const { currentLocale, t, switchLanguage } = useLocale()
 
   return (
     <header>
       <h1>
         🔐 Captcha Pro
-        <span className="version-badge">v1.1.0</span>
+        <span class="version-badge">v1.1.0</span>
       </h1>
-      <p className="subtitle">
+      <p class="subtitle">
         {t('轻量级行为验证码库', 'Lightweight Behavioral Captcha Library')}
       </p>
-      <div className="lang-switch">
+      <div class="lang-switch">
         <button
-          className={currentLocale === 'zh-CN' ? 'active' : ''}
+          class={currentLocale === 'zh-CN' ? 'active' : ''}
           onClick={() => switchLanguage('zh-CN')}
-        >中文</button>
+        >
+          中文
+        </button>
         <button
-          className={currentLocale === 'en-US' ? 'active' : ''}
+          class={currentLocale === 'en-US' ? 'active' : ''}
           onClick={() => switchLanguage('en-US')}
-        >English</button>
+        >
+          English
+        </button>
       </div>
     </header>
   )

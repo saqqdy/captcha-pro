@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import { setLocale, getLocale } from '@captcha/vue2'
-import '@captcha/vue2/style.css'
+import { setLocale, getLocale } from '@captcha-pro/vue2'
+import '@captcha-pro/vue2/style.css'
 import './styles/global.css'
 
 import AppHeader from './components/AppHeader.vue'

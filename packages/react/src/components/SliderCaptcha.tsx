@@ -5,8 +5,9 @@ import {
   SliderCaptcha as SliderCaptchaCore,
   type SliderCaptchaInstance,
   type SliderCaptchaOptions,
-} from '@captcha/core'
-import React, { useEffect, useImperativeHandle, useRef } from 'react'
+} from '@captcha-pro/core'
+import * as React from 'react'
+import { useEffect, useImperativeHandle, useRef } from 'react'
 
 export interface SliderCaptchaProps {
   width?: number
@@ -35,7 +36,8 @@ export interface SliderCaptchaRef {
   getInstance: () => SliderCaptchaInstance | null
 }
 
-export const SliderCaptcha = ({ ref, ...props }: SliderCaptchaProps & { ref?: React.RefObject<SliderCaptchaRef | null> }): React.ReactElement => {
+export const SliderCaptcha = React.forwardRef<SliderCaptchaRef, SliderCaptchaProps>(
+  (props, ref) => {
     const {
       width = 300,
       height = 170,
@@ -98,10 +100,11 @@ export const SliderCaptcha = ({ ref, ...props }: SliderCaptchaProps & { ref?: Re
     }))
 
     return (
-      <div className={`captcha-react-wrapper ${className || ''}`}>
-        <div ref={containerRef} className="captcha-container" />
+      <div class={`captcha-react-wrapper ${className || ''}`}>
+        <div ref={containerRef} class="captcha-container" />
       </div>
     )
   }
+)
 
 SliderCaptcha.displayName = 'SliderCaptcha'

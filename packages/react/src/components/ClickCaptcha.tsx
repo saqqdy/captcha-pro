@@ -5,8 +5,9 @@ import {
   ClickCaptcha as ClickCaptchaCore,
   type ClickCaptchaInstance,
   type ClickCaptchaOptions,
-} from '@captcha/core'
-import React, { useEffect, useImperativeHandle, useRef } from 'react'
+} from '@captcha-pro/core'
+import * as React from 'react'
+import { useEffect, useImperativeHandle, useRef } from 'react'
 
 export interface ClickCaptchaProps {
   width?: number
@@ -32,7 +33,8 @@ export interface ClickCaptchaRef {
   getInstance: () => ClickCaptchaInstance | null
 }
 
-export const ClickCaptcha = ({ ref, ...props }: ClickCaptchaProps & { ref?: React.RefObject<ClickCaptchaRef | null> }): React.ReactElement => {
+export const ClickCaptcha = React.forwardRef<ClickCaptchaRef, ClickCaptchaProps>(
+  (props, ref) => {
     const {
       width = 300,
       height = 170,
@@ -89,10 +91,11 @@ export const ClickCaptcha = ({ ref, ...props }: ClickCaptchaProps & { ref?: Reac
     }))
 
     return (
-      <div className={`captcha-react-wrapper ${className || ''}`}>
-        <div ref={containerRef} className="captcha-container" />
+      <div class={`captcha-react-wrapper ${className || ''}`}>
+        <div ref={containerRef} class="captcha-container" />
       </div>
     )
   }
+)
 
 ClickCaptcha.displayName = 'ClickCaptcha'

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { ClickCaptcha, type CaptchaStatistics } from '@captcha/vue3'
+import { ClickCaptcha, type CaptchaStatistics } from '@captcha-pro/vue3'
 import { useLocale } from '../composables/useLocale'
 
 const { currentLocale, t } = useLocale()

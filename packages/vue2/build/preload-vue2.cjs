@@ -12,7 +12,7 @@
 // This only affects Node-level require() calls during the vite build,
 // not vite's own module resolution (which uses resolve.alias).
 
-const path = require('path')
+const path = require('node:path')
 
 const rootDir = path.resolve(__dirname, '..', '..')
 const pkgDir = path.resolve(__dirname, '..')
@@ -54,5 +54,5 @@ if (localVuePath !== hoistedVuePath) {
     require.cache[hoistedVuePkg] = require.cache[localVuePkg]
   }
 
-  console.log('[preload-vue2] Patched require.cache so vue-template-compiler finds vue@2')
+  console.info('[preload-vue2] Patched require.cache so vue-template-compiler finds vue@2')
 }

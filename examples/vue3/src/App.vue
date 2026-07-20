@@ -12,7 +12,7 @@ import BackendDemo from './pages/BackendDemo.vue'
 import InvisibleDemo from './pages/InvisibleDemo.vue'
 import CustomImageDemo from './pages/CustomImageDemo.vue'
 
-import '@captcha/vue3/style.css'
+import '@captcha-pro/vue3/style.css'
 import './styles/global.css'
 
 const activeTab = ref('slider')

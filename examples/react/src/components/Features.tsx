@@ -1,6 +1,8 @@
+import type { ReactElement } from 'react'
+import { For } from "solid-js";
 import { useLocale } from '../hooks/useLocale'
 
-export function Features() {
+export function Features(): ReactElement {
   const { currentLocale, t } = useLocale()
 
   const features = [
@@ -15,12 +17,15 @@ export function Features() {
   ]
 
   return (
-    <section className="features">
+    <section class="features">
       <h2>{t('功能特性', 'Features')}</h2>
-      <div className="feature-grid">
-        {features.map((f, i) => (
-          <div key={i} className="feature-item">✓ {currentLocale === 'zh-CN' ? f.zh : f.en}</div>
-        ))}
+      <div class="feature-grid">
+        <For each={features}>{(f) => (
+          <div class="feature-item">
+            ✓
+            {currentLocale === 'zh-CN' ? f.zh : f.en}
+          </div>
+        )}</For>
       </div>
     </section>
   )

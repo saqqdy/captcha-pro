@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import '@captcha/vue3/style.css'
 import App from './App.vue'
+import '@captcha-pro/vue3/style.css'
 
 createApp(App).mount('#app')

@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@captcha/vue2": "workspace:*",
+    "@captcha-pro/vue2": "workspace:*",
     "vue": "^2.7.16"
   },
   "devDependencies": {

@@ -8,7 +8,7 @@ export { useClickCaptcha, type UseClickCaptchaOptions, type UseClickCaptchaRetur
 export { useSliderCaptcha, type UseSliderCaptchaOptions, type UseSliderCaptchaReturn } from './hooks/useSliderCaptcha'
 
 // Re-export types and core
-export * from '@captcha/core'
+export * from '@captcha-pro/core'
 
 // Version
 export const version = '1.0.0'

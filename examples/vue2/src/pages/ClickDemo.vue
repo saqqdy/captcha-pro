@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { ClickCaptcha } from '@captcha/vue2'
+import { ClickCaptcha } from '@captcha-pro/vue2'
 
 export default {
   name: 'ClickDemo',

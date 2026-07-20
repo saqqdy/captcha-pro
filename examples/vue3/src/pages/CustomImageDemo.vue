@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { SliderCaptcha } from '@captcha/vue3'
+import { SliderCaptcha } from '@captcha-pro/vue3'
 import { useLocale } from '../composables/useLocale'
 
 const { currentLocale, t } = useLocale()

@@ -1,12 +1,17 @@
+import type { Ref } from 'vue'
+import { getLocale, setLocale } from '@captcha-pro/vue3'
 import { ref } from 'vue'
-import { setLocale, getLocale } from '@captcha/vue3'
 
 const currentLocale = ref<'zh-CN' | 'en-US'>(getLocale() as 'zh-CN' | 'en-US')
 
-export function useLocale() {
-  const t = (zh: string, en: string) => (currentLocale.value === 'zh-CN' ? zh : en)
+export function useLocale(): {
+  currentLocale: Ref<'zh-CN' | 'en-US'>
+  t: (zh: string, en: string) => string
+  switchLanguage: (locale: 'zh-CN' | 'en-US') => void
+} {
+  const t = (zh: string, en: string): string => (currentLocale.value === 'zh-CN' ? zh : en)
 
-  const switchLanguage = (locale: 'zh-CN' | 'en-US') => {
+  const switchLanguage = (locale: 'zh-CN' | 'en-US'): void => {
     currentLocale.value = locale
     setLocale(locale)
   }

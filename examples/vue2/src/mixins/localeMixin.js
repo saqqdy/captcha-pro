@@ -1,4 +1,4 @@
-import { setLocale, getLocale } from '@captcha/vue2'
+import { getLocale, setLocale } from '@captcha-pro/vue2'
 
 export default {
   data() {

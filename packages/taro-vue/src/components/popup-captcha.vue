@@ -13,6 +13,8 @@ const props = withDefaults(defineProps<PopupCaptchaProps>(), {
 	showClose: true,
 	autoClose: true,
 	closeDelay: 500,
+	sliderOptions: () => ({}),
+	clickOptions: () => ({}),
 })
 
 const visible = ref(false)

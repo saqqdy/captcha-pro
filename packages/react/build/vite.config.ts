@@ -1,7 +1,7 @@
-import { defineConfig, type Plugin } from 'vite'
+import { copyFileSync, existsSync, mkdirSync } from 'node:fs'
+import { resolve } from 'node:path'
 import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
-import { copyFileSync, mkdirSync, existsSync } from 'fs'
+import { defineConfig, type Plugin } from 'vite'
 
 // Plugin to copy CSS from core package
 function copyCoreCss(): Plugin {
@@ -35,8 +35,8 @@ export default defineConfig({
         if (id === 'react' || id === 'react-dom' || id.startsWith('react/') || id.startsWith('react-dom/')) {
           return true
         }
-        // Externalize @captcha/core and its submodules
-        if (id === '@captcha/core' || id.startsWith('@captcha/core/')) {
+        // Externalize @captcha-pro/core and its submodules
+        if (id === '@captcha-pro/core' || id.startsWith('@captcha-pro/core/')) {
           return true
         }
         return false

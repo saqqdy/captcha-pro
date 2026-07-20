@@ -1,7 +1,7 @@
-import { defineConfig, type Plugin } from 'vite'
+import { copyFileSync, existsSync, mkdirSync } from 'node:fs'
+import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
-import { copyFileSync, mkdirSync, existsSync } from 'fs'
+import { defineConfig, type Plugin } from 'vite'
 
 // Plugin to copy CSS from core package
 function copyCoreCss(): Plugin {

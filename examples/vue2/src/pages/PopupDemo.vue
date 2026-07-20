@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { PopupCaptcha } from '@captcha/vue2'
+import { PopupCaptcha } from '@captcha-pro/vue2'
 
 export default {
   name: 'PopupDemo',

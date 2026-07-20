@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { SliderCaptcha, ClickCaptcha, PopupCaptcha } from '@captcha/vue2'
+import { SliderCaptcha, ClickCaptcha, PopupCaptcha } from '@captcha-pro/vue2'
 
 export default {
   name: 'BackendDemo',
