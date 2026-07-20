@@ -404,7 +404,7 @@ function start(): void {
 }
 
 // Export for testing
-export { app, start, generator, cacheStore, config, securityManager, SecurityManager }
+export { app, cacheStore, config, generator, securityManager, SecurityManager, start }
 
 // Default export
 export default app
