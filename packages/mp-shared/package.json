@@ -1,0 +1,49 @@
+{
+  "name": "@captcha-pro/mp-shared",
+  "description": "Shared types, logic, constants and utils for captcha-pro mini-program packages (backend-only mode)",
+  "version": "1.0.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "run-s clean build:{js,types}",
+    "build:js": "vite build -c build/vite.config.ts",
+    "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",
+    "watch": "vite build -c build/vite.config.ts -w",
+    "clean": "rm-all dist",
+    "test": "echo 'no tests'"
+  },
+  "dependencies": {
+    "@captcha-pro/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "npm-run-all": "^4.1.5",
+    "rm-all": "^1.1.1",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.19"
+  },
+  "keywords": [
+    "captcha",
+    "miniprogram",
+    "shared",
+    "backend-only"
+  ],
+  "license": "MIT",
+  "author": "saqqdy<https://github.com/saqqdy>",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  }
+}
