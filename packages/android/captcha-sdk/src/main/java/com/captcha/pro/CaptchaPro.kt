@@ -3,147 +3,133 @@ package com.captcha.pro
 import android.content.Context
 import com.captcha.pro.core.*
 import com.captcha.pro.widget.*
+import kotlinx.coroutines.*
 
 /**
- * Captcha Pro - Android SDK
+ * Captcha Pro - Android SDK (Backend-only verification)
  *
  * A comprehensive captcha verification library for Android
- * supporting slider and click captcha types.
- *
- * Usage:
- * ```kotlin
- * // Show slider captcha dialog
- * CaptchaPro.showSlider(context) {
- *     // Verification success
- * }
- *
- * // Show click captcha dialog
- * CaptchaPro.showClick(context) {
- *     // Verification success
- * }
- *
- * // Use as embedded view
- * val sliderView = CaptchaPro.createSliderView(context)
- * container.addView(sliderView)
- * ```
+ * supporting slider and click captcha types with backend verification.
  */
 object CaptchaPro {
 
-    /**
-     * Create slider captcha view
-     */
     @JvmStatic
-    @JvmOverloads
     fun createSliderView(
         context: Context,
+        backendVerify: BackendVerifyOptions,
         width: Int = 300,
         height: Int = 170,
         showRefresh: Boolean = true,
+        locale: CaptchaLocale = CaptchaLocale.ZH_CN,
         callback: SliderCaptchaCallback? = null
     ): SliderCaptchaView {
         return SliderCaptchaView(context).apply {
+            this.backendVerify = backendVerify
             this.captchaWidth = width
             this.captchaHeight = height
             this.showRefresh = showRefresh
+            this.locale = locale
             this.callback = callback
         }
     }
 
-    /**
-     * Create click captcha view
-     */
     @JvmStatic
-    @JvmOverloads
     fun createClickView(
         context: Context,
+        backendVerify: BackendVerifyOptions,
         width: Int = 300,
         height: Int = 170,
         clickCount: Int = 3,
         showRefresh: Boolean = true,
+        locale: CaptchaLocale = CaptchaLocale.ZH_CN,
         callback: ClickCaptchaCallback? = null
     ): ClickCaptchaView {
         return ClickCaptchaView(context).apply {
+            this.backendVerify = backendVerify
             this.captchaWidth = width
             this.captchaHeight = height
             this.clickCount = clickCount
             this.showRefresh = showRefresh
+            this.locale = locale
             this.callback = callback
         }
     }
 
-    /**
-     * Show slider captcha dialog
-     */
     @JvmStatic
-    @JvmOverloads
     fun showSlider(
         context: Context,
+        backendVerify: BackendVerifyOptions,
         width: Int = 300,
         height: Int = 170,
         showRefresh: Boolean = true,
+        locale: CaptchaLocale = CaptchaLocale.ZH_CN,
         onSuccess: () -> Unit = {},
         onFail: () -> Unit = {},
         onRefresh: () -> Unit = {}
     ): CaptchaDialog {
         return CaptchaDialog.showSlider(
-            context,
-            width,
-            height,
-            onSuccess,
-            onFail,
-            onRefresh
+            context = context,
+            backendVerify = backendVerify,
+            width = width,
+            height = height,
+            showRefresh = showRefresh,
+            locale = locale,
+            onSuccess = onSuccess,
+            onFail = onFail,
+            onRefresh = onRefresh
         )
     }
 
-    /**
-     * Show click captcha dialog
-     */
     @JvmStatic
-    @JvmOverloads
     fun showClick(
         context: Context,
+        backendVerify: BackendVerifyOptions,
         width: Int = 300,
         height: Int = 170,
         clickCount: Int = 3,
         showRefresh: Boolean = true,
+        locale: CaptchaLocale = CaptchaLocale.ZH_CN,
         onSuccess: () -> Unit = {},
         onFail: () -> Unit = {},
         onRefresh: () -> Unit = {}
     ): CaptchaDialog {
-        val dialog = CaptchaDialog(context, CaptchaType.CLICK, width, height, showRefresh)
-        (dialog.findViewById<View>(com.captcha.pro.R.id.captcha_click_view) as? ClickCaptchaView)?.let {
-            it.clickCount = clickCount
-        }
-        dialog.setCallback(object : CaptchaCallback {
-            override fun onSuccess() = onSuccess()
-            override fun onFail() = onFail()
-            override fun onRefresh() = onRefresh()
-        })
-        dialog.show()
-        return dialog
+        return CaptchaDialog.showClick(
+            context = context,
+            backendVerify = backendVerify,
+            width = width,
+            height = height,
+            clickCount = clickCount,
+            showRefresh = showRefresh,
+            locale = locale,
+            onSuccess = onSuccess,
+            onFail = onFail,
+            onRefresh = onRefresh
+        )
     }
 
-    /**
-     * Generate captcha data
-     */
     @JvmStatic
-    @JvmOverloads
-    fun generate(
+    suspend fun generate(
+        backendVerify: BackendVerifyOptions,
         type: CaptchaType = CaptchaType.SLIDER,
         width: Int = 300,
         height: Int = 170,
         sliderWidth: Int = 42,
         sliderHeight: Int = 42,
-        clickCount: Int = 3
+        clickCount: Int = 3,
+        locale: CaptchaLocale = CaptchaLocale.ZH_CN
     ): CaptchaResult {
         val options = CaptchaOptions(
-            type = type,
-            width = width,
-            height = height,
-            sliderWidth = sliderWidth,
-            sliderHeight = sliderHeight,
-            clickCount = clickCount
+            type = type, width = width, height = height,
+            sliderWidth = sliderWidth, sliderHeight = sliderHeight,
+            clickCount = clickCount, backendVerify = backendVerify, locale = locale
         )
         return CaptchaGenerator().generate(options)
     }
+
+    @JvmStatic
+    fun getLocaleMessage(locale: CaptchaLocale, key: String): String {
+        return LocaleMessages.get(locale, key)
+    }
+
+    const val VERSION = "1.0.0"
 }

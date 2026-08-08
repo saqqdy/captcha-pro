@@ -3,6 +3,7 @@ package com.captcha.pro.widget
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
@@ -10,9 +11,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.captcha.pro.core.*
+import kotlinx.coroutines.*
 
 /**
- * Click captcha view
+ * Click Captcha View - Backend verification only
  */
 class ClickCaptchaView @JvmOverloads constructor(
     context: Context,
@@ -21,10 +23,13 @@ class ClickCaptchaView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val generator = CaptchaGenerator()
+    private val statisticsData = StatisticsData()
 
     private var bgBitmap: Bitmap? = null
     private var targetPoints: List<CaptchaPoint> = emptyList()
     private var clickTexts: List<String> = emptyList()
+    private var clickCharImages: List<String> = emptyList()
+    private var clickCharBitmaps: List<Bitmap> = emptyList()
     private var clickPoints: MutableList<CaptchaPoint> = mutableListOf()
 
     private val bgView: ImageView
@@ -48,7 +53,6 @@ class ClickCaptchaView @JvmOverloads constructor(
         }
 
     var clickCount: Int = 3
-    var precision: Float = 25f
 
     var showRefresh: Boolean = true
         set(value) {
@@ -56,18 +60,22 @@ class ClickCaptchaView @JvmOverloads constructor(
             refreshBtn.visibility = if (value) View.VISIBLE else View.GONE
         }
 
+    /** Backend verification configuration - Required */
+    lateinit var backendVerify: BackendVerifyOptions
+
+    var locale: CaptchaLocale = CaptchaLocale.ZH_CN
+
+    private var currentJob: Job? = null
+
     init {
-        // Background view
         bgView = ImageView(context).apply {
             scaleType = ImageView.ScaleType.FIT_XY
         }
         addView(bgView, LayoutParams(captchaWidth, captchaHeight))
 
-        // Click overlay view
         clickOverlayView = ClickOverlayView(context)
         addView(clickOverlayView, LayoutParams(captchaWidth, captchaHeight))
 
-        // Refresh button
         refreshBtn = ImageView(context).apply {
             setImageResource(android.R.drawable.ic_menu_rotate)
             setPadding(8, 8, 8, 8)
@@ -80,7 +88,6 @@ class ClickCaptchaView @JvmOverloads constructor(
             marginEnd = 16
         })
 
-        // Status view
         statusView = TextView(context).apply {
             textSize = 14f
             setTextColor(Color.WHITE)
@@ -91,7 +98,6 @@ class ClickCaptchaView @JvmOverloads constructor(
             gravity = Gravity.BOTTOM
         })
 
-        // Prompt bar
         promptBar = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
@@ -105,96 +111,144 @@ class ClickCaptchaView @JvmOverloads constructor(
     }
 
     fun refresh() {
-        val result = generator.generate(CaptchaOptions(
+        if (!::backendVerify.isInitialized) {
+            throw IllegalStateException("backendVerify is required")
+        }
+        currentJob?.cancel()
+        currentJob = GlobalScope.launch(Dispatchers.Main) {
+            refreshSuspend()
+        }
+    }
+
+    private suspend fun refreshSuspend() {
+        val options = CaptchaOptions(
             type = CaptchaType.CLICK,
             width = captchaWidth,
             height = captchaHeight,
-            clickCount = clickCount
-        ))
+            clickCount = clickCount,
+            backendVerify = backendVerify,
+            locale = locale
+        )
 
-        bgBitmap = result.bgBitmap
-        targetPoints = result.targetPoints
-        clickTexts = result.clickTexts ?: emptyList()
-        clickPoints.clear()
+        try {
+            val result = generator.generate(options)
 
-        bgView.setImageBitmap(bgBitmap)
-        clickOverlayView.clear()
-        statusView.visibility = View.GONE
+            bgBitmap = result.bgBitmap
+            targetPoints = result.targetPoints
+            clickTexts = result.clickTexts ?: emptyList()
+            clickCharImages = result.clickCharImages ?: emptyList()
+            clickCharBitmaps = clickCharImages.map { src ->
+                withContext(Dispatchers.IO) { generator.loadImage(src) }
+            }
+            clickPoints.clear()
 
-        // Update prompt bar
-        updatePromptBar()
+            bgView.setImageBitmap(bgBitmap)
+            clickOverlayView.clear()
+            statusView.visibility = View.GONE
 
-        callback?.onRefresh()
+            updatePromptBar()
+
+            callback?.onRefresh()
+        } catch (e: Exception) {
+            showStatus(false, LocaleMessages.get(locale, "error_network"))
+            callback?.onError(e)
+        }
     }
 
     private fun updatePromptBar() {
         promptBar.removeAllViews()
 
-        // Add prompt text
         promptBar.addView(TextView(context).apply {
-            text = "请依次点击："
+            text = LocaleMessages.get(locale, "click_prompt")
             textSize = 14f
             setTextColor(Color.parseColor("#333333"))
         })
 
-        // Add character items
-        for (text in clickTexts) {
-            promptBar.addView(TextView(context).apply {
-                this.text = text
-                textSize = 14f
-                setTextColor(Color.parseColor("#1991FA"))
-                gravity = Gravity.CENTER
-                setPadding(4, 4, 4, 4)
-                setBackgroundColor(Color.parseColor("#E6F0F8FF"))
-            }, LinearLayout.LayoutParams(28, 28).apply {
-                marginStart = 4
-            })
+        if (clickCharBitmaps.isNotEmpty()) {
+            for (bmp in clickCharBitmaps) {
+                promptBar.addView(ImageView(context).apply {
+                    setImageBitmap(bmp)
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                    setBackgroundColor(Color.parseColor("#E6F0F8FF"))
+                    setPadding(4, 4, 4, 4)
+                }, LinearLayout.LayoutParams(28, 28).apply {
+                    marginStart = 4
+                })
+            }
+        } else {
+            for (text in clickTexts) {
+                promptBar.addView(TextView(context).apply {
+                    this.text = text
+                    textSize = 14f
+                    setTextColor(Color.parseColor("#1991FA"))
+                    gravity = Gravity.CENTER
+                    setPadding(4, 4, 4, 4)
+                    setBackgroundColor(Color.parseColor("#E6F0F8FF"))
+                }, LinearLayout.LayoutParams(28, 28).apply {
+                    marginStart = 4
+                })
+            }
         }
     }
 
-    private fun handleClick(x: Float, y: Float) {
-        if (clickPoints.size >= clickTexts.size) return
+    private fun promptCount(): Int = if (clickCharBitmaps.isNotEmpty()) clickCharBitmaps.size else clickTexts.size
 
+    private fun handleClick(x: Float, y: Float) {
+        if (clickPoints.size >= promptCount() || statusView.visibility == View.VISIBLE) return
+
+        statisticsData.totalClickCount++
         clickPoints.add(CaptchaPoint(x, y))
         clickOverlayView.addClickPoint(x, y, clickPoints.size)
 
         callback?.onClick(CaptchaPoint(x, y), clickPoints.size)
 
-        if (clickPoints.size >= clickTexts.size) {
+        if (clickPoints.size >= promptCount()) {
             postDelayed({ verify() }, 100)
         }
     }
 
     private fun verify() {
-        var success = true
-
-        for (i in targetPoints.indices) {
-            val target = targetPoints[i]
-            val clicked = clickPoints[i]
-            val distance = Math.sqrt(
-                Math.pow((clicked.x - target.x).toDouble(), 2.0) +
-                Math.pow((clicked.y - target.y).toDouble(), 2.0)
-            ).toFloat()
-
-            if (distance > precision) {
-                success = false
-                break
-            }
+        if (!::backendVerify.isInitialized) {
+            throw IllegalStateException("backendVerify is required")
         }
 
-        if (success) {
-            showStatus(true)
-            callback?.onSuccess()
-        } else {
-            showStatus(false)
-            callback?.onFail()
-            postDelayed({ refresh() }, 500)
+        statisticsData.totalAttempts++
+
+        val captchaData = generator.getCaptchaData(CaptchaType.CLICK, clickPoints)
+
+        currentJob = GlobalScope.launch(Dispatchers.Main) {
+            try {
+                val options = CaptchaOptions(
+                    type = CaptchaType.CLICK,
+                    backendVerify = backendVerify,
+                    locale = locale
+                )
+                val response = generator.backendVerify(captchaData, options)
+                if (response.success) handleSuccess() else handleFail()
+            } catch (e: Exception) {
+                showStatus(false, LocaleMessages.get(locale, "error_network"))
+                callback?.onError(e)
+                callback?.onFail()
+            }
         }
     }
 
-    private fun showStatus(success: Boolean) {
+    private fun handleSuccess() {
+        statisticsData.successCount++
+        showStatus(true, LocaleMessages.get(locale, "click_success"))
+        callback?.onSuccess()
+    }
+
+    private fun handleFail() {
+        statisticsData.failCount++
+        showStatus(false, LocaleMessages.get(locale, "click_fail"))
+        callback?.onFail()
+        postDelayed({ refresh() }, 800)
+    }
+
+    private fun showStatus(success: Boolean, message: String? = null) {
         statusView.apply {
-            text = if (success) "验证成功" else "验证失败"
+            text = message ?: if (success) LocaleMessages.get(locale, "click_success") else LocaleMessages.get(locale, "click_fail")
             setBackgroundColor(if (success) Color.parseColor("#E652C41A") else Color.parseColor("#E6F5222D"))
             visibility = View.VISIBLE
         }
@@ -214,22 +268,29 @@ class ClickCaptchaView @JvmOverloads constructor(
         return true
     }
 
-    /**
-     * Get captcha data
-     */
-    fun getData(): Map<String, Any> {
-        return mapOf(
-            "type" to "click",
-            "targetPoints" to targetPoints,
-            "clickPoints" to clickPoints,
-            "clickTexts" to clickTexts
-        )
+    fun getData(): CaptchaData {
+        return generator.getCaptchaData(CaptchaType.CLICK, clickPoints)
+    }
+
+    fun getStatistics(): CaptchaStatistics = statisticsData.toStatistics()
+
+    fun resetStatistics() {
+        statisticsData.totalAttempts = 0
+        statisticsData.successCount = 0
+        statisticsData.failCount = 0
+        statisticsData.totalVerifyTime = 0
+        statisticsData.totalDragDistance = 0f
+        statisticsData.totalDragTime = 0
+        statisticsData.totalClickCount = 0
+    }
+
+    fun destroy() {
+        currentJob?.cancel()
+        bgBitmap?.recycle()
+        bgBitmap = null
     }
 }
 
-/**
- * Click overlay view for drawing click markers
- */
 class ClickOverlayView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -276,13 +337,8 @@ class ClickOverlayView @JvmOverloads constructor(
             val (x, y) = clickPoints[i]
             val index = clickIndices[i]
 
-            // Draw circle
             canvas.drawCircle(x, y, 14f, circlePaint)
-
-            // Draw border
             canvas.drawCircle(x, y, 14f, borderPaint)
-
-            // Draw number
             canvas.drawText(index.toString(), x, y + 4, textPaint)
         }
     }

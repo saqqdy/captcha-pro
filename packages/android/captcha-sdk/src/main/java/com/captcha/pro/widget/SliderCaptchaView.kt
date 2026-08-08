@@ -3,17 +3,17 @@ package com.captcha.pro.widget
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.captcha.pro.core.*
+import kotlinx.coroutines.*
 
 /**
- * Slider captcha view
+ * Slider Captcha View - Backend verification only
  */
 class SliderCaptchaView @JvmOverloads constructor(
     context: Context,
@@ -22,6 +22,7 @@ class SliderCaptchaView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val generator = CaptchaGenerator()
+    private val statisticsData = StatisticsData()
 
     private var bgBitmap: Bitmap? = null
     private var sliderBitmap: Bitmap? = null
@@ -37,6 +38,7 @@ class SliderCaptchaView @JvmOverloads constructor(
 
     private var isDragging = false
     private var startX = 0f
+    private var dragStartTime: Long = 0
 
     var callback: SliderCaptchaCallback? = null
 
@@ -54,7 +56,6 @@ class SliderCaptchaView @JvmOverloads constructor(
 
     var sliderWidth: Int = 42
     var sliderHeight: Int = 42
-    var precision: Int = 5
 
     var showRefresh: Boolean = true
         set(value) {
@@ -62,20 +63,24 @@ class SliderCaptchaView @JvmOverloads constructor(
             refreshBtn.visibility = if (value) View.VISIBLE else View.GONE
         }
 
+    /** Backend verification configuration - Required */
+    lateinit var backendVerify: BackendVerifyOptions
+
+    var locale: CaptchaLocale = CaptchaLocale.ZH_CN
+
+    private var currentJob: Job? = null
+
     init {
-        // Background view
         bgView = ImageView(context).apply {
             scaleType = ImageView.ScaleType.FIT_XY
         }
         addView(bgView, LayoutParams(captchaWidth, captchaHeight))
 
-        // Slider view
         sliderView = ImageView(context).apply {
             scaleType = ImageView.ScaleType.FIT_XY
         }
         addView(sliderView, LayoutParams(sliderWidth, sliderHeight))
 
-        // Refresh button
         refreshBtn = ImageView(context).apply {
             setImageResource(android.R.drawable.ic_menu_rotate)
             setPadding(8, 8, 8, 8)
@@ -88,7 +93,6 @@ class SliderCaptchaView @JvmOverloads constructor(
             marginEnd = 16
         })
 
-        // Status view
         statusView = TextView(context).apply {
             textSize = 14f
             setTextColor(Color.WHITE)
@@ -99,7 +103,6 @@ class SliderCaptchaView @JvmOverloads constructor(
             gravity = Gravity.BOTTOM
         })
 
-        // Slider bar
         sliderBar = SliderBarView(context)
         addView(sliderBar, LayoutParams(captchaWidth, 50).apply {
             gravity = Gravity.BOTTOM
@@ -115,53 +118,100 @@ class SliderCaptchaView @JvmOverloads constructor(
             }
         }
 
-        sliderBar.onDragEndListener = {
-            verify()
-        }
+        sliderBar.onDragEndListener = { verify() }
+        sliderBar.onDragStartListener = { dragStartTime = System.currentTimeMillis() }
     }
 
     fun refresh() {
-        val result = generator.generate(CaptchaOptions(
+        if (!::backendVerify.isInitialized) {
+            throw IllegalStateException("backendVerify is required")
+        }
+        currentJob?.cancel()
+        currentJob = GlobalScope.launch(Dispatchers.Main) {
+            refreshSuspend()
+        }
+    }
+
+    private suspend fun refreshSuspend() {
+        val options = CaptchaOptions(
             type = CaptchaType.SLIDER,
             width = captchaWidth,
             height = captchaHeight,
             sliderWidth = sliderWidth,
-            sliderHeight = sliderHeight
-        ))
+            sliderHeight = sliderHeight,
+            backendVerify = backendVerify,
+            locale = locale
+        )
 
-        bgBitmap = result.bgBitmap
-        sliderBitmap = result.sliderBitmap
-        targetX = result.targetPoints.first().x
-        sliderY = result.sliderY
-        currentX = 0f
+        try {
+            val result = generator.generate(options)
 
-        bgView.setImageBitmap(bgBitmap)
-        sliderView.setImageBitmap(sliderBitmap)
-        sliderView.translationX = 0f
-        sliderView.translationY = sliderY
+            bgBitmap = result.bgBitmap
+            sliderBitmap = result.sliderBitmap
+            targetX = result.targetPoints.first().x
+            sliderY = result.sliderY
+            currentX = 0f
 
-        statusView.visibility = View.GONE
-        sliderBar.reset()
+            bgView.setImageBitmap(bgBitmap)
+            sliderView.setImageBitmap(sliderBitmap)
+            sliderView.translationX = 0f
+            sliderView.translationY = sliderY
 
-        callback?.onRefresh()
-    }
+            statusView.visibility = View.GONE
+            sliderBar.reset()
 
-    private fun verify() {
-        val diff = Math.abs(currentX - targetX)
-
-        if (diff <= precision) {
-            showStatus(true)
-            callback?.onSuccess()
-        } else {
-            showStatus(false)
-            callback?.onFail()
-            postDelayed({ refresh() }, 500)
+            callback?.onRefresh()
+        } catch (e: Exception) {
+            showStatus(false, LocaleMessages.get(locale, "error_network"))
+            callback?.onError(e)
         }
     }
 
-    private fun showStatus(success: Boolean) {
+    private fun verify() {
+        if (!::backendVerify.isInitialized) {
+            throw IllegalStateException("backendVerify is required")
+        }
+
+        statisticsData.totalAttempts++
+        val dragTime = System.currentTimeMillis() - dragStartTime
+        statisticsData.totalDragTime += dragTime
+        statisticsData.totalDragDistance += currentX
+
+        val captchaData = generator.getCaptchaData(CaptchaType.SLIDER, sliderX = currentX)
+
+        currentJob = GlobalScope.launch(Dispatchers.Main) {
+            try {
+                val options = CaptchaOptions(
+                    type = CaptchaType.SLIDER,
+                    backendVerify = backendVerify,
+                    locale = locale
+                )
+                val response = generator.backendVerify(captchaData, options)
+                if (response.success) handleSuccess() else handleFail()
+            } catch (e: Exception) {
+                showStatus(false, LocaleMessages.get(locale, "error_network"))
+                callback?.onError(e)
+                callback?.onFail()
+            }
+        }
+    }
+
+    private fun handleSuccess() {
+        statisticsData.successCount++
+        showStatus(true, LocaleMessages.get(locale, "slider_success"))
+        callback?.onSuccess()
+    }
+
+    private fun handleFail() {
+        statisticsData.failCount++
+        showStatus(false, LocaleMessages.get(locale, "slider_fail"))
+        callback?.onFail()
+        postDelayed({ refresh() }, 800)
+    }
+
+    private fun showStatus(success: Boolean, message: String? = null) {
         statusView.apply {
-            text = if (success) "验证成功" else "验证失败"
+            text = message ?: if (success) LocaleMessages.get(locale, "slider_success") else LocaleMessages.get(locale, "slider_fail")
             setBackgroundColor(if (success) Color.parseColor("#E652C41A") else Color.parseColor("#E6F5222D"))
             visibility = View.VISIBLE
         }
@@ -175,22 +225,31 @@ class SliderCaptchaView @JvmOverloads constructor(
         return true
     }
 
-    /**
-     * Get captcha data
-     */
-    fun getData(): Map<String, Any> {
-        return mapOf(
-            "type" to "slider",
-            "targetX" to targetX,
-            "sliderY" to sliderY,
-            "currentX" to currentX
-        )
+    fun getData(): CaptchaData {
+        return generator.getCaptchaData(CaptchaType.SLIDER, sliderX = currentX)
+    }
+
+    fun getStatistics(): CaptchaStatistics = statisticsData.toStatistics()
+
+    fun resetStatistics() {
+        statisticsData.totalAttempts = 0
+        statisticsData.successCount = 0
+        statisticsData.failCount = 0
+        statisticsData.totalVerifyTime = 0
+        statisticsData.totalDragDistance = 0f
+        statisticsData.totalDragTime = 0
+        statisticsData.totalClickCount = 0
+    }
+
+    fun destroy() {
+        currentJob?.cancel()
+        bgBitmap?.recycle()
+        sliderBitmap?.recycle()
+        bgBitmap = null
+        sliderBitmap = null
     }
 }
 
-/**
- * Slider bar view
- */
 class SliderBarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -226,6 +285,7 @@ class SliderBarView @JvmOverloads constructor(
 
     var onDragListener: ((Float) -> Unit)? = null
     var onDragEndListener: (() -> Unit)? = null
+    var onDragStartListener: (() -> Unit)? = null
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -235,21 +295,17 @@ class SliderBarView @JvmOverloads constructor(
         val thumbLeft = progress * (width - thumbWidth)
         val thumbCenterX = thumbLeft + thumbWidth / 2
 
-        // Draw track
         canvas.drawRoundRect(0f, 0f, width, height, 4f, 4f, trackPaint)
 
-        // Draw progress
         if (progress > 0) {
             canvas.drawRect(0f, 0f, thumbCenterX, height, progressPaint)
         }
 
-        // Draw thumb
         val thumbTop = (height - thumbWidth) / 2
         val thumbRect = RectF(thumbLeft, thumbTop, thumbLeft + thumbWidth, thumbTop + thumbWidth)
         canvas.drawRoundRect(thumbRect, 4f, 4f, thumbPaint)
         canvas.drawRoundRect(thumbRect, 4f, 4f, thumbBorderPaint)
 
-        // Draw arrow
         val arrowPaint = Paint().apply {
             color = Color.parseColor("#1991FA")
             textSize = 16f
@@ -263,6 +319,7 @@ class SliderBarView @JvmOverloads constructor(
             MotionEvent.ACTION_DOWN -> {
                 isDragging = true
                 startX = event.x - progress * (width - thumbWidth)
+                onDragStartListener?.invoke()
                 return true
             }
             MotionEvent.ACTION_MOVE -> {
