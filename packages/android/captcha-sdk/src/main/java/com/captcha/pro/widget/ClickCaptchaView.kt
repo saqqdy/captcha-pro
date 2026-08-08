@@ -2,10 +2,12 @@ package com.captcha.pro.widget
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -24,6 +26,8 @@ class ClickCaptchaView @JvmOverloads constructor(
 
     private val generator = CaptchaGenerator()
     private val statisticsData = StatisticsData()
+    private val density = resources.displayMetrics.density
+    private fun dp(v: Int) = (v * density).toInt()
 
     private var bgBitmap: Bitmap? = null
     private var targetPoints: List<CaptchaPoint> = emptyList()
@@ -34,8 +38,9 @@ class ClickCaptchaView @JvmOverloads constructor(
 
     private val bgView: ImageView
     private val clickOverlayView: ClickOverlayView
-    private val statusView: TextView
-    private val refreshBtn: ImageView
+    private val loadingView: TextView
+    private val statusOverlay: StatusOverlayView
+    private val refreshBtn: TextView
     private val promptBar: LinearLayout
 
     var callback: ClickCaptchaCallback? = null
@@ -68,45 +73,67 @@ class ClickCaptchaView @JvmOverloads constructor(
     private var currentJob: Job? = null
 
     init {
+        val gradientDrawable = GradientDrawable(
+            GradientDrawable.Orientation.TL_BR,
+            intArrayOf(Color.parseColor("#667eea"), Color.parseColor("#764ba2"))
+        ).apply { cornerRadius = 16f * density }
+
         bgView = ImageView(context).apply {
             scaleType = ImageView.ScaleType.FIT_XY
+            background = gradientDrawable
+            outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: Outline) {
+                    outline.setRoundRect(0, 0, view.width, view.height, 16f * density)
+                }
+            }
+            clipToOutline = true
+            elevation = 8f * density
         }
         addView(bgView, LayoutParams(captchaWidth, captchaHeight))
+
+        loadingView = TextView(context).apply {
+            text = LocaleMessages.get(locale, "loading")
+            textSize = 14f
+            setTextColor(Color.WHITE)
+            gravity = Gravity.CENTER
+        }
+        addView(loadingView, LayoutParams(captchaWidth, captchaHeight))
 
         clickOverlayView = ClickOverlayView(context)
         addView(clickOverlayView, LayoutParams(captchaWidth, captchaHeight))
 
-        refreshBtn = ImageView(context).apply {
-            setImageResource(android.R.drawable.ic_menu_rotate)
-            setPadding(8, 8, 8, 8)
-            setBackgroundColor(Color.parseColor("#E6FFFFFF"))
+        refreshBtn = TextView(context).apply {
+            text = "⟳"
+            textSize = 16f
+            setTextColor(Color.parseColor("#666666"))
+            gravity = Gravity.CENTER
+            background = GradientDrawable().apply {
+                setColor(Color.argb(230, 255, 255, 255))
+                cornerRadius = 8f * density
+            }
             setOnClickListener { refresh() }
         }
-        addView(refreshBtn, LayoutParams(40, 40).apply {
+        addView(refreshBtn, LayoutParams(dp(28), dp(28)).apply {
             gravity = Gravity.TOP or Gravity.END
-            topMargin = 16
-            marginEnd = 16
+            topMargin = dp(8)
+            marginEnd = dp(8)
         })
 
-        statusView = TextView(context).apply {
-            textSize = 14f
-            setTextColor(Color.WHITE)
-            gravity = Gravity.CENTER
-            visibility = View.GONE
-        }
-        addView(statusView, LayoutParams(LayoutParams.MATCH_PARENT, 40).apply {
-            gravity = Gravity.BOTTOM
-        })
+        statusOverlay = StatusOverlayView(context)
+        addView(statusOverlay, LayoutParams(captchaWidth, captchaHeight))
 
         promptBar = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER
-            setBackgroundColor(Color.parseColor("#F7F9FA"))
-            setPadding(16, 8, 16, 8)
+            gravity = Gravity.CENTER_VERTICAL
+            background = GradientDrawable().apply {
+                setColor(Color.parseColor("#F7F9FA"))
+                cornerRadius = 16f * density
+                setStroke(dp(1), Color.parseColor("#E8E8E8"))
+            }
+            setPadding(dp(12), dp(10), dp(12), dp(10))
         }
-        addView(promptBar, LayoutParams(captchaWidth, 40).apply {
-            gravity = Gravity.BOTTOM
-            topMargin = captchaHeight + 10
+        addView(promptBar, LayoutParams(captchaWidth, LayoutParams.WRAP_CONTENT).apply {
+            topMargin = captchaHeight + dp(12)
         })
     }
 
@@ -121,6 +148,10 @@ class ClickCaptchaView @JvmOverloads constructor(
     }
 
     private suspend fun refreshSuspend() {
+        loadingView.text = LocaleMessages.get(locale, "loading")
+        loadingView.visibility = View.VISIBLE
+        statusOverlay.hide()
+
         val options = CaptchaOptions(
             type = CaptchaType.CLICK,
             width = captchaWidth,
@@ -144,13 +175,14 @@ class ClickCaptchaView @JvmOverloads constructor(
 
             bgView.setImageBitmap(bgBitmap)
             clickOverlayView.clear()
-            statusView.visibility = View.GONE
+            loadingView.visibility = View.GONE
 
             updatePromptBar()
 
             callback?.onRefresh()
         } catch (e: Exception) {
-            showStatus(false, LocaleMessages.get(locale, "error_network"))
+            loadingView.text = LocaleMessages.get(locale, "error_network")
+            loadingView.visibility = View.VISIBLE
             callback?.onError(e)
         }
     }
@@ -161,31 +193,39 @@ class ClickCaptchaView @JvmOverloads constructor(
         promptBar.addView(TextView(context).apply {
             text = LocaleMessages.get(locale, "click_prompt")
             textSize = 14f
-            setTextColor(Color.parseColor("#333333"))
+            setTextColor(Color.parseColor("#666666"))
+        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            marginEnd = dp(8)
         })
+
+        val charBg = GradientDrawable(
+            GradientDrawable.Orientation.TL_BR,
+            intArrayOf(Color.parseColor("#667eea"), Color.parseColor("#764ba2"))
+        ).apply { cornerRadius = 8f * density }
 
         if (clickCharBitmaps.isNotEmpty()) {
             for (bmp in clickCharBitmaps) {
                 promptBar.addView(ImageView(context).apply {
                     setImageBitmap(bmp)
                     scaleType = ImageView.ScaleType.FIT_CENTER
-                    setBackgroundColor(Color.parseColor("#E6F0F8FF"))
-                    setPadding(4, 4, 4, 4)
-                }, LinearLayout.LayoutParams(28, 28).apply {
-                    marginStart = 4
+                    background = charBg
+                    setPadding(dp(4), dp(4), dp(4), dp(4))
+                    elevation = 2f * density
+                }, LinearLayout.LayoutParams(dp(28), dp(28)).apply {
+                    marginStart = dp(6)
                 })
             }
         } else {
             for (text in clickTexts) {
                 promptBar.addView(TextView(context).apply {
                     this.text = text
-                    textSize = 14f
-                    setTextColor(Color.parseColor("#1991FA"))
+                    textSize = 16f
+                    setTextColor(Color.WHITE)
                     gravity = Gravity.CENTER
-                    setPadding(4, 4, 4, 4)
-                    setBackgroundColor(Color.parseColor("#E6F0F8FF"))
-                }, LinearLayout.LayoutParams(28, 28).apply {
-                    marginStart = 4
+                    background = charBg
+                    elevation = 2f * density
+                }, LinearLayout.LayoutParams(dp(28), dp(28)).apply {
+                    marginStart = dp(6)
                 })
             }
         }
@@ -194,7 +234,7 @@ class ClickCaptchaView @JvmOverloads constructor(
     private fun promptCount(): Int = if (clickCharBitmaps.isNotEmpty()) clickCharBitmaps.size else clickTexts.size
 
     private fun handleClick(x: Float, y: Float) {
-        if (clickPoints.size >= promptCount() || statusView.visibility == View.VISIBLE) return
+        if (clickPoints.size >= promptCount() || statusOverlay.visibility == View.VISIBLE) return
 
         statisticsData.totalClickCount++
         clickPoints.add(CaptchaPoint(x, y))
@@ -224,34 +264,29 @@ class ClickCaptchaView @JvmOverloads constructor(
                     locale = locale
                 )
                 val response = generator.backendVerify(captchaData, options)
-                if (response.success) handleSuccess() else handleFail()
+                if (response.success) {
+                    val verifiedAt = (response.data?.get("verifiedAt") as? Number)?.toLong()
+                    handleSuccess(verifiedAt)
+                } else handleFail()
             } catch (e: Exception) {
-                showStatus(false, LocaleMessages.get(locale, "error_network"))
+                statusOverlay.show(false, LocaleMessages.get(locale, "error_network"))
                 callback?.onError(e)
                 callback?.onFail()
             }
         }
     }
 
-    private fun handleSuccess() {
+    private fun handleSuccess(verifiedAt: Long?) {
         statisticsData.successCount++
-        showStatus(true, LocaleMessages.get(locale, "click_success"))
-        callback?.onSuccess()
+        statusOverlay.show(true, LocaleMessages.get(locale, "click_success"))
+        callback?.onSuccess(VerifyResult(verifiedAt = verifiedAt))
     }
 
     private fun handleFail() {
         statisticsData.failCount++
-        showStatus(false, LocaleMessages.get(locale, "click_fail"))
+        statusOverlay.show(false, LocaleMessages.get(locale, "click_fail"))
         callback?.onFail()
         postDelayed({ refresh() }, 800)
-    }
-
-    private fun showStatus(success: Boolean, message: String? = null) {
-        statusView.apply {
-            text = message ?: if (success) LocaleMessages.get(locale, "click_success") else LocaleMessages.get(locale, "click_fail")
-            setBackgroundColor(if (success) Color.parseColor("#E652C41A") else Color.parseColor("#E6F5222D"))
-            visibility = View.VISIBLE
-        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -297,25 +332,31 @@ class ClickOverlayView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    private val density = resources.displayMetrics.density
+    private fun dp(v: Float) = v * density
+
     private val clickPoints = mutableListOf<Pair<Float, Float>>()
     private val clickIndices = mutableListOf<Int>()
 
     private val circlePaint = Paint().apply {
         color = Color.parseColor("#1991FA")
         style = Paint.Style.FILL
+        isAntiAlias = true
     }
 
     private val borderPaint = Paint().apply {
         color = Color.WHITE
         style = Paint.Style.STROKE
-        strokeWidth = 2f
+        strokeWidth = dp(3f)
+        isAntiAlias = true
     }
 
     private val textPaint = Paint().apply {
         color = Color.WHITE
-        textSize = 12f
+        textSize = dp(12f)
         textAlign = Paint.Align.CENTER
         isFakeBoldText = true
+        isAntiAlias = true
     }
 
     fun addClickPoint(x: Float, y: Float, index: Int) {
@@ -333,13 +374,15 @@ class ClickOverlayView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        val radius = dp(12f)
         for (i in clickPoints.indices) {
             val (x, y) = clickPoints[i]
             val index = clickIndices[i]
 
-            canvas.drawCircle(x, y, 14f, circlePaint)
-            canvas.drawCircle(x, y, 14f, borderPaint)
-            canvas.drawText(index.toString(), x, y + 4, textPaint)
+            canvas.drawCircle(x, y, radius, circlePaint)
+            canvas.drawCircle(x, y, radius, borderPaint)
+            val fm = textPaint.fontMetrics
+            canvas.drawText(index.toString(), x, y - (fm.ascent + fm.descent) / 2, textPaint)
         }
     }
 }

@@ -62,11 +62,35 @@ class CaptchaGenerator {
         withContext(Dispatchers.IO) {
             when (val ep = options.backendVerify.getCaptcha) {
                 is GetCaptchaEndpoint.Url -> parseCaptchaResponse(
-                    httpGetJson(ep.url, options.backendVerify.headers, options.backendVerify.timeout)
+                    httpGetJson(buildCaptchaUrl(ep.url, options), options.backendVerify.headers, options.backendVerify.timeout)
                 )
                 is GetCaptchaEndpoint.Fn -> ep.fn()
             }
         }
+
+    /**
+     * Build getCaptcha URL with query params (type/width/height + slider|click dims).
+     * Mirrors taro-vue BackendCaptchaParams query.
+     */
+    private fun buildCaptchaUrl(base: String, options: CaptchaOptions): String {
+        val params = linkedMapOf(
+            "type" to options.type.name.lowercase(),
+            "width" to options.width.toString(),
+            "height" to options.height.toString()
+        )
+        when (options.type) {
+            CaptchaType.SLIDER -> {
+                params["sliderWidth"] = options.sliderWidth.toString()
+                params["sliderHeight"] = options.sliderHeight.toString()
+            }
+            CaptchaType.CLICK -> {
+                params["clickCount"] = options.clickCount.toString()
+            }
+        }
+        val query = params.entries.joinToString("&") { (k, v) -> "$k=$v" }
+        val sep = if (base.contains("?")) "&" else "?"
+        return "$base$sep$query"
+    }
 
     /**
      * Resolve verify endpoint: URL -> HTTP POST, Fn -> invoke.
@@ -165,7 +189,6 @@ class CaptchaGenerator {
             }
         }
         obj.put("target", targetArr)
-        obj.put("timestamp", data.timestamp)
         return obj.toString()
     }
 

@@ -11,13 +11,13 @@ public enum CaptchaLocale: String, Codable {
 public struct LocaleMessages {
     private static let messages: [CaptchaLocale: [String: String]] = [
         .zhCN: [
-            "slider_slide": "请拖动滑块完成验证", "slider_success": "验证成功", "slider_fail": "验证失败",
+            "loading": "加载中...", "slider_slide": "请拖动滑块完成验证", "slider_hint": "→ 按住滑块，拖动完成验证", "slider_success": "验证成功", "slider_fail": "验证失败",
             "click_prompt": "请依次点击：", "click_success": "验证成功", "click_fail": "验证失败",
             "popup_title": "请完成安全验证", "popup_close": "关闭",
             "error_network": "网络错误", "error_expired": "验证码已过期", "error_invalid": "验证失败", "error_not_found": "验证码不存在"
         ],
         .enUS: [
-            "slider_slide": "Please slide to verify", "slider_success": "Verification successful", "slider_fail": "Verification failed",
+            "loading": "Loading...", "slider_slide": "Please slide to verify", "slider_hint": "→ Hold and drag the slider to verify", "slider_success": "Verification successful", "slider_fail": "Verification failed",
             "click_prompt": "Please click in order: ", "click_success": "Verification successful", "click_fail": "Verification failed",
             "popup_title": "Please complete security verification", "popup_close": "Close",
             "error_network": "Network error", "error_expired": "Captcha expired", "error_invalid": "Verification failed", "error_not_found": "Captcha not found"
@@ -53,15 +53,15 @@ public struct BackendVerifyOptions {
     public var headers: [String: String]?
     public var timeout: TimeInterval
     /// Closure overload — matches taro-vue function config.
-    public init(getCaptcha: @escaping (() async throws -> BackendCaptchaResponse), verify: @escaping ((CaptchaData) async throws -> BackendVerifyResponse), headers: [String: String]? = nil, timeout: TimeInterval = 30) {
+    public init(getCaptcha: @escaping (() async throws -> BackendCaptchaResponse), verify: @escaping ((CaptchaData) async throws -> BackendVerifyResponse), headers: [String: String]? = nil, timeout: TimeInterval = 10) {
         self.getCaptcha = .function(getCaptcha); self.verify = .function(verify); self.headers = headers; self.timeout = timeout
     }
     /// URL string overload — matches taro-vue string config.
-    public init(getCaptchaUrl: String, verifyUrl: String, headers: [String: String]? = nil, timeout: TimeInterval = 30) {
+    public init(getCaptchaUrl: String, verifyUrl: String, headers: [String: String]? = nil, timeout: TimeInterval = 10) {
         self.getCaptcha = .url(getCaptchaUrl); self.verify = .url(verifyUrl); self.headers = headers; self.timeout = timeout
     }
     /// Full endpoint overload.
-    public init(getCaptcha: GetCaptchaEndpoint, verify: VerifyEndpoint, headers: [String: String]? = nil, timeout: TimeInterval = 30) {
+    public init(getCaptcha: GetCaptchaEndpoint, verify: VerifyEndpoint, headers: [String: String]? = nil, timeout: TimeInterval = 10) {
         self.getCaptcha = getCaptcha; self.verify = verify; self.headers = headers; self.timeout = timeout
     }
 }
@@ -79,6 +79,15 @@ public struct BackendVerifyResponse {
     public let success: Bool, message: String?, data: [String: Any]?
     public init(success: Bool, message: String? = nil, data: [String: Any]? = nil) { self.success = success; self.message = message; self.data = data }
 }
+public extension BackendVerifyResponse {
+    /// `verifiedAt` timestamp from the verify response data (mirrors taro-vue `verifiedAt: number`).
+    var verifiedAt: Int? {
+        if let v = data?["verifiedAt"] as? Int { return v }
+        if let v = data?["verifiedAt"] as? Double { return Int(v) }
+        if let v = data?["verifiedAt"] as? NSNumber { return v.intValue }
+        return nil
+    }
+}
 
 /// Captcha data for verification.
 /// target is polymorphic: slider -> [CGFloat] ([sliderX]); click -> [CaptchaPoint].
@@ -91,9 +100,9 @@ public struct CaptchaData {
 }
 
 public struct CaptchaOptions {
-    public var type: CaptchaType, width: Int, height: Int, sliderWidth: Int, sliderHeight: Int, precision: Int, clickCount: Int, backendVerify: BackendVerifyOptions, locale: CaptchaLocale
-    public init(type: CaptchaType = .slider, width: Int = 300, height: Int = 170, sliderWidth: Int = 42, sliderHeight: Int = 42, precision: Int = 5, clickCount: Int = 3, backendVerify: BackendVerifyOptions, locale: CaptchaLocale = .zhCN) {
-        self.type = type; self.width = width; self.height = height; self.sliderWidth = sliderWidth; self.sliderHeight = sliderHeight; self.precision = precision; self.clickCount = clickCount; self.backendVerify = backendVerify; self.locale = locale
+    public var type: CaptchaType, width: Int, height: Int, sliderWidth: Int, sliderHeight: Int, clickCount: Int, backendVerify: BackendVerifyOptions, locale: CaptchaLocale
+    public init(type: CaptchaType = .slider, width: Int = 300, height: Int = 170, sliderWidth: Int = 42, sliderHeight: Int = 42, clickCount: Int = 3, backendVerify: BackendVerifyOptions, locale: CaptchaLocale = .zhCN) {
+        self.type = type; self.width = width; self.height = height; self.sliderWidth = sliderWidth; self.sliderHeight = sliderHeight; self.clickCount = clickCount; self.backendVerify = backendVerify; self.locale = locale
     }
 }
 
@@ -105,8 +114,8 @@ public struct CaptchaResult {
 }
 
 public struct VerifyResult {
-    public let success: Bool, message: String
-    public init(success: Bool, message: String = "") { self.success = success; self.message = message }
+    public let verifiedAt: Int?
+    public init(verifiedAt: Int? = nil) { self.verifiedAt = verifiedAt }
 }
 
 public struct CaptchaStatistics {
@@ -127,9 +136,9 @@ internal class StatisticsData {
 }
 
 public protocol CaptchaCallback: AnyObject {
-    func onSuccess(); func onFail(); func onRefresh(); func onError(_ error: Error)
+    func onSuccess(data: VerifyResult?); func onFail(); func onRefresh(); func onError(_ error: Error)
 }
-public extension CaptchaCallback { func onSuccess() {}; func onFail() {}; func onRefresh() {}; func onError(_ error: Error) {} }
+public extension CaptchaCallback { func onSuccess(data: VerifyResult?) {}; func onFail() {}; func onRefresh() {}; func onError(_ error: Error) {} }
 
 public protocol SliderCaptchaCallback: CaptchaCallback { func onDrag(distance: CGFloat) }
 public extension SliderCaptchaCallback { func onDrag(distance: CGFloat) {} }

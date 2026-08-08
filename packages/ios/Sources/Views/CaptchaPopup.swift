@@ -42,7 +42,6 @@ public class PopupCaptchaView: UIView {
     public var captchaHeight: Int = 170
     public var sliderWidth: Int = 42
     public var sliderHeight: Int = 42
-    public var precision: Int = 5
     public var clickCount: Int = 3
 
     // MARK: - Initialization
@@ -72,7 +71,7 @@ public class PopupCaptchaView: UIView {
 
         // Container
         containerView.backgroundColor = .white
-        containerView.layer.cornerRadius = 8
+        containerView.layer.cornerRadius = 24
         containerView.clipsToBounds = true
         containerView.alpha = 0
         containerView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
@@ -107,8 +106,9 @@ public class PopupCaptchaView: UIView {
         ])
 
         // Close button
-        closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
-        closeButton.tintColor = .gray
+        closeButton.setTitle("×", for: .normal)
+        closeButton.setTitleColor(UIColor(white: 0.6, alpha: 1), for: .normal)
+        closeButton.titleLabel?.font = .systemFont(ofSize: 24)
         closeButton.addTarget(self, action: #selector(hide), for: .touchUpInside)
         headerView.addSubview(closeButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -209,7 +209,6 @@ public class PopupCaptchaView: UIView {
             slider.captchaHeight = captchaHeight
             slider.sliderWidth = sliderWidth
             slider.sliderHeight = sliderHeight
-            slider.precision = precision
             slider.delegate = self
             slider.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview(slider)

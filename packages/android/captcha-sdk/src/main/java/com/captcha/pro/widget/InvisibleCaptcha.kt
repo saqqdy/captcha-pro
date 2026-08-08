@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import com.captcha.pro.core.CaptchaType
+import com.captcha.pro.core.VerifyResult
 import com.captcha.pro.core.CaptchaPoint
 import kotlinx.coroutines.*
 import java.util.*
@@ -94,7 +95,7 @@ class InvisibleCaptcha(
     private val threshold: Float = 0.5f,
     private val challengeType: CaptchaType = CaptchaType.SLIDER,
     private val onChallenge: (() -> Unit)? = null,
-    private val onSuccess: (() -> Unit)? = null,
+    private val onSuccess: ((VerifyResult?) -> Unit)? = null,
     private val onFail: (() -> Unit)? = null
 ) {
     private val behaviorTracker = BehaviorTracker()
@@ -128,7 +129,7 @@ class InvisibleCaptcha(
         val riskScore = assessRisk()
 
         if (riskScore <= threshold) {
-            onSuccess?.invoke()
+            onSuccess?.invoke(null)
         } else {
             onChallenge?.invoke()
             showChallenge()
@@ -181,8 +182,8 @@ class InvisibleCaptcha(
     private fun showSliderChallenge() {
         sliderCaptchaView = SliderCaptchaView(context).apply {
             callback = object : SliderCaptchaCallback {
-                override fun onSuccess() {
-                    onSuccess?.invoke()
+                override fun onSuccess(data: VerifyResult?) {
+                    onSuccess?.invoke(data)
                     destroyChallengeViews()
                 }
                 override fun onFail() {
@@ -197,8 +198,8 @@ class InvisibleCaptcha(
     private fun showClickChallenge() {
         clickCaptchaView = ClickCaptchaView(context).apply {
             callback = object : ClickCaptchaCallback {
-                override fun onSuccess() {
-                    onSuccess?.invoke()
+                override fun onSuccess(data: VerifyResult?) {
+                    onSuccess?.invoke(data)
                     destroyChallengeViews()
                 }
                 override fun onFail() {

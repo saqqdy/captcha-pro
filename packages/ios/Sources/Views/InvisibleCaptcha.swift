@@ -50,10 +50,10 @@ public class InvisibleCaptcha {
     private var deviceFingerprint: String
 
     public var threshold: Float, challengeType: CaptchaType
-    public var onChallenge: (() -> Void)?, onSuccess: (() -> Void)?, onFail: (() -> Void)?
+    public var onChallenge: (() -> Void)?, onSuccess: ((VerifyResult?) -> Void)?, onFail: (() -> Void)?
 
     public init(threshold: Float = 0.5, challengeType: CaptchaType = .slider,
-                onChallenge: (() -> Void)? = nil, onSuccess: (() -> Void)? = nil, onFail: (() -> Void)? = nil) {
+                onChallenge: (() -> Void)? = nil, onSuccess: ((VerifyResult?) -> Void)? = nil, onFail: (() -> Void)? = nil) {
         self.threshold = threshold; self.challengeType = challengeType
         self.onChallenge = onChallenge; self.onSuccess = onSuccess; self.onFail = onFail
         self.deviceFingerprint = InvisibleCaptcha.generateDeviceFingerprint()
@@ -66,7 +66,7 @@ public class InvisibleCaptcha {
     }
 
     public func trigger() {
-        assessRisk() <= threshold ? onSuccess?() : onChallenge?()
+        assessRisk() <= threshold ? onSuccess?(nil) : onChallenge?()
     }
 
     public func assessRisk() -> Float {

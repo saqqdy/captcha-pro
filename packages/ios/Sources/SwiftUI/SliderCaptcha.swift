@@ -13,7 +13,7 @@ public struct SliderCaptcha: View {
         showRefresh: Bool = true,
         backendVerify: BackendVerifyOptions,
         locale: CaptchaLocale = .zhCN,
-        onSuccess: @escaping () -> Void = {},
+        onSuccess: @escaping (VerifyResult?) -> Void = { _ in },
         onFail: @escaping () -> Void = {},
         onRefresh: @escaping () -> Void = {},
         onError: @escaping (Error) -> Void = {}
@@ -37,21 +37,31 @@ public struct SliderCaptcha: View {
         VStack(spacing: 10) {
             // Captcha area
             ZStack(alignment: .topTrailing) {
-                // Background image
+                // Gradient background (shows on loading / no-image)
+                LinearGradient(
+                    colors: [
+                        Color(red: 102/255, green: 126/255, blue: 234/255),
+                        Color(red: 118/255, green: 75/255, blue: 162/255),
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+
                 if let bgImage = viewModel.bgImage {
                     Image(uiImage: bgImage)
                         .resizable()
                         .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
-                } else if viewModel.loading {
-                    ProgressView()
-                        .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
                 } else if let msg = viewModel.errorMsg {
                     Text(msg)
-                        .foregroundColor(.gray)
-                        .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
+                        .foregroundColor(.white)
+                        .font(.system(size: 14))
+                } else {
+                    Text(LocaleMessages.get(viewModel.locale, key: "loading"))
+                        .foregroundColor(.white)
+                        .font(.system(size: 14))
                 }
 
-                // Slider
+                // Slider piece
                 if let sliderImage = viewModel.sliderImage, !viewModel.loading {
                     Image(uiImage: sliderImage)
                         .resizable()
@@ -62,74 +72,83 @@ public struct SliderCaptcha: View {
                 // Refresh button
                 if viewModel.showRefresh, !viewModel.loading {
                     Button(action: { viewModel.refresh() }) {
-                        Image(systemName: "arrow.clockwise")
-                            .foregroundColor(.gray)
+                        Text("⟳")
+                            .foregroundColor(Color(white: 0.4))
+                            .font(.system(size: 20, weight: .bold))
                             .frame(width: 28, height: 28)
                             .background(Color.white.opacity(0.9))
-                            .cornerRadius(4)
+                            .cornerRadius(8)
                     }
-                    .padding(10)
+                    .padding(8)
                 }
 
-                // Status overlay
+                // Status overlay (centered)
                 if let status = viewModel.status {
-                    HStack {
-                        Image(systemName: status == .success ? "checkmark" : "xmark")
+                    VStack(spacing: 12) {
+                        ZStack {
+                            Circle()
+                                .fill(status == .success
+                                      ? Color(red: 82/255, green: 196/255, blue: 26/255, opacity: 0.85)
+                                      : Color(red: 255/255, green: 77/255, blue: 79/255, opacity: 0.85))
+                                .frame(width: 64, height: 64)
+                            Text(status == .success ? "✓" : "✕")
+                                .foregroundColor(.white)
+                                .font(.system(size: 36, weight: .bold))
+                        }
                         Text(status == .success
                              ? LocaleMessages.get(viewModel.locale, key: "slider_success")
                              : LocaleMessages.get(viewModel.locale, key: "slider_fail"))
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(status == .success
+                                             ? Color(red: 56/255, green: 158/255, blue: 13/255)
+                                             : Color(red: 207/255, green: 19/255, blue: 34/255))
                     }
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 28)
-                    .background(status == .success ? Color.green.opacity(0.9) : Color.red.opacity(0.9))
-                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.white.opacity(0.75))
+                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
                 }
             }
             .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
-            .cornerRadius(4)
+            .cornerRadius(16)
+            .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+            .animation(.easeInOut(duration: 0.2), value: viewModel.status)
 
             // Slider bar
-            GeometryReader { _ in
-                ZStack(alignment: .leading) {
-                    Color(white: 0.97)
-                        .cornerRadius(4)
+            ZStack(alignment: .leading) {
+                Color(red: 247/255, green: 249/255, blue: 250/255)
+                    .cornerRadius(8)
 
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(viewModel.currentX > 0 ? Color.blue.opacity(0.08) : Color.clear)
-                        .frame(width: viewModel.currentX + 40)
+                Text(LocaleMessages.get(viewModel.locale, key: "slider_hint"))
+                    .foregroundColor(Color(white: 0.6))
+                    .font(.system(size: 14))
+                    .frame(maxWidth: .infinity)
 
-                    RoundedRectangle(cornerRadius: 4)
-                        .stroke(viewModel.currentX > 0 ? Color.blue : Color.clear, lineWidth: 1)
-                        .frame(width: viewModel.currentX + 40)
-
-                    Capsule()
-                        .fill(Color.white)
-                        .frame(width: 36, height: 36)
-                        .overlay(
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.blue)
-                        )
-                        .shadow(radius: 1)
-                        .offset(x: viewModel.currentX + 2)
-                        .gesture(
-                            DragGesture()
-                                .onChanged { value in
-                                    let maxX = CGFloat(viewModel.width - viewModel.sliderWidth)
-                                    viewModel.currentX = max(0, min(viewModel.currentX + value.translation.width, maxX))
-                                }
-                                .onEnded { _ in
-                                    viewModel.verify()
-                                }
-                        )
-                }
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color(red: 225/255, green: 228/255, blue: 232/255), lineWidth: 1)
+                    )
+                    .frame(width: 36, height: 36)
+                    .overlay(
+                        Text("→")
+                            .foregroundColor(Color(red: 25/255, green: 145/255, blue: 250/255))
+                            .font(.system(size: 20, weight: .bold))
+                    )
+                    .offset(x: viewModel.currentX + 2)
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                let maxX = CGFloat(viewModel.width - viewModel.sliderWidth)
+                                viewModel.currentX = max(0, min(viewModel.currentX + value.translation.width, maxX))
+                            }
+                            .onEnded { _ in
+                                viewModel.verify()
+                            }
+                    )
             }
-            .frame(height: 40)
+            .frame(width: CGFloat(viewModel.width), height: 40)
         }
-        .padding(10)
-        .background(Color.white)
-        .cornerRadius(8)
-        .shadow(radius: 2)
         .onAppear { viewModel.refresh() }
     }
 }
@@ -154,12 +173,12 @@ final class SliderCaptchaViewModel: ObservableObject {
     let showRefresh: Bool
     let backendVerify: BackendVerifyOptions
     let locale: CaptchaLocale
-    let onSuccess: () -> Void
+    let onSuccess: (VerifyResult?) -> Void
     let onFail: () -> Void
     let onRefresh: () -> Void
     let onError: (Error) -> Void
 
-    enum Status {
+    enum Status: Equatable {
         case success, fail
     }
 
@@ -171,7 +190,7 @@ final class SliderCaptchaViewModel: ObservableObject {
         showRefresh: Bool,
         backendVerify: BackendVerifyOptions,
         locale: CaptchaLocale,
-        onSuccess: @escaping () -> Void,
+        onSuccess: @escaping (VerifyResult?) -> Void,
         onFail: @escaping () -> Void,
         onRefresh: @escaping () -> Void,
         onError: @escaping (Error) -> Void
@@ -227,7 +246,7 @@ final class SliderCaptchaViewModel: ObservableObject {
                 let response = try await generator.backendVerify(data: data, options: options)
                 if response.success {
                     status = .success
-                    onSuccess()
+                    onSuccess(VerifyResult(verifiedAt: response.verifiedAt))
                 } else {
                     status = .fail
                     onFail()

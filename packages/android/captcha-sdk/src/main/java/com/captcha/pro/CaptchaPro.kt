@@ -63,7 +63,7 @@ object CaptchaPro {
         height: Int = 170,
         showRefresh: Boolean = true,
         locale: CaptchaLocale = CaptchaLocale.ZH_CN,
-        onSuccess: () -> Unit = {},
+        onSuccess: (VerifyResult?) -> Unit = {},
         onFail: () -> Unit = {},
         onRefresh: () -> Unit = {}
     ): CaptchaDialog {
@@ -89,7 +89,7 @@ object CaptchaPro {
         clickCount: Int = 3,
         showRefresh: Boolean = true,
         locale: CaptchaLocale = CaptchaLocale.ZH_CN,
-        onSuccess: () -> Unit = {},
+        onSuccess: (VerifyResult?) -> Unit = {},
         onFail: () -> Unit = {},
         onRefresh: () -> Unit = {}
     ): CaptchaDialog {

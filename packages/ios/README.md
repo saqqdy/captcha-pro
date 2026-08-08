@@ -12,7 +12,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/saqqdy/captcha-pro.git", from: "1.1.0")
+    .package(url: "https://github.com/saqqdy/captcha-pro.git", from: "1.0.0")
 ]
 ```
 
@@ -23,17 +23,17 @@ Or in Xcode:
 ### CocoaPods
 
 ```ruby
-pod 'CaptchaPro', '~> 1.1.0'
+pod 'CaptchaPro', '~> 1.0.0'
 ```
 
 ## Features
 
 - **Slider Captcha** - Drag slider to complete puzzle verification
 - **Click Captcha** - Click characters in correct order
-- **Backend Verification** - Server-side validation with AES encryption
+- **Backend Verification** - Server-side validation
 - **SwiftUI Support** - Native SwiftUI views
 - **UIKit Support** - Traditional UIView components
-- **iOS 13+** - Modern iOS support
+- **iOS 12+** - Modern iOS support
 
 ## Usage (SwiftUI)
 
@@ -54,7 +54,7 @@ struct CaptchaView: View {
             locale: .zhCN,                       // or .enUS
             width: 300,
             height: 170,
-            onSuccess: { print("Passed!") },
+            onSuccess: { _ in print("Passed!") },
             onFail: { print("Failed") },
             onError: { print("Error: \($0)") }
         )
@@ -72,7 +72,7 @@ PopupCaptcha(
     backendVerify: backendVerify,
     locale: .zhCN,
     autoClose: true,
-    onSuccess: { print("Passed!") },
+    onSuccess: { _ in print("Passed!") },
     onClose: { print("Closed") }
 ).show()
 ```
@@ -141,7 +141,7 @@ Pass `locale: .zhCN` or `.enUS` to any component. Status strings resolve via
 | sliderHeight | Int | 42 | Slider piece height |
 | showRefresh | Bool | true | Show refresh button |
 | locale | CaptchaLocale | .zhCN | Language |
-| onSuccess | () -> Void | {} | Success callback |
+| onSuccess | (VerifyResult?) -> Void | { _ in } | Success callback |
 | onFail | () -> Void | {} | Fail callback |
 | onRefresh | () -> Void | {} | Refresh callback |
 | onError | (Error) -> Void | {} | Error callback |
@@ -156,7 +156,7 @@ Pass `locale: .zhCN` or `.enUS` to any component. Status strings resolve via
 | count | Int | 3 | Number of click targets |
 | showRefresh | Bool | true | Show refresh button |
 | locale | CaptchaLocale | .zhCN | Language |
-| onSuccess | () -> Void | {} | Success callback |
+| onSuccess | (VerifyResult?) -> Void | { _ in } | Success callback |
 | onFail | () -> Void | {} | Fail callback |
 | onRefresh | () -> Void | {} | Refresh callback |
 | onError | (Error) -> Void | {} | Error callback |

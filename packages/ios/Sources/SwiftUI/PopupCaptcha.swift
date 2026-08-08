@@ -17,7 +17,7 @@ public struct PopupCaptcha: View {
     public let sliderConfig: SliderConfig
     public let clickConfig: ClickConfig
 
-    public let onSuccess: () -> Void
+    public let onSuccess: (VerifyResult?) -> Void
     public let onFail: () -> Void
     public let onClose: () -> Void
 
@@ -78,7 +78,7 @@ public struct PopupCaptcha: View {
         sliderConfig: SliderConfig = SliderConfig(),
         clickConfig: ClickConfig = ClickConfig(),
         isVisible: Bool = false,
-        onSuccess: @escaping () -> Void = {},
+        onSuccess: @escaping (VerifyResult?) -> Void = { _ in },
         onFail: @escaping () -> Void = {},
         onClose: @escaping () -> Void = {}
     ) {
@@ -118,12 +118,11 @@ public struct PopupCaptcha: View {
                 }
                 .frame(width: cardWidth)
                 .background(Color.white)
-                .cornerRadius(8)
+                .cornerRadius(24)
                 .shadow(radius: 12)
                 .transition(.opacity.combined(with: .scale(scale: 0.9)))
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: isVisible)
     }
 
     // MARK: - Header
@@ -135,9 +134,9 @@ public struct PopupCaptcha: View {
             Spacer()
             if showCloseButton {
                 Button(action: { hide() }) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.gray)
+                    Text("×")
+                        .font(.system(size: 24))
+                        .foregroundColor(Color(white: 0.6))
                         .frame(width: 28, height: 28)
                 }
             }
@@ -184,8 +183,8 @@ public struct PopupCaptcha: View {
     }
 
     // MARK: - Handlers
-    private func handleSuccess() {
-        onSuccess()
+    private func handleSuccess(_ data: VerifyResult?) {
+        onSuccess(data)
         if autoClose { scheduleClose(after: closeDelay) }
     }
 
@@ -200,7 +199,7 @@ public struct PopupCaptcha: View {
     }
 
     private func hide() {
-        isVisible = false
+        withAnimation(.easeInOut(duration: 0.25)) { isVisible = false }
         isClosing = false
         onClose()
     }
@@ -240,9 +239,8 @@ public extension View {
                 isVisible: isPresented.wrappedValue,
                 onSuccess: configuration.onSuccess,
                 onFail: configuration.onFail,
-                onClose: { isPresented.wrappedValue = false; onClose() }
+                onClose: { withAnimation(.easeInOut(duration: 0.25)) { isPresented.wrappedValue = false }; onClose() }
             )
-            .animation(.easeInOut(duration: 0.25), value: isPresented.wrappedValue)
         )
     }
 }

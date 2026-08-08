@@ -20,7 +20,9 @@ enum class CaptchaLocale(val code: String) {
 object LocaleMessages {
     private val messages = mapOf(
         CaptchaLocale.ZH_CN to mapOf(
+            "loading" to "加载中...",
             "slider_slide" to "请拖动滑块完成验证",
+            "slider_hint" to "→ 按住滑块，拖动完成验证",
             "slider_success" to "验证成功",
             "slider_fail" to "验证失败",
             "click_prompt" to "请依次点击：",
@@ -34,7 +36,9 @@ object LocaleMessages {
             "error_not_found" to "验证码不存在"
         ),
         CaptchaLocale.EN_US to mapOf(
+            "loading" to "Loading...",
             "slider_slide" to "Please slide to verify",
+            "slider_hint" to "→ Hold and drag the slider to verify",
             "slider_success" to "Verification successful",
             "slider_fail" to "Verification failed",
             "click_prompt" to "Please click in order: ",
@@ -99,14 +103,14 @@ data class BackendVerifyOptions(
     val getCaptcha: GetCaptchaEndpoint,
     val verify: VerifyEndpoint,
     val headers: Map<String, String>? = null,
-    val timeout: Long = 30000
+    val timeout: Long = 10000
 ) {
     /** Lambda overload — matches taro-vue function config. */
     constructor(
         getCaptcha: suspend () -> BackendCaptchaResponse,
         verify: suspend (CaptchaData) -> BackendVerifyResponse,
         headers: Map<String, String>? = null,
-        timeout: Long = 30000,
+        timeout: Long = 10000,
     ) : this(GetCaptchaEndpoint.Fn(getCaptcha), VerifyEndpoint.Fn(verify), headers, timeout)
 
     /** URL string overload — matches taro-vue string config. */
@@ -114,7 +118,7 @@ data class BackendVerifyOptions(
         getCaptchaUrl: String,
         verifyUrl: String,
         headers: Map<String, String>? = null,
-        timeout: Long = 30000,
+        timeout: Long = 10000,
     ) : this(GetCaptchaEndpoint.Url(getCaptchaUrl), VerifyEndpoint.Url(verifyUrl), headers, timeout)
 }
 
@@ -167,7 +171,6 @@ data class CaptchaOptions(
     val height: Int = 170,
     val sliderWidth: Int = 42,
     val sliderHeight: Int = 42,
-    val precision: Int = 5,
     val clickCount: Int = 3,
     val backendVerify: BackendVerifyOptions,
     val locale: CaptchaLocale = CaptchaLocale.ZH_CN
@@ -188,11 +191,11 @@ data class CaptchaResult(
 )
 
 /**
- * Verification result
+ * Verification result — payload for [CaptchaCallback.onSuccess].
+ * Mirrors taro-vue onSuccess data: { verifiedAt: number | null }.
  */
 data class VerifyResult(
-    val success: Boolean,
-    val message: String = ""
+    val verifiedAt: Long? = null
 )
 
 /**
@@ -240,7 +243,7 @@ internal data class StatisticsData(
  * Captcha callback interface
  */
 interface CaptchaCallback {
-    fun onSuccess()
+    fun onSuccess(data: VerifyResult?)
     fun onFail()
     fun onRefresh()
     fun onError(error: Throwable) {}

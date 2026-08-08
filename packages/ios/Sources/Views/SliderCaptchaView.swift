@@ -12,13 +12,21 @@ public class SliderCaptchaView: UIView {
     private let generator = CaptchaGenerator()
     private let statisticsData = StatisticsData()
 
+    private var captchaAreaView = UIView()
+    private var captchaClipView = UIView()
+    private var gradientLayer = CAGradientLayer()
     private var bgImageView = UIImageView()
+    private var loadingLabel = UILabel()
     private var sliderImageView = UIImageView()
-    private var sliderBarView = UIView()
-    private var sliderThumbView = UIView()
     private var statusView = UIView()
-    private var statusLabel = UILabel()
+    private var statusIconView = UIView()
+    private var statusIconLabel = UILabel()
+    private var statusTextLabel = UILabel()
     private var refreshButton = UIButton()
+    private var sliderBarView = UIView()
+    private var sliderHintLabel = UILabel()
+    private var sliderThumbView = UIView()
+    private var sliderArrowLabel = UILabel()
 
     private var targetX: CGFloat = 0
     private var sliderY: CGFloat = 0
@@ -33,7 +41,6 @@ public class SliderCaptchaView: UIView {
     public var captchaHeight: Int = 170 { didSet { refresh() } }
     public var sliderWidth: Int = 42
     public var sliderHeight: Int = 42
-    public var precision: Int = 5
     public var showRefresh: Bool = true { didSet { refreshButton.isHidden = !showRefresh } }
 
     /// Backend verification configuration - Required
@@ -51,74 +58,169 @@ public class SliderCaptchaView: UIView {
     }
 
     private func setupViews() {
-        backgroundColor = .white
-        layer.cornerRadius = 8
-        clipsToBounds = true
+        backgroundColor = .clear
+
+        // Captcha area — shadow carrier (masksToBounds false to keep shadow)
+        captchaAreaView.layer.cornerRadius = 16
+        captchaAreaView.layer.shadowColor = UIColor.black.cgColor
+        captchaAreaView.layer.shadowOpacity = 0.15
+        captchaAreaView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        captchaAreaView.layer.shadowRadius = 8
+        addSubview(captchaAreaView)
+        captchaAreaView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            captchaAreaView.topAnchor.constraint(equalTo: topAnchor),
+            captchaAreaView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            captchaAreaView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            captchaAreaView.heightAnchor.constraint(equalToConstant: CGFloat(captchaHeight)),
+        ])
+
+        // Clip container — rounded clip for gradient + image + overlay
+        captchaClipView.layer.cornerRadius = 16
+        captchaClipView.layer.masksToBounds = true
+        captchaAreaView.addSubview(captchaClipView)
+        captchaClipView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            captchaClipView.topAnchor.constraint(equalTo: captchaAreaView.topAnchor),
+            captchaClipView.leadingAnchor.constraint(equalTo: captchaAreaView.leadingAnchor),
+            captchaClipView.trailingAnchor.constraint(equalTo: captchaAreaView.trailingAnchor),
+            captchaClipView.bottomAnchor.constraint(equalTo: captchaAreaView.bottomAnchor),
+        ])
+
+        // Gradient background (shows on loading / no-image)
+        gradientLayer.colors = [
+            UIColor(red: 102/255, green: 126/255, blue: 234/255, alpha: 1).cgColor,
+            UIColor(red: 118/255, green: 75/255, blue: 162/255, alpha: 1).cgColor,
+        ]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1)
+        captchaClipView.layer.insertSublayer(gradientLayer, at: 0)
 
         bgImageView.contentMode = .scaleAspectFill
         bgImageView.clipsToBounds = true
-        addSubview(bgImageView)
+        captchaClipView.addSubview(bgImageView)
         bgImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            bgImageView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            bgImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            bgImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            bgImageView.heightAnchor.constraint(equalToConstant: CGFloat(captchaHeight))
+            bgImageView.topAnchor.constraint(equalTo: captchaClipView.topAnchor),
+            bgImageView.leadingAnchor.constraint(equalTo: captchaClipView.leadingAnchor),
+            bgImageView.trailingAnchor.constraint(equalTo: captchaClipView.trailingAnchor),
+            bgImageView.bottomAnchor.constraint(equalTo: captchaClipView.bottomAnchor),
+        ])
+
+        loadingLabel.text = LocaleMessages.get(locale, key: "loading")
+        loadingLabel.textColor = .white
+        loadingLabel.font = .systemFont(ofSize: 14)
+        loadingLabel.textAlignment = .center
+        captchaClipView.addSubview(loadingLabel)
+        loadingLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loadingLabel.centerXAnchor.constraint(equalTo: captchaClipView.centerXAnchor),
+            loadingLabel.centerYAnchor.constraint(equalTo: captchaClipView.centerYAnchor),
         ])
 
         sliderImageView.contentMode = .scaleAspectFill
         sliderImageView.clipsToBounds = true
-        addSubview(sliderImageView)
-        sliderImageView.translatesAutoresizingMaskIntoConstraints = false
-        sliderImageView.widthAnchor.constraint(equalToConstant: CGFloat(sliderWidth)).isActive = true
-        sliderImageView.heightAnchor.constraint(equalToConstant: CGFloat(sliderHeight)).isActive = true
+        captchaClipView.addSubview(sliderImageView)
 
-        refreshButton.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
-        refreshButton.tintColor = .gray
         refreshButton.backgroundColor = UIColor.white.withAlphaComponent(0.9)
-        refreshButton.layer.cornerRadius = 4
+        refreshButton.layer.cornerRadius = 8
+        refreshButton.setTitle("⟳", for: .normal)
+        refreshButton.setTitleColor(UIColor(white: 0.4, alpha: 1), for: .normal)
+        refreshButton.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
         refreshButton.addTarget(self, action: #selector(refresh), for: .touchUpInside)
-        addSubview(refreshButton)
+        captchaClipView.addSubview(refreshButton)
         refreshButton.translatesAutoresizingMaskIntoConstraints = false
-        refreshButton.topAnchor.constraint(equalTo: bgImageView.topAnchor, constant: 10).isActive = true
-        refreshButton.trailingAnchor.constraint(equalTo: bgImageView.trailingAnchor, constant: -10).isActive = true
-        refreshButton.widthAnchor.constraint(equalToConstant: 28).isActive = true
-        refreshButton.heightAnchor.constraint(equalToConstant: 28).isActive = true
+        NSLayoutConstraint.activate([
+            refreshButton.topAnchor.constraint(equalTo: captchaClipView.topAnchor, constant: 8),
+            refreshButton.trailingAnchor.constraint(equalTo: captchaClipView.trailingAnchor, constant: -8),
+            refreshButton.widthAnchor.constraint(equalToConstant: 28),
+            refreshButton.heightAnchor.constraint(equalToConstant: 28),
+        ])
 
         statusView.isHidden = true
-        addSubview(statusView)
+        statusView.backgroundColor = UIColor.white.withAlphaComponent(0.75)
+        captchaClipView.addSubview(statusView)
         statusView.translatesAutoresizingMaskIntoConstraints = false
-        statusView.bottomAnchor.constraint(equalTo: bgImageView.bottomAnchor).isActive = true
-        statusView.leadingAnchor.constraint(equalTo: bgImageView.leadingAnchor).isActive = true
-        statusView.trailingAnchor.constraint(equalTo: bgImageView.trailingAnchor).isActive = true
-        statusView.heightAnchor.constraint(equalToConstant: 28).isActive = true
+        NSLayoutConstraint.activate([
+            statusView.topAnchor.constraint(equalTo: captchaClipView.topAnchor),
+            statusView.leadingAnchor.constraint(equalTo: captchaClipView.leadingAnchor),
+            statusView.trailingAnchor.constraint(equalTo: captchaClipView.trailingAnchor),
+            statusView.bottomAnchor.constraint(equalTo: captchaClipView.bottomAnchor),
+        ])
 
-        statusLabel.textAlignment = .center
-        statusLabel.textColor = .white
-        statusLabel.font = .systemFont(ofSize: 14)
-        statusView.addSubview(statusLabel)
-        statusLabel.translatesAutoresizingMaskIntoConstraints = false
-        statusLabel.centerXAnchor.constraint(equalTo: statusView.centerXAnchor).isActive = true
-        statusLabel.centerYAnchor.constraint(equalTo: statusView.centerYAnchor).isActive = true
+        statusIconView.layer.cornerRadius = 32
+        statusIconView.layer.masksToBounds = true
+        statusView.addSubview(statusIconView)
+        statusIconView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            statusIconView.centerXAnchor.constraint(equalTo: statusView.centerXAnchor),
+            statusIconView.topAnchor.constraint(equalTo: statusView.topAnchor, constant: 28),
+            statusIconView.widthAnchor.constraint(equalToConstant: 64),
+            statusIconView.heightAnchor.constraint(equalToConstant: 64),
+        ])
 
-        sliderBarView.backgroundColor = UIColor(white: 0.97, alpha: 1)
-        sliderBarView.layer.cornerRadius = 4
+        statusIconLabel.font = .systemFont(ofSize: 36, weight: .bold)
+        statusIconLabel.textColor = .white
+        statusIconLabel.textAlignment = .center
+        statusIconView.addSubview(statusIconLabel)
+        statusIconLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            statusIconLabel.centerXAnchor.constraint(equalTo: statusIconView.centerXAnchor),
+            statusIconLabel.centerYAnchor.constraint(equalTo: statusIconView.centerYAnchor),
+        ])
+
+        statusTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
+        statusTextLabel.textAlignment = .center
+        statusView.addSubview(statusTextLabel)
+        statusTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            statusTextLabel.topAnchor.constraint(equalTo: statusIconView.bottomAnchor, constant: 12),
+            statusTextLabel.centerXAnchor.constraint(equalTo: statusView.centerXAnchor),
+        ])
+
+        sliderBarView.backgroundColor = UIColor(red: 247/255, green: 249/255, blue: 250/255, alpha: 1)
+        sliderBarView.layer.cornerRadius = 8
         addSubview(sliderBarView)
         sliderBarView.translatesAutoresizingMaskIntoConstraints = false
-        sliderBarView.topAnchor.constraint(equalTo: bgImageView.bottomAnchor, constant: 10).isActive = true
-        sliderBarView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
-        sliderBarView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
-        sliderBarView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        NSLayoutConstraint.activate([
+            sliderBarView.topAnchor.constraint(equalTo: captchaAreaView.bottomAnchor, constant: 10),
+            sliderBarView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            sliderBarView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            sliderBarView.heightAnchor.constraint(equalToConstant: 40),
+        ])
 
-        sliderThumbView.frame = CGRect(x: 2, y: 2, width: 36, height: 36)
+        sliderHintLabel.text = LocaleMessages.get(locale, key: "slider_hint")
+        sliderHintLabel.textColor = UIColor(white: 0.6, alpha: 1)
+        sliderHintLabel.font = .systemFont(ofSize: 14)
+        sliderHintLabel.textAlignment = .center
+        sliderBarView.addSubview(sliderHintLabel)
+        sliderHintLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            sliderHintLabel.centerXAnchor.constraint(equalTo: sliderBarView.centerXAnchor),
+            sliderHintLabel.centerYAnchor.constraint(equalTo: sliderBarView.centerYAnchor),
+        ])
+
         sliderThumbView.backgroundColor = .white
-        sliderThumbView.layer.cornerRadius = 4
+        sliderThumbView.layer.cornerRadius = 8
         sliderThumbView.layer.borderWidth = 1
-        sliderThumbView.layer.borderColor = UIColor(white: 0.9, alpha: 1).cgColor
+        sliderThumbView.layer.borderColor = UIColor(red: 225/255, green: 228/255, blue: 232/255, alpha: 1).cgColor
         sliderBarView.addSubview(sliderThumbView)
+        sliderThumbView.frame = CGRect(x: 2, y: 2, width: 36, height: 36)
+
+        sliderArrowLabel.text = "→"
+        sliderArrowLabel.textColor = UIColor(red: 25/255, green: 145/255, blue: 250/255, alpha: 1)
+        sliderArrowLabel.font = .systemFont(ofSize: 20, weight: .bold)
+        sliderArrowLabel.textAlignment = .center
+        sliderThumbView.addSubview(sliderArrowLabel)
+        sliderArrowLabel.frame = sliderThumbView.bounds
 
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         sliderThumbView.addGestureRecognizer(panGesture)
+    }
+
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = captchaClipView.bounds
     }
 
     @objc public func refresh() {
@@ -129,9 +231,12 @@ public class SliderCaptchaView: UIView {
     }
 
     private func refreshAsync() async {
+        loadingLabel.text = LocaleMessages.get(locale, key: "loading")
+        sliderHintLabel.text = LocaleMessages.get(locale, key: "slider_hint")
+
         let options = CaptchaOptions(
             type: .slider, width: captchaWidth, height: captchaHeight,
-            sliderWidth: sliderWidth, sliderHeight: sliderHeight, precision: precision,
+            sliderWidth: sliderWidth, sliderHeight: sliderHeight,
             backendVerify: backendVerify, locale: locale
         )
 
@@ -143,7 +248,7 @@ public class SliderCaptchaView: UIView {
             sliderY = result.sliderY
             currentX = 0
             statusView.isHidden = true
-            sliderImageView.frame = CGRect(x: 10, y: 10 + Int(sliderY), width: sliderWidth, height: sliderHeight)
+            sliderImageView.frame = CGRect(x: 0, y: Int(sliderY), width: sliderWidth, height: sliderHeight)
             sliderThumbView.frame = CGRect(x: 2, y: 2, width: 36, height: 36)
             delegate?.sliderCaptchaDidRefresh(self)
             callback?.onRefresh()
@@ -162,7 +267,7 @@ public class SliderCaptchaView: UIView {
             let maxX = CGFloat(captchaWidth - sliderWidth)
             currentX = max(0, min(currentX + translation.x, maxX))
             sliderThumbView.frame.origin.x = currentX + 2
-            sliderImageView.frame.origin.x = currentX + 10
+            sliderImageView.frame.origin.x = currentX
             gesture.setTranslation(.zero, in: sliderBarView)
             callback?.onDrag(distance: currentX)
         case .ended:
@@ -187,7 +292,7 @@ public class SliderCaptchaView: UIView {
             do {
                 let options = CaptchaOptions(type: .slider, backendVerify: backendVerify, locale: locale)
                 let response = try await generator.backendVerify(data: captchaData, options: options)
-                response.success ? handleSuccess() : handleFail()
+                response.success ? handleSuccess(verifiedAt: response.verifiedAt) : handleFail()
             } catch {
                 showStatus(success: false, message: LocaleMessages.get(locale, key: "error_network"))
                 callback?.onError(error)
@@ -196,11 +301,11 @@ public class SliderCaptchaView: UIView {
         }
     }
 
-    private func handleSuccess() {
+    private func handleSuccess(verifiedAt: Int?) {
         statisticsData.successCount += 1
         showStatus(success: true, message: LocaleMessages.get(locale, key: "slider_success"))
         delegate?.sliderCaptchaDidSucceed(self)
-        callback?.onSuccess()
+        callback?.onSuccess(data: VerifyResult(verifiedAt: verifiedAt))
     }
 
     private func handleFail() {
@@ -212,9 +317,22 @@ public class SliderCaptchaView: UIView {
     }
 
     private func showStatus(success: Bool, message: String?) {
-        statusView.backgroundColor = success ? UIColor(red: 0.32, green: 0.77, blue: 0.1, alpha: 0.9) : UIColor(red: 0.96, green: 0.13, blue: 0.18, alpha: 0.9)
-        statusLabel.text = message ?? (success ? LocaleMessages.get(locale, key: "slider_success") : LocaleMessages.get(locale, key: "slider_fail"))
+        statusIconView.backgroundColor = success
+            ? UIColor(red: 82/255, green: 196/255, blue: 26/255, alpha: 0.85)
+            : UIColor(red: 255/255, green: 77/255, blue: 79/255, alpha: 0.85)
+        statusIconLabel.text = success ? "✓" : "✕"
+        statusTextLabel.text = message ?? (success ? LocaleMessages.get(locale, key: "slider_success") : LocaleMessages.get(locale, key: "slider_fail"))
+        statusTextLabel.textColor = success
+            ? UIColor(red: 56/255, green: 158/255, blue: 13/255, alpha: 1)
+            : UIColor(red: 207/255, green: 19/255, blue: 34/255, alpha: 1)
+
+        statusView.alpha = 0
+        statusView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         statusView.isHidden = false
+        UIView.animate(withDuration: 0.2) {
+            self.statusView.alpha = 1
+            self.statusView.transform = .identity
+        }
     }
 
     public func getData() -> CaptchaData {

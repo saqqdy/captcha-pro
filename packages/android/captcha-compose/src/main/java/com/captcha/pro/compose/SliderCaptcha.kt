@@ -1,21 +1,28 @@
 package com.captcha.pro.compose
 
 import android.graphics.Bitmap
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.captcha.pro.core.BackendVerifyOptions
 import com.captcha.pro.core.CaptchaGenerator
@@ -23,6 +30,7 @@ import com.captcha.pro.core.CaptchaLocale
 import com.captcha.pro.core.CaptchaOptions
 import com.captcha.pro.core.CaptchaType
 import com.captcha.pro.core.LocaleMessages
+import com.captcha.pro.core.VerifyResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -39,7 +47,7 @@ fun SliderCaptcha(
     showRefresh: Boolean = true,
     backendVerify: BackendVerifyOptions,
     locale: CaptchaLocale = CaptchaLocale.ZH_CN,
-    onSuccess: () -> Unit = {},
+    onSuccess: (VerifyResult?) -> Unit = {},
     onFail: () -> Unit = {},
     onRefresh: () -> Unit = {},
     onError: (Throwable) -> Unit = {},
@@ -54,6 +62,8 @@ fun SliderCaptcha(
     var status by remember { mutableStateOf<String?>(null) }
     var loading by remember { mutableStateOf(true) }
     var errorMsg by remember { mutableStateOf<String?>(null) }
+
+    val gradientColors = listOf(Color(0xFF667EEA), Color(0xFF764BA2))
 
     fun refresh() {
         scope.launch {
@@ -94,7 +104,8 @@ fun SliderCaptcha(
                 val response = generator.backendVerify(data, options)
                 if (response.success) {
                     status = "success"
-                    onSuccess()
+                    val verifiedAt = (response.data?.get("verifiedAt") as? Number)?.toLong()
+                    onSuccess(VerifyResult(verifiedAt = verifiedAt))
                 } else {
                     status = "fail"
                     onFail()
@@ -111,18 +122,15 @@ fun SliderCaptcha(
 
     LaunchedEffect(Unit) { refresh() }
 
-    Column(
-        modifier = modifier
-            .padding(10.dp)
-            .width((width + 20).dp)
-            .height((height + 60).dp)
-            .background(Color.White, RoundedCornerShape(8.dp))
-    ) {
+    Column(modifier = modifier.width(width.dp)) {
         // Captcha area
         Box(
             modifier = Modifier
                 .width(width.dp)
                 .height(height.dp)
+                .shadow(8.dp, RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(16.dp))
+                .background(Brush.linearGradient(gradientColors))
         ) {
             // Background image
             bgBitmap?.let { bitmap ->
@@ -136,18 +144,11 @@ fun SliderCaptcha(
                         )
                     }
                 }
-            } ?: if (loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = Color.Gray
-                )
-            } else if (errorMsg != null) {
-                Text(
-                    text = errorMsg!!,
-                    color = Color.Gray,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
+            } ?: Text(
+                text = errorMsg ?: LocaleMessages.get(locale, "loading"),
+                color = Color.White,
+                modifier = Modifier.align(Alignment.Center)
+            )
 
             // Slider
             sliderBitmap?.let { bitmap ->
@@ -167,49 +168,72 @@ fun SliderCaptcha(
 
             // Refresh button
             if (showRefresh && !loading) {
-                IconButton(
-                    onClick = { refresh() },
+                Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(8.dp)
+                        .size(28.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.White.copy(alpha = 0.9f))
+                        .clickable { refresh() },
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        Icons.Default.Refresh,
-                        contentDescription = "Refresh",
-                        tint = Color.Gray
-                    )
+                    Text("⟳", color = Color(0xFF666666))
                 }
             }
 
-            // Status overlay
-            status?.let { s ->
-                Surface(
+            // Status overlay — centered, white@75%, animated fade-in + scale
+            AnimatedVisibility(
+                visible = status != null,
+                enter = fadeIn(animationSpec = tween(200)) +
+                    scaleIn(initialScale = 0.9f, animationSpec = tween(200)),
+                exit = fadeOut(animationSpec = tween(200))
+            ) {
+                val s = status ?: ""
+                Box(
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .height(28.dp),
-                    color = if (s == "success") Color(0xFF52C41A) else Color(0xFFF5222D)
+                        .fillMaxSize()
+                        .background(Color.White.copy(alpha = 0.75f)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = if (s == "success")
-                            LocaleMessages.get(locale, "slider_success")
-                        else LocaleMessages.get(locale, "slider_fail"),
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.wrapContentSize(Alignment.Center)
-                    )
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Box(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .clip(CircleShape)
+                                .background(
+                                    if (s == "success") Color(0xFF52C41A).copy(alpha = 0.85f)
+                                    else Color(0xFFFF4D4F).copy(alpha = 0.85f)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = if (s == "success") "✓" else "✕",
+                                color = Color.White,
+                                style = MaterialTheme.typography.h5
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = if (s == "success")
+                                LocaleMessages.get(locale, "slider_success")
+                            else LocaleMessages.get(locale, "slider_fail"),
+                            color = if (s == "success") Color(0xFF389E0D) else Color(0xFFCF1322)
+                        )
+                    }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(5.dp))
 
         // Slider bar
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp)
-                .background(Color(0xFFF7F9FA), RoundedCornerShape(4.dp))
+                .width(width.dp)
+                .height(42.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(0xFFF7F9FA))
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures(
                         onDragEnd = { if (status == null) verify() }
@@ -220,21 +244,27 @@ fun SliderCaptcha(
                     }
                 }
         ) {
+            // Hint text centered
+            Text(
+                text = LocaleMessages.get(locale, "slider_hint"),
+                color = Color(0xFF999999),
+                modifier = Modifier.align(Alignment.Center)
+            )
+
+            // Thumb
             Surface(
                 modifier = Modifier
-                    .offset(x = currentX.dp)
-                    .width(36.dp)
-                    .height(36.dp)
-                    .padding(2.dp),
+                    .offset(x = currentX.dp, y = 2.dp)
+                    .width(42.dp)
+                    .height(42.dp),
                 color = Color.White,
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(8.dp),
                 border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE1E4E8))
             ) {
-                Icon(
-                    Icons.Default.ArrowForward,
-                    contentDescription = null,
-                    tint = MaterialTheme.colors.primary,
-                    modifier = Modifier.padding(8.dp)
+                Text(
+                    "→",
+                    color = Color(0xFF1991FA),
+                    modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)
                 )
             }
         }

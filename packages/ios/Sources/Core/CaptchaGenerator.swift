@@ -40,11 +40,32 @@ public class CaptchaGenerator {
     private func resolveGetCaptcha(options: CaptchaOptions) async throws -> BackendCaptchaResponse {
         switch options.backendVerify.getCaptcha {
         case .url(let url):
-            let data = try await httpRequest(url: url, method: "GET", body: nil, headers: options.backendVerify.headers, timeout: options.backendVerify.timeout)
+            let fullUrl = buildCaptchaUrl(base: url, options: options)
+            let data = try await httpRequest(url: fullUrl, method: "GET", body: nil, headers: options.backendVerify.headers, timeout: options.backendVerify.timeout)
             return try parseCaptchaResponse(json: data)
         case .function(let fn):
             return try await fn()
         }
+    }
+
+    /// Build getCaptcha URL with query params (type/width/height + slider|click dims).
+    /// Mirrors taro-vue BackendCaptchaParams query.
+    private func buildCaptchaUrl(base: String, options: CaptchaOptions) -> String {
+        var params: [(String, String)] = [
+            ("type", options.type == .slider ? "slider" : "click"),
+            ("width", String(options.width)),
+            ("height", String(options.height))
+        ]
+        switch options.type {
+        case .slider:
+            params.append(("sliderWidth", String(options.sliderWidth)))
+            params.append(("sliderHeight", String(options.sliderHeight)))
+        case .click:
+            params.append(("clickCount", String(options.clickCount)))
+        }
+        let query = params.map { "\($0.0)=\($0.1)" }.joined(separator: "&")
+        let sep = base.contains("?") ? "&" : "?"
+        return base + sep + query
     }
 
     /// Resolve verify endpoint: URL -> HTTP POST, function -> invoke.
@@ -122,7 +143,6 @@ public class CaptchaGenerator {
             "captchaId": data.captchaId,
             "type": data.type.rawValue,
             "target": target,
-            "timestamp": data.timestamp,
         ]
         return try JSONSerialization.data(withJSONObject: body)
     }
