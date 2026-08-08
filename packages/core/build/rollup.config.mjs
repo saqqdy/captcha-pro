@@ -1,15 +1,15 @@
-import { dirname, resolve } from 'node:path'
+// Read package.json for version
+import { createRequire } from 'node:module'
+import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import filesize from 'rollup-plugin-filesize'
-import typescript from '@rollup/plugin-typescript'
-import terser from '@rollup/plugin-terser'
 import replace from '@rollup/plugin-replace'
+import terser from '@rollup/plugin-terser'
+import typescript from '@rollup/plugin-typescript'
+
+import filesize from 'rollup-plugin-filesize'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-
-// Read package.json for version
-import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const pkg = require('../package.json')
 
