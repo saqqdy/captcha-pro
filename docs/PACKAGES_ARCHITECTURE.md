@@ -13,7 +13,7 @@
 |------|--------|--------|----------|------|
 | `packages/core` | `@captcha-pro/core` | TS（框架无关） | Canvas 2D + DOM | ✅ 完成 |
 | `packages/vue2` | `@captcha-pro/vue2` | Vue 2 Options API | 挂载 core 实例 | ✅ 完成 |
-| `packages/vue3` | `@captcha-pro/vue3` | Vue 3 Composition API | 挂载 core 实例 | ✅ 完成 |
+| `packages/vue` | `@captcha-pro/vue` | Vue 3 Composition API | 挂载 core 实例 | ✅ 完成 |
 | `packages/react` | `@captcha-pro/react` | React Hooks | 挂载 core 实例 | ✅ 完成 |
 | `packages/mp` | `@captcha-pro/mp` | WeChat + uni-app(Vue2) + Taro(React) | **Backend-only** | ✅ 完成 |
 | `packages/flutter` | — | Dart | 自绘 CustomPainter | ✅ 完成 |
@@ -23,7 +23,7 @@
 ### 1.2 架构模式差异
 
 ```
-Web 端（core / vue2 / vue3 / react）:
+Web 端（core / vue2 / vue / react）:
   组件 → new SliderCaptcha({ el: container }) → core 实例操控 DOM Canvas
   组件是薄壳，核心逻辑在 @captcha-pro/core
 
@@ -66,14 +66,14 @@ Web 端（core / vue2 / vue3 / react）:
 
 ### 问题 4：Web 端与 MP 端状态管理割裂 🟡
 
-- Web 端（vue3/react）：composables/hooks 只是 core 实例的薄封装（`instance.value = new SliderCaptcha(...)`）
+- Web 端（vue/react）：composables/hooks 只是 core 实例的薄封装（`instance.value = new SliderCaptcha(...)`）
 - MP 端：组件自身管理 `bgImage`、`sliderX`、`status`、`loading` 等全部状态
 
 两套状态下，添加新功能（如"请求重试"、"倒计时"、"权限校验"）需分别实现。
 
 ### 问题 5：Web 端 composables/hooks 之间存在结构重复 🟠
 
-`vue3/composables/useSliderCaptcha.ts` 和 `react/hooks/useSliderCaptcha.ts` 逻辑几乎一致，区别仅在响应式原语不同。这部分重复可以接受（框架差异天然存在），但应确保 API 签名对齐。
+`vue/composables/useSliderCaptcha.ts` 和 `react/hooks/useSliderCaptcha.ts` 逻辑几乎一致，区别仅在响应式原语不同。这部分重复可以接受（框架差异天然存在），但应确保 API 签名对齐。
 
 ---
 
@@ -85,7 +85,7 @@ Web 端（core / vue2 / vue3 / react）:
 ┌──────────────────────────────────────────────────────┐
 │                  应用层 (examples/)                   │
 ├──────────────────────────────────────────────────────┤
-│    组件层     │  vue2   │  vue3   │  react  │  mp-*  │
+│    组件层     │  vue2   │  vue   │  react  │  mp-*  │
 │ (薄壳渲染)   │  .vue   │  .vue   │  .tsx   │  .vue  │
 │              │ Options │  setup  │  Hooks  │  .tsx  │
 │              │  API    │ script  │         │  .wxml │
@@ -129,7 +129,7 @@ packages/
 │       │   └── clickCaptcha.js
 │       └── index.js
 │
-├── vue3/                            # @captcha-pro/vue3（不变）
+├── vue/                            # @captcha-pro/vue（不变）
 │   └── src/
 │       ├── components/              # <script setup> 组件
 │       │   ├── SliderCaptcha.vue
@@ -492,7 +492,7 @@ import type { BackendConfig } from '@captcha-pro/mp/shared'
 确保 Web 端和 MP 端的同名函数签名尽量一致，降低用户跨端心智负担：
 
 ```typescript
-// ===== Web 端 (vue3) =====
+// ===== Web 端 (vue) =====
 useSliderCaptcha(options: {
   el: () => HTMLElement | undefined    // Web 需要 DOM 容器
   width?: number
@@ -541,7 +541,7 @@ useSliderCaptcha(backend: BackendConfig, options?: {
 
 ## 六、跨端组件复用可行性分析
 
-> 能否让 Taro（Vue2/Vue3/React）和 uni-app（Vue2/Vue3）直接复用 `packages/vue2`、`packages/vue3`、`packages/react` 这些 Web 端组件？
+> 能否让 Taro（Vue2/Vue3/React）和 uni-app（Vue2/Vue3）直接复用 `packages/vue2`、`packages/vue`、`packages/react` 这些 Web 端组件？
 
 ### 6.1 结论速览
 
@@ -570,7 +570,7 @@ MP:   组件 → fetchCaptcha(backend) → <image src> 触摸事件 → verifyCa
 #### 6.3.1 组件模板不可复用
 
 ```vue
-<!-- @captcha-pro/vue3 的 SliderCaptcha.vue -->
+<!-- @captcha-pro/vue 的 SliderCaptcha.vue -->
 <template>
   <div ref="containerRef" class="captcha-container">
     <!-- Core 自己创建 Canvas 元素并挂载到这里 -->
@@ -595,7 +595,7 @@ Web 端只需空 div 让 Core 挂载 Canvas；MP 端需手动写 `<image>` + 触
 #### 6.3.2 Composables / Hooks 不可复用
 
 ```typescript
-// @captcha-pro/vue3/src/composables/useSliderCaptcha.ts
+// @captcha-pro/vue/src/composables/useSliderCaptcha.ts
 export function useSliderCaptcha(options: UseSliderCaptchaOptions) {
   const containerRef = ref<HTMLElement>()          // ← DOM 引用
   const instance = ref<SliderCaptchaInstance>()    // ← Core 实例
@@ -739,11 +739,11 @@ Web 模板也改成 `<image>`：
     │  类实例  │                  │ logic.ts  │
     └────┬────┘                  └─────┬─────┘
          │                             │
-    vue3 composable              uniapp composable
+    vue composable              uniapp composable
     vue2 mixin                   taro hook
     react hook                   taro composable
          │                             │
-    vue3/vue2/react 组件           uniapp/taro 组件
+    vue/vue2/react 组件           uniapp/taro 组件
     (空 div，Core 挂载)           (<image> + touch)
 ```
 
@@ -757,17 +757,17 @@ Web 模板也改成 `<image>`：
 
 | 场景 | 推荐做法 |
 |------|----------|
-| Web 项目 | 用 `@captcha-pro/vue2` / `@captcha-pro/vue3` / `@captcha-pro/react`，走 Core 路径 |
+| Web 项目 | 用 `@captcha-pro/vue2` / `@captcha-pro/vue` / `@captcha-pro/react`，走 Core 路径 |
 | 小程序项目 | 用 `@captcha-pro/mp/<platform>`，走 backend-only 路径 |
 | Web + 小程序混合 | 两端各用各的包，共享 `BackendConfig` 类型确保后端契约一致 |
 | 想自定义小程序组件 | 用 `@captcha-pro/mp/<platform>` 导出的 composables/hooks 自写模板 |
-| 想自定义 Web 组件 | 用 `@captcha-pro/vue3` 等导出的 composables/hooks + Core 实例 |
+| 想自定义 Web 组件 | 用 `@captcha-pro/vue` 等导出的 composables/hooks + Core 实例 |
 
 ---
 
 ## 七、各端 Composables / Hooks 复用度矩阵
 
-| 逻辑模块 | vue2 mixins | vue3 composables | react hooks | weixin | uniapp vue3 | taro react | taro vue3 | taro vue2 |
+| 逻辑模块 | vue2 mixins | vue composables | react hooks | weixin | uniapp vue3 | taro react | taro vue3 | taro vue2 |
 |----------|------------|-------------------|-------------|--------|-------------|------------|-----------|-----------|
 | Slider 状态 | ✅ | ✅ | ✅ | ✅ 内嵌 | ✅ 复用shared | ✅ 复用shared | ✅ 复用shared | ✅ 复用shared |
 | Click 状态 | ✅ | ✅ | ✅ | ✅ 内嵌 | ✅ 复用shared | ✅ 复用shared | ✅ 复用shared | ✅ 复用shared |
@@ -776,7 +776,7 @@ Web 模板也改成 `<image>`：
 | 触摸交互 | N/A（core处理） | N/A | N/A | ✅ 内嵌 | ✅ 组件内 | ✅ 组件内 | ✅ 组件内 | ✅ 组件内 |
 
 说明：
-- **Web 端**（vue2/vue3/react）交互由 `@captcha-pro/core` 内部处理，composables/hooks 是薄封装
+- **Web 端**（vue2/vue/react）交互由 `@captcha-pro/core` 内部处理，composables/hooks 是薄封装
 - **MP 端**触摸交互由各组件自行实现（`@touchstart/move/end`），状态逻辑可复用 `shared/captcha-logic.ts`
 
 ---
@@ -811,7 +811,7 @@ Web 模板也改成 `<image>`：
 
 ### Phase 3 — Web 端对齐（1 天）
 
-- [x] vue3/react 补充 `onError` 回调至 composables/hooks 签名
+- [x] vue/react 补充 `onError` 回调至 composables/hooks 签名
 - [x] 确认 composables/hooks 回调签名一致
 - [x] 更新 TypeScript 类型导出
 
@@ -842,7 +842,7 @@ Web 模板也改成 `<image>`：
 |------|--------|----------|
 | `@captcha-pro/core` | npm | 所有 Web 端底层 |
 | `@captcha-pro/vue2` | npm | Vue 2 Web 项目 |
-| `@captcha-pro/vue3` | npm | Vue 3 Web 项目 |
+| `@captcha-pro/vue` | npm | Vue 3 Web 项目 |
 | `@captcha-pro/react` | npm | React Web 项目 |
 | `@captcha-pro/mp` | npm | 所有小程序端 |
 | `captcha_pro` | pub.dev | Flutter 项目 |

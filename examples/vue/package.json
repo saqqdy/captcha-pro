@@ -1,5 +1,5 @@
 {
-  "name": "example-vue3",
+  "name": "example-vue",
   "type": "module",
   "version": "1.0.0",
   "private": true,
@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@captcha-pro/vue3": "workspace:*",
+    "@captcha-pro/vue": "workspace:*",
     "vue": "^3.5.39"
   },
   "devDependencies": {

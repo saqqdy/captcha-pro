@@ -37,7 +37,7 @@ Captcha Pro supports **10+ platforms** with consistent APIs:
 |----------|---------|-------------|
 | Web (Vanilla JS) | `captcha-pro` | Core package, works everywhere |
 | Vue 2 | `captcha-pro-vue2` | Options API + Mixins |
-| Vue 3 | `captcha-pro-vue3` | Composition API + Composables |
+| Vue 3 | `captcha-pro-vue` | Composition API + Composables |
 | React | `captcha-pro-react` | Hooks-based components |
 | WeChat Mini-Program | `captcha-pro-mp` | WXML/WXSS/JS, backend-only |
 | uni-app | `captcha-pro-mp` | Vue cross-platform, backend-only |
@@ -107,7 +107,7 @@ $ pnpm add captcha-pro
 $ pnpm add captcha-pro-vue2
 
 # Vue 3
-$ pnpm add captcha-pro-vue3
+$ pnpm add captcha-pro-vue
 
 # React
 $ pnpm add captcha-pro-react
@@ -140,7 +140,7 @@ pod 'CaptchaPro', '~> 1.1.0'
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from 'captcha-pro-vue3'
+import { SliderCaptcha } from 'captcha-pro-vue'
 
 const onSuccess = () => console.log('Passed!')
 </script>

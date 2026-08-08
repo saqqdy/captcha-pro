@@ -4858,10 +4858,10 @@
       "complexity": "simple"
     },
     {
-      "id": "document:packages/vue3/README.md",
+      "id": "document:packages/vue/README.md",
       "type": "document",
       "name": "README.md",
-      "filePath": "packages/vue3/README.md",
+      "filePath": "packages/vue/README.md",
       "summary": "English documentation for the Vue 3 captcha component library covering installation, component usage (SliderCaptcha, ClickCaptcha, PopupCaptcha), composables API, TypeScript support, and props reference.",
       "tags": [
         "documentation",
@@ -4873,10 +4873,10 @@
       "complexity": "moderate"
     },
     {
-      "id": "document:packages/vue3/README_CN.md",
+      "id": "document:packages/vue/README_CN.md",
       "type": "document",
       "name": "README_CN.md",
-      "filePath": "packages/vue3/README_CN.md",
+      "filePath": "packages/vue/README_CN.md",
       "summary": "Chinese documentation (README_CN.md) for the Vue 3 captcha component library, mirroring the English documentation with installation guides, component usage examples, composables API, and props reference.",
       "tags": [
         "documentation",
@@ -4888,11 +4888,11 @@
       "complexity": "moderate"
     },
     {
-      "id": "config:packages/vue3/package.json",
+      "id": "config:packages/vue/package.json",
       "type": "config",
       "name": "package.json",
-      "filePath": "packages/vue3/package.json",
-      "summary": "Vue 3 package configuration defining the @captcha-pro/vue3 library with dual ESM/CJS exports, TypeScript declarations, build scripts using Vite and vue-tsc, and a workspace dependency on @captcha-pro/core.",
+      "filePath": "packages/vue/package.json",
+      "summary": "Vue 3 package configuration defining the @captcha-pro/vue library with dual ESM/CJS exports, TypeScript declarations, build scripts using Vite and vue-tsc, and a workspace dependency on @captcha-pro/core.",
       "tags": [
         "configuration",
         "vue3",
@@ -5838,10 +5838,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:examples/vue3/index.html",
+      "id": "file:examples/vue/index.html",
       "type": "file",
       "name": "index.html",
-      "filePath": "examples/vue3/index.html",
+      "filePath": "examples/vue/index.html",
       "summary": "HTML entry point for Vue 3 example application mounting the root app component.",
       "tags": [
         "entry-point",
@@ -5851,11 +5851,11 @@
       "complexity": "simple"
     },
     {
-      "id": "config:examples/vue3/package.json",
+      "id": "config:examples/vue/package.json",
       "type": "config",
       "name": "package.json",
-      "filePath": "examples/vue3/package.json",
-      "summary": "Package configuration for Vue 3 example with dependencies on @captcha-pro/vue3 and Vue 3.5.",
+      "filePath": "examples/vue/package.json",
+      "summary": "Package configuration for Vue 3 example with dependencies on @captcha-pro/vue and Vue 3.5.",
       "tags": [
         "configuration",
         "package",
@@ -5865,10 +5865,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:examples/vue3/src/App.vue",
+      "id": "file:examples/vue/src/App.vue",
       "type": "file",
       "name": "App.vue",
-      "filePath": "examples/vue3/src/App.vue",
+      "filePath": "examples/vue/src/App.vue",
       "summary": "Root Vue 3 component that orchestrates layout with header, features, tab navigation, and demo pages.",
       "tags": [
         "component",
@@ -5879,10 +5879,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:examples/vue3/src/components/Features.vue",
+      "id": "file:examples/vue/src/components/Features.vue",
       "type": "file",
       "name": "Features.vue",
-      "filePath": "examples/vue3/src/components/Features.vue",
+      "filePath": "examples/vue/src/components/Features.vue",
       "summary": "Vue 3 component displaying feature highlights and capabilities of the CAPTCHA library.",
       "tags": [
         "component",
@@ -5893,10 +5893,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:examples/vue3/src/components/Footer.vue",
+      "id": "file:examples/vue/src/components/Footer.vue",
       "type": "file",
       "name": "Footer.vue",
-      "filePath": "examples/vue3/src/components/Footer.vue",
+      "filePath": "examples/vue/src/components/Footer.vue",
       "summary": "Vue 3 footer component with branding and links.",
       "tags": [
         "component",
@@ -5907,10 +5907,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:examples/vue3/src/components/Header.vue",
+      "id": "file:examples/vue/src/components/Header.vue",
       "type": "file",
       "name": "Header.vue",
-      "filePath": "examples/vue3/src/components/Header.vue",
+      "filePath": "examples/vue/src/components/Header.vue",
       "summary": "Vue 3 header component with title and navigation elements.",
       "tags": [
         "component",
@@ -5921,10 +5921,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:examples/vue3/src/components/TabNav.vue",
+      "id": "file:examples/vue/src/components/TabNav.vue",
       "type": "file",
       "name": "TabNav.vue",
-      "filePath": "examples/vue3/src/components/TabNav.vue",
+      "filePath": "examples/vue/src/components/TabNav.vue",
       "summary": "Vue 3 tab navigation component for switching between different CAPTCHA demo pages.",
       "tags": [
         "component",
@@ -5935,10 +5935,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:examples/vue3/src/composables/useLocale.ts:useLocale",
+      "id": "function:examples/vue/src/composables/useLocale.ts:useLocale",
       "type": "function",
       "name": "useLocale",
-      "filePath": "examples/vue3/src/composables/useLocale.ts",
+      "filePath": "examples/vue/src/composables/useLocale.ts",
       "lineRange": [
         6,
         19
@@ -5955,10 +5955,10 @@
       "languageNotes": "Vue 3 Composition API composable pattern using ref for reactive locale state."
     },
     {
-      "id": "file:examples/vue3/src/composables/useLocale.ts",
+      "id": "file:examples/vue/src/composables/useLocale.ts",
       "type": "file",
       "name": "useLocale.ts",
-      "filePath": "examples/vue3/src/composables/useLocale.ts",
+      "filePath": "examples/vue/src/composables/useLocale.ts",
       "summary": "Vue 3 composable module providing internationalization with locale switching between zh-CN and en-US.",
       "tags": [
         "composable",
@@ -5969,10 +5969,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:examples/vue3/src/main.ts",
+      "id": "file:examples/vue/src/main.ts",
       "type": "file",
       "name": "main.ts",
-      "filePath": "examples/vue3/src/main.ts",
+      "filePath": "examples/vue/src/main.ts",
       "summary": "Vue 3 application entry point that initializes and mounts the root App component.",
       "tags": [
         "entry-point",
@@ -5982,10 +5982,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:examples/vue3/src/pages/BackendDemo.vue",
+      "id": "file:examples/vue/src/pages/BackendDemo.vue",
       "type": "file",
       "name": "BackendDemo.vue",
-      "filePath": "examples/vue3/src/pages/BackendDemo.vue",
+      "filePath": "examples/vue/src/pages/BackendDemo.vue",
       "summary": "Vue 3 demo page showcasing backend validation integration for CAPTCHA verification.",
       "tags": [
         "component",
@@ -5996,10 +5996,10 @@
       "complexity": "moderate"
     },
     {
-      "id": "file:examples/vue3/src/pages/ClickDemo.vue",
+      "id": "file:examples/vue/src/pages/ClickDemo.vue",
       "type": "file",
       "name": "ClickDemo.vue",
-      "filePath": "examples/vue3/src/pages/ClickDemo.vue",
+      "filePath": "examples/vue/src/pages/ClickDemo.vue",
       "summary": "Vue 3 demo page demonstrating click-based CAPTCHA verification interaction.",
       "tags": [
         "component",
@@ -6010,10 +6010,10 @@
       "complexity": "moderate"
     },
     {
-      "id": "file:examples/vue3/src/pages/CustomImageDemo.vue",
+      "id": "file:examples/vue/src/pages/CustomImageDemo.vue",
       "type": "file",
       "name": "CustomImageDemo.vue",
-      "filePath": "examples/vue3/src/pages/CustomImageDemo.vue",
+      "filePath": "examples/vue/src/pages/CustomImageDemo.vue",
       "summary": "Vue 3 demo page showing custom image configuration for CAPTCHA components.",
       "tags": [
         "component",
@@ -6024,10 +6024,10 @@
       "complexity": "moderate"
     },
     {
-      "id": "file:examples/vue3/src/pages/InvisibleDemo.vue",
+      "id": "file:examples/vue/src/pages/InvisibleDemo.vue",
       "type": "file",
       "name": "InvisibleDemo.vue",
-      "filePath": "examples/vue3/src/pages/InvisibleDemo.vue",
+      "filePath": "examples/vue/src/pages/InvisibleDemo.vue",
       "summary": "Vue 3 demo page demonstrating invisible CAPTCHA verification mode.",
       "tags": [
         "component",
@@ -6038,10 +6038,10 @@
       "complexity": "moderate"
     },
     {
-      "id": "file:examples/vue3/src/pages/PopupDemo.vue",
+      "id": "file:examples/vue/src/pages/PopupDemo.vue",
       "type": "file",
       "name": "PopupDemo.vue",
-      "filePath": "examples/vue3/src/pages/PopupDemo.vue",
+      "filePath": "examples/vue/src/pages/PopupDemo.vue",
       "summary": "Vue 3 demo page showcasing popup-style CAPTCHA verification display.",
       "tags": [
         "component",
@@ -6052,10 +6052,10 @@
       "complexity": "moderate"
     },
     {
-      "id": "file:examples/vue3/src/pages/SliderDemo.vue",
+      "id": "file:examples/vue/src/pages/SliderDemo.vue",
       "type": "file",
       "name": "SliderDemo.vue",
-      "filePath": "examples/vue3/src/pages/SliderDemo.vue",
+      "filePath": "examples/vue/src/pages/SliderDemo.vue",
       "summary": "Vue 3 demo page featuring slider-based CAPTCHA verification with drag interaction.",
       "tags": [
         "component",
@@ -6066,10 +6066,10 @@
       "complexity": "moderate"
     },
     {
-      "id": "file:examples/vue3/src/styles/global.css",
+      "id": "file:examples/vue/src/styles/global.css",
       "type": "file",
       "name": "global.css",
-      "filePath": "examples/vue3/src/styles/global.css",
+      "filePath": "examples/vue/src/styles/global.css",
       "summary": "Global CSS stylesheet for Vue 3 example with comprehensive layout and component styling.",
       "tags": [
         "styles",
@@ -6080,10 +6080,10 @@
       "complexity": "moderate"
     },
     {
-      "id": "config:examples/vue3/vite.config.ts",
+      "id": "config:examples/vue/vite.config.ts",
       "type": "config",
       "name": "vite.config.ts",
-      "filePath": "examples/vue3/vite.config.ts",
+      "filePath": "examples/vue/vite.config.ts",
       "summary": "Vite configuration for Vue 3 example with @vitejs/plugin-vue and dev server on port 8001.",
       "tags": [
         "configuration",
@@ -7891,10 +7891,10 @@
       "languageNotes": "Spring Boot uses this metadata for IDE auto-completion and documentation of custom configuration properties."
     },
     {
-      "id": "file:packages/vue3/src/components/ClickCaptcha.vue",
+      "id": "file:packages/vue/src/components/ClickCaptcha.vue",
       "type": "file",
       "name": "ClickCaptcha.vue",
-      "filePath": "packages/vue3/src/components/ClickCaptcha.vue",
+      "filePath": "packages/vue/src/components/ClickCaptcha.vue",
       "summary": "Vue 3 component wrapper for click-based captcha verification. Wraps the core ClickCaptcha class and provides a reactive component interface with props, events, and exposed methods.",
       "tags": [
         "component",
@@ -7906,10 +7906,10 @@
       "languageNotes": "Uses Vue 3 Composition API with script setup syntax and defineExpose for method exposure."
     },
     {
-      "id": "function:packages/vue3/src/components/ClickCaptcha.vue:initCaptcha",
+      "id": "function:packages/vue/src/components/ClickCaptcha.vue:initCaptcha",
       "type": "function",
       "name": "initCaptcha",
-      "filePath": "packages/vue3/src/components/ClickCaptcha.vue",
+      "filePath": "packages/vue/src/components/ClickCaptcha.vue",
       "lineRange": [
         42,
         69
@@ -7923,10 +7923,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/ClickCaptcha.vue:refresh",
+      "id": "function:packages/vue/src/components/ClickCaptcha.vue:refresh",
       "type": "function",
       "name": "refresh",
-      "filePath": "packages/vue3/src/components/ClickCaptcha.vue",
+      "filePath": "packages/vue/src/components/ClickCaptcha.vue",
       "lineRange": [
         71,
         73
@@ -7939,10 +7939,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/ClickCaptcha.vue:getData",
+      "id": "function:packages/vue/src/components/ClickCaptcha.vue:getData",
       "type": "function",
       "name": "getData",
-      "filePath": "packages/vue3/src/components/ClickCaptcha.vue",
+      "filePath": "packages/vue/src/components/ClickCaptcha.vue",
       "lineRange": [
         75,
         77
@@ -7955,10 +7955,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/ClickCaptcha.vue:getStatistics",
+      "id": "function:packages/vue/src/components/ClickCaptcha.vue:getStatistics",
       "type": "function",
       "name": "getStatistics",
-      "filePath": "packages/vue3/src/components/ClickCaptcha.vue",
+      "filePath": "packages/vue/src/components/ClickCaptcha.vue",
       "lineRange": [
         79,
         81
@@ -7971,10 +7971,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/ClickCaptcha.vue:destroy",
+      "id": "function:packages/vue/src/components/ClickCaptcha.vue:destroy",
       "type": "function",
       "name": "destroy",
-      "filePath": "packages/vue3/src/components/ClickCaptcha.vue",
+      "filePath": "packages/vue/src/components/ClickCaptcha.vue",
       "lineRange": [
         83,
         86
@@ -7987,10 +7987,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:packages/vue3/src/components/PopupCaptcha.vue",
+      "id": "file:packages/vue/src/components/PopupCaptcha.vue",
       "type": "file",
       "name": "PopupCaptcha.vue",
-      "filePath": "packages/vue3/src/components/PopupCaptcha.vue",
+      "filePath": "packages/vue/src/components/PopupCaptcha.vue",
       "summary": "Vue 3 component for modal-based captcha display. Supports both slider and click captcha types with configurable modal options.",
       "tags": [
         "component",
@@ -8002,10 +8002,10 @@
       "languageNotes": "Uses Vue 3 Composition API with script setup syntax and slot-based rendering for trigger elements."
     },
     {
-      "id": "function:packages/vue3/src/components/PopupCaptcha.vue:initPopup",
+      "id": "function:packages/vue/src/components/PopupCaptcha.vue:initPopup",
       "type": "function",
       "name": "initPopup",
-      "filePath": "packages/vue3/src/components/PopupCaptcha.vue",
+      "filePath": "packages/vue/src/components/PopupCaptcha.vue",
       "lineRange": [
         39,
         55
@@ -8019,10 +8019,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/PopupCaptcha.vue:show",
+      "id": "function:packages/vue/src/components/PopupCaptcha.vue:show",
       "type": "function",
       "name": "show",
-      "filePath": "packages/vue3/src/components/PopupCaptcha.vue",
+      "filePath": "packages/vue/src/components/PopupCaptcha.vue",
       "lineRange": [
         57,
         59
@@ -8035,10 +8035,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/PopupCaptcha.vue:hide",
+      "id": "function:packages/vue/src/components/PopupCaptcha.vue:hide",
       "type": "function",
       "name": "hide",
-      "filePath": "packages/vue3/src/components/PopupCaptcha.vue",
+      "filePath": "packages/vue/src/components/PopupCaptcha.vue",
       "lineRange": [
         61,
         63
@@ -8051,10 +8051,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/PopupCaptcha.vue:isVisible",
+      "id": "function:packages/vue/src/components/PopupCaptcha.vue:isVisible",
       "type": "function",
       "name": "isVisible",
-      "filePath": "packages/vue3/src/components/PopupCaptcha.vue",
+      "filePath": "packages/vue/src/components/PopupCaptcha.vue",
       "lineRange": [
         65,
         67
@@ -8067,10 +8067,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/PopupCaptcha.vue:destroy",
+      "id": "function:packages/vue/src/components/PopupCaptcha.vue:destroy",
       "type": "function",
       "name": "destroy",
-      "filePath": "packages/vue3/src/components/PopupCaptcha.vue",
+      "filePath": "packages/vue/src/components/PopupCaptcha.vue",
       "lineRange": [
         69,
         72
@@ -8083,10 +8083,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:packages/vue3/src/components/SliderCaptcha.vue",
+      "id": "file:packages/vue/src/components/SliderCaptcha.vue",
       "type": "file",
       "name": "SliderCaptcha.vue",
-      "filePath": "packages/vue3/src/components/SliderCaptcha.vue",
+      "filePath": "packages/vue/src/components/SliderCaptcha.vue",
       "summary": "Vue 3 component wrapper for slider-based captcha verification. Wraps the core SliderCaptcha class with configurable slider dimensions and precision settings.",
       "tags": [
         "component",
@@ -8098,10 +8098,10 @@
       "languageNotes": "Uses Vue 3 Composition API with script setup syntax, watches for bgImage and sliderImage prop changes to auto-refresh."
     },
     {
-      "id": "function:packages/vue3/src/components/SliderCaptcha.vue:initCaptcha",
+      "id": "function:packages/vue/src/components/SliderCaptcha.vue:initCaptcha",
       "type": "function",
       "name": "initCaptcha",
-      "filePath": "packages/vue3/src/components/SliderCaptcha.vue",
+      "filePath": "packages/vue/src/components/SliderCaptcha.vue",
       "lineRange": [
         47,
         77
@@ -8115,10 +8115,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/SliderCaptcha.vue:refresh",
+      "id": "function:packages/vue/src/components/SliderCaptcha.vue:refresh",
       "type": "function",
       "name": "refresh",
-      "filePath": "packages/vue3/src/components/SliderCaptcha.vue",
+      "filePath": "packages/vue/src/components/SliderCaptcha.vue",
       "lineRange": [
         79,
         81
@@ -8131,10 +8131,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/SliderCaptcha.vue:getData",
+      "id": "function:packages/vue/src/components/SliderCaptcha.vue:getData",
       "type": "function",
       "name": "getData",
-      "filePath": "packages/vue3/src/components/SliderCaptcha.vue",
+      "filePath": "packages/vue/src/components/SliderCaptcha.vue",
       "lineRange": [
         83,
         85
@@ -8147,10 +8147,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/SliderCaptcha.vue:getStatistics",
+      "id": "function:packages/vue/src/components/SliderCaptcha.vue:getStatistics",
       "type": "function",
       "name": "getStatistics",
-      "filePath": "packages/vue3/src/components/SliderCaptcha.vue",
+      "filePath": "packages/vue/src/components/SliderCaptcha.vue",
       "lineRange": [
         87,
         89
@@ -8163,10 +8163,10 @@
       "complexity": "simple"
     },
     {
-      "id": "function:packages/vue3/src/components/SliderCaptcha.vue:destroy",
+      "id": "function:packages/vue/src/components/SliderCaptcha.vue:destroy",
       "type": "function",
       "name": "destroy",
-      "filePath": "packages/vue3/src/components/SliderCaptcha.vue",
+      "filePath": "packages/vue/src/components/SliderCaptcha.vue",
       "lineRange": [
         91,
         94
@@ -8179,10 +8179,10 @@
       "complexity": "simple"
     },
     {
-      "id": "file:packages/vue3/src/index.ts",
+      "id": "file:packages/vue/src/index.ts",
       "type": "file",
       "name": "index.ts",
-      "filePath": "packages/vue3/src/index.ts",
+      "filePath": "packages/vue/src/index.ts",
       "summary": "Package entry point that re-exports all Vue 3 captcha components and core types. Serves as the public API surface for the vue3 package.",
       "tags": [
         "entry-point",
@@ -8192,10 +8192,10 @@
       "complexity": "simple"
     },
     {
-      "id": "config:packages/vue3/src/tsconfig.json",
+      "id": "config:packages/vue/src/tsconfig.json",
       "type": "config",
       "name": "tsconfig.json",
-      "filePath": "packages/vue3/src/tsconfig.json",
+      "filePath": "packages/vue/src/tsconfig.json",
       "summary": "TypeScript configuration for the vue3 package with strict mode enabled, ESNext target, and Vue JSX preserve mode.",
       "tags": [
         "configuration",
@@ -11706,22 +11706,22 @@
       "weight": 0.5
     },
     {
-      "source": "document:packages/vue3/README.md",
-      "target": "file:packages/vue3/src/index.ts",
+      "source": "document:packages/vue/README.md",
+      "target": "file:packages/vue/src/index.ts",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
     },
     {
-      "source": "document:packages/vue3/README_CN.md",
-      "target": "file:packages/vue3/src/index.ts",
+      "source": "document:packages/vue/README_CN.md",
+      "target": "file:packages/vue/src/index.ts",
       "type": "documents",
       "direction": "forward",
       "weight": 0.5
     },
     {
-      "source": "config:packages/vue3/package.json",
-      "target": "file:packages/vue3/src/index.ts",
+      "source": "config:packages/vue/package.json",
+      "target": "file:packages/vue/src/index.ts",
       "type": "configures",
       "direction": "forward",
       "weight": 0.6
@@ -11993,113 +11993,113 @@
       "weight": 0.6
     },
     {
-      "source": "file:examples/vue3/src/main.ts",
-      "target": "file:examples/vue3/src/App.vue",
+      "source": "file:examples/vue/src/main.ts",
+      "target": "file:examples/vue/src/App.vue",
       "type": "imports",
       "direction": "forward",
       "weight": 0.7
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/components/Header.vue",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/components/Header.vue",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/components/Features.vue",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/components/Features.vue",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/components/TabNav.vue",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/components/TabNav.vue",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/components/Footer.vue",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/components/Footer.vue",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/pages/SliderDemo.vue",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/pages/SliderDemo.vue",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/pages/ClickDemo.vue",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/pages/ClickDemo.vue",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/pages/PopupDemo.vue",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/pages/PopupDemo.vue",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/pages/BackendDemo.vue",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/pages/BackendDemo.vue",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/pages/InvisibleDemo.vue",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/pages/InvisibleDemo.vue",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/pages/CustomImageDemo.vue",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/pages/CustomImageDemo.vue",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/App.vue",
-      "target": "file:examples/vue3/src/styles/global.css",
+      "source": "file:examples/vue/src/App.vue",
+      "target": "file:examples/vue/src/styles/global.css",
       "type": "depends_on",
       "direction": "forward",
       "weight": 0.6
     },
     {
-      "source": "file:examples/vue3/src/composables/useLocale.ts",
-      "target": "function:examples/vue3/src/composables/useLocale.ts:useLocale",
+      "source": "file:examples/vue/src/composables/useLocale.ts",
+      "target": "function:examples/vue/src/composables/useLocale.ts:useLocale",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:examples/vue3/src/composables/useLocale.ts",
-      "target": "function:examples/vue3/src/composables/useLocale.ts:useLocale",
+      "source": "file:examples/vue/src/composables/useLocale.ts",
+      "target": "function:examples/vue/src/composables/useLocale.ts:useLocale",
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
     },
     {
-      "source": "config:examples/vue3/vite.config.ts",
-      "target": "file:examples/vue3/src/main.ts",
+      "source": "config:examples/vue/vite.config.ts",
+      "target": "file:examples/vue/src/main.ts",
       "type": "configures",
       "direction": "forward",
       "weight": 0.6
     },
     {
-      "source": "config:examples/vue3/vite.config.ts",
-      "target": "file:examples/vue3/src/App.vue",
+      "source": "config:examples/vue/vite.config.ts",
+      "target": "file:examples/vue/src/App.vue",
       "type": "configures",
       "direction": "forward",
       "weight": 0.6
@@ -12112,8 +12112,8 @@
       "weight": 0.6
     },
     {
-      "source": "config:examples/vue3/package.json",
-      "target": "file:examples/vue3/src/main.ts",
+      "source": "config:examples/vue/package.json",
+      "target": "file:examples/vue/src/main.ts",
       "type": "configures",
       "direction": "forward",
       "weight": 0.6
@@ -12140,8 +12140,8 @@
       "weight": 0.6
     },
     {
-      "source": "file:examples/vue3/index.html",
-      "target": "file:examples/vue3/src/main.ts",
+      "source": "file:examples/vue/index.html",
+      "target": "file:examples/vue/src/main.ts",
       "type": "depends_on",
       "direction": "forward",
       "weight": 0.6
@@ -12833,176 +12833,176 @@
       "weight": 0.6
     },
     {
-      "source": "file:packages/vue3/src/index.ts",
-      "target": "file:packages/vue3/src/components/ClickCaptcha.vue",
+      "source": "file:packages/vue/src/index.ts",
+      "target": "file:packages/vue/src/components/ClickCaptcha.vue",
       "type": "imports",
       "direction": "forward",
       "weight": 0.7
     },
     {
-      "source": "file:packages/vue3/src/index.ts",
-      "target": "file:packages/vue3/src/components/PopupCaptcha.vue",
+      "source": "file:packages/vue/src/index.ts",
+      "target": "file:packages/vue/src/components/PopupCaptcha.vue",
       "type": "imports",
       "direction": "forward",
       "weight": 0.7
     },
     {
-      "source": "file:packages/vue3/src/index.ts",
-      "target": "file:packages/vue3/src/components/SliderCaptcha.vue",
+      "source": "file:packages/vue/src/index.ts",
+      "target": "file:packages/vue/src/components/SliderCaptcha.vue",
       "type": "imports",
       "direction": "forward",
       "weight": 0.7
     },
     {
-      "source": "file:packages/vue3/src/components/ClickCaptcha.vue",
-      "target": "function:packages/vue3/src/components/ClickCaptcha.vue:initCaptcha",
+      "source": "file:packages/vue/src/components/ClickCaptcha.vue",
+      "target": "function:packages/vue/src/components/ClickCaptcha.vue:initCaptcha",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/ClickCaptcha.vue",
-      "target": "function:packages/vue3/src/components/ClickCaptcha.vue:refresh",
+      "source": "file:packages/vue/src/components/ClickCaptcha.vue",
+      "target": "function:packages/vue/src/components/ClickCaptcha.vue:refresh",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/ClickCaptcha.vue",
-      "target": "function:packages/vue3/src/components/ClickCaptcha.vue:getData",
+      "source": "file:packages/vue/src/components/ClickCaptcha.vue",
+      "target": "function:packages/vue/src/components/ClickCaptcha.vue:getData",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/ClickCaptcha.vue",
-      "target": "function:packages/vue3/src/components/ClickCaptcha.vue:getStatistics",
+      "source": "file:packages/vue/src/components/ClickCaptcha.vue",
+      "target": "function:packages/vue/src/components/ClickCaptcha.vue:getStatistics",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/ClickCaptcha.vue",
-      "target": "function:packages/vue3/src/components/ClickCaptcha.vue:destroy",
+      "source": "file:packages/vue/src/components/ClickCaptcha.vue",
+      "target": "function:packages/vue/src/components/ClickCaptcha.vue:destroy",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/PopupCaptcha.vue",
-      "target": "function:packages/vue3/src/components/PopupCaptcha.vue:initPopup",
+      "source": "file:packages/vue/src/components/PopupCaptcha.vue",
+      "target": "function:packages/vue/src/components/PopupCaptcha.vue:initPopup",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/PopupCaptcha.vue",
-      "target": "function:packages/vue3/src/components/PopupCaptcha.vue:show",
+      "source": "file:packages/vue/src/components/PopupCaptcha.vue",
+      "target": "function:packages/vue/src/components/PopupCaptcha.vue:show",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/PopupCaptcha.vue",
-      "target": "function:packages/vue3/src/components/PopupCaptcha.vue:hide",
+      "source": "file:packages/vue/src/components/PopupCaptcha.vue",
+      "target": "function:packages/vue/src/components/PopupCaptcha.vue:hide",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/PopupCaptcha.vue",
-      "target": "function:packages/vue3/src/components/PopupCaptcha.vue:isVisible",
+      "source": "file:packages/vue/src/components/PopupCaptcha.vue",
+      "target": "function:packages/vue/src/components/PopupCaptcha.vue:isVisible",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/PopupCaptcha.vue",
-      "target": "function:packages/vue3/src/components/PopupCaptcha.vue:destroy",
+      "source": "file:packages/vue/src/components/PopupCaptcha.vue",
+      "target": "function:packages/vue/src/components/PopupCaptcha.vue:destroy",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/SliderCaptcha.vue",
-      "target": "function:packages/vue3/src/components/SliderCaptcha.vue:initCaptcha",
+      "source": "file:packages/vue/src/components/SliderCaptcha.vue",
+      "target": "function:packages/vue/src/components/SliderCaptcha.vue:initCaptcha",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/SliderCaptcha.vue",
-      "target": "function:packages/vue3/src/components/SliderCaptcha.vue:refresh",
+      "source": "file:packages/vue/src/components/SliderCaptcha.vue",
+      "target": "function:packages/vue/src/components/SliderCaptcha.vue:refresh",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/SliderCaptcha.vue",
-      "target": "function:packages/vue3/src/components/SliderCaptcha.vue:getData",
+      "source": "file:packages/vue/src/components/SliderCaptcha.vue",
+      "target": "function:packages/vue/src/components/SliderCaptcha.vue:getData",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/SliderCaptcha.vue",
-      "target": "function:packages/vue3/src/components/SliderCaptcha.vue:getStatistics",
+      "source": "file:packages/vue/src/components/SliderCaptcha.vue",
+      "target": "function:packages/vue/src/components/SliderCaptcha.vue:getStatistics",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/components/SliderCaptcha.vue",
-      "target": "function:packages/vue3/src/components/SliderCaptcha.vue:destroy",
+      "source": "file:packages/vue/src/components/SliderCaptcha.vue",
+      "target": "function:packages/vue/src/components/SliderCaptcha.vue:destroy",
       "type": "contains",
       "direction": "forward",
       "weight": 1
     },
     {
-      "source": "file:packages/vue3/src/index.ts",
-      "target": "file:packages/vue3/src/components/ClickCaptcha.vue",
+      "source": "file:packages/vue/src/index.ts",
+      "target": "file:packages/vue/src/components/ClickCaptcha.vue",
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
     },
     {
-      "source": "file:packages/vue3/src/index.ts",
-      "target": "file:packages/vue3/src/components/PopupCaptcha.vue",
+      "source": "file:packages/vue/src/index.ts",
+      "target": "file:packages/vue/src/components/PopupCaptcha.vue",
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
     },
     {
-      "source": "file:packages/vue3/src/index.ts",
-      "target": "file:packages/vue3/src/components/SliderCaptcha.vue",
+      "source": "file:packages/vue/src/index.ts",
+      "target": "file:packages/vue/src/components/SliderCaptcha.vue",
       "type": "exports",
       "direction": "forward",
       "weight": 0.8
     },
     {
-      "source": "config:packages/vue3/src/tsconfig.json",
-      "target": "file:packages/vue3/src/index.ts",
+      "source": "config:packages/vue/src/tsconfig.json",
+      "target": "file:packages/vue/src/index.ts",
       "type": "configures",
       "direction": "forward",
       "weight": 0.6
     },
     {
-      "source": "config:packages/vue3/src/tsconfig.json",
-      "target": "file:packages/vue3/src/components/ClickCaptcha.vue",
+      "source": "config:packages/vue/src/tsconfig.json",
+      "target": "file:packages/vue/src/components/ClickCaptcha.vue",
       "type": "configures",
       "direction": "forward",
       "weight": 0.6
     },
     {
-      "source": "config:packages/vue3/src/tsconfig.json",
-      "target": "file:packages/vue3/src/components/PopupCaptcha.vue",
+      "source": "config:packages/vue/src/tsconfig.json",
+      "target": "file:packages/vue/src/components/PopupCaptcha.vue",
       "type": "configures",
       "direction": "forward",
       "weight": 0.6
     },
     {
-      "source": "config:packages/vue3/src/tsconfig.json",
-      "target": "file:packages/vue3/src/components/SliderCaptcha.vue",
+      "source": "config:packages/vue/src/tsconfig.json",
+      "target": "file:packages/vue/src/components/SliderCaptcha.vue",
       "type": "configures",
       "direction": "forward",
       "weight": 0.6
@@ -13092,7 +13092,7 @@
     {
       "id": "layer:vue-adapters",
       "name": "Vue Adapters",
-      "description": "Vue 2 and Vue 3 component wrappers and mixins providing reactive captcha integration for Vue applications (packages/vue2, packages/vue3)",
+      "description": "Vue 2 and Vue 3 component wrappers and mixins providing reactive captcha integration for Vue applications (packages/vue2, packages/vue)",
       "nodeIds": [
         "file:packages/vue2/src/components/ClickCaptcha.vue",
         "file:packages/vue2/src/components/PopupCaptcha.vue",
@@ -13101,12 +13101,12 @@
         "file:packages/vue2/src/mixins/clickCaptcha.js",
         "file:packages/vue2/src/mixins/sliderCaptcha.js",
         "config:packages/vue2/package.json",
-        "config:packages/vue3/package.json",
-        "file:packages/vue3/src/components/ClickCaptcha.vue",
-        "file:packages/vue3/src/components/PopupCaptcha.vue",
-        "file:packages/vue3/src/components/SliderCaptcha.vue",
-        "file:packages/vue3/src/index.ts",
-        "config:packages/vue3/src/tsconfig.json"
+        "config:packages/vue/package.json",
+        "file:packages/vue/src/components/ClickCaptcha.vue",
+        "file:packages/vue/src/components/PopupCaptcha.vue",
+        "file:packages/vue/src/components/SliderCaptcha.vue",
+        "file:packages/vue/src/index.ts",
+        "config:packages/vue/src/tsconfig.json"
       ]
     },
     {
@@ -13318,23 +13318,23 @@
         "file:examples/vue2/src/pages/SliderDemo.vue",
         "file:examples/vue2/src/styles/global.css",
         "config:examples/vue2/vite.config.js",
-        "file:examples/vue3/index.html",
-        "config:examples/vue3/package.json",
-        "file:examples/vue3/src/App.vue",
-        "file:examples/vue3/src/components/Features.vue",
-        "file:examples/vue3/src/components/Footer.vue",
-        "file:examples/vue3/src/components/Header.vue",
-        "file:examples/vue3/src/components/TabNav.vue",
-        "file:examples/vue3/src/composables/useLocale.ts",
-        "file:examples/vue3/src/main.ts",
-        "file:examples/vue3/src/pages/BackendDemo.vue",
-        "file:examples/vue3/src/pages/ClickDemo.vue",
-        "file:examples/vue3/src/pages/CustomImageDemo.vue",
-        "file:examples/vue3/src/pages/InvisibleDemo.vue",
-        "file:examples/vue3/src/pages/PopupDemo.vue",
-        "file:examples/vue3/src/pages/SliderDemo.vue",
-        "file:examples/vue3/src/styles/global.css",
-        "config:examples/vue3/vite.config.ts",
+        "file:examples/vue/index.html",
+        "config:examples/vue/package.json",
+        "file:examples/vue/src/App.vue",
+        "file:examples/vue/src/components/Features.vue",
+        "file:examples/vue/src/components/Footer.vue",
+        "file:examples/vue/src/components/Header.vue",
+        "file:examples/vue/src/components/TabNav.vue",
+        "file:examples/vue/src/composables/useLocale.ts",
+        "file:examples/vue/src/main.ts",
+        "file:examples/vue/src/pages/BackendDemo.vue",
+        "file:examples/vue/src/pages/ClickDemo.vue",
+        "file:examples/vue/src/pages/CustomImageDemo.vue",
+        "file:examples/vue/src/pages/InvisibleDemo.vue",
+        "file:examples/vue/src/pages/PopupDemo.vue",
+        "file:examples/vue/src/pages/SliderDemo.vue",
+        "file:examples/vue/src/styles/global.css",
+        "config:examples/vue/vite.config.ts",
         "file:examples/weixin/miniprogram/app.js",
         "config:examples/weixin/miniprogram/app.json",
         "file:examples/weixin/miniprogram/app.wxss",
@@ -13384,8 +13384,8 @@
         "document:packages/react/README_CN.md",
         "document:packages/vue2/README.md",
         "document:packages/vue2/README_CN.md",
-        "document:packages/vue3/README.md",
-        "document:packages/vue3/README_CN.md"
+        "document:packages/vue/README.md",
+        "document:packages/vue/README_CN.md"
       ]
     },
     {
@@ -13491,7 +13491,7 @@
       "title": "Vue 2 and Vue 3 Adapters",
       "description": "The Vue packages provide component wrappers and mixins for reactive captcha integration. Vue 2 uses mixins while Vue 3 leverages the Composition API with composables for a more modern approach.",
       "nodeIds": [
-        "file:packages/vue3/src/index.ts",
+        "file:packages/vue/src/index.ts",
         "file:packages/vue2/src/index.js"
       ]
     },

@@ -1,5 +1,5 @@
 {
-  "name": "@captcha-pro/vue3",
+  "name": "@captcha-pro/vue",
   "description": "Vue 3 components for captcha-pro",
   "version": "1.0.0",
   "main": "dist/index.cjs",
@@ -46,7 +46,6 @@
   ],
   "keywords": [
     "captcha",
-    "vue3",
     "vue",
     "slider-captcha",
     "click-captcha"

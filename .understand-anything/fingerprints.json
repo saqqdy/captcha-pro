@@ -1392,8 +1392,8 @@
       "totalLines": 14,
       "hasStructuralAnalysis": true
     },
-    "examples/vue3/src/App.vue": {
-      "filePath": "examples/vue3/src/App.vue",
+    "examples/vue/src/App.vue": {
+      "filePath": "examples/vue/src/App.vue",
       "contentHash": "fa801fa8dad7ab98ea1fa5500d793c37a8e3f45e7e21b3a02edb52cb2240f717",
       "functions": [],
       "classes": [],
@@ -1402,8 +1402,8 @@
       "totalLines": 38,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/src/components/Features.vue": {
-      "filePath": "examples/vue3/src/components/Features.vue",
+    "examples/vue/src/components/Features.vue": {
+      "filePath": "examples/vue/src/components/Features.vue",
       "contentHash": "8d3cc78fc57a0f3485d67e384500f384b0b16ac31750172198a61e9ac43a4554",
       "functions": [],
       "classes": [],
@@ -1412,8 +1412,8 @@
       "totalLines": 22,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/src/components/Footer.vue": {
-      "filePath": "examples/vue3/src/components/Footer.vue",
+    "examples/vue/src/components/Footer.vue": {
+      "filePath": "examples/vue/src/components/Footer.vue",
       "contentHash": "6a652f241f36edba706c0c018524992511593305bf76a2384c32d3c8d95c650d",
       "functions": [],
       "classes": [],
@@ -1422,8 +1422,8 @@
       "totalLines": 10,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/src/components/Header.vue": {
-      "filePath": "examples/vue3/src/components/Header.vue",
+    "examples/vue/src/components/Header.vue": {
+      "filePath": "examples/vue/src/components/Header.vue",
       "contentHash": "906cd3dcbec73a0ad6fc922287bb44cd11d3e851f8cbb2d3346b2a761315283f",
       "functions": [],
       "classes": [],
@@ -1432,8 +1432,8 @@
       "totalLines": 29,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/src/components/TabNav.vue": {
-      "filePath": "examples/vue3/src/components/TabNav.vue",
+    "examples/vue/src/components/TabNav.vue": {
+      "filePath": "examples/vue/src/components/TabNav.vue",
       "contentHash": "e3b325f6d9dbcb46f8f4cdab74b021b40e6b62cbec13fd85dd38003bc2757d34",
       "functions": [],
       "classes": [],
@@ -1442,8 +1442,8 @@
       "totalLines": 37,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/src/composables/useLocale.ts": {
-      "filePath": "examples/vue3/src/composables/useLocale.ts",
+    "examples/vue/src/composables/useLocale.ts": {
+      "filePath": "examples/vue/src/composables/useLocale.ts",
       "contentHash": "78d1bd59a3550ab15d7b599c3ebf0925d1dee46c7cef8894f1304dc286fbfc17",
       "functions": [
         {
@@ -1462,7 +1462,7 @@
           ]
         },
         {
-          "source": "@captcha-pro/vue3",
+          "source": "@captcha-pro/vue",
           "specifiers": [
             "setLocale",
             "getLocale"
@@ -1475,8 +1475,8 @@
       "totalLines": 20,
       "hasStructuralAnalysis": true
     },
-    "examples/vue3/src/main.ts": {
-      "filePath": "examples/vue3/src/main.ts",
+    "examples/vue/src/main.ts": {
+      "filePath": "examples/vue/src/main.ts",
       "contentHash": "6d9d8f07edde5ba2b74f2441e77e70daa07cd2518cb2fcbafbe29e7f7965b335",
       "functions": [],
       "classes": [],
@@ -1488,7 +1488,7 @@
           ]
         },
         {
-          "source": "@captcha-pro/vue3/style.css",
+          "source": "@captcha-pro/vue/style.css",
           "specifiers": []
         },
         {
@@ -1502,8 +1502,8 @@
       "totalLines": 6,
       "hasStructuralAnalysis": true
     },
-    "examples/vue3/src/pages/BackendDemo.vue": {
-      "filePath": "examples/vue3/src/pages/BackendDemo.vue",
+    "examples/vue/src/pages/BackendDemo.vue": {
+      "filePath": "examples/vue/src/pages/BackendDemo.vue",
       "contentHash": "03e51c7c63703297ef4a8b679689e0cb70502db1ad72bbf16502bff3a62b8b71",
       "functions": [],
       "classes": [],
@@ -1512,8 +1512,8 @@
       "totalLines": 143,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/src/pages/ClickDemo.vue": {
-      "filePath": "examples/vue3/src/pages/ClickDemo.vue",
+    "examples/vue/src/pages/ClickDemo.vue": {
+      "filePath": "examples/vue/src/pages/ClickDemo.vue",
       "contentHash": "132895c3b317735fb8d101dfb669682042bd5e00faeb0b4435aea8327bdba993",
       "functions": [],
       "classes": [],
@@ -1522,8 +1522,8 @@
       "totalLines": 100,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/src/pages/CustomImageDemo.vue": {
-      "filePath": "examples/vue3/src/pages/CustomImageDemo.vue",
+    "examples/vue/src/pages/CustomImageDemo.vue": {
+      "filePath": "examples/vue/src/pages/CustomImageDemo.vue",
       "contentHash": "f40e9f01c83b43a160429ec42825d4d6657b3eb2038232bd535621aafee41c8b",
       "functions": [],
       "classes": [],
@@ -1532,8 +1532,8 @@
       "totalLines": 52,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/src/pages/InvisibleDemo.vue": {
-      "filePath": "examples/vue3/src/pages/InvisibleDemo.vue",
+    "examples/vue/src/pages/InvisibleDemo.vue": {
+      "filePath": "examples/vue/src/pages/InvisibleDemo.vue",
       "contentHash": "5377fed503e54c91b18bf3e6898394cb9bcf870478157adafeda0231ca8b448e",
       "functions": [],
       "classes": [],
@@ -1542,8 +1542,8 @@
       "totalLines": 85,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/src/pages/PopupDemo.vue": {
-      "filePath": "examples/vue3/src/pages/PopupDemo.vue",
+    "examples/vue/src/pages/PopupDemo.vue": {
+      "filePath": "examples/vue/src/pages/PopupDemo.vue",
       "contentHash": "6fff7516fd5478f3b2ab9bfb594243388972edde787fec3f712913576d2c9360",
       "functions": [],
       "classes": [],
@@ -1552,8 +1552,8 @@
       "totalLines": 56,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/src/pages/SliderDemo.vue": {
-      "filePath": "examples/vue3/src/pages/SliderDemo.vue",
+    "examples/vue/src/pages/SliderDemo.vue": {
+      "filePath": "examples/vue/src/pages/SliderDemo.vue",
       "contentHash": "b845f403f3b5c334356ba953971018a4fa93b6b8961edf911c60fccf5daa2030",
       "functions": [],
       "classes": [],
@@ -1562,8 +1562,8 @@
       "totalLines": 102,
       "hasStructuralAnalysis": false
     },
-    "examples/vue3/vite.config.ts": {
-      "filePath": "examples/vue3/vite.config.ts",
+    "examples/vue/vite.config.ts": {
+      "filePath": "examples/vue/vite.config.ts",
       "contentHash": "b586eb3706cd587cefc1b9460190fd3c328ead17b147a73706a45d0577d5a04e",
       "functions": [],
       "classes": [],
@@ -3913,8 +3913,8 @@
       "totalLines": 116,
       "hasStructuralAnalysis": true
     },
-    "packages/vue3/src/components/ClickCaptcha.vue": {
-      "filePath": "packages/vue3/src/components/ClickCaptcha.vue",
+    "packages/vue/src/components/ClickCaptcha.vue": {
+      "filePath": "packages/vue/src/components/ClickCaptcha.vue",
       "contentHash": "91c948a6ad4bc089b78823c761934755816f027da250d3d5d34b28a98f5886d5",
       "functions": [],
       "classes": [],
@@ -3923,8 +3923,8 @@
       "totalLines": 127,
       "hasStructuralAnalysis": false
     },
-    "packages/vue3/src/components/PopupCaptcha.vue": {
-      "filePath": "packages/vue3/src/components/PopupCaptcha.vue",
+    "packages/vue/src/components/PopupCaptcha.vue": {
+      "filePath": "packages/vue/src/components/PopupCaptcha.vue",
       "contentHash": "0126b3acdcb1c373a37bb904e4e162ddfd609ebf42d8f50389b853324b53021c",
       "functions": [],
       "classes": [],
@@ -3933,8 +3933,8 @@
       "totalLines": 93,
       "hasStructuralAnalysis": false
     },
-    "packages/vue3/src/components/SliderCaptcha.vue": {
-      "filePath": "packages/vue3/src/components/SliderCaptcha.vue",
+    "packages/vue/src/components/SliderCaptcha.vue": {
+      "filePath": "packages/vue/src/components/SliderCaptcha.vue",
       "contentHash": "fca0d47aded03653cbb6b3b89b4828d4090da1082702f8200a11002cdfc6212a",
       "functions": [],
       "classes": [],
@@ -3943,8 +3943,8 @@
       "totalLines": 135,
       "hasStructuralAnalysis": false
     },
-    "packages/vue3/src/index.ts": {
-      "filePath": "packages/vue3/src/index.ts",
+    "packages/vue/src/index.ts": {
+      "filePath": "packages/vue/src/index.ts",
       "contentHash": "32e9215e1c23e13fd205ff0d05602f82aaab343d32763b28a029b8d468b4bd23",
       "functions": [],
       "classes": [],

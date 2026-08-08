@@ -367,7 +367,7 @@ SVG 内容即 `icons.ts` 中的 path 加上标准 SVG 外壳：
 
 ---
 
-## Step 4: React / Vue3 / Vue2 包
+## Step 4: React / Vue / Vue2 包
 
 这三个包将 DOM 渲染完全委托给 core，自身不做图标渲染。
 
@@ -422,7 +422,7 @@ SVG 内容即 `icons.ts` 中的 path 加上标准 SVG 外壳：
 ### 无需改动（3 个包）
 
 - `packages/react` — 委托 core 渲染，自动复制 CSS
-- `packages/vue3` — 委托 core 渲染，自动复制 CSS
+- `packages/vue` — 委托 core 渲染，自动复制 CSS
 - `packages/vue2` — 委托 core 渲染，自动复制 CSS
 
 ---

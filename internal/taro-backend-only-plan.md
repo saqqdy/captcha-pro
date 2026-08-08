@@ -362,7 +362,7 @@ weixin 和 uniapp 章节加 ⚠️ 标注"仅支持后端服务模式"，示例�
 |-----------|------|
 | `packages/core/` | core 包仍保留双模式，供 Web 端使用 |
 | `packages/mp/src/core/renderer.ts` | 抽象接口保留（Web 端仍用） |
-| `packages/react/`, `packages/vue2/`, `packages/vue3/` | Web 端组件不受影响 |
+| `packages/react/`, `packages/vue2/`, `packages/vue/` | Web 端组件不受影响 |
 | `server/` | 后端代码不受影响 |
 
 > 注：相比旧版本，`packages/mp/src/weixin/` 和 `packages/mp/src/uniapp/` 不再属于"不变"范围，本次纳入改造。

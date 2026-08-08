@@ -37,7 +37,7 @@ Captcha Pro 支持 **10+ 平台**，API 保持一致：
 |------|------|------|
 | Web (原生 JS) | `captcha-pro` | 核心包，通用支持 |
 | Vue 2 | `captcha-pro-vue2` | Options API + Mixins |
-| Vue 3 | `captcha-pro-vue3` | Composition API + Composables |
+| Vue 3 | `captcha-pro-vue` | Composition API + Composables |
 | React | `captcha-pro-react` | Hooks 组件 |
 | 微信小程序 | `captcha-pro-mp` | WXML/WXSS/JS，仅后端模式 |
 | uni-app | `captcha-pro-mp` | Vue 跨端，仅后端模式 |
@@ -107,7 +107,7 @@ $ pnpm add captcha-pro
 $ pnpm add captcha-pro-vue2
 
 # Vue 3
-$ pnpm add captcha-pro-vue3
+$ pnpm add captcha-pro-vue
 
 # React
 $ pnpm add captcha-pro-react
@@ -140,7 +140,7 @@ pod 'CaptchaPro', '~> 1.1.0'
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from 'captcha-pro-vue3'
+import { SliderCaptcha } from 'captcha-pro-vue'
 
 const onSuccess = () => console.log('验证通过!')
 </script>

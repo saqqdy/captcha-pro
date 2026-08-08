@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - **`captcha-pro-vue2`** - Vue 2 component library with Options API + Mixins
   - `SliderCaptcha`, `ClickCaptcha`, `PopupCaptcha` components
   - `sliderCaptchaMixin`, `clickCaptchaMixin` mixins
-- **`captcha-pro-vue3`** - Vue 3 component library with Composition API
+- **`captcha-pro-vue`** - Vue 3 component library with Composition API
   - `SliderCaptcha`, `ClickCaptcha`, `PopupCaptcha` components
   - `useSliderCaptcha`, `useClickCaptcha` composables
 - **`captcha-pro-react`** - React component library with Hooks
@@ -48,7 +48,7 @@ All notable changes to this project will be documented in this file.
 |----------|---------|------------|--------|
 | Web (Vanilla JS) | `captcha-pro` | TypeScript/Canvas | ✅ Stable |
 | Vue 2 | `captcha-pro-vue2` | Options API + Mixins | ✅ Stable |
-| Vue 3 | `captcha-pro-vue3` | Composition API | ✅ Stable |
+| Vue 3 | `captcha-pro-vue` | Composition API | ✅ Stable |
 | React 17/18 | `captcha-pro-react` | Hooks | ✅ Stable |
 | WeChat Mini-Program | `captcha-pro-mp/weixin` | WXML/WXSS/JS | ✅ Stable |
 | uni-app | `captcha-pro-mp/uniapp` | Vue | ✅ Stable |

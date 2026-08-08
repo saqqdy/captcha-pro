@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { getLocale, setLocale } from '@captcha-pro/vue3'
+import { getLocale, setLocale } from '@captcha-pro/vue'
 import { ref } from 'vue'
 
 const currentLocale = ref<'zh-CN' | 'en-US'>(getLocale() as 'zh-CN' | 'en-US')

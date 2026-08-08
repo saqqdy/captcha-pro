@@ -15,7 +15,7 @@
 | Android | Kotlin/Java | ❌ 完全重写 | Canvas/Compose | View Events |
 | iOS | Swift/Objective-C | ❌ 完全重写 | CoreGraphics/UIKit | UIKit Events |
 
-> **注意**：Vue 2 和 Vue 3 采用独立的包发布（`@captcha-pro/vue2` 和 `@captcha-pro/vue3`），以支持不同的 API 风格和 TypeScript 支持。
+> **注意**：Vue 2 和 Vue 3 采用独立的包发布（`@captcha-pro/vue2` 和 `@captcha-pro/vue`），以支持不同的 API 风格和 TypeScript 支持。
 
 ## 二、推荐架构方案：14 套核心代码
 
@@ -33,7 +33,7 @@ captcha-pro/
 │   │   └── package.json            # @captcha-pro/core
 │   │
 │   ├── vue2/                       # Vue 2 组件封装
-│   ├── vue3/                       # Vue 3 组件封装
+│   ├── vue/                       # Vue 3 组件封装
 │   ├── react/                      # React 组件封装
 │   │
 │   ├── mp-shared/                   # 小程序共享代码（backend-only 模式）
@@ -207,7 +207,7 @@ captcha-pro/
     │   └── index.html
     ├── vue2/
     │   └── src/
-    ├── vue3/
+    ├── vue/
     │   └── src/
     ├── react/
     │   └── src/
@@ -440,7 +440,7 @@ export const sliderCaptchaMixin = {
 #### Vue 3 Composition API
 
 ```vue
-<!-- packages/vue3/src/components/SliderCaptcha.vue -->
+<!-- packages/vue/src/components/SliderCaptcha.vue -->
 <template>
   <div ref="containerRef" class="captcha-container">
     <canvas ref="bgCanvasRef" :width="width" :height="height" />
@@ -505,7 +505,7 @@ defineExpose({ refresh, getData, reset })
 #### Vue 3 Composable 实现
 
 ```typescript
-// packages/vue3/src/composables/useSliderCaptcha.ts
+// packages/vue/src/composables/useSliderCaptcha.ts
 import { ref, reactive, computed } from 'vue'
 import { CaptchaGenerator } from 'captcha-pro/core'
 import { WebRenderer } from 'captcha-pro/web'
@@ -2259,7 +2259,7 @@ class SliderCaptchaViewModel: ObservableObject {
 |------|------|----------|
 | `@captcha-pro/core` | 核心包 + Web 版 | `packages/core` |
 | `@captcha-pro/vue2` | Vue 2 组件 | `packages/vue2` |
-| `@captcha-pro/vue3` | Vue 3 组件 | `packages/vue3` |
+| `@captcha-pro/vue` | Vue 3 组件 | `packages/vue` |
 | `@captcha-pro/react` | React 组件 | `packages/react` |
 | `@captcha-pro/mp-shared` | 小程序共享代码（类型契约、验证逻辑、工具） | `packages/mp-shared` |
 | `@captcha-pro/weixin` | 微信小程序原生组件 | `packages/weixin` |

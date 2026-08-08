@@ -26,7 +26,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, '../src/index.ts'),
-      name: 'CaptchaVue3',
+      name: 'CaptchaVue',
       fileName: (format) => `index.${format === 'es' ? 'mjs' : 'cjs'}`,
     },
     rollupOptions: {

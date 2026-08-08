@@ -34,7 +34,7 @@ captcha-pro          # 框架无关的核心库
 captcha-pro/
 ├── packages/
 │   ├── core/                    # @captcha-pro/core - 核心逻辑 ✅
-│   ├── vue3/                    # @captcha-pro/vue3 - Vue 3 组件 ✅
+│   ├── vue/                    # @captcha-pro/vue - Vue 3 组件 ✅
 │   ├── vue2/                    # @captcha-pro/vue2 - Vue 2 组件 ✅
 │   ├── react/                   # @captcha-pro/react - React 组件 ✅
 │   ├── mp/                      # @captcha-pro/mp - 小程序版本 ✅
@@ -51,7 +51,7 @@ captcha-pro/
 **包依赖关系**：
 
 ```
-@captcha-pro/vue3 ─────┐
+@captcha-pro/vue ─────┐
 @captcha-pro/react ────┼──▶ @captcha-pro/core ──▶ captcha-pro (主包兼容)
 @captcha-pro/svelte ───┘
 ```
@@ -74,9 +74,9 @@ captcha-pro/
   "types": "dist/index.d.ts"
 }
 
-// packages/vue3/package.json
+// packages/vue/package.json
 {
-  "name": "@captcha-pro/vue3",
+  "name": "@captcha-pro/vue",
   "version": "2.0.0",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -101,10 +101,10 @@ captcha-pro/
 **框架包使用示例**：
 
 ```vue
-<!-- @captcha-pro/vue3 -->
+<!-- @captcha-pro/vue -->
 <script setup lang="ts">
-import { SliderCaptcha } from '@captcha-pro/vue3'
-import '@captcha-pro/vue3/dist/style.css'
+import { SliderCaptcha } from '@captcha-pro/vue'
+import '@captcha-pro/vue/dist/style.css'
 </script>
 
 <template>

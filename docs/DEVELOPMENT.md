@@ -18,7 +18,7 @@
 captcha-pro/
 ├── packages/
 │   ├── core/          # @captcha-pro/core - 核心库（框架无关）
-│   ├── vue3/          # @captcha-pro/vue3 - Vue 3 组件
+│   ├── vue/          # @captcha-pro/vue - Vue 3 组件
 │   ├── vue2/          # @captcha-pro/vue2 - Vue 2 组件
 │   ├── react/         # @captcha-pro/react - React 组件
 │   └── mp/            # @captcha-pro/mp - 小程序组件
@@ -61,7 +61,7 @@ pnpm --filter @captcha-pro/core watch
 
 ```bash
 # 开发 Vue 3 包
-pnpm --filter @captcha-pro/vue3 watch
+pnpm --filter @captcha-pro/vue watch
 
 # 开发 React 包
 pnpm --filter @captcha-pro/react watch
@@ -88,7 +88,7 @@ pnpm --filter @captcha-pro/mp watch
 | 包 | 构建工具 | 说明 |
 |---|---------|------|
 | @captcha-pro/core | Rolldown | 框架无关核心库，输出 ESM/CJS/IIFE |
-| @captcha-pro/vue3 | Vite 8 + vue-tsc | Vue 3 组件，支持 SFC |
+| @captcha-pro/vue | Vite 8 + vue-tsc | Vue 3 组件，支持 SFC |
 | @captcha-pro/vue2 | Vite 4 + vite-plugin-vue2 | Vue 2 组件，支持 SFC |
 | @captcha-pro/react | Vite 8 + tsc | React 组件，支持 TSX |
 | @captcha-pro/mp | Vite 8 | 小程序组件，支持 Vue/React/原生，backend-only 模式 |
@@ -110,8 +110,8 @@ Turborepo 会自动：
 # 构建 core
 pnpm build:core
 
-# 构建 vue3
-pnpm build:vue3
+# 构建 vue
+pnpm build:vue
 
 # 构建 vue2
 pnpm build:vue2
@@ -127,10 +127,10 @@ pnpm build:mp
 
 ```bash
 # 构建指定包及其依赖
-pnpm --filter @captcha-pro/vue3 build
+pnpm --filter @captcha-pro/vue build
 
 # 只构建指定包（不含依赖）
-pnpm --filter @captcha-pro/vue3... build
+pnpm --filter @captcha-pro/vue... build
 
 # 构建所有包（跳过缓存）
 pnpm build --force
@@ -213,7 +213,7 @@ pnpm pub
 ```bash
 # 1. 添加变更记录
 pnpm changeset
-# 选择: @captcha-pro/core, @captcha-pro/vue3
+# 选择: @captcha-pro/core, @captcha-pro/vue
 # 类型: minor (1.0.0 -> 1.1.0)
 # 描述: 新增滑块验证码功能
 
@@ -263,7 +263,7 @@ git push --follow-tags
 ```
 @captcha-pro/core      (基础核心，无依赖其他包)
     ↑
-    ├── @captcha-pro/vue3
+    ├── @captcha-pro/vue
     ├── @captcha-pro/vue2
     ├── @captcha-pro/react
     └── @captcha-pro/mp
@@ -501,7 +501,7 @@ const text = t('slider.success')  // 'Verification successful!'
 
 ```bash
 # Vue 3
-pnpm add @captcha-pro/vue3
+pnpm add @captcha-pro/vue
 
 # Vue 2
 pnpm add @captcha-pro/vue2
@@ -526,8 +526,8 @@ pnpm add @captcha-pro/mp
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from '@captcha-pro/vue3'
-import '@captcha-pro/vue3/style.css'
+import { SliderCaptcha } from '@captcha-pro/vue'
+import '@captcha-pro/vue/style.css'
 
 const onSuccess = (data: any) => {
   console.log('验证成功', data)

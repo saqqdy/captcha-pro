@@ -74,13 +74,13 @@ defineExpose({
 </script>
 
 <template>
-  <div class="captcha-vue3-wrapper">
+  <div class="captcha-vue-wrapper">
     <div ref="containerRef" class="captcha-container" />
   </div>
 </template>
 
 <style scoped>
-.captcha-vue3-wrapper {
+.captcha-vue-wrapper {
   position: relative;
   display: inline-block;
 }
