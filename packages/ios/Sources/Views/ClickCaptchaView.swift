@@ -7,10 +7,10 @@ public protocol ClickCaptchaViewDelegate: AnyObject {
     func clickCaptchaDidRefresh(_ view: ClickCaptchaView)
 }
 
-/// Click captcha view
+/// Click captcha view - Backend verification only
 public class ClickCaptchaView: UIView {
-    // MARK: - Properties
     private let generator = CaptchaGenerator()
+    private let statisticsData = StatisticsData()
 
     private var bgImageView = UIImageView()
     private var clickPointViews: [UIView] = []
@@ -24,22 +24,21 @@ public class ClickCaptchaView: UIView {
     private var targetPoints: [CaptchaPoint] = []
     private var clickPoints: [CGPoint] = []
     private var clickTexts: [String] = []
+    private var clickCharImages: [String] = []
+    private var charStackView = UIStackView()
 
     public weak var delegate: ClickCaptchaViewDelegate?
+    public weak var callback: ClickCaptchaCallback?
 
-    public var captchaWidth: Int = 300 {
-        didSet { refresh() }
-    }
-    public var captchaHeight: Int = 170 {
-        didSet { refresh() }
-    }
+    public var captchaWidth: Int = 300 { didSet { refresh() } }
+    public var captchaHeight: Int = 170 { didSet { refresh() } }
     public var clickCount: Int = 3
-    public var precision: CGFloat = 20
-    public var showRefresh: Bool = true {
-        didSet { refreshButton.isHidden = !showRefresh }
-    }
+    public var showRefresh: Bool = true { didSet { refreshButton.isHidden = !showRefresh } }
 
-    // MARK: - Initialization
+    /// Backend verification configuration - Required
+    public var backendVerify: BackendVerifyOptions!
+    public var locale: CaptchaLocale = .zhCN
+
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -55,7 +54,6 @@ public class ClickCaptchaView: UIView {
         layer.cornerRadius = 8
         clipsToBounds = true
 
-        // Background image
         bgImageView.contentMode = .scaleAspectFill
         bgImageView.clipsToBounds = true
         bgImageView.isUserInteractionEnabled = true
@@ -68,11 +66,9 @@ public class ClickCaptchaView: UIView {
             bgImageView.heightAnchor.constraint(equalToConstant: CGFloat(captchaHeight))
         ])
 
-        // Add tap gesture
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         bgImageView.addGestureRecognizer(tapGesture)
 
-        // Refresh button
         refreshButton.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
         refreshButton.tintColor = .gray
         refreshButton.backgroundColor = UIColor.white.withAlphaComponent(0.9)
@@ -85,7 +81,6 @@ public class ClickCaptchaView: UIView {
         refreshButton.widthAnchor.constraint(equalToConstant: 28).isActive = true
         refreshButton.heightAnchor.constraint(equalToConstant: 28).isActive = true
 
-        // Status view
         statusView.isHidden = true
         addSubview(statusView)
         statusView.translatesAutoresizingMaskIntoConstraints = false
@@ -102,7 +97,6 @@ public class ClickCaptchaView: UIView {
         statusLabel.centerXAnchor.constraint(equalTo: statusView.centerXAnchor).isActive = true
         statusLabel.centerYAnchor.constraint(equalTo: statusView.centerYAnchor).isActive = true
 
-        // Info bar
         infoBarView.backgroundColor = UIColor(white: 0.97, alpha: 1)
         infoBarView.layer.cornerRadius = 4
         addSubview(infoBarView)
@@ -112,7 +106,6 @@ public class ClickCaptchaView: UIView {
         infoBarView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
         infoBarView.heightAnchor.constraint(equalToConstant: 40).isActive = true
 
-        // Tip label
         tipLabel.font = .systemFont(ofSize: 14)
         tipLabel.textColor = .darkText
         infoBarView.addSubview(tipLabel)
@@ -120,7 +113,6 @@ public class ClickCaptchaView: UIView {
         tipLabel.leadingAnchor.constraint(equalTo: infoBarView.leadingAnchor, constant: 12).isActive = true
         tipLabel.centerYAnchor.constraint(equalTo: infoBarView.centerYAnchor).isActive = true
 
-        // Progress label
         progressLabel.font = .systemFont(ofSize: 14)
         progressLabel.textColor = UIColor(red: 0.1, green: 0.57, blue: 0.98, alpha: 1)
         infoBarView.addSubview(progressLabel)
@@ -128,66 +120,124 @@ public class ClickCaptchaView: UIView {
         progressLabel.trailingAnchor.constraint(equalTo: infoBarView.trailingAnchor, constant: -12).isActive = true
         progressLabel.centerYAnchor.constraint(equalTo: infoBarView.centerYAnchor).isActive = true
 
-        refresh()
+        charStackView.axis = .horizontal
+        charStackView.spacing = 4
+        charStackView.alignment = .center
+        infoBarView.addSubview(charStackView)
+        charStackView.translatesAutoresizingMaskIntoConstraints = false
+        charStackView.leadingAnchor.constraint(equalTo: tipLabel.trailingAnchor, constant: 8).isActive = true
+        charStackView.centerYAnchor.constraint(equalTo: infoBarView.centerYAnchor).isActive = true
+        charStackView.heightAnchor.constraint(equalToConstant: 28).isActive = true
     }
 
-    // MARK: - Public Methods
     @objc public func refresh() {
-        // Clear previous click points
+        guard backendVerify != nil else {
+            fatalError("backendVerify is required")
+        }
+        Task { await refreshAsync() }
+    }
+
+    private func refreshAsync() async {
         clickPointViews.forEach { $0.removeFromSuperview() }
         clickPointViews.removeAll()
         clickPoints.removeAll()
 
-        let result = generator.generate(options: CaptchaOptions(
-            type: .click,
-            width: captchaWidth,
-            height: captchaHeight,
-            clickCount: clickCount
-        ))
+        let options = CaptchaOptions(
+            type: .click, width: captchaWidth, height: captchaHeight, clickCount: clickCount,
+            backendVerify: backendVerify, locale: locale
+        )
 
-        bgImageView.image = result.bgImage
-        targetPoints = result.targetPoints
-        clickTexts = result.clickTexts
-        statusView.isHidden = true
+        do {
+            let result = try await generator.generate(options: options)
+            bgImageView.image = result.bgImage
+            targetPoints = result.targetPoints
+            clickTexts = result.clickTexts ?? []
+            clickCharImages = result.clickCharImages ?? []
+            statusView.isHidden = true
 
-        tipLabel.text = "请依次点击: " + clickTexts.joined(separator: " ")
-        progressLabel.text = "0/\(clickCount)"
+            charStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+            let prompt = LocaleMessages.get(locale, key: "click_prompt")
+            if clickCharImages.isEmpty {
+                tipLabel.text = prompt + clickTexts.joined(separator: " ")
+            } else {
+                tipLabel.text = prompt
+                for src in clickCharImages {
+                    let iv = UIImageView()
+                    iv.contentMode = .scaleAspectFit
+                    iv.backgroundColor = UIColor(red: 0.94, green: 0.97, blue: 1, alpha: 1)
+                    iv.layer.cornerRadius = 4
+                    iv.widthAnchor.constraint(equalToConstant: 28).isActive = true
+                    iv.heightAnchor.constraint(equalToConstant: 28).isActive = true
+                    charStackView.addArrangedSubview(iv)
+                    Task {
+                        if let img = try? await generator.loadImage(from: src) { iv.image = img }
+                    }
+                }
+            }
+            progressLabel.text = "0/\(targetCount)"
 
-        delegate?.clickCaptchaDidRefresh(self)
+            delegate?.clickCaptchaDidRefresh(self)
+        } catch {
+            showStatus(success: false, message: LocaleMessages.get(locale, key: "error_network"))
+            callback?.onError(error)
+        }
     }
 
-    // MARK: - Private Methods
+    private var targetCount: Int {
+        if !clickCharImages.isEmpty { return clickCharImages.count }
+        if !clickTexts.isEmpty { return clickTexts.count }
+        return clickCount
+    }
+
     @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
-        guard statusView.isHidden else { return }
+        guard statusView.isHidden, clickPoints.count < targetCount, backendVerify != nil else { return }
 
         let location = gesture.location(in: bgImageView)
-        let currentTargetIndex = clickPoints.count
+        clickPoints.append(location)
+        addClickPointView(at: location, index: clickPoints.count)
+        progressLabel.text = "\(clickPoints.count)/\(targetCount)"
 
-        guard currentTargetIndex < clickCount else { return }
+        if clickPoints.count == targetCount {
+            verify()
+        }
+    }
 
-        let target = targetPoints[currentTargetIndex]
-        let distance = sqrt(pow(location.x - target.x, 2) + pow(location.y - target.y, 2))
+    private func verify() {
+        statisticsData.totalAttempts += 1
+        statisticsData.totalClickCount += clickPoints.count
 
-        if distance <= precision {
-            // Correct click
-            clickPoints.append(location)
-            addClickPointView(at: location, index: currentTargetIndex)
-            progressLabel.text = "\(clickPoints.count)/\(clickCount)"
+        let captchaPoints = clickPoints.map { CaptchaPoint(x: $0.x, y: $0.y) }
+        let captchaData = generator.getCaptchaData(type: .click, targetPoints: captchaPoints)
 
-            if clickPoints.count == clickCount {
-                // All points clicked correctly
-                showStatus(success: true)
-                delegate?.clickCaptchaDidSucceed(self)
-            }
-        } else {
-            // Wrong click
-            showStatus(success: false)
-            delegate?.clickCaptchaDidFail(self)
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-                self?.refresh()
+        Task {
+            do {
+                let options = CaptchaOptions(type: .click, backendVerify: backendVerify, locale: locale)
+                let response = try await generator.backendVerify(data: captchaData, options: options)
+                if response.success {
+                    handleSuccess()
+                } else {
+                    handleFail()
+                }
+            } catch {
+                showStatus(success: false, message: LocaleMessages.get(locale, key: "error_network"))
+                callback?.onError(error)
             }
         }
+    }
+
+    private func handleSuccess() {
+        statisticsData.successCount += 1
+        showStatus(success: true, message: LocaleMessages.get(locale, key: "click_success"))
+        delegate?.clickCaptchaDidSucceed(self)
+        callback?.onSuccess()
+    }
+
+    private func handleFail() {
+        statisticsData.failCount += 1
+        showStatus(success: false, message: LocaleMessages.get(locale, key: "click_fail"))
+        delegate?.clickCaptchaDidFail(self)
+        callback?.onFail()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in self?.refresh() }
     }
 
     private func addClickPointView(at point: CGPoint, index: Int) {
@@ -197,7 +247,7 @@ public class ClickCaptchaView: UIView {
         pointView.clipsToBounds = true
 
         let label = UILabel(frame: pointView.bounds)
-        label.text = "\(index + 1)"
+        label.text = "\(index)"
         label.textColor = .white
         label.font = .boldSystemFont(ofSize: 12)
         label.textAlignment = .center
@@ -207,11 +257,19 @@ public class ClickCaptchaView: UIView {
         clickPointViews.append(pointView)
     }
 
-    private func showStatus(success: Bool) {
+    private func showStatus(success: Bool, message: String?) {
         statusView.backgroundColor = success
             ? UIColor(red: 0.32, green: 0.77, blue: 0.1, alpha: 0.9)
             : UIColor(red: 0.96, green: 0.13, blue: 0.18, alpha: 0.9)
-        statusLabel.text = success ? "验证成功" : "验证失败"
+        statusLabel.text = message ?? (success ? LocaleMessages.get(locale, key: "click_success") : LocaleMessages.get(locale, key: "click_fail"))
         statusView.isHidden = false
     }
+
+    public func getData() -> CaptchaData {
+        let captchaPoints = clickPoints.map { CaptchaPoint(x: $0.x, y: $0.y) }
+        return generator.getCaptchaData(type: .click, targetPoints: captchaPoints)
+    }
+
+    public func getStatistics() -> CaptchaStatistics { statisticsData.toStatistics() }
+    public func resetStatistics() { statisticsData.reset() }
 }

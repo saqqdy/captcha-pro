@@ -4,10 +4,6 @@ import SwiftUI
 ///
 /// Mirrors the UIKit `PopupCaptchaView` so callers can use either paradigm.
 public struct PopupCaptcha: View {
-    public enum CaptchaType {
-        case slider, click
-    }
-
     // MARK: - Configuration
     public let type: CaptchaType
     public let title: String
@@ -16,6 +12,8 @@ public struct PopupCaptcha: View {
     public let autoClose: Bool
     public let closeDelay: TimeInterval
 
+    public let backendVerify: BackendVerifyOptions
+    public let locale: CaptchaLocale
     public let sliderConfig: SliderConfig
     public let clickConfig: ClickConfig
 
@@ -32,7 +30,6 @@ public struct PopupCaptcha: View {
         public let height: Int
         public let sliderWidth: Int
         public let sliderHeight: Int
-        public let precision: Int
         public let showRefresh: Bool
 
         public init(
@@ -40,14 +37,12 @@ public struct PopupCaptcha: View {
             height: Int = 170,
             sliderWidth: Int = 42,
             sliderHeight: Int = 42,
-            precision: Int = 5,
             showRefresh: Bool = true
         ) {
             self.width = width
             self.height = height
             self.sliderWidth = sliderWidth
             self.sliderHeight = sliderHeight
-            self.precision = precision
             self.showRefresh = showRefresh
         }
     }
@@ -56,31 +51,30 @@ public struct PopupCaptcha: View {
         public let width: Int
         public let height: Int
         public let count: Int
-        public let precision: CGFloat
         public let showRefresh: Bool
 
         public init(
             width: Int = 300,
             height: Int = 170,
             count: Int = 3,
-            precision: CGFloat = 20,
             showRefresh: Bool = true
         ) {
             self.width = width
             self.height = height
             self.count = count
-            self.precision = precision
             self.showRefresh = showRefresh
         }
     }
 
     public init(
         type: CaptchaType = .slider,
-        title: String = "请完成安全验证",
+        title: String = "",
         maskClosable: Bool = true,
         showCloseButton: Bool = true,
         autoClose: Bool = true,
         closeDelay: TimeInterval = 0.5,
+        backendVerify: BackendVerifyOptions,
+        locale: CaptchaLocale = .zhCN,
         sliderConfig: SliderConfig = SliderConfig(),
         clickConfig: ClickConfig = ClickConfig(),
         isVisible: Bool = false,
@@ -94,12 +88,18 @@ public struct PopupCaptcha: View {
         self.showCloseButton = showCloseButton
         self.autoClose = autoClose
         self.closeDelay = closeDelay
+        self.backendVerify = backendVerify
+        self.locale = locale
         self.sliderConfig = sliderConfig
         self.clickConfig = clickConfig
         self.onSuccess = onSuccess
         self.onFail = onFail
         self.onClose = onClose
         self._isVisible = State(initialValue: isVisible)
+    }
+
+    private var displayTitle: String {
+        title.isEmpty ? LocaleMessages.get(locale, key: "popup_title") : title
     }
 
     public var body: some View {
@@ -129,7 +129,7 @@ public struct PopupCaptcha: View {
     // MARK: - Header
     private var header: some View {
         HStack {
-            Text(title)
+            Text(displayTitle)
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(.primary)
             Spacer()
@@ -156,8 +156,9 @@ public struct PopupCaptcha: View {
                 height: sliderConfig.height,
                 sliderWidth: sliderConfig.sliderWidth,
                 sliderHeight: sliderConfig.sliderHeight,
-                precision: sliderConfig.precision,
                 showRefresh: sliderConfig.showRefresh,
+                backendVerify: backendVerify,
+                locale: locale,
                 onSuccess: handleSuccess,
                 onFail: handleFail,
                 onRefresh: {}
@@ -167,8 +168,9 @@ public struct PopupCaptcha: View {
                 width: clickConfig.width,
                 height: clickConfig.height,
                 count: clickConfig.count,
-                precision: clickConfig.precision,
                 showRefresh: clickConfig.showRefresh,
+                backendVerify: backendVerify,
+                locale: locale,
                 onSuccess: handleSuccess,
                 onFail: handleFail,
                 onRefresh: {}
@@ -231,6 +233,8 @@ public extension View {
                 showCloseButton: configuration.showCloseButton,
                 autoClose: configuration.autoClose,
                 closeDelay: configuration.closeDelay,
+                backendVerify: configuration.backendVerify,
+                locale: configuration.locale,
                 sliderConfig: configuration.sliderConfig,
                 clickConfig: configuration.clickConfig,
                 isVisible: isPresented.wrappedValue,

@@ -7,10 +7,10 @@ public protocol SliderCaptchaViewDelegate: AnyObject {
     func sliderCaptchaDidRefresh(_ view: SliderCaptchaView)
 }
 
-/// Slider captcha view
+/// Slider captcha view - Backend verification only
 public class SliderCaptchaView: UIView {
-    // MARK: - Properties
     private let generator = CaptchaGenerator()
+    private let statisticsData = StatisticsData()
 
     private var bgImageView = UIImageView()
     private var sliderImageView = UIImageView()
@@ -24,23 +24,22 @@ public class SliderCaptchaView: UIView {
     private var sliderY: CGFloat = 0
     private var currentX: CGFloat = 0
     private var isDragging = false
+    private var dragStartTime: TimeInterval = 0
 
     public weak var delegate: SliderCaptchaViewDelegate?
+    public weak var callback: SliderCaptchaCallback?
 
-    public var captchaWidth: Int = 300 {
-        didSet { refresh() }
-    }
-    public var captchaHeight: Int = 170 {
-        didSet { refresh() }
-    }
+    public var captchaWidth: Int = 300 { didSet { refresh() } }
+    public var captchaHeight: Int = 170 { didSet { refresh() } }
     public var sliderWidth: Int = 42
     public var sliderHeight: Int = 42
     public var precision: Int = 5
-    public var showRefresh: Bool = true {
-        didSet { refreshButton.isHidden = !showRefresh }
-    }
+    public var showRefresh: Bool = true { didSet { refreshButton.isHidden = !showRefresh } }
 
-    // MARK: - Initialization
+    /// Backend verification configuration - Required
+    public var backendVerify: BackendVerifyOptions!
+    public var locale: CaptchaLocale = .zhCN
+
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -56,7 +55,6 @@ public class SliderCaptchaView: UIView {
         layer.cornerRadius = 8
         clipsToBounds = true
 
-        // Background image
         bgImageView.contentMode = .scaleAspectFill
         bgImageView.clipsToBounds = true
         addSubview(bgImageView)
@@ -68,7 +66,6 @@ public class SliderCaptchaView: UIView {
             bgImageView.heightAnchor.constraint(equalToConstant: CGFloat(captchaHeight))
         ])
 
-        // Slider image
         sliderImageView.contentMode = .scaleAspectFill
         sliderImageView.clipsToBounds = true
         addSubview(sliderImageView)
@@ -76,7 +73,6 @@ public class SliderCaptchaView: UIView {
         sliderImageView.widthAnchor.constraint(equalToConstant: CGFloat(sliderWidth)).isActive = true
         sliderImageView.heightAnchor.constraint(equalToConstant: CGFloat(sliderHeight)).isActive = true
 
-        // Refresh button
         refreshButton.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
         refreshButton.tintColor = .gray
         refreshButton.backgroundColor = UIColor.white.withAlphaComponent(0.9)
@@ -89,7 +85,6 @@ public class SliderCaptchaView: UIView {
         refreshButton.widthAnchor.constraint(equalToConstant: 28).isActive = true
         refreshButton.heightAnchor.constraint(equalToConstant: 28).isActive = true
 
-        // Status view
         statusView.isHidden = true
         addSubview(statusView)
         statusView.translatesAutoresizingMaskIntoConstraints = false
@@ -106,7 +101,6 @@ public class SliderCaptchaView: UIView {
         statusLabel.centerXAnchor.constraint(equalTo: statusView.centerXAnchor).isActive = true
         statusLabel.centerYAnchor.constraint(equalTo: statusView.centerYAnchor).isActive = true
 
-        // Slider bar
         sliderBarView.backgroundColor = UIColor(white: 0.97, alpha: 1)
         sliderBarView.layer.cornerRadius = 4
         addSubview(sliderBarView)
@@ -116,7 +110,6 @@ public class SliderCaptchaView: UIView {
         sliderBarView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
         sliderBarView.heightAnchor.constraint(equalToConstant: 40).isActive = true
 
-        // Slider thumb
         sliderThumbView.frame = CGRect(x: 2, y: 2, width: 36, height: 36)
         sliderThumbView.backgroundColor = .white
         sliderThumbView.layer.cornerRadius = 4
@@ -124,73 +117,111 @@ public class SliderCaptchaView: UIView {
         sliderThumbView.layer.borderColor = UIColor(white: 0.9, alpha: 1).cgColor
         sliderBarView.addSubview(sliderThumbView)
 
-        // Add pan gesture
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         sliderThumbView.addGestureRecognizer(panGesture)
-
-        refresh()
     }
 
-    // MARK: - Public Methods
     @objc public func refresh() {
-        let result = generator.generate(options: CaptchaOptions(
-            type: .slider,
-            width: captchaWidth,
-            height: captchaHeight,
-            sliderWidth: sliderWidth,
-            sliderHeight: sliderHeight
-        ))
-
-        bgImageView.image = result.bgImage
-        sliderImageView.image = result.sliderImage
-        targetX = result.targetPoints.first?.x ?? 0
-        sliderY = result.sliderY ?? 0
-        currentX = 0
-        statusView.isHidden = true
-
-        sliderImageView.frame = CGRect(x: 10, y: 10 + Int(sliderY), width: sliderWidth, height: sliderHeight)
-        sliderThumbView.frame = CGRect(x: 2, y: 2, width: 36, height: 36)
-
-        delegate?.sliderCaptchaDidRefresh(self)
+        guard backendVerify != nil else {
+            fatalError("backendVerify is required")
+        }
+        Task { await refreshAsync() }
     }
 
-    // MARK: - Private Methods
+    private func refreshAsync() async {
+        let options = CaptchaOptions(
+            type: .slider, width: captchaWidth, height: captchaHeight,
+            sliderWidth: sliderWidth, sliderHeight: sliderHeight, precision: precision,
+            backendVerify: backendVerify, locale: locale
+        )
+
+        do {
+            let result = try await generator.generate(options: options)
+            bgImageView.image = result.bgImage
+            sliderImageView.image = result.sliderImage
+            targetX = result.targetPoints.first?.x ?? 0
+            sliderY = result.sliderY
+            currentX = 0
+            statusView.isHidden = true
+            sliderImageView.frame = CGRect(x: 10, y: 10 + Int(sliderY), width: sliderWidth, height: sliderHeight)
+            sliderThumbView.frame = CGRect(x: 2, y: 2, width: 36, height: 36)
+            delegate?.sliderCaptchaDidRefresh(self)
+            callback?.onRefresh()
+        } catch {
+            showStatus(success: false, message: LocaleMessages.get(locale, key: "error_network"))
+            callback?.onError(error)
+        }
+    }
+
     @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
         let translation = gesture.translation(in: sliderBarView)
-
         switch gesture.state {
+        case .began:
+            dragStartTime = Date().timeIntervalSince1970
         case .changed:
             let maxX = CGFloat(captchaWidth - sliderWidth)
             currentX = max(0, min(currentX + translation.x, maxX))
             sliderThumbView.frame.origin.x = currentX + 2
             sliderImageView.frame.origin.x = currentX + 10
             gesture.setTranslation(.zero, in: sliderBarView)
-
+            callback?.onDrag(distance: currentX)
         case .ended:
             verify()
-
         default:
             break
         }
     }
 
     private func verify() {
-        let diff = abs(currentX - targetX)
+        guard backendVerify != nil else {
+            fatalError("backendVerify is required")
+        }
 
-        if diff <= CGFloat(precision) {
-            statusView.backgroundColor = UIColor(red: 0.32, green: 0.77, blue: 0.1, alpha: 0.9)
-            statusLabel.text = "验证成功"
-            statusView.isHidden = false
-            delegate?.sliderCaptchaDidSucceed(self)
-        } else {
-            statusView.backgroundColor = UIColor(red: 0.96, green: 0.13, blue: 0.18, alpha: 0.9)
-            statusLabel.text = "验证失败"
-            statusView.isHidden = false
-            delegate?.sliderCaptchaDidFail(self)
+        statisticsData.totalAttempts += 1
+        statisticsData.totalDragTime += Date().timeIntervalSince1970 - dragStartTime
+        statisticsData.totalDragDistance += currentX
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                self?.refresh()
+        let captchaData = generator.getCaptchaData(type: .slider, sliderX: currentX)
+
+        Task {
+            do {
+                let options = CaptchaOptions(type: .slider, backendVerify: backendVerify, locale: locale)
+                let response = try await generator.backendVerify(data: captchaData, options: options)
+                response.success ? handleSuccess() : handleFail()
+            } catch {
+                showStatus(success: false, message: LocaleMessages.get(locale, key: "error_network"))
+                callback?.onError(error)
+                callback?.onFail()
             }
         }
     }
+
+    private func handleSuccess() {
+        statisticsData.successCount += 1
+        showStatus(success: true, message: LocaleMessages.get(locale, key: "slider_success"))
+        delegate?.sliderCaptchaDidSucceed(self)
+        callback?.onSuccess()
+    }
+
+    private func handleFail() {
+        statisticsData.failCount += 1
+        showStatus(success: false, message: LocaleMessages.get(locale, key: "slider_fail"))
+        delegate?.sliderCaptchaDidFail(self)
+        callback?.onFail()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in self?.refresh() }
+    }
+
+    private func showStatus(success: Bool, message: String?) {
+        statusView.backgroundColor = success ? UIColor(red: 0.32, green: 0.77, blue: 0.1, alpha: 0.9) : UIColor(red: 0.96, green: 0.13, blue: 0.18, alpha: 0.9)
+        statusLabel.text = message ?? (success ? LocaleMessages.get(locale, key: "slider_success") : LocaleMessages.get(locale, key: "slider_fail"))
+        statusView.isHidden = false
+    }
+
+    public func getData() -> CaptchaData {
+        generator.getCaptchaData(type: .slider, sliderX: currentX)
+    }
+
+    public func getStatistics() -> CaptchaStatistics { statisticsData.toStatistics() }
+    public func resetStatistics() { statisticsData.reset() }
+    public func destroy() {}
 }

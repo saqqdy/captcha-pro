@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Click captcha view for SwiftUI
+/// Click captcha view for SwiftUI — backend verification only.
 public struct ClickCaptcha: View {
     @StateObject private var viewModel: ClickCaptchaViewModel
 
@@ -9,21 +9,25 @@ public struct ClickCaptcha: View {
         width: Int = 300,
         height: Int = 170,
         count: Int = 3,
-        precision: CGFloat = 20,
         showRefresh: Bool = true,
+        backendVerify: BackendVerifyOptions,
+        locale: CaptchaLocale = .zhCN,
         onSuccess: @escaping () -> Void = {},
         onFail: @escaping () -> Void = {},
-        onRefresh: @escaping () -> Void = {}
+        onRefresh: @escaping () -> Void = {},
+        onError: @escaping (Error) -> Void = {}
     ) {
         _viewModel = StateObject(wrappedValue: ClickCaptchaViewModel(
             width: width,
             height: height,
             count: count,
-            precision: precision,
             showRefresh: showRefresh,
+            backendVerify: backendVerify,
+            locale: locale,
             onSuccess: onSuccess,
             onFail: onFail,
-            onRefresh: onRefresh
+            onRefresh: onRefresh,
+            onError: onError
         ))
     }
 
@@ -37,9 +41,19 @@ public struct ClickCaptcha: View {
                         .resizable()
                         .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
                         .contentShape(Rectangle())
-                        .onTapGesture { location in
-                            // Handle tap
-                        }
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onEnded { value in
+                                    viewModel.handleClick(at: value.location)
+                                }
+                        )
+                } else if viewModel.loading {
+                    ProgressView()
+                        .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
+                } else if let msg = viewModel.errorMsg {
+                    Text(msg)
+                        .foregroundColor(.gray)
+                        .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
                 }
 
                 // Click point indicators
@@ -58,7 +72,7 @@ public struct ClickCaptcha: View {
                 }
 
                 // Refresh button
-                if viewModel.showRefresh {
+                if viewModel.showRefresh, !viewModel.loading {
                     Button(action: { viewModel.refresh() }) {
                         Image(systemName: "arrow.clockwise")
                             .foregroundColor(.gray)
@@ -73,7 +87,9 @@ public struct ClickCaptcha: View {
                 if let status = viewModel.status {
                     HStack {
                         Image(systemName: status == .success ? "checkmark" : "xmark")
-                        Text(status == .success ? "验证成功" : "验证失败")
+                        Text(status == .success
+                             ? LocaleMessages.get(viewModel.locale, key: "click_success")
+                             : LocaleMessages.get(viewModel.locale, key: "click_fail"))
                     }
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -87,14 +103,32 @@ public struct ClickCaptcha: View {
 
             // Info bar
             HStack {
-                Text("请依次点击: \(viewModel.clickTexts.joined(separator: " "))")
-                    .font(.systemFont(ofSize: 14))
-                    .foregroundColor(.primary)
+                if !viewModel.clickCharImages.isEmpty {
+                    Text(LocaleMessages.get(viewModel.locale, key: "click_prompt"))
+                    ForEach(viewModel.clickCharImages.indices, id: \.self) { i in
+                        if i < viewModel.charImages.count, let img = viewModel.charImages[i] {
+                            Image(uiImage: img)
+                                .resizable()
+                                .frame(width: 28, height: 28)
+                                .background(Color(red: 0.94, green: 0.97, blue: 1))
+                                .cornerRadius(4)
+                        } else {
+                            Color(red: 0.94, green: 0.97, blue: 1)
+                                .frame(width: 28, height: 28)
+                                .cornerRadius(4)
+                        }
+                    }
+                } else {
+                    Text(LocaleMessages.get(viewModel.locale, key: "click_prompt")
+                         + viewModel.clickTexts.joined(separator: " "))
+                        .font(.system(size: 14))
+                        .foregroundColor(.primary)
+                }
 
                 Spacer()
 
-                Text("\(viewModel.clickPoints.count)/\(viewModel.count)")
-                    .font(.systemFont(ofSize: 14))
+                Text("\(viewModel.clickPoints.count)/\(viewModel.targetCount)")
+                    .font(.system(size: 14))
                     .foregroundColor(Color.blue)
             }
             .padding(.horizontal, 12)
@@ -110,91 +144,136 @@ public struct ClickCaptcha: View {
     }
 }
 
-/// Click captcha view model
-class ClickCaptchaViewModel: ObservableObject {
+/// Click captcha view model — backend verification only.
+@MainActor
+final class ClickCaptchaViewModel: ObservableObject {
     @Published var bgImage: UIImage?
     @Published var clickPoints: [CGPoint] = []
     @Published var clickTexts: [String] = []
+    @Published var clickCharImages: [String] = []
+    @Published var charImages: [UIImage] = []
     @Published var status: Status?
+    @Published var loading = false
+    @Published var errorMsg: String?
 
     private let generator = CaptchaGenerator()
-    private var targetPoints: [CaptchaPoint] = []
 
     let width: Int
     let height: Int
     let count: Int
-    let precision: CGFloat
     let showRefresh: Bool
+    let backendVerify: BackendVerifyOptions
+    let locale: CaptchaLocale
     let onSuccess: () -> Void
     let onFail: () -> Void
     let onRefresh: () -> Void
+    let onError: (Error) -> Void
 
     enum Status {
         case success, fail
+    }
+
+    var targetCount: Int {
+        if !clickCharImages.isEmpty { return clickCharImages.count }
+        if !clickTexts.isEmpty { return clickTexts.count }
+        return count
     }
 
     init(
         width: Int,
         height: Int,
         count: Int,
-        precision: CGFloat,
         showRefresh: Bool,
+        backendVerify: BackendVerifyOptions,
+        locale: CaptchaLocale,
         onSuccess: @escaping () -> Void,
         onFail: @escaping () -> Void,
-        onRefresh: @escaping () -> Void
+        onRefresh: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
     ) {
         self.width = width
         self.height = height
         self.count = count
-        self.precision = precision
         self.showRefresh = showRefresh
+        self.backendVerify = backendVerify
+        self.locale = locale
         self.onSuccess = onSuccess
         self.onFail = onFail
         self.onRefresh = onRefresh
+        self.onError = onError
     }
 
     func refresh() {
         clickPoints.removeAll()
-
-        let result = generator.generate(options: CaptchaOptions(
+        loading = true
+        errorMsg = nil
+        let options = CaptchaOptions(
             type: .click,
             width: width,
             height: height,
-            clickCount: count
-        ))
+            clickCount: count,
+            backendVerify: backendVerify,
+            locale: locale
+        )
+        Task {
+            do {
+                let result = try await generator.generate(options: options)
+                bgImage = result.bgImage
+                clickTexts = result.clickTexts ?? []
+                clickCharImages = result.clickCharImages ?? []
+                status = nil
+                loading = false
+                onRefresh()
 
-        bgImage = result.bgImage
-        targetPoints = result.targetPoints
-        clickTexts = result.clickTexts
-        status = nil
-
-        onRefresh()
+                // Load char images off the main actor when present.
+                if !clickCharImages.isEmpty {
+                    var images: [UIImage?] = Array(repeating: nil, count: clickCharImages.count)
+                    for (i, src) in clickCharImages.enumerated() {
+                        if let img = try? await generator.loadImage(from: src) {
+                            images[i] = img
+                        }
+                    }
+                    charImages = images.compactMap { $0 }
+                } else {
+                    charImages = []
+                }
+            } catch {
+                loading = false
+                errorMsg = LocaleMessages.get(locale, key: "error_network")
+                onError(error)
+            }
+        }
     }
 
-    func verify(offsetX: CGFloat, offsetY: CGFloat) {
-        guard status == nil else { return }
+    func handleClick(at location: CGPoint) {
+        guard status == nil, clickPoints.count < targetCount else { return }
+        clickPoints.append(location)
+        if clickPoints.count == targetCount {
+            verify()
+        }
+    }
 
-        let currentTargetIndex = clickPoints.count
-        guard currentTargetIndex < count else { return }
-
-        let target = targetPoints[currentTargetIndex]
-        let distance = sqrt(pow(offsetX - target.x, 2) + pow(offsetY - target.y, 2))
-
-        if distance <= precision {
-            // Correct click
-            clickPoints.append(CGPoint(x: offsetX, y: offsetY))
-
-            if clickPoints.count == count {
-                // All points clicked correctly
-                status = .success
-                onSuccess()
-            }
-        } else {
-            // Wrong click
-            status = .fail
-            onFail()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-                self?.refresh()
+    private func verify() {
+        let points = clickPoints.map { CaptchaPoint(x: $0.x, y: $0.y) }
+        let data = generator.getCaptchaData(type: .click, targetPoints: points)
+        let options = CaptchaOptions(type: .click, backendVerify: backendVerify, locale: locale)
+        Task {
+            do {
+                let response = try await generator.backendVerify(data: data, options: options)
+                if response.success {
+                    status = .success
+                    onSuccess()
+                } else {
+                    status = .fail
+                    onFail()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+                        self?.refresh()
+                    }
+                }
+            } catch {
+                status = .fail
+                errorMsg = LocaleMessages.get(locale, key: "error_network")
+                onError(error)
             }
         }
     }

@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// Slider captcha view for SwiftUI
+/// Slider captcha view for SwiftUI — backend verification only.
 public struct SliderCaptcha: View {
     @StateObject private var viewModel: SliderCaptchaViewModel
 
@@ -10,22 +10,26 @@ public struct SliderCaptcha: View {
         height: Int = 170,
         sliderWidth: Int = 42,
         sliderHeight: Int = 42,
-        precision: Int = 5,
         showRefresh: Bool = true,
+        backendVerify: BackendVerifyOptions,
+        locale: CaptchaLocale = .zhCN,
         onSuccess: @escaping () -> Void = {},
         onFail: @escaping () -> Void = {},
-        onRefresh: @escaping () -> Void = {}
+        onRefresh: @escaping () -> Void = {},
+        onError: @escaping (Error) -> Void = {}
     ) {
         _viewModel = StateObject(wrappedValue: SliderCaptchaViewModel(
             width: width,
             height: height,
             sliderWidth: sliderWidth,
             sliderHeight: sliderHeight,
-            precision: precision,
             showRefresh: showRefresh,
+            backendVerify: backendVerify,
+            locale: locale,
             onSuccess: onSuccess,
             onFail: onFail,
-            onRefresh: onRefresh
+            onRefresh: onRefresh,
+            onError: onError
         ))
     }
 
@@ -38,10 +42,17 @@ public struct SliderCaptcha: View {
                     Image(uiImage: bgImage)
                         .resizable()
                         .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
+                } else if viewModel.loading {
+                    ProgressView()
+                        .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
+                } else if let msg = viewModel.errorMsg {
+                    Text(msg)
+                        .foregroundColor(.gray)
+                        .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
                 }
 
                 // Slider
-                if let sliderImage = viewModel.sliderImage {
+                if let sliderImage = viewModel.sliderImage, !viewModel.loading {
                     Image(uiImage: sliderImage)
                         .resizable()
                         .frame(width: CGFloat(viewModel.sliderWidth), height: CGFloat(viewModel.sliderHeight))
@@ -49,7 +60,7 @@ public struct SliderCaptcha: View {
                 }
 
                 // Refresh button
-                if viewModel.showRefresh {
+                if viewModel.showRefresh, !viewModel.loading {
                     Button(action: { viewModel.refresh() }) {
                         Image(systemName: "arrow.clockwise")
                             .foregroundColor(.gray)
@@ -64,7 +75,9 @@ public struct SliderCaptcha: View {
                 if let status = viewModel.status {
                     HStack {
                         Image(systemName: status == .success ? "checkmark" : "xmark")
-                        Text(status == .success ? "验证成功" : "验证失败")
+                        Text(status == .success
+                             ? LocaleMessages.get(viewModel.locale, key: "slider_success")
+                             : LocaleMessages.get(viewModel.locale, key: "slider_fail"))
                     }
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -77,7 +90,7 @@ public struct SliderCaptcha: View {
             .cornerRadius(4)
 
             // Slider bar
-            GeometryReader { geometry in
+            GeometryReader { _ in
                 ZStack(alignment: .leading) {
                     Color(white: 0.97)
                         .cornerRadius(4)
@@ -121,26 +134,30 @@ public struct SliderCaptcha: View {
     }
 }
 
-/// Slider captcha view model
-class SliderCaptchaViewModel: ObservableObject {
+/// Slider captcha view model — backend verification only.
+@MainActor
+final class SliderCaptchaViewModel: ObservableObject {
     @Published var bgImage: UIImage?
     @Published var sliderImage: UIImage?
     @Published var currentX: CGFloat = 0
     @Published var sliderY: CGFloat = 0
     @Published var status: Status?
+    @Published var loading = false
+    @Published var errorMsg: String?
 
     private let generator = CaptchaGenerator()
-    private var targetX: CGFloat = 0
 
     let width: Int
     let height: Int
     let sliderWidth: Int
     let sliderHeight: Int
-    let precision: Int
     let showRefresh: Bool
+    let backendVerify: BackendVerifyOptions
+    let locale: CaptchaLocale
     let onSuccess: () -> Void
     let onFail: () -> Void
     let onRefresh: () -> Void
+    let onError: (Error) -> Void
 
     enum Status {
         case success, fail
@@ -151,53 +168,77 @@ class SliderCaptchaViewModel: ObservableObject {
         height: Int,
         sliderWidth: Int,
         sliderHeight: Int,
-        precision: Int,
         showRefresh: Bool,
+        backendVerify: BackendVerifyOptions,
+        locale: CaptchaLocale,
         onSuccess: @escaping () -> Void,
         onFail: @escaping () -> Void,
-        onRefresh: @escaping () -> Void
+        onRefresh: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
     ) {
         self.width = width
         self.height = height
         self.sliderWidth = sliderWidth
         self.sliderHeight = sliderHeight
-        self.precision = precision
         self.showRefresh = showRefresh
+        self.backendVerify = backendVerify
+        self.locale = locale
         self.onSuccess = onSuccess
         self.onFail = onFail
         self.onRefresh = onRefresh
+        self.onError = onError
     }
 
     func refresh() {
-        let result = generator.generate(options: CaptchaOptions(
+        loading = true
+        errorMsg = nil
+        let options = CaptchaOptions(
             type: .slider,
             width: width,
             height: height,
             sliderWidth: sliderWidth,
-            sliderHeight: sliderHeight
-        ))
-
-        bgImage = result.bgImage
-        sliderImage = result.sliderImage
-        targetX = result.targetPoints.first?.x ?? 0
-        sliderY = result.sliderY ?? 0
-        currentX = 0
-        status = nil
-
-        onRefresh()
+            sliderHeight: sliderHeight,
+            backendVerify: backendVerify,
+            locale: locale
+        )
+        Task {
+            do {
+                let result = try await generator.generate(options: options)
+                bgImage = result.bgImage
+                sliderImage = result.sliderImage
+                sliderY = result.sliderY
+                currentX = 0
+                status = nil
+                loading = false
+                onRefresh()
+            } catch {
+                loading = false
+                errorMsg = LocaleMessages.get(locale, key: "error_network")
+                onError(error)
+            }
+        }
     }
 
     func verify() {
-        let diff = abs(currentX - targetX)
-
-        if diff <= CGFloat(precision) {
-            status = .success
-            onSuccess()
-        } else {
-            status = .fail
-            onFail()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                self?.refresh()
+        let data = generator.getCaptchaData(type: .slider, sliderX: currentX)
+        let options = CaptchaOptions(type: .slider, backendVerify: backendVerify, locale: locale)
+        Task {
+            do {
+                let response = try await generator.backendVerify(data: data, options: options)
+                if response.success {
+                    status = .success
+                    onSuccess()
+                } else {
+                    status = .fail
+                    onFail()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+                        self?.refresh()
+                    }
+                }
+            } catch {
+                status = .fail
+                errorMsg = LocaleMessages.get(locale, key: "error_network")
+                onError(error)
             }
         }
     }

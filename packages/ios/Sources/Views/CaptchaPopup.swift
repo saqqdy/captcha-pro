@@ -21,8 +21,8 @@ public class PopupCaptchaView: UIView {
     public private(set) var captchaView: UIView?
 
     public var captchaType: CaptchaType = .slider
-    public var title: String = "请完成安全验证" {
-        didSet { titleLabel.text = title }
+    public var title: String = "" {
+        didSet { titleLabel.text = title.isEmpty ? LocaleMessages.get(locale, key: "popup_title") : title }
     }
     public var maskClosable: Bool = true
     public var showCloseButton: Bool = true {
@@ -33,6 +33,10 @@ public class PopupCaptchaView: UIView {
 
     public weak var delegate: PopupCaptchaViewDelegate?
 
+    /// Backend verification configuration - Required
+    public var backendVerify: BackendVerifyOptions!
+    public var locale: CaptchaLocale = .zhCN
+
     // Captcha config
     public var captchaWidth: Int = 300
     public var captchaHeight: Int = 170
@@ -40,10 +44,6 @@ public class PopupCaptchaView: UIView {
     public var sliderHeight: Int = 42
     public var precision: Int = 5
     public var clickCount: Int = 3
-
-    public enum CaptchaType {
-        case slider, click
-    }
 
     // MARK: - Initialization
     public override init(frame: CGRect) {
@@ -170,6 +170,7 @@ public class PopupCaptchaView: UIView {
 
         isHidden = false
         buildCaptchaView()
+        titleLabel.text = title.isEmpty ? LocaleMessages.get(locale, key: "popup_title") : title
 
         UIView.animate(withDuration: 0.25) {
             self.overlayView.alpha = 1
@@ -202,6 +203,8 @@ public class PopupCaptchaView: UIView {
 
         if captchaType == .slider {
             let slider = SliderCaptchaView()
+            slider.backendVerify = backendVerify
+            slider.locale = locale
             slider.captchaWidth = captchaWidth
             slider.captchaHeight = captchaHeight
             slider.sliderWidth = sliderWidth
@@ -219,6 +222,8 @@ public class PopupCaptchaView: UIView {
             captchaView = slider
         } else {
             let click = ClickCaptchaView()
+            click.backendVerify = backendVerify
+            click.locale = locale
             click.captchaWidth = captchaWidth
             click.captchaHeight = captchaHeight
             click.clickCount = clickCount
