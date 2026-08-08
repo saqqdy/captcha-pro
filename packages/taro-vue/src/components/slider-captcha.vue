@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Image, MovableArea, MovableView, Text, View } from '@tarojs/components'
 import { useSliderCaptcha } from '../composables/useSliderCaptcha'
-import type { SliderCaptchaProps } from '@captcha-pro/mp-shared'
+import { getLocaleMessage, DEFAULT_LOCALE, type SliderCaptchaProps } from '@captcha-pro/mp-shared'
 import '../styles/captcha.scss'
 
 const props = withDefaults(defineProps<SliderCaptchaProps>(), {
@@ -10,7 +10,10 @@ const props = withDefaults(defineProps<SliderCaptchaProps>(), {
 	sliderWidth: 80,
 	sliderHeight: 80,
 	showRefresh: true,
+	locale: DEFAULT_LOCALE,
 })
+
+const t = (key: string) => getLocaleMessage(props.locale, key)
 
 const {
 	bgImage,
@@ -66,7 +69,7 @@ defineExpose({ refresh })
         class="captcha-loading"
         :style="{ width: `${widthPx}px`, height: `${heightPx}px` }"
       >
-        <Text>{{ errorMsg || '加载中...' }}</Text>
+        <Text>{{ errorMsg || t('loading') }}</Text>
       </View>
 
       <Image
@@ -87,13 +90,13 @@ defineExpose({ refresh })
 
       <View v-if="status" class="status-overlay" :class="status">
         <View class="status-icon"><Text>{{ status === 'success' ? '✓' : '✕' }}</Text></View>
-        <Text class="status-text">{{ status === 'success' ? '验证成功' : '验证失败' }}</Text>
+        <Text class="status-text">{{ status === 'success' ? t('slider_success') : t('slider_fail') }}</Text>
       </View>
     </View>
 
     <View class="slider-bar" :style="{ width: `${widthPx}px`, height: `${sliderBarHeight}px` }">
       <View class="slider-track" />
-      <View class="slider-hint"><Text>→ 按住滑块，拖动完成验证</Text></View>
+      <View class="slider-hint"><Text>{{ t('slider_hint') }}</Text></View>
       <MovableArea
         class="slider-area"
         :style="{ width: `${widthPx}px`, height: `${sliderBarHeight}px` }"

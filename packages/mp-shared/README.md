@@ -82,7 +82,7 @@ interface ClickCaptchaResponse {
 interface VerifyRequest {
   captchaId: string
   type: CaptchaType
-  target: number[]  // [x] for slider, [x, y, x, y, ...] for click
+  target: number[] | Point[]  // slider: [sliderX]; click: [{ x, y }, ...]
 }
 
 interface VerifyResponse {
@@ -115,16 +115,14 @@ export enum CaptchaStatus {
   ERROR = 'error',
 }
 
-// i18n keys
-export const I18N_KEYS = {
-  SLIDER_SUCCESS: 'slider.success',
-  SLIDER_FAIL: 'slider.fail',
-  CLICK_SUCCESS: 'click.success',
-  CLICK_FAIL: 'click.fail',
-  LOADING: 'loading',
-  ERROR: 'error',
-  REFRESH: 'refresh',
-}
+// i18n (keys aligned with Android/iOS LocaleMessages)
+export type CaptchaLocale = 'zh-CN' | 'en-US'
+export const DEFAULT_LOCALE: CaptchaLocale = 'zh-CN'
+export const LOCALE_MESSAGES: Record<CaptchaLocale, Record<string, string>>
+// keys: loading, slider_slide, slider_success, slider_fail, slider_hint,
+//       click_prompt, click_success, click_fail, popup_title, popup_close,
+//       error_network, error_expired, error_invalid, error_not_found
+export function getLocaleMessage(locale: CaptchaLocale, key: string): string
 ```
 
 ## Shared Utilities
@@ -138,9 +136,8 @@ export function createVerifyRequest(config: BackendConfig, data: VerifyRequest):
 export function validateSliderTarget(target: number[], precision: number, expectedX: number): boolean
 export function validateClickTarget(target: number[], clickTexts: string[]): boolean
 
-// i18n helpers
-export function getLocaleText(key: string, locale?: 'zh-CN' | 'en-US'): string
-export function detectLocale(): 'zh-CN' | 'en-US'
+// i18n helper (see LOCALE_MESSAGES above)
+export function getLocaleMessage(locale: CaptchaLocale, key: string): string
 
 // Image helpers
 export function loadImage(src: string): Promise<HTMLImageElement | ImageData>

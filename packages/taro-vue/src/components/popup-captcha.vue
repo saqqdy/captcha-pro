@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { Text, View } from '@tarojs/components'
-import type { PopupCaptchaProps } from '@captcha-pro/mp-shared'
+import { DEFAULT_LOCALE, getLocaleMessage, type PopupCaptchaProps } from '@captcha-pro/mp-shared'
 import ClickCaptcha from './click-captcha.vue'
 import SliderCaptcha from './slider-captcha.vue'
 import '../styles/captcha.scss'
 
 const props = withDefaults(defineProps<PopupCaptchaProps>(), {
 	type: 'slider',
-	title: '安全验证',
+	title: '',
 	maskClosable: true,
 	showClose: true,
 	autoClose: true,
 	closeDelay: 500,
+	locale: DEFAULT_LOCALE,
 	sliderOptions: () => ({}),
 	clickOptions: () => ({}),
 })
+
+const displayTitle = computed(() => props.title || getLocaleMessage(props.locale, 'popup_title'))
 
 const visible = ref(false)
 
@@ -73,7 +76,7 @@ defineExpose({ show, hide, isVisible: () => visible.value })
           padding: '24rpx 32rpx', borderBottom: '1rpx solid #eee',
         }"
       >
-        <Text :style="{ fontSize: '32rpx', fontWeight: '600', color: '#333' }">{{ title }}</Text>
+        <Text :style="{ fontSize: '32rpx', fontWeight: '600', color: '#333' }">{{ displayTitle }}</Text>
         <View
           v-if="showClose"
           class="popup-close"
@@ -92,6 +95,7 @@ defineExpose({ show, hide, isVisible: () => visible.value })
           v-if="type === 'slider'"
           v-bind="sliderOptions"
           :backend="backend"
+          :locale="locale"
           :on-success="handleSuccess"
           :on-fail="onFail"
           :on-refresh="onRefresh"
@@ -100,6 +104,7 @@ defineExpose({ show, hide, isVisible: () => visible.value })
           v-else
           v-bind="clickOptions"
           :backend="backend"
+          :locale="locale"
           :on-success="handleSuccess"
           :on-fail="onFail"
           :on-refresh="onRefresh"

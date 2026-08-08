@@ -6,9 +6,11 @@
  * weixin / uniapp / taro 的 types.ts 均从此处 re-export。
  */
 import type { CaptchaType, Point } from '@captcha-pro/core'
+import type { CaptchaLocale } from './i18n'
 
 // Re-export Point from @captcha-pro/core for consumers of this package
 export type { Point } from '@captcha-pro/core'
+export type { CaptchaLocale } from './i18n'
 
 // ============================================================
 // Backend API Types
@@ -90,6 +92,8 @@ export interface SliderCaptchaProps {
 	showRefresh?: boolean
 	/** 后端配置（必填） */
 	backend: BackendConfig
+	/** 语言，默认 'zh-CN' */
+	locale?: CaptchaLocale
 	/** 验证成功回调 */
 	onSuccess?: (data?: { verifiedAt: number }) => void
 	/** 验证失败回调 */
@@ -112,6 +116,8 @@ export interface ClickCaptchaProps {
 	showRefresh?: boolean
 	/** 后端配置（必填） */
 	backend: BackendConfig
+	/** 语言，默认 'zh-CN' */
+	locale?: CaptchaLocale
 	/** 验证成功回调 */
 	onSuccess?: (data?: { verifiedAt: number }) => void
 	/** 验证失败回调 */
@@ -144,6 +150,8 @@ export interface PopupCaptchaProps {
 	clickOptions?: Omit<ClickCaptchaProps, 'backend'>
 	/** 后端配置（必填） */
 	backend: BackendConfig
+	/** 语言，默认 'zh-CN' */
+	locale?: CaptchaLocale
 	/** 验证成功回调 */
 	onSuccess?: (data?: { verifiedAt: number }) => void
 	/** 验证失败回调 */

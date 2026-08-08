@@ -164,6 +164,7 @@ import type {
 | width | number | 300 | Container width |
 | height | number | 170 | Container height |
 | showRefresh | boolean | true | Show refresh button |
+| locale | CaptchaLocale | 'zh-CN' | Language (i18n) |
 
 ### ClickCaptcha
 
@@ -173,6 +174,7 @@ import type {
 | width | number | 300 | Container width |
 | height | number | 170 | Container height |
 | showRefresh | boolean | true | Show refresh button |
+| locale | CaptchaLocale | 'zh-CN' | Language (i18n) |
 
 ### PopupCaptcha
 
@@ -180,10 +182,21 @@ import type {
 |------|------|---------|-------------|
 | type | 'slider' \| 'click' | 'slider' | Captcha type |
 | backend | BackendConfig | - | **Required**, backend API config |
-| title | string | '请完成安全验证' | Popup title |
+| title | string | '' | Popup title (empty → i18n `popup_title`) |
 | maskClosable | boolean | true | Close on mask click |
 | showClose | boolean | true | Show close button |
 | autoClose | boolean | true | Auto close on success |
+| locale | CaptchaLocale | 'zh-CN' | Language (i18n) |
+
+## i18n
+
+All three components accept a `locale` prop (`'zh-CN'` | `'en-US'`). Status strings
+(loading / success / fail / prompt / popup title / errors) resolve via `getLocaleMessage(locale, key)`
+from `@captcha-pro/mp-shared`. Keys are aligned with the Android/iOS `LocaleMessages` set.
+
+```vue
+<SliderCaptcha :backend="backendConfig" locale="en-US" @success="onSuccess" />
+```
 
 ## Exposed Methods
 

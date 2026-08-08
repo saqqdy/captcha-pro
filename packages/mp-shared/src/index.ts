@@ -17,6 +17,13 @@ export {
 	FAIL_REFRESH_DELAY,
 } from './constants'
 
+export {
+	DEFAULT_LOCALE,
+	getLocaleMessage,
+	LOCALE_MESSAGES,
+	type CaptchaLocale,
+} from './i18n'
+
 export type {
 	BackendCaptchaParams,
 	BackendCaptchaResponse,

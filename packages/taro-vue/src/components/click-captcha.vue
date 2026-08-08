@@ -2,15 +2,17 @@
 import { Image, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { useClickCaptcha } from '../composables/useClickCaptcha'
-import type { ClickCaptchaProps } from '@captcha-pro/mp-shared'
-import { DEFAULT_CLICK_COUNT } from '@captcha-pro/mp-shared'
+import { DEFAULT_CLICK_COUNT, DEFAULT_LOCALE, getLocaleMessage, type ClickCaptchaProps } from '@captcha-pro/mp-shared'
 import '../styles/captcha.scss'
 
 const props = withDefaults(defineProps<ClickCaptchaProps>(), {
 	width: 650,
 	height: 380,
 	showRefresh: true,
+	locale: DEFAULT_LOCALE,
 })
+
+const t = (key: string) => getLocaleMessage(props.locale, key)
 
 const {
 	bgImage,
@@ -83,7 +85,7 @@ defineExpose({ refresh })
         class="captcha-loading"
         :style="{ width: `${widthPx}px`, height: `${heightPx}px` }"
       >
-        <Text>{{ errorMsg || '加载中...' }}</Text>
+        <Text>{{ errorMsg || t('loading') }}</Text>
       </View>
 
       <View
@@ -101,12 +103,12 @@ defineExpose({ refresh })
 
       <View v-if="status" class="status-overlay" :class="status">
         <View class="status-icon"><Text>{{ status === 'success' ? '✓' : '✕' }}</Text></View>
-        <Text class="status-text">{{ status === 'success' ? '验证成功' : '验证失败' }}</Text>
+        <Text class="status-text">{{ status === 'success' ? t('click_success') : t('click_fail') }}</Text>
       </View>
     </View>
 
     <View class="prompt-bar" :style="{ width: `${widthPx}px` }">
-      <Text class="prompt-text">请依次点击：</Text>
+      <Text class="prompt-text">{{ t('click_prompt') }}</Text>
       <View class="prompt-chars">
         <template v-if="clickCharImages.length > 0">
           <View v-for="(img, i) in clickCharImages" :key="`img${i}`" class="char-item">
