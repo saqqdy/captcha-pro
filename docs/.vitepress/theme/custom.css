@@ -1,0 +1,109 @@
+/* Custom theme colors - Emerald for captcha-pro (green = verified) */
+:root {
+  --vp-c-brand-1: #0E9D6E;
+  --vp-c-brand-2: #048059;
+  --vp-c-brand-3: #03664A;
+  --vp-c-brand-soft: rgba(14, 157, 110, 0.14);
+
+  /* Accent colors */
+  --vp-c-brand-1-dark: #2CB382;
+  --vp-c-brand-2-dark: #0E9D6E;
+  --vp-c-brand-3-dark: #048059;
+
+  /* Button */
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: #fff;
+  --vp-button-brand-bg: var(--vp-c-brand-1);
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: #fff;
+  --vp-button-brand-hover-bg: var(--vp-c-brand-2);
+  --vp-button-brand-active-border: transparent;
+  --vp-button-brand-active-text: #fff;
+  --vp-button-brand-active-bg: var(--vp-c-brand-1);
+
+  /* Sponsor button */
+  --vp-button-sponsor-border: var(--vp-c-brand-1);
+  --vp-button-sponsor-text: var(--vp-c-brand-1);
+  --vp-button-sponsor-bg: transparent;
+  --vp-button-sponsor-hover-border: var(--vp-c-brand-2);
+  --vp-button-sponsor-hover-text: var(--vp-c-brand-2);
+  --vp-button-sponsor-hover-bg: transparent;
+
+  /* Home hero */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(135deg, #2CB382 0%, #0E9D6E 50%, #048059 100%);
+  --vp-home-hero-image-background-image: linear-gradient(135deg, #2CB382 50%, #0E9D6E 50%);
+  --vp-home-hero-image-filter: blur(44px);
+}
+
+/* Hero image sizing - make it larger */
+.VPHero .image-bg {
+  width: 280px;
+  height: 280px;
+}
+
+.VPHero .image-src {
+  width: 240px;
+  height: 240px;
+}
+
+@media (max-width: 768px) {
+  .VPHero .image-bg {
+    width: 200px;
+    height: 200px;
+  }
+
+  .VPHero .image-src {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+.dark {
+  --vp-c-brand-1: #2CB382;
+  --vp-c-brand-2: #0E9D6E;
+  --vp-c-brand-3: #048059;
+  --vp-c-brand-soft: rgba(44, 179, 130, 0.14);
+
+  --vp-home-hero-name-background: linear-gradient(135deg, #5EC49C 0%, #2CB382 50%, #0E9D6E 100%);
+  --vp-home-hero-image-background-image: linear-gradient(135deg, #5EC49C 50%, #2CB382 50%);
+}
+
+/* Link hover color */
+.vp-doc a:hover {
+  color: var(--vp-c-brand-2);
+}
+
+/* Sidebar active link */
+.VPSidebarItem.is-active > .item > .link > .text {
+  color: var(--vp-c-brand-1);
+}
+
+/* Nav link active */
+.VPNavBarMenuLink.active .text {
+  color: var(--vp-c-brand-1);
+}
+
+/* Custom block styling */
+.custom-block.tip {
+  border-color: var(--vp-c-brand-1);
+}
+
+.custom-block.tip a {
+  color: var(--vp-c-brand-1);
+}
+
+/* Badge styling */
+.VPBadge {
+  background-color: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
+
+/* Feature grid */
+.VPFeature {
+  border-color: var(--vp-c-brand-soft);
+}
+
+.VPFeature:hover {
+  border-color: var(--vp-c-brand-1);
+}

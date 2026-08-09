@@ -46,7 +46,10 @@
     "clean": "turbo clean && rm -rf node_modules",
     "pub": "pnpm -r publish --access public",
     "changeset": "changeset",
-    "version": "changeset version"
+    "version": "changeset version",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.28.0",
@@ -57,7 +60,8 @@
     "prettier": "^3.8.1",
     "prettier-config-common": "^1.5.0",
     "turbo": "^2.4.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitepress": "^1.6.4"
   },
   "engines": {
     "node": ">=18"

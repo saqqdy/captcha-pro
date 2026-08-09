@@ -10,3 +10,6 @@ coverage/
 *_bak
 stats.html
 .turbo/
+
+# VitePress build cache
+docs/.vitepress/cache/
