@@ -249,7 +249,7 @@ curl -X DELETE http://localhost:8082/api/security/blacklist/192.168.1.100
 ## Frontend Integration
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha-container',

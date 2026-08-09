@@ -2,7 +2,7 @@
  * Click Captcha Mixin for Vue 2
  *
  * Usage:
- * import { clickCaptchaMixin } from 'captcha-pro-vue2/mixins'
+ * import { clickCaptchaMixin } from '@captcha-pro/vue2/mixins'
  *
  * export default {
  *   mixins: [clickCaptchaMixin],

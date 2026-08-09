@@ -4,7 +4,7 @@ captcha-pro supports **10+ platforms** with a consistent API. Pick the package t
 
 | Platform | Package | Description |
 |----------|---------|-------------|
-| Web (Vanilla JS) | `captcha-pro` | Core package, works everywhere |
+| Web (Vanilla JS) | `@captcha-pro/core` | Core package, works everywhere |
 | Vue 2 | `@captcha-pro/vue2` | Options API + Mixins |
 | Vue 3 | `@captcha-pro/vue` | Composition API + Composables |
 | React | `@captcha-pro/react` | Hooks-based components |
@@ -20,7 +20,7 @@ captcha-pro supports **10+ platforms** with a consistent API. Pick the package t
 
 ```bash
 # Web
-pnpm add captcha-pro
+pnpm add @captcha-pro/core
 
 # Vue 2 / Vue 3 / React
 pnpm add @captcha-pro/vue2   # or @captcha-pro/vue / @captcha-pro/react

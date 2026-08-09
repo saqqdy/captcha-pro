@@ -1,4 +1,4 @@
-# captcha-pro-react
+# @captcha-pro/react
 
 React component library for Captcha Pro with Hooks support.
 
@@ -7,7 +7,7 @@ React component library for Captcha Pro with Hooks support.
 ## Installation
 
 ```bash
-pnpm add captcha-pro-react
+pnpm add @captcha-pro/react
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ pnpm add captcha-pro-react
 ### Component Usage
 
 ```tsx
-import { SliderCaptcha, ClickCaptcha, PopupCaptcha } from 'captcha-pro-react'
+import { SliderCaptcha, ClickCaptcha, PopupCaptcha } from '@captcha-pro/react'
 
 function App() {
   const handleSuccess = () => {
@@ -57,7 +57,7 @@ function App() {
 ### Using Hooks
 
 ```tsx
-import { useSliderCaptcha, useClickCaptcha } from 'captcha-pro-react/hooks'
+import { useSliderCaptcha, useClickCaptcha } from '@captcha-pro/react/hooks'
 
 function CustomCaptcha() {
   const {
@@ -87,7 +87,7 @@ function CustomCaptcha() {
 
 ```tsx
 import { useRef } from 'react'
-import { SliderCaptcha, type SliderCaptchaRef } from 'captcha-pro-react'
+import { SliderCaptcha, type SliderCaptchaRef } from '@captcha-pro/react'
 
 function App() {
   const captchaRef = useRef<SliderCaptchaRef>(null)
@@ -123,7 +123,7 @@ import type {
   UseClickCaptchaOptions,
   UseSliderCaptchaReturn,
   UseClickCaptchaReturn
-} from 'captcha-pro-react'
+} from '@captcha-pro/react'
 ```
 
 ## Props

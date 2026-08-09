@@ -1,11 +1,11 @@
-# captcha-pro-vue2
+# @captcha-pro/vue2
 
 Captcha Pro 的 Vue 2 组件库。
 
 ## 安装
 
 ```bash
-pnpm add captcha-pro-vue2
+pnpm add @captcha-pro/vue2
 ```
 
 ## 使用
@@ -14,7 +14,7 @@ pnpm add captcha-pro-vue2
 
 ```javascript
 import Vue from 'vue'
-import CaptchaPro from 'captcha-pro-vue2'
+import CaptchaPro from '@captcha-pro/vue2'
 
 Vue.use(CaptchaPro)
 ```
@@ -80,7 +80,7 @@ export default {
 </template>
 
 <script>
-import { sliderCaptchaMixin } from 'captcha-pro-vue2/mixins'
+import { sliderCaptchaMixin } from '@captcha-pro/vue2/mixins'
 
 export default {
   mixins: [sliderCaptchaMixin],

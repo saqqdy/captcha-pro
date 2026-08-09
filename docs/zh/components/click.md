@@ -5,7 +5,7 @@
 ## 示例
 
 ```javascript
-import { ClickCaptcha } from 'captcha-pro'
+import { ClickCaptcha } from '@captcha-pro/core'
 
 const captcha = new ClickCaptcha({
   el: '#click-captcha',

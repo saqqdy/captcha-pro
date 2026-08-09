@@ -50,10 +50,10 @@ features:
 
 ```bash
 # Install
-pnpm add captcha-pro
+pnpm add @captcha-pro/core
 
 # Use
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 new SliderCaptcha({
   el: '#captcha',
@@ -67,7 +67,7 @@ Captcha Pro supports **10+ platforms** with consistent APIs:
 
 | Platform | Package | Description |
 |----------|---------|-------------|
-| Web (Vanilla JS) | `captcha-pro` | Core package, works everywhere |
+| Web (Vanilla JS) | `@captcha-pro/core` | Core package, works everywhere |
 | Vue 2 | `@captcha-pro/vue2` | Options API + Mixins |
 | Vue 3 | `@captcha-pro/vue` | Composition API + Composables |
 | React | `@captcha-pro/react` | Hooks-based components |

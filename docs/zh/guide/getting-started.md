@@ -6,7 +6,7 @@
 
 ```bash
 # 核心包（Web / 原生 JS）
-pnpm add captcha-pro
+pnpm add @captcha-pro/core
 
 # Vue 2
 pnpm add @captcha-pro/vue2
@@ -40,7 +40,7 @@ pod 'CaptchaPro', '~> 2.0.0'
 <div id="captcha"></div>
 
 <script type="module">
-  import { SliderCaptcha } from 'captcha-pro'
+  import { SliderCaptcha } from '@captcha-pro/core'
 
   const captcha = new SliderCaptcha({
     el: '#captcha',

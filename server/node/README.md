@@ -191,7 +191,7 @@ base64(salt[16] + iv[12] + ciphertext + authTag[16])
 
 ```typescript
 // Frontend
-import { SliderCaptcha, decryptCaptchaData } from 'captcha-pro'
+import { SliderCaptcha, decryptCaptchaData } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -303,7 +303,7 @@ curl -H "Accept-Language: en-US" http://localhost:3001/api/captcha?type=slider
 ## Frontend Integration
 
 ```typescript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha-container',

@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.0.0] - Unreleased
+## [2.0.0] - 2026-08-09
 
 🚀 **Multi-Platform Release** - Captcha Pro now supports 14+ platform targets across web, mini-programs, and mobile!
 

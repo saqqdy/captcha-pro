@@ -61,7 +61,9 @@ export function useClickCaptcha(options: UseClickCaptchaOptions): {
     isReady.value = true
   }
 
-  const refresh = (): void => instance.value?.refresh()
+  const refresh = (): void => {
+    instance.value?.refresh()
+  }
   const getData = (): CaptchaData | undefined => instance.value?.getData()
   const getStatistics = (): CaptchaStatistics | undefined => instance.value?.getStatistics()
 

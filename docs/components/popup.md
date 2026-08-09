@@ -5,7 +5,7 @@ A modal wrapper around the slider or click captcha. Trigger it by an element cli
 ## Example
 
 ```javascript
-import { PopupCaptcha } from 'captcha-pro'
+import { PopupCaptcha } from '@captcha-pro/core'
 
 const popup = new PopupCaptcha({
   trigger: '#submit-btn',

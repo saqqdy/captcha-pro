@@ -2,7 +2,7 @@
   "name": "captcha-uniapp-vue-example",
   "appid": "",
   "description": "uni-app Vue 3 验证码示例",
-  "versionName": "1.0.0",
+  "versionName": "2.0.0",
   "versionCode": "100",
   "transformPx": false,
   "app-plus": {

@@ -1,11 +1,11 @@
-# captcha-pro-react
+# @captcha-pro/react
 
 Captcha Pro 的 React 组件库，支持 Hooks。
 
 ## 安装
 
 ```bash
-pnpm add captcha-pro-react
+pnpm add @captcha-pro/react
 ```
 
 ## 使用
@@ -13,7 +13,7 @@ pnpm add captcha-pro-react
 ### 组件用法
 
 ```tsx
-import { SliderCaptcha, ClickCaptcha, PopupCaptcha } from 'captcha-pro-react'
+import { SliderCaptcha, ClickCaptcha, PopupCaptcha } from '@captcha-pro/react'
 
 function App() {
   const handleSuccess = () => {
@@ -55,7 +55,7 @@ function App() {
 ### 使用 Hooks
 
 ```tsx
-import { useSliderCaptcha, useClickCaptcha } from 'captcha-pro-react/hooks'
+import { useSliderCaptcha, useClickCaptcha } from '@captcha-pro/react/hooks'
 
 function CustomCaptcha() {
   const {
@@ -85,7 +85,7 @@ function CustomCaptcha() {
 
 ```tsx
 import { useRef } from 'react'
-import { SliderCaptcha, type SliderCaptchaRef } from 'captcha-pro-react'
+import { SliderCaptcha, type SliderCaptchaRef } from '@captcha-pro/react'
 
 function App() {
   const captchaRef = useRef<SliderCaptchaRef>(null)
@@ -121,7 +121,7 @@ import type {
   UseClickCaptchaOptions,
   UseSliderCaptchaReturn,
   UseClickCaptchaReturn
-} from 'captcha-pro-react'
+} from '@captcha-pro/react'
 ```
 
 ## Props

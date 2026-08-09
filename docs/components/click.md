@@ -5,7 +5,7 @@ Text click verification with 200+ Chinese vocabulary support. Each word has no d
 ## Example
 
 ```javascript
-import { ClickCaptcha } from 'captcha-pro'
+import { ClickCaptcha } from '@captcha-pro/core'
 
 const captcha = new ClickCaptcha({
   el: '#click-captcha',

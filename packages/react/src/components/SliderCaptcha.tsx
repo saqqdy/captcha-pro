@@ -100,8 +100,8 @@ export const SliderCaptcha = React.forwardRef<SliderCaptchaRef, SliderCaptchaPro
     }))
 
     return (
-      <div class={`captcha-react-wrapper ${className || ''}`}>
-        <div ref={containerRef} class="captcha-container" />
+      <div className={`captcha-react-wrapper ${className || ''}`}>
+        <div ref={containerRef} className="captcha-container" />
       </div>
     )
   }

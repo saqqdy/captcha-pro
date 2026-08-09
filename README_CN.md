@@ -35,7 +35,7 @@ Captcha Pro 支持 **10+ 平台**，API 保持一致：
 
 | 平台 | 包名 | 描述 |
 |------|------|------|
-| Web (原生 JS) | `captcha-pro` | 核心包，通用支持 |
+| Web (原生 JS) | `@captcha-pro/core` | 核心包，通用支持 |
 | Vue 2 | `@captcha-pro/vue2` | Options API + Mixins |
 | Vue 3 | `@captcha-pro/vue` | Composition API + Composables |
 | React | `@captcha-pro/react` | Hooks 组件 |
@@ -53,10 +53,10 @@ Captcha Pro 支持 **10+ 平台**，API 保持一致：
 
 ```bash
 # 安装
-pnpm add captcha-pro
+pnpm add @captcha-pro/core
 
 # 使用
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 new SliderCaptcha({
   el: '#captcha',
@@ -101,7 +101,7 @@ new SliderCaptcha({
 
 ```bash
 # 核心包 (Web/原生 JS)
-$ pnpm add captcha-pro
+$ pnpm add @captcha-pro/core
 
 # Vue 2
 $ pnpm add @captcha-pro/vue2
@@ -182,7 +182,7 @@ SliderCaptcha(
 <div id="slider-captcha"></div>
 
 <script type="module">
-  import { SliderCaptcha } from 'captcha-pro'
+  import { SliderCaptcha } from '@captcha-pro/core'
 
   const captcha = new SliderCaptcha({
     el: '#slider-captcha',
@@ -214,7 +214,7 @@ SliderCaptcha(
 <div id="click-captcha"></div>
 
 <script type="module">
-  import { ClickCaptcha } from 'captcha-pro'
+  import { ClickCaptcha } from '@captcha-pro/core'
 
   const captcha = new ClickCaptcha({
     el: '#click-captcha',
@@ -235,7 +235,7 @@ SliderCaptcha(
 <button id="submit-btn">提交</button>
 
 <script type="module">
-  import { PopupCaptcha } from 'captcha-pro'
+  import { PopupCaptcha } from '@captcha-pro/core'
 
   const popup = new PopupCaptcha({
     trigger: '#submit-btn',
@@ -272,7 +272,7 @@ SliderCaptcha(
 <button id="submit-btn">提交</button>
 
 <script type="module">
-  import { InvisibleCaptcha } from 'captcha-pro'
+  import { InvisibleCaptcha } from '@captcha-pro/core'
 
   const captcha = new InvisibleCaptcha({
     el: '#submit-btn',
@@ -298,7 +298,7 @@ SliderCaptcha(
 ### 安全特性
 
 ```javascript
-import { SliderCaptcha, decryptCaptchaData } from 'captcha-pro'
+import { SliderCaptcha, decryptCaptchaData } from '@captcha-pro/core'
 
 // 带 AES-GCM 加密用于后端验证
 const captcha = new SliderCaptcha({
@@ -322,7 +322,7 @@ const captcha = new SliderCaptcha({
 })
 
 // 后端验证示例（Node.js）
-import { decryptCaptchaData, validateTimestamp } from 'captcha-pro'
+import { decryptCaptchaData, validateTimestamp } from '@captcha-pro/core'
 
 async function verifyCaptcha(encryptedData, secretKey) {
   try {
@@ -344,7 +344,7 @@ async function verifyCaptcha(encryptedData, secretKey) {
 ### 后端验证模式
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -386,7 +386,7 @@ captcha.resetStatistics()
 ### 自定义图片
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -408,7 +408,7 @@ import {
   createClickCaptcha,
   createInvisibleCaptcha,
   createPopupCaptcha
-} from 'captcha-pro'
+} from '@captcha-pro/core'
 
 const slider = createSliderCaptcha({ el: '#slider' })
 const click = createClickCaptcha({ el: '#click' })
@@ -421,7 +421,7 @@ const popup = createPopupCaptcha({ type: 'slider' })
 captcha-pro 内置中英文支持，默认自动检测浏览器语言。
 
 ```javascript
-import { SliderCaptcha, setLocale, getLocale, t } from 'captcha-pro'
+import { SliderCaptcha, setLocale, getLocale, t } from '@captcha-pro/core'
 
 // 全局设置语言
 setLocale('en-US')
@@ -447,7 +447,7 @@ console.log(t('slider.success')) // 'Verification passed'
   <!--[if IE]>
   <script src="https://cdn.jsdelivr.net/npm/core-js-bundle/minified.js"></script>
   <![endif]-->
-  <script src="https://unpkg.com/captcha-pro/dist/index.global.min.js"></script>
+  <script src="https://unpkg.com/@captcha-pro/core/dist/index.global.min.js"></script>
 </head>
 <body>
   <div id="captcha"></div>
@@ -589,7 +589,7 @@ pnpm dev
 ### 前端对接后端
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -765,16 +765,16 @@ cd server/node && pnpm dev
 
 [MIT](LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/captcha-pro.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/captcha-pro
+[npm-image]: https://img.shields.io/npm/v/@captcha-pro/core.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@captcha-pro/core
 [codacy-image]: https://app.codacy.com/project/badge/Grade/f70d4880e4ad4f40aa970eb9ee9d0696
 [codacy-url]: https://www.codacy.com/gh/saqqdy/captcha-pro/dashboard?utm_source=github.com&utm_medium=referral&utm_content=saqqdy/captcha-pro&utm_campaign=Badge_Grade
 [codecov-image]: https://img.shields.io/codecov/c/github/saqqdy/captcha-pro.svg?style=flat-square
 [codecov-url]: https://codecov.io/github/saqqdy/captcha-pro?branch=master
-[download-image]: https://img.shields.io/npm/dm/captcha-pro.svg?style=flat-square
-[download-url]: https://npmjs.org/package/captcha-pro
-[gzip-image]: http://img.badgesize.io/https://unpkg.com/captcha-pro/dist/index.global.min.js?compression=gzip&label=gzip%20size:%20JS
-[gzip-url]: http://img.badgesize.io/https://unpkg.com/captcha-pro/dist/index.global.min.js?compression=gzip&label=gzip%20size:%20JS
+[download-image]: https://img.shields.io/npm/dm/@captcha-pro/core.svg?style=flat-square
+[download-url]: https://npmjs.org/package/@captcha-pro/core
+[gzip-image]: http://img.badgesize.io/https://unpkg.com/@captcha-pro/core/dist/index.global.min.js?compression=gzip&label=gzip%20size:%20JS
+[gzip-url]: http://img.badgesize.io/https://unpkg.com/@captcha-pro/core/dist/index.global.min.js?compression=gzip&label=gzip%20size:%20JS
 [license-image]: https://img.shields.io/badge/License-MIT-blue.svg
 [license-url]: LICENSE
 [sonar-image]: https://sonarcloud.io/api/project_badges/quality_gate?project=saqqdy_captcha-pro

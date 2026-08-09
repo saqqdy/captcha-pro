@@ -5,7 +5,7 @@ Puzzle verification with random shapes (square / triangle / trapezoid / pentagon
 ## Example
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#slider-captcha',

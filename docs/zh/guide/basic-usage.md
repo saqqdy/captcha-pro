@@ -8,7 +8,7 @@ captcha-pro 提供四种验证码类型：**滑动拼图**、**点选文字**、
 <div id="slider-captcha"></div>
 
 <script type="module">
-  import { SliderCaptcha } from 'captcha-pro'
+  import { SliderCaptcha } from '@captcha-pro/core'
 
   const captcha = new SliderCaptcha({
     el: '#slider-captcha',
@@ -36,7 +36,7 @@ captcha-pro 提供四种验证码类型：**滑动拼图**、**点选文字**、
 <div id="click-captcha"></div>
 
 <script type="module">
-  import { ClickCaptcha } from 'captcha-pro'
+  import { ClickCaptcha } from '@captcha-pro/core'
 
   const captcha = new ClickCaptcha({
     el: '#click-captcha',
@@ -57,7 +57,7 @@ captcha-pro 提供四种验证码类型：**滑动拼图**、**点选文字**、
 <button id="submit-btn">提交</button>
 
 <script type="module">
-  import { PopupCaptcha } from 'captcha-pro'
+  import { PopupCaptcha } from '@captcha-pro/core'
 
   const popup = new PopupCaptcha({
     trigger: '#submit-btn',
@@ -94,7 +94,7 @@ captcha-pro 提供四种验证码类型：**滑动拼图**、**点选文字**、
 <button id="submit-btn">提交</button>
 
 <script type="module">
-  import { InvisibleCaptcha } from 'captcha-pro'
+  import { InvisibleCaptcha } from '@captcha-pro/core'
 
   const captcha = new InvisibleCaptcha({
     el: '#submit-btn',

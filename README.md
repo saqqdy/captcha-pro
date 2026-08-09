@@ -35,7 +35,7 @@ Captcha Pro supports **10+ platforms** with consistent APIs:
 
 | Platform | Package | Description |
 |----------|---------|-------------|
-| Web (Vanilla JS) | `captcha-pro` | Core package, works everywhere |
+| Web (Vanilla JS) | `@captcha-pro/core` | Core package, works everywhere |
 | Vue 2 | `@captcha-pro/vue2` | Options API + Mixins |
 | Vue 3 | `@captcha-pro/vue` | Composition API + Composables |
 | React | `@captcha-pro/react` | Hooks-based components |
@@ -53,10 +53,10 @@ See [PLATFORM_ROADMAP.md](./docs/PLATFORM_ROADMAP.md) for detailed implementatio
 
 ```bash
 # Install
-pnpm add captcha-pro
+pnpm add @captcha-pro/core
 
 # Use
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 new SliderCaptcha({
   el: '#captcha',
@@ -101,7 +101,7 @@ new SliderCaptcha({
 
 ```bash
 # Core package (Web/Vanilla JS)
-$ pnpm add captcha-pro
+$ pnpm add @captcha-pro/core
 
 # Vue 2
 $ pnpm add @captcha-pro/vue2
@@ -182,7 +182,7 @@ SliderCaptcha(
 <div id="slider-captcha"></div>
 
 <script type="module">
-  import { SliderCaptcha } from 'captcha-pro'
+  import { SliderCaptcha } from '@captcha-pro/core'
 
   const captcha = new SliderCaptcha({
     el: '#slider-captcha',
@@ -214,7 +214,7 @@ SliderCaptcha(
 <div id="click-captcha"></div>
 
 <script type="module">
-  import { ClickCaptcha } from 'captcha-pro'
+  import { ClickCaptcha } from '@captcha-pro/core'
 
   const captcha = new ClickCaptcha({
     el: '#click-captcha',
@@ -235,7 +235,7 @@ SliderCaptcha(
 <button id="submit-btn">Submit</button>
 
 <script type="module">
-  import { PopupCaptcha } from 'captcha-pro'
+  import { PopupCaptcha } from '@captcha-pro/core'
 
   const popup = new PopupCaptcha({
     trigger: '#submit-btn',
@@ -272,7 +272,7 @@ SliderCaptcha(
 <button id="submit-btn">Submit</button>
 
 <script type="module">
-  import { InvisibleCaptcha } from 'captcha-pro'
+  import { InvisibleCaptcha } from '@captcha-pro/core'
 
   const captcha = new InvisibleCaptcha({
     el: '#submit-btn',
@@ -298,7 +298,7 @@ SliderCaptcha(
 ### Security Features
 
 ```javascript
-import { SliderCaptcha, decryptCaptchaData } from 'captcha-pro'
+import { SliderCaptcha, decryptCaptchaData } from '@captcha-pro/core'
 
 // With AES-GCM encryption for backend verification
 const captcha = new SliderCaptcha({
@@ -322,7 +322,7 @@ const captcha = new SliderCaptcha({
 })
 
 // Backend verification example (Node.js)
-import { decryptCaptchaData, validateTimestamp } from 'captcha-pro'
+import { decryptCaptchaData, validateTimestamp } from '@captcha-pro/core'
 
 async function verifyCaptcha(encryptedData, secretKey) {
   try {
@@ -344,7 +344,7 @@ async function verifyCaptcha(encryptedData, secretKey) {
 ### Backend Verification Mode
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -386,7 +386,7 @@ captcha.resetStatistics()
 ### Custom Images
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -408,7 +408,7 @@ import {
   createClickCaptcha,
   createInvisibleCaptcha,
   createPopupCaptcha
-} from 'captcha-pro'
+} from '@captcha-pro/core'
 
 const slider = createSliderCaptcha({ el: '#slider' })
 const click = createClickCaptcha({ el: '#click' })
@@ -421,7 +421,7 @@ const popup = createPopupCaptcha({ type: 'slider' })
 captcha-pro supports internationalization with built-in Chinese (zh-CN) and English (en-US) translations.
 
 ```javascript
-import { SliderCaptcha, setLocale, getLocale, t } from 'captcha-pro'
+import { SliderCaptcha, setLocale, getLocale, t } from '@captcha-pro/core'
 
 // Set language globally
 setLocale('en-US')
@@ -449,7 +449,7 @@ By default, captcha-pro auto-detects browser language. Chinese browsers show Chi
   <!--[if IE]>
   <script src="https://cdn.jsdelivr.net/npm/core-js-bundle/minified.js"></script>
   <![endif]-->
-  <script src="https://unpkg.com/captcha-pro/dist/index.global.min.js"></script>
+  <script src="https://unpkg.com/@captcha-pro/core/dist/index.global.min.js"></script>
 </head>
 <body>
   <div id="captcha"></div>
@@ -591,7 +591,7 @@ Response:
 ### Frontend Integration with Backend
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -767,16 +767,16 @@ cd server/node && pnpm dev
 
 [MIT](LICENSE)
 
-[npm-image]: https://img.shields.io/npm/v/captcha-pro.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/captcha-pro
+[npm-image]: https://img.shields.io/npm/v/@captcha-pro/core.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@captcha-pro/core
 [codacy-image]: https://app.codacy.com/project/badge/Grade/f70d4880e4ad4f40aa970eb9ee9d0696
 [codacy-url]: https://www.codacy.com/gh/saqqdy/captcha-pro/dashboard?utm_source=github.com&utm_medium=referral&utm_content=saqqdy/captcha-pro&utm_campaign=Badge_Grade
 [codecov-image]: https://img.shields.io/codecov/c/github/saqqdy/captcha-pro.svg?style=flat-square
 [codecov-url]: https://codecov.io/github/saqqdy/captcha-pro?branch=master
-[download-image]: https://img.shields.io/npm/dm/captcha-pro.svg?style=flat-square
-[download-url]: https://npmjs.org/package/captcha-pro
-[gzip-image]: http://img.badgesize.io/https://unpkg.com/captcha-pro/dist/index.global.min.js?compression=gzip&label=gzip%20size:%20JS
-[gzip-url]: http://img.badgesize.io/https://unpkg.com/captcha-pro/dist/index.global.min.js?compression=gzip&label=gzip%20size:%20JS
+[download-image]: https://img.shields.io/npm/dm/@captcha-pro/core.svg?style=flat-square
+[download-url]: https://npmjs.org/package/@captcha-pro/core
+[gzip-image]: http://img.badgesize.io/https://unpkg.com/@captcha-pro/core/dist/index.global.min.js?compression=gzip&label=gzip%20size:%20JS
+[gzip-url]: http://img.badgesize.io/https://unpkg.com/@captcha-pro/core/dist/index.global.min.js?compression=gzip&label=gzip%20size:%20JS
 [license-image]: https://img.shields.io/badge/License-MIT-blue.svg
 [license-url]: LICENSE
 [sonar-image]: https://sonarcloud.io/api/project_badges/quality_gate?project=saqqdy_captcha-pro

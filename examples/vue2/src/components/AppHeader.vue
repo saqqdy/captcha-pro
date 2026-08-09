@@ -12,7 +12,7 @@ export default {
   <header>
     <h1>
       🔐 Captcha Pro
-      <span class="version-badge">v1.1.0</span>
+      <span class="version-badge">v2.0.0</span>
     </h1>
     <p class="subtitle">
       {{ currentLocale === 'zh-CN' ? '轻量级行为验证码库' : 'Lightweight Behavioral Captcha Library' }}

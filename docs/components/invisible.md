@@ -5,7 +5,7 @@ Risk-based invisible verification. Behavior is tracked and analyzed; a slider or
 ## Example
 
 ```javascript
-import { InvisibleCaptcha } from 'captcha-pro'
+import { InvisibleCaptcha } from '@captcha-pro/core'
 
 const captcha = new InvisibleCaptcha({
   el: '#submit-btn',

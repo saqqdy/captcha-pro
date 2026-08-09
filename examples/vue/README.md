@@ -1,6 +1,6 @@
 # Vue 3 Captcha Demo
 
-Vue 3 example project demonstrating captcha-pro-vue components.
+Vue 3 example project demonstrating @captcha-pro/vue components.
 
 **[简体中文](./README_CN.md)**
 
@@ -58,7 +58,7 @@ src/
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from 'captcha-pro-vue'
+import { SliderCaptcha } from '@captcha-pro/vue'
 
 const onSuccess = () => console.log('Passed!')
 </script>
@@ -77,7 +77,7 @@ const onSuccess = () => console.log('Passed!')
 </template>
 
 <script setup lang="ts">
-import { ClickCaptcha } from 'captcha-pro-vue'
+import { ClickCaptcha } from '@captcha-pro/vue'
 </script>
 ```
 
@@ -124,7 +124,7 @@ const backendConfig = {
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useSliderCaptcha } from 'captcha-pro-vue/composables'
+import { useSliderCaptcha } from '@captcha-pro/vue/composables'
 
 const containerRef = ref()
 

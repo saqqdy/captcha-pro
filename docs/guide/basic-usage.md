@@ -8,7 +8,7 @@ captcha-pro ships four captcha types: **Slider**, **Click**, **Popup**, and **In
 <div id="slider-captcha"></div>
 
 <script type="module">
-  import { SliderCaptcha } from 'captcha-pro'
+  import { SliderCaptcha } from '@captcha-pro/core'
 
   const captcha = new SliderCaptcha({
     el: '#slider-captcha',
@@ -36,7 +36,7 @@ captcha-pro ships four captcha types: **Slider**, **Click**, **Popup**, and **In
 <div id="click-captcha"></div>
 
 <script type="module">
-  import { ClickCaptcha } from 'captcha-pro'
+  import { ClickCaptcha } from '@captcha-pro/core'
 
   const captcha = new ClickCaptcha({
     el: '#click-captcha',
@@ -57,7 +57,7 @@ captcha-pro ships four captcha types: **Slider**, **Click**, **Popup**, and **In
 <button id="submit-btn">Submit</button>
 
 <script type="module">
-  import { PopupCaptcha } from 'captcha-pro'
+  import { PopupCaptcha } from '@captcha-pro/core'
 
   const popup = new PopupCaptcha({
     trigger: '#submit-btn',
@@ -94,7 +94,7 @@ captcha-pro ships four captcha types: **Slider**, **Click**, **Popup**, and **In
 <button id="submit-btn">Submit</button>
 
 <script type="module">
-  import { InvisibleCaptcha } from 'captcha-pro'
+  import { InvisibleCaptcha } from '@captcha-pro/core'
 
   const captcha = new InvisibleCaptcha({
     el: '#submit-btn',

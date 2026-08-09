@@ -5,7 +5,7 @@
 ## 示例
 
 ```javascript
-import { InvisibleCaptcha } from 'captcha-pro'
+import { InvisibleCaptcha } from '@captcha-pro/core'
 
 const captcha = new InvisibleCaptcha({
   el: '#submit-btn',

@@ -5,7 +5,7 @@
 captcha-pro provides AES-GCM encryption, timestamp validation, and signing to prevent data tampering and replay attacks.
 
 ```javascript
-import { SliderCaptcha, decryptCaptchaData } from 'captcha-pro'
+import { SliderCaptcha, decryptCaptchaData } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -30,7 +30,7 @@ const captcha = new SliderCaptcha({
 ### Backend Verification Example (Node.js)
 
 ```javascript
-import { decryptCaptchaData, validateTimestamp } from 'captcha-pro'
+import { decryptCaptchaData, validateTimestamp } from '@captcha-pro/core'
 
 async function verifyCaptcha(encryptedData, secretKey) {
   try {
@@ -54,7 +54,7 @@ async function verifyCaptcha(encryptedData, secretKey) {
 Instead of frontend-only verification, you can delegate to a backend that generates and verifies captcha images.
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -102,7 +102,7 @@ captcha.resetStatistics()
 Provide your own background and slider images instead of the auto-generated ones.
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha',
@@ -126,7 +126,7 @@ import {
   createClickCaptcha,
   createInvisibleCaptcha,
   createPopupCaptcha
-} from 'captcha-pro'
+} from '@captcha-pro/core'
 
 const slider = createSliderCaptcha({ el: '#slider' })
 const click = createClickCaptcha({ el: '#click' })
@@ -144,7 +144,7 @@ For projects without a bundler, use the global IIFE build:
   <!--[if IE]>
   <script src="https://cdn.jsdelivr.net/npm/core-js-bundle/minified.js"></script>
   <![endif]-->
-  <script src="https://unpkg.com/captcha-pro/dist/index.global.min.js"></script>
+  <script src="https://unpkg.com/@captcha-pro/core/dist/index.global.min.js"></script>
 </head>
 <body>
   <div id="captcha"></div>

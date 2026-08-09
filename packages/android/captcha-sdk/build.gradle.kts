@@ -56,7 +56,7 @@ publishing {
         create<MavenPublication>("release") {
             groupId = "com.captcha.pro"
             artifactId = "captcha-sdk"
-            version = "1.0.0"
+            version = "2.0.0"
 
             afterEvaluate {
                 from(components["release"])

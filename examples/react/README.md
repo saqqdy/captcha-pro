@@ -1,6 +1,6 @@
 # React Captcha Demo
 
-React example project demonstrating captcha-pro-react components.
+React example project demonstrating @captcha-pro/react components.
 
 **[简体中文](./README_CN.md)**
 
@@ -52,7 +52,7 @@ src/
 ### Basic Slider Captcha
 
 ```tsx
-import { SliderCaptcha } from 'captcha-pro-react'
+import { SliderCaptcha } from '@captcha-pro/react'
 
 function Demo() {
   return (
@@ -69,7 +69,7 @@ function Demo() {
 ### Click Captcha
 
 ```tsx
-import { ClickCaptcha } from 'captcha-pro-react'
+import { ClickCaptcha } from '@captcha-pro/react'
 
 function Demo() {
   return (
@@ -86,7 +86,7 @@ function Demo() {
 ### Popup Captcha
 
 ```tsx
-import { PopupCaptcha } from 'captcha-pro-react'
+import { PopupCaptcha } from '@captcha-pro/react'
 
 function Demo() {
   return (
@@ -104,7 +104,7 @@ function Demo() {
 ### Backend Verification
 
 ```tsx
-import { SliderCaptcha } from 'captcha-pro-react'
+import { SliderCaptcha } from '@captcha-pro/react'
 
 function Demo() {
   return (

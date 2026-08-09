@@ -5,7 +5,7 @@
 ## 示例
 
 ```javascript
-import { PopupCaptcha } from 'captcha-pro'
+import { PopupCaptcha } from '@captcha-pro/core'
 
 const popup = new PopupCaptcha({
   trigger: '#submit-btn',

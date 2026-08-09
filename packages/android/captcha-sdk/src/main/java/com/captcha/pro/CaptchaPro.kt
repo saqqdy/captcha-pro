@@ -131,5 +131,5 @@ object CaptchaPro {
         return LocaleMessages.get(locale, key)
     }
 
-    const val VERSION = "1.0.0"
+    const val VERSION = "2.0.0"
 }

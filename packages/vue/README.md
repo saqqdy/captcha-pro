@@ -1,4 +1,4 @@
-# captcha-pro-vue
+# @captcha-pro/vue
 
 Vue 3 component library for Captcha Pro with Composition API support.
 
@@ -7,7 +7,7 @@ Vue 3 component library for Captcha Pro with Composition API support.
 ## Installation
 
 ```bash
-pnpm add captcha-pro-vue
+pnpm add @captcha-pro/vue
 ```
 
 ## Usage
@@ -16,8 +16,8 @@ pnpm add captcha-pro-vue
 
 ```typescript
 import { createApp } from 'vue'
-import CaptchaPro from 'captcha-pro-vue'
-import 'captcha-pro-vue/style.css'
+import CaptchaPro from '@captcha-pro/vue'
+import '@captcha-pro/vue/style.css'
 
 const app = createApp(App)
 app.use(CaptchaPro)
@@ -56,7 +56,7 @@ app.use(CaptchaPro)
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { SliderCaptcha, ClickCaptcha, PopupCaptcha } from 'captcha-pro-vue'
+import { SliderCaptcha, ClickCaptcha, PopupCaptcha } from '@captcha-pro/vue'
 
 const sliderData = ref(null)
 
@@ -75,7 +75,7 @@ const onSuccess = () => {
 </template>
 
 <script setup lang="ts">
-import { useSliderCaptcha } from 'captcha-pro-vue/composables'
+import { useSliderCaptcha } from '@captcha-pro/vue/composables'
 
 const containerRef = ref<HTMLDivElement>()
 
@@ -108,7 +108,7 @@ import type {
   PopupCaptchaProps,
   SliderCaptchaInstance,
   ClickCaptchaInstance
-} from 'captcha-pro-vue'
+} from '@captcha-pro/vue'
 ```
 
 ## Props

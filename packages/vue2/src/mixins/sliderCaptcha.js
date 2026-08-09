@@ -2,7 +2,7 @@
  * Slider Captcha Mixin for Vue 2
  *
  * Usage:
- * import { sliderCaptchaMixin } from 'captcha-pro-vue2/mixins'
+ * import { sliderCaptchaMixin } from '@captcha-pro/vue2/mixins'
  *
  * export default {
  *   mixins: [sliderCaptchaMixin],

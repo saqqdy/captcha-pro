@@ -4,7 +4,7 @@ captcha-pro 支持 **10+ 平台**，API 保持一致。根据你的平台选择�
 
 | 平台 | 包名 | 描述 |
 |------|------|------|
-| Web（原生 JS） | `captcha-pro` | 核心包，通用支持 |
+| Web（原生 JS） | `@captcha-pro/core` | 核心包，通用支持 |
 | Vue 2 | `@captcha-pro/vue2` | Options API + Mixins |
 | Vue 3 | `@captcha-pro/vue` | Composition API + Composables |
 | React | `@captcha-pro/react` | Hooks 组件 |
@@ -20,7 +20,7 @@ captcha-pro 支持 **10+ 平台**，API 保持一致。根据你的平台选择�
 
 ```bash
 # Web
-pnpm add captcha-pro
+pnpm add @captcha-pro/core
 
 # Vue 2 / Vue 3 / React
 pnpm add @captcha-pro/vue2   # 或 @captcha-pro/vue / @captcha-pro/react

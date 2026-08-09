@@ -228,7 +228,7 @@ curl -X POST http://localhost:8080/api/security/blacklist \
 ## 前端集成示例
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro'
+import { SliderCaptcha } from '@captcha-pro/core'
 
 const captcha = new SliderCaptcha({
   el: '#captcha-container',

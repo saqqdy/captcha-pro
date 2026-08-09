@@ -19,7 +19,7 @@ import {
   createClickCaptcha,
   createInvisibleCaptcha,
   createPopupCaptcha
-} from 'captcha-pro'
+} from '@captcha-pro/core'
 ```
 
 ## 辅助函数
