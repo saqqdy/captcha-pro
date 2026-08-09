@@ -1,5 +1,11 @@
 // Test setup file for vitest
+import { webcrypto } from 'node:crypto'
 import { vi } from 'vitest'
+
+// Polyfill Web Crypto API: happy-dom's window.crypto lacks crypto.subtle,
+// so provide Node's WebCrypto for AES-GCM/PBKDF2 encryption tests.
+Object.defineProperty(window, 'crypto', { value: webcrypto, configurable: true, writable: true })
+
 
 // Mock canvas gradient
 const mockGradient = {

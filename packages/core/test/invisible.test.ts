@@ -88,6 +88,16 @@ describe('InvisibleCaptcha', () => {
 			onSuccess,
 		})
 
+		// Simulate human-like mouse movement so the risk score stays below
+		// threshold. A bare instant click scores ~0.9 (bot-like) and trips the
+		// challenge branch; movement with direction changes lowers the score.
+		const move = (x: number, y: number) =>
+			document.dispatchEvent(new MouseEvent('mousemove', { clientX: x, clientY: y }))
+		move(10, 10)
+		move(20, 15)
+		move(15, 25)
+		move(30, 20)
+		move(25, 35)
 		// Trigger click
 		container.click()
 
