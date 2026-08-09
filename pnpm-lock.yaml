@@ -444,8 +444,8 @@ importers:
         version: 3.5.41(typescript@5.9.3)
     devDependencies:
       '@vitejs/plugin-vue':
-        specifier: ^6.0.7
-        version: 6.0.8(vite@5.4.21)(vue@3.5.41)
+        specifier: ^5.2.3
+        version: 5.2.4(vite@5.4.21)(vue@3.5.41)
       vite:
         specifier: ^5.4.19
         version: 5.4.21(@types/node@24.13.3)(sass@1.102.0)
@@ -639,8 +639,8 @@ importers:
         specifier: ^24.13.3
         version: 24.13.3
       '@vitejs/plugin-vue':
-        specifier: ^6.0.7
-        version: 6.0.8(vite@5.4.21)(vue@3.5.41)
+        specifier: ^5.2.3
+        version: 5.2.4(vite@5.4.21)(vue@3.5.41)
       rm-all:
         specifier: ^1.1.1
         version: 1.1.1(js-cool@5.23.2)
@@ -745,8 +745,8 @@ importers:
         specifier: ^24.13.3
         version: 24.13.3
       '@vitejs/plugin-vue':
-        specifier: ^6.0.7
-        version: 6.0.8(vite@5.4.21)(vue@3.5.41)
+        specifier: ^5.2.3
+        version: 5.2.4(vite@5.4.21)(vue@3.5.41)
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
@@ -9249,18 +9249,6 @@ packages:
     dependencies:
       vite: 5.4.21(@types/node@24.13.3)(sass@1.102.0)
       vue: 3.5.41(typescript@5.9.3)
-
-  /@vitejs/plugin-vue@6.0.8(vite@5.4.21)(vue@3.5.41):
-    resolution: {integrity: sha512-0ZjgOg7oO6farnNGup7yvoM/YXZV84OZxHAwtflItNa/6zzQyVb5LNxyea3FEKEX2XlagIKzrlH7wwxkKgtiew==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    peerDependencies:
-      vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
-      vue: ^3.2.25
-    dependencies:
-      '@rolldown/pluginutils': 1.0.1
-      vite: 5.4.21(@types/node@24.13.3)(sass@1.102.0)
-      vue: 3.5.41(typescript@5.9.3)
-    dev: true
 
   /@vitest/coverage-v8@4.1.10(vitest@4.1.10):
     resolution: {integrity: sha512-IM49HmthevbgAO4anp1hwtoT9wYe59w0LR00gr+eagHE+ZJ5lK4sLPeO0ubgoJcwLk6dehU3R24N+FbEEKDc8g==}
