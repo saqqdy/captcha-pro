@@ -40,4 +40,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Sync to npmmirror
-        run: curl -X PUT -d "sync_upstream=true" "https://registry-direct.npmmirror.com/captcha-pro/sync"
+        run: |
+          for pkg in core mp-shared react taro-react taro-vue taro-vue2 uniapp-vue uniapp-vue2 vue vue2 weixin; do
+            curl -sX PUT -d "sync_upstream=true" "https://registry-direct.npmmirror.com/@captcha-pro/$pkg/sync"
+          done
