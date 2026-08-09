@@ -36,12 +36,12 @@ Captcha Pro supports **10+ platforms** with consistent APIs:
 | Platform | Package | Description |
 |----------|---------|-------------|
 | Web (Vanilla JS) | `captcha-pro` | Core package, works everywhere |
-| Vue 2 | `captcha-pro-vue2` | Options API + Mixins |
-| Vue 3 | `captcha-pro-vue` | Composition API + Composables |
-| React | `captcha-pro-react` | Hooks-based components |
-| WeChat Mini-Program | `captcha-pro-mp` | WXML/WXSS/JS, backend-only |
-| uni-app | `captcha-pro-mp` | Vue cross-platform, backend-only |
-| Taro 3 | `captcha-pro-mp` | React cross-platform, backend-only |
+| Vue 2 | `@captcha-pro/vue2` | Options API + Mixins |
+| Vue 3 | `@captcha-pro/vue` | Composition API + Composables |
+| React | `@captcha-pro/react` | Hooks-based components |
+| WeChat Mini-Program | `@captcha-pro/weixin` | WXML/WXSS/JS, backend-only |
+| uni-app | `@captcha-pro/uniapp-vue` | Vue cross-platform, backend-only |
+| Taro 3 | `@captcha-pro/taro-react` | React cross-platform, backend-only |
 | Flutter | `captcha_pro` | Dart widgets |
 | Android | `captcha-sdk` | Native Kotlin SDK |
 | Android Compose | `captcha-compose` | Jetpack Compose |
@@ -104,25 +104,25 @@ new SliderCaptcha({
 $ pnpm add captcha-pro
 
 # Vue 2
-$ pnpm add captcha-pro-vue2
+$ pnpm add @captcha-pro/vue2
 
 # Vue 3
-$ pnpm add captcha-pro-vue
+$ pnpm add @captcha-pro/vue
 
 # React
-$ pnpm add captcha-pro-react
+$ pnpm add @captcha-pro/react
 
 # Mini-program (WeChat/uni-app/Taro)
-$ pnpm add captcha-pro-mp
+$ pnpm add @captcha-pro/weixin
 
 # Flutter - add to pubspec.yaml
-captcha_pro: ^1.1.0
+captcha_pro: ^2.0.0
 
 # Android - add to build.gradle
-implementation 'com.captcha.pro:captcha-sdk:1.1.0'
+implementation 'com.captcha.pro:captcha-sdk:2.0.0'
 
 # iOS - CocoaPods
-pod 'CaptchaPro', '~> 1.1.0'
+pod 'CaptchaPro', '~> 2.0.0'
 ```
 
 ## Framework Usage
@@ -140,7 +140,7 @@ pod 'CaptchaPro', '~> 1.1.0'
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from 'captcha-pro-vue'
+import { SliderCaptcha } from '@captcha-pro/vue'
 
 const onSuccess = () => console.log('Passed!')
 </script>
@@ -149,7 +149,7 @@ const onSuccess = () => console.log('Passed!')
 ### React
 
 ```tsx
-import { SliderCaptcha } from 'captcha-pro-react'
+import { SliderCaptcha } from '@captcha-pro/react'
 
 function App() {
   return (

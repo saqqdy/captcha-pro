@@ -127,7 +127,7 @@ For Vue 3, React, and Flutter, the same options are exposed as component props:
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from 'captcha-pro-vue'
+import { SliderCaptcha } from '@captcha-pro/vue'
 const onSuccess = () => console.log('Passed!')
 </script>
 ```

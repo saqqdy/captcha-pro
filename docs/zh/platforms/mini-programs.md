@@ -1,12 +1,12 @@
 # 小程序
 
-`captcha-pro-mp`（共享的 `@captcha-pro/mp-shared` 包）支持微信、uni-app 与 Taro。小程序运行于**仅后端模式** — 向你的后端请求验证码图片并在服务端校验，因为客户端无法生成图片。
+`@captcha-pro/mp-shared`支持微信、uni-app 与 Taro。小程序运行于**仅后端模式** — 向你的后端请求验证码图片并在服务端校验，因为客户端无法生成图片。
 
 ## 安装
 
 ```bash
 # 微信 / uni-app / Taro
-pnpm add captcha-pro-mp
+pnpm add @captcha-pro/weixin
 ```
 
 ## 支持的框架
@@ -25,7 +25,7 @@ pnpm add captcha-pro-mp
 小程序组件始终使用 `verifyMode: 'backend'`，并将 `backendVerify` 指向你的服务端：
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro-mp'
+import { SliderCaptcha } from '@captcha-pro/weixin'
 
 // 配置 backendVerify 指向你的服务端
 ```

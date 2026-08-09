@@ -127,7 +127,7 @@ Vue 3、React、Flutter 以组件 props 的形式暴露相同的选项：
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from 'captcha-pro-vue'
+import { SliderCaptcha } from '@captcha-pro/vue'
 const onSuccess = () => console.log('验证通过!')
 </script>
 ```

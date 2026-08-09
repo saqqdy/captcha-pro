@@ -9,29 +9,29 @@
 pnpm add captcha-pro
 
 # Vue 2
-pnpm add captcha-pro-vue2
+pnpm add @captcha-pro/vue2
 
 # Vue 3
-pnpm add captcha-pro-vue
+pnpm add @captcha-pro/vue
 
 # React
-pnpm add captcha-pro-react
+pnpm add @captcha-pro/react
 
 # 小程序（微信 / uni-app / Taro）
-pnpm add captcha-pro-mp
+pnpm add @captcha-pro/weixin
 ```
 
 原生平台详见[多平台](/zh/platforms/)。
 
 ```bash
 # Flutter — 添加到 pubspec.yaml
-captcha_pro: ^1.1.0
+captcha_pro: ^2.0.0
 
 # Android — 添加到 build.gradle
-implementation 'com.captcha.pro:captcha-sdk:1.1.0'
+implementation 'com.captcha.pro:captcha-sdk:2.0.0'
 
 # iOS — CocoaPods
-pod 'CaptchaPro', '~> 1.1.0'
+pod 'CaptchaPro', '~> 2.0.0'
 ```
 
 ## 第一个验证码

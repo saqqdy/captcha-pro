@@ -1,17 +1,17 @@
 # React
 
-`captcha-pro-react` provides hooks-based components that mirror the core library's options as props.
+`@captcha-pro/react` provides hooks-based components that mirror the core library's options as props.
 
 ## Install
 
 ```bash
-pnpm add captcha-pro-react
+pnpm add @captcha-pro/react
 ```
 
 ## Usage
 
 ```tsx
-import { SliderCaptcha } from 'captcha-pro-react'
+import { SliderCaptcha } from '@captcha-pro/react'
 
 function App() {
   return (

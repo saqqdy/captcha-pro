@@ -36,12 +36,12 @@ Captcha Pro 支持 **10+ 平台**，API 保持一致：
 | 平台 | 包名 | 描述 |
 |------|------|------|
 | Web (原生 JS) | `captcha-pro` | 核心包，通用支持 |
-| Vue 2 | `captcha-pro-vue2` | Options API + Mixins |
-| Vue 3 | `captcha-pro-vue` | Composition API + Composables |
-| React | `captcha-pro-react` | Hooks 组件 |
-| 微信小程序 | `captcha-pro-mp` | WXML/WXSS/JS，仅后端模式 |
-| uni-app | `captcha-pro-mp` | Vue 跨端，仅后端模式 |
-| Taro 3 | `captcha-pro-mp` | React 跨端，仅后端模式 |
+| Vue 2 | `@captcha-pro/vue2` | Options API + Mixins |
+| Vue 3 | `@captcha-pro/vue` | Composition API + Composables |
+| React | `@captcha-pro/react` | Hooks 组件 |
+| 微信小程序 | `@captcha-pro/weixin` | WXML/WXSS/JS，仅后端模式 |
+| uni-app | `@captcha-pro/uniapp-vue` | Vue 跨端，仅后端模式 |
+| Taro 3 | `@captcha-pro/taro-react` | React 跨端，仅后端模式 |
 | Flutter | `captcha_pro` | Dart Widgets |
 | Android | `captcha-sdk` | 原生 Kotlin SDK |
 | Android Compose | `captcha-compose` | Jetpack Compose |
@@ -104,25 +104,25 @@ new SliderCaptcha({
 $ pnpm add captcha-pro
 
 # Vue 2
-$ pnpm add captcha-pro-vue2
+$ pnpm add @captcha-pro/vue2
 
 # Vue 3
-$ pnpm add captcha-pro-vue
+$ pnpm add @captcha-pro/vue
 
 # React
-$ pnpm add captcha-pro-react
+$ pnpm add @captcha-pro/react
 
 # 小程序 (微信/uni-app/Taro)
-$ pnpm add captcha-pro-mp
+$ pnpm add @captcha-pro/weixin
 
 # Flutter - 添加到 pubspec.yaml
-captcha_pro: ^1.1.0
+captcha_pro: ^2.0.0
 
 # Android - 添加到 build.gradle
-implementation 'com.captcha.pro:captcha-sdk:1.1.0'
+implementation 'com.captcha.pro:captcha-sdk:2.0.0'
 
 # iOS - CocoaPods
-pod 'CaptchaPro', '~> 1.1.0'
+pod 'CaptchaPro', '~> 2.0.0'
 ```
 
 ## 框架使用
@@ -140,7 +140,7 @@ pod 'CaptchaPro', '~> 1.1.0'
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from 'captcha-pro-vue'
+import { SliderCaptcha } from '@captcha-pro/vue'
 
 const onSuccess = () => console.log('验证通过!')
 </script>
@@ -149,7 +149,7 @@ const onSuccess = () => console.log('验证通过!')
 ### React
 
 ```tsx
-import { SliderCaptcha } from 'captcha-pro-react'
+import { SliderCaptcha } from '@captcha-pro/react'
 
 function App() {
   return (

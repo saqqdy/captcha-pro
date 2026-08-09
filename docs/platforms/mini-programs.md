@@ -1,12 +1,12 @@
 # Mini-Programs
 
-`captcha-pro-mp` (the shared `@captcha-pro/mp-shared` package) powers WeChat, uni-app, and Taro. Mini-programs run in **backend-only mode** — they request captcha images from your backend and verify server-side, since client-side image generation is not available.
+`@captcha-pro/mp-shared` powers WeChat, uni-app, and Taro. Mini-programs run in **backend-only mode** — they request captcha images from your backend and verify server-side, since client-side image generation is not available.
 
 ## Install
 
 ```bash
 # WeChat / uni-app / Taro
-pnpm add captcha-pro-mp
+pnpm add @captcha-pro/weixin
 ```
 
 ## Supported Frameworks
@@ -25,7 +25,7 @@ pnpm add captcha-pro-mp
 Mini-program components always use `verifyMode: 'backend'` and point `backendVerify` at your server:
 
 ```javascript
-import { SliderCaptcha } from 'captcha-pro-mp'
+import { SliderCaptcha } from '@captcha-pro/weixin'
 
 // configure with backendVerify pointing to your server
 ```

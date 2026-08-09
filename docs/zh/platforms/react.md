@@ -1,17 +1,17 @@
 # React
 
-`captcha-pro-react` 提供基于 hooks 的组件，props 与核心库的选项一一对应。
+`@captcha-pro/react` 提供基于 hooks 的组件，props 与核心库的选项一一对应。
 
 ## 安装
 
 ```bash
-pnpm add captcha-pro-react
+pnpm add @captcha-pro/react
 ```
 
 ## 用法
 
 ```tsx
-import { SliderCaptcha } from 'captcha-pro-react'
+import { SliderCaptcha } from '@captcha-pro/react'
 
 function App() {
   return (

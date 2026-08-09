@@ -4,10 +4,10 @@ captcha-pro provides first-class Vue components for both Vue 3 and Vue 2, exposi
 
 ## Vue 3
 
-`captcha-pro-vue` uses the Composition API and composables.
+`@captcha-pro/vue` uses the Composition API and composables.
 
 ```bash
-pnpm add captcha-pro-vue
+pnpm add @captcha-pro/vue
 ```
 
 ```vue
@@ -21,7 +21,7 @@ pnpm add captcha-pro-vue
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from 'captcha-pro-vue'
+import { SliderCaptcha } from '@captcha-pro/vue'
 
 const onSuccess = () => console.log('Passed!')
 const onFail = () => console.log('Failed')
@@ -30,10 +30,10 @@ const onFail = () => console.log('Failed')
 
 ## Vue 2
 
-`captcha-pro-vue2` uses the Options API and mixins.
+`@captcha-pro/vue2` uses the Options API and mixins.
 
 ```bash
-pnpm add captcha-pro-vue2
+pnpm add @captcha-pro/vue2
 ```
 
 ```vue
@@ -42,7 +42,7 @@ pnpm add captcha-pro-vue2
 </template>
 
 <script>
-import { SliderCaptcha } from 'captcha-pro-vue2'
+import { SliderCaptcha } from '@captcha-pro/vue2'
 
 export default {
   components: { SliderCaptcha },

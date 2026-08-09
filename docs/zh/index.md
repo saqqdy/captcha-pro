@@ -68,12 +68,12 @@ Captcha Pro 支持 **10+ 平台**，API 保持一致：
 | 平台 | 包名 | 描述 |
 |------|------|------|
 | Web（原生 JS） | `captcha-pro` | 核心包，通用支持 |
-| Vue 2 | `captcha-pro-vue2` | Options API + Mixins |
-| Vue 3 | `captcha-pro-vue` | Composition API + Composables |
-| React | `captcha-pro-react` | Hooks 组件 |
-| 微信小程序 | `captcha-pro-mp` | WXML/WXSS/JS，仅后端模式 |
-| uni-app | `captcha-pro-mp` | Vue 跨端，仅后端模式 |
-| Taro 3 | `captcha-pro-mp` | React 跨端，仅后端模式 |
+| Vue 2 | `@captcha-pro/vue2` | Options API + Mixins |
+| Vue 3 | `@captcha-pro/vue` | Composition API + Composables |
+| React | `@captcha-pro/react` | Hooks 组件 |
+| 微信小程序 | `@captcha-pro/weixin` | WXML/WXSS/JS，仅后端模式 |
+| uni-app | `@captcha-pro/uniapp-vue` | Vue 跨端，仅后端模式 |
+| Taro 3 | `@captcha-pro/taro-react` | React 跨端，仅后端模式 |
 | Flutter | `captcha_pro` | Dart Widgets |
 | Android | `captcha-sdk` | 原生 Kotlin SDK |
 | Android Compose | `captcha-compose` | Jetpack Compose |

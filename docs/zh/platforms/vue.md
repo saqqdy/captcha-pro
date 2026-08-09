@@ -4,10 +4,10 @@ captcha-pro 为 Vue 3 与 Vue 2 提供一等公民的组件支持，将相同的
 
 ## Vue 3
 
-`captcha-pro-vue` 使用 Composition API 与 composables。
+`@captcha-pro/vue` 使用 Composition API 与 composables。
 
 ```bash
-pnpm add captcha-pro-vue
+pnpm add @captcha-pro/vue
 ```
 
 ```vue
@@ -21,7 +21,7 @@ pnpm add captcha-pro-vue
 </template>
 
 <script setup lang="ts">
-import { SliderCaptcha } from 'captcha-pro-vue'
+import { SliderCaptcha } from '@captcha-pro/vue'
 
 const onSuccess = () => console.log('验证通过!')
 const onFail = () => console.log('验证失败')
@@ -30,10 +30,10 @@ const onFail = () => console.log('验证失败')
 
 ## Vue 2
 
-`captcha-pro-vue2` 使用 Options API 与 mixins。
+`@captcha-pro/vue2` 使用 Options API 与 mixins。
 
 ```bash
-pnpm add captcha-pro-vue2
+pnpm add @captcha-pro/vue2
 ```
 
 ```vue
@@ -42,7 +42,7 @@ pnpm add captcha-pro-vue2
 </template>
 
 <script>
-import { SliderCaptcha } from 'captcha-pro-vue2'
+import { SliderCaptcha } from '@captcha-pro/vue2'
 
 export default {
   components: { SliderCaptcha },
