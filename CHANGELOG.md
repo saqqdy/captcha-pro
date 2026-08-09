@@ -41,7 +41,7 @@ All notable changes to this project will be documented in this file.
 
 | Platform | Package | Tech Stack |
 |----------|---------|------------|
-| Web (Vanilla JS) | `captcha-pro` | TypeScript/Canvas |
+| Web (Vanilla JS) | `@captcha-pro/core` | TypeScript/Canvas |
 | Vue 3 | `@captcha-pro/vue` | Composition API |
 | Vue 2 | `@captcha-pro/vue2` | Options API + Mixins |
 | React | `@captcha-pro/react` | Hooks |
