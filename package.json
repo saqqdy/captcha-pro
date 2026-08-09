@@ -1,7 +1,7 @@
 {
   "name": "@captcha-pro/monorepo",
   "description": "A lightweight behavioral captcha library with slider puzzle and click verification - Monorepo",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "packageManager": "pnpm@9.15.3",
   "scripts": {

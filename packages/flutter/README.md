@@ -9,7 +9,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  captcha_pro: ^1.0.0
+  captcha_pro: ^2.0.0
 ```
 
 ## Features

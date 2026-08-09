@@ -11,7 +11,7 @@ Android native SDK for Captcha Pro, providing Kotlin/Jetpack Compose captcha com
 Core Android SDK with traditional View-based captcha components.
 
 ```groovy
-implementation 'com.captcha.pro:captcha-sdk:1.0.0'
+implementation 'com.captcha.pro:captcha-sdk:2.0.0'
 ```
 
 ### captcha-compose
@@ -19,7 +19,7 @@ implementation 'com.captcha.pro:captcha-sdk:1.0.0'
 Jetpack Compose captcha components.
 
 ```groovy
-implementation 'com.captcha.pro:captcha-compose:1.0.0'
+implementation 'com.captcha.pro:captcha-compose:2.0.0'
 ```
 
 ## Features
@@ -42,10 +42,10 @@ repositories {
 
 dependencies {
     // Core SDK (View-based)
-    implementation 'com.captcha.pro:captcha-sdk:1.0.0'
+    implementation 'com.captcha.pro:captcha-sdk:2.0.0'
 
     // Or Compose version
-    implementation 'com.captcha.pro:captcha-compose:1.0.0'
+    implementation 'com.captcha.pro:captcha-compose:2.0.0'
 }
 ```
 

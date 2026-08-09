@@ -12,7 +12,7 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/saqqdy/captcha-pro.git", from: "1.0.0")
+    .package(url: "https://github.com/saqqdy/captcha-pro.git", from: "2.0.0")
 ]
 ```
 
@@ -23,7 +23,7 @@ Or in Xcode:
 ### CocoaPods
 
 ```ruby
-pod 'CaptchaPro', '~> 1.0.0'
+pod 'CaptchaPro', '~> 2.0.0'
 ```
 
 ## Features

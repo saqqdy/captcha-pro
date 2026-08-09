@@ -295,7 +295,7 @@ app.get('/api/info', (_req: Request, res: Response) => {
 	console.info('[GET /api/info]')
 	res.json({
 		name: 'captcha-pro-server-demo',
-		version: '1.0.0',
+		version: '2.0.0',
 		description: 'Captcha Pro Backend Demo Server (Node.js/Express)',
 		supportedTypes: ['slider', 'click'],
 		features: ['rate-limit', 'ip-blacklist', 'brute-force-protection'],

@@ -11,4 +11,4 @@ export { useSliderCaptcha, type UseSliderCaptchaOptions, type UseSliderCaptchaRe
 export * from '@captcha-pro/core'
 
 // Version
-export const version = '1.0.0'
+export const version = '2.0.0'

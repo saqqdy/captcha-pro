@@ -1,7 +1,7 @@
 {
   "name": "captcha-pro-server-demo",
   "description": "Captcha Pro Server Demo - Backend verification service reference implementation (Node.js/Express)",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "main": "dist/index.js",
   "module": "dist/index.mjs",

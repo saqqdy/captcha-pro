@@ -44,7 +44,7 @@ mvn clean install
 <dependency>
     <groupId>com.captcha</groupId>
     <artifactId>captcha-pro-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -62,7 +62,7 @@ mvn clean install
 <dependency>
     <groupId>com.captcha</groupId>
     <artifactId>captcha-pro-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -99,7 +99,7 @@ cd server/java
 mvn clean package
 
 # 运行
-java -jar target/captcha-pro-spring-boot-starter-1.0.0.jar
+java -jar target/captcha-pro-spring-boot-starter-2.0.0.jar
 ```
 
 服务将在 `http://localhost:8080` 启动。

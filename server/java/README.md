@@ -44,7 +44,7 @@ Then add to your project:
 <dependency>
     <groupId>com.captcha</groupId>
     <artifactId>captcha-pro-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -62,7 +62,7 @@ Copy the following directories to your project:
 <dependency>
     <groupId>com.captcha</groupId>
     <artifactId>captcha-pro-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -99,7 +99,7 @@ cd server/java
 mvn clean package
 
 # Run
-java -jar target/captcha-pro-spring-boot-starter-1.0.0.jar
+java -jar target/captcha-pro-spring-boot-starter-2.0.0.jar
 ```
 
 Server starts at `http://localhost:8080`.

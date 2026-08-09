@@ -19,7 +19,7 @@ export default defineConfig({
 			{ text: 'API', link: '/api/' },
 			{ text: 'Backend', link: '/backend/' },
 			{
-				text: 'v1.0.0',
+				text: 'v2.0.0',
 				items: [
 					{ text: 'Changelog', link: 'https://github.com/saqqdy/captcha-pro/blob/master/CHANGELOG.md' },
 					{ text: 'GitHub', link: 'https://github.com/saqqdy/captcha-pro' },
@@ -122,7 +122,7 @@ export default defineConfig({
 					{ text: 'API', link: '/zh/api/' },
 					{ text: '后端', link: '/zh/backend/' },
 					{
-						text: 'v1.0.0',
+						text: 'v2.0.0',
 						items: [
 							{ text: '更新日志', link: 'https://github.com/saqqdy/captcha-pro/blob/master/CHANGELOG.md' },
 							{ text: 'GitHub', link: 'https://github.com/saqqdy/captcha-pro' },
