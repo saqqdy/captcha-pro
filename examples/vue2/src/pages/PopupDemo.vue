@@ -1,3 +1,29 @@
+<script>
+import { PopupCaptcha } from '@captcha-pro/vue2'
+
+export default {
+  name: 'PopupDemo',
+  components: { PopupCaptcha },
+  props: {
+    locale: { type: String, default: 'zh-CN' }
+  },
+  data() {
+    return {
+      type: 'slider',
+      autoClose: true
+    }
+  },
+  methods: {
+    show() {
+      this.$refs.captchaRef?.show()
+    },
+    onSuccess() {
+      console.log('Popup captcha success')
+    }
+  }
+}
+</script>
+
 <template>
   <section class="demo-section">
     <h2>💬 {{ locale === 'zh-CN' ? '弹窗验证码' : 'Popup Captcha' }}</h2>
@@ -24,34 +50,8 @@
       ref="captchaRef"
       :type="type"
       :auto-close="autoClose"
-      :captcha-options="{ width: 320, height: 180, locale: locale }"
+      :captcha-options="{ width: 320, height: 180, locale }"
       @success="onSuccess"
     />
   </section>
 </template>
-
-<script>
-import { PopupCaptcha } from '@captcha-pro/vue2'
-
-export default {
-  name: 'PopupDemo',
-  components: { PopupCaptcha },
-  props: {
-    locale: { type: String, default: 'zh-CN' }
-  },
-  data() {
-    return {
-      type: 'slider',
-      autoClose: true
-    }
-  },
-  methods: {
-    show() {
-      this.$refs.captchaRef?.show()
-    },
-    onSuccess() {
-      console.log('Popup captcha success')
-    }
-  }
-}
-</script>

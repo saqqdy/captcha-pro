@@ -1,20 +1,3 @@
-<template>
-  <div class="container">
-    <AppHeader :current-locale="currentLocale" @switch="switchLanguage" />
-    <AppFeatures :locale="currentLocale" />
-    <TabNav :active-tab.sync="activeTab" :locale="currentLocale" />
-
-    <SliderDemo v-show="activeTab === 'slider'" :locale="currentLocale" />
-    <ClickDemo v-show="activeTab === 'click'" :locale="currentLocale" />
-    <PopupDemo v-show="activeTab === 'popup'" :locale="currentLocale" />
-    <BackendDemo v-show="activeTab === 'backend'" :locale="currentLocale" />
-    <InvisibleDemo v-show="activeTab === 'invisible'" :locale="currentLocale" />
-    <CustomImageDemo v-show="activeTab === 'custom'" :locale="currentLocale" />
-
-    <AppFooter />
-  </div>
-</template>
-
 <script>
 import { setLocale, getLocale } from '@captcha-pro/vue2'
 import '@captcha-pro/vue2/style.css'
@@ -60,3 +43,20 @@ export default {
   }
 }
 </script>
+
+<template>
+  <div class="container">
+    <AppHeader :current-locale="currentLocale" @switch="switchLanguage" />
+    <AppFeatures :locale="currentLocale" />
+    <TabNav :active-tab.sync="activeTab" :locale="currentLocale" />
+
+    <SliderDemo v-show="activeTab === 'slider'" :locale="currentLocale" />
+    <ClickDemo v-show="activeTab === 'click'" :locale="currentLocale" />
+    <PopupDemo v-show="activeTab === 'popup'" :locale="currentLocale" />
+    <BackendDemo v-show="activeTab === 'backend'" :locale="currentLocale" />
+    <InvisibleDemo v-show="activeTab === 'invisible'" :locale="currentLocale" />
+    <CustomImageDemo v-show="activeTab === 'custom'" :locale="currentLocale" />
+
+    <AppFooter />
+  </div>
+</template>

@@ -8,9 +8,9 @@
 import type { CaptchaType, Point } from '@captcha-pro/core'
 import type { CaptchaLocale } from './i18n'
 
+export type { CaptchaLocale } from './i18n'
 // Re-export Point from @captcha-pro/core for consumers of this package
 export type { Point } from '@captcha-pro/core'
-export type { CaptchaLocale } from './i18n'
 
 // ============================================================
 // Backend API Types

@@ -1,3 +1,9 @@
+<script>
+export default {
+  name: 'AppFooter'
+}
+</script>
+
 <template>
   <footer class="footer">
     <p>
@@ -7,9 +13,3 @@
     <p>Made with ❤️ by saqqdy</p>
   </footer>
 </template>
-
-<script>
-export default {
-  name: 'AppFooter'
-}
-</script>

@@ -91,6 +91,8 @@ describe('InvisibleCaptcha', () => {
 		// Trigger click
 		container.click()
 
+		expect(onSuccess).toHaveBeenCalled()
+
 		captcha.destroy()
 	})
 

@@ -61,7 +61,7 @@ export default {
 				<view v-if="showClose" class="popup-close" @tap="hide"><text>×</text></view>
 			</view>
 			<view class="popup-body">
-				<slider-captcha
+				<SliderCaptcha
 					v-if="type === 'slider'"
 					v-bind="sliderOptions"
 					:backend="backend"
@@ -69,7 +69,7 @@ export default {
 					@fail="onFail"
 					@refresh="onRefresh"
 				/>
-				<click-captcha
+				<ClickCaptcha
 					v-else
 					v-bind="clickOptions"
 					:backend="backend"

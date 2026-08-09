@@ -1,3 +1,47 @@
+<script>
+import { SliderCaptcha } from '@captcha-pro/vue2'
+
+export default {
+  name: 'SliderDemo',
+  components: { SliderCaptcha },
+  props: {
+    locale: { type: String, default: 'zh-CN' }
+  },
+  data() {
+    return {
+      precision: 5,
+      showRefresh: true,
+      stats: {}
+    }
+  },
+  methods: {
+    onSuccess() {
+      console.log('Slider success:', this.$refs.captchaRef?.getData())
+      this.updateStats()
+    },
+    updateStats() {
+      const stats = this.$refs.captchaRef?.getStatistics()
+      if (stats) {
+        this.stats = {
+          totalAttempts: stats.totalAttempts,
+          successCount: stats.successCount,
+          successRate: stats.successRate,
+          avgVerifyTime: stats.avgVerifyTime
+        }
+      }
+    },
+    reset() {
+      this.$refs.captchaRef?.refresh()
+    },
+    getData() {
+      const data = this.$refs.captchaRef?.getData()
+      console.log('Slider data:', data)
+      alert(this.locale === 'zh-CN' ? '验证数据已输出到控制台' : 'Data logged to console')
+    }
+  }
+}
+</script>
+
 <template>
   <section class="demo-section">
     <h2>🧩 {{ locale === 'zh-CN' ? '滑动拼图验证码' : 'Slider Captcha' }}</h2>
@@ -55,47 +99,3 @@
     </div>
   </section>
 </template>
-
-<script>
-import { SliderCaptcha } from '@captcha-pro/vue2'
-
-export default {
-  name: 'SliderDemo',
-  components: { SliderCaptcha },
-  props: {
-    locale: { type: String, default: 'zh-CN' }
-  },
-  data() {
-    return {
-      precision: 5,
-      showRefresh: true,
-      stats: {}
-    }
-  },
-  methods: {
-    onSuccess() {
-      console.log('Slider success:', this.$refs.captchaRef?.getData())
-      this.updateStats()
-    },
-    updateStats() {
-      const stats = this.$refs.captchaRef?.getStatistics()
-      if (stats) {
-        this.stats = {
-          totalAttempts: stats.totalAttempts,
-          successCount: stats.successCount,
-          successRate: stats.successRate,
-          avgVerifyTime: stats.avgVerifyTime
-        }
-      }
-    },
-    reset() {
-      this.$refs.captchaRef?.refresh()
-    },
-    getData() {
-      const data = this.$refs.captchaRef?.getData()
-      console.log('Slider data:', data)
-      alert(this.locale === 'zh-CN' ? '验证数据已输出到控制台' : 'Data logged to console')
-    }
-  }
-}
-</script>

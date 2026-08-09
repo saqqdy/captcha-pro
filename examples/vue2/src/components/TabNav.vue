@@ -1,17 +1,3 @@
-<template>
-  <div class="tabs">
-    <button
-      v-for="tab in tabs"
-      :key="tab.key"
-      :class="{ active: activeTab === tab.key }"
-      @click="$emit('update:active-tab', tab.key)"
-    >
-      {{ locale === 'zh-CN' ? tab.label.zh : tab.label.en }}
-      <span v-if="tab.badge" class="new-badge">{{ tab.badge }}</span>
-    </button>
-  </div>
-</template>
-
 <script>
 export default {
   name: 'TabNav',
@@ -34,3 +20,17 @@ export default {
   }
 }
 </script>
+
+<template>
+  <div class="tabs">
+    <button
+      v-for="tab in tabs"
+      :key="tab.key"
+      :class="{ active: activeTab === tab.key }"
+      @click="$emit('update:active-tab', tab.key)"
+    >
+      {{ locale === 'zh-CN' ? tab.label.zh : tab.label.en }}
+      <span v-if="tab.badge" class="new-badge">{{ tab.badge }}</span>
+    </button>
+  </div>
+</template>

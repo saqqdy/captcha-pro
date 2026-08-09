@@ -1,28 +1,3 @@
-<template>
-  <section class="demo-section">
-    <h2>🖼️ {{ locale === 'zh-CN' ? '自定义图片验证码' : 'Custom Image Captcha' }}</h2>
-
-    <div class="info-box">
-      💡 {{ locale === 'zh-CN' ? '支持使用自定义背景图片。' : 'Support custom background images.' }}
-    </div>
-
-    <div class="captcha-box">
-      <SliderCaptcha
-        ref="captchaRef"
-        :width="320"
-        :height="180"
-        :bg-image="bgImage"
-        :locale="locale"
-        @success="() => console.log('Custom captcha success')"
-      />
-    </div>
-
-    <div class="btn-group">
-      <button class="btn btn-primary" @click="changeImage">{{ locale === 'zh-CN' ? '更换图片' : 'Change Image' }}</button>
-    </div>
-  </section>
-</template>
-
 <script>
 import { SliderCaptcha } from '@captcha-pro/vue2'
 
@@ -53,3 +28,27 @@ export default {
   }
 }
 </script>
+
+<template>
+  <section class="demo-section">
+    <h2>🖼️ {{ locale === 'zh-CN' ? '自定义图片验证码' : 'Custom Image Captcha' }}</h2>
+
+    <div class="info-box">
+      💡 {{ locale === 'zh-CN' ? '支持使用自定义背景图片。' : 'Support custom background images.' }}
+    </div>
+
+    <div class="captcha-box">
+      <SliderCaptcha
+        :width="320"
+        :height="180"
+        :bg-image="bgImage"
+        :locale="locale"
+        @success="() => console.log('Custom captcha success')"
+      />
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary" @click="changeImage">{{ locale === 'zh-CN' ? '更换图片' : 'Change Image' }}</button>
+    </div>
+  </section>
+</template>

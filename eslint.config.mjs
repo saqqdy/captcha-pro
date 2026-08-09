@@ -1,10 +1,7 @@
 import eslintConfig from '@eslint-sets/eslint-config'
 
 export default eslintConfig({
-	ignores: ['docs/**', '**/miniprogram_npm/**'],
-	react: false,
-	vue: false,
-  solid: false,
+	ignores: ['docs/**', '**/miniprogram_npm/**', 'examples/html/**'],
 	markdown: false,
 	stylistic: false,
 	type: 'lib',

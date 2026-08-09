@@ -1,3 +1,13 @@
+<script>
+export default {
+  name: 'AppHeader',
+  props: {
+    currentLocale: { type: String, default: 'zh-CN' }
+  },
+  emits: ['switch']
+}
+</script>
+
 <template>
   <header>
     <h1>
@@ -13,13 +23,3 @@
     </div>
   </header>
 </template>
-
-<script>
-export default {
-  name: 'AppHeader',
-  props: {
-    currentLocale: { type: String, default: 'zh-CN' }
-  },
-  emits: ['switch']
-}
-</script>

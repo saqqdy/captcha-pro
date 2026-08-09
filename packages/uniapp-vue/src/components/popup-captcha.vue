@@ -91,7 +91,7 @@ defineExpose({ show, hide, isVisible: () => visible.value })
       </view>
 
       <view class="popup-body" :style="{ padding: '32rpx' }">
-        <slider-captcha
+        <SliderCaptcha
           v-if="type === 'slider'"
           v-bind="sliderOptions"
           :backend="backend"
@@ -99,7 +99,7 @@ defineExpose({ show, hide, isVisible: () => visible.value })
           :on-fail="onFail"
           :on-refresh="undefined"
         />
-        <click-captcha
+        <ClickCaptcha
           v-else
           v-bind="clickOptions"
           :backend="backend"

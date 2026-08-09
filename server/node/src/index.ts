@@ -84,7 +84,7 @@ app.use('/api/captcha', securityMiddleware)
  * GET /api/captcha?type=slider&width=280&height=155
  */
 app.get('/api/captcha', async (req: Request, res: Response) => {
-	console.log('[GET /api/captcha]', req.query)
+	console.info('[GET /api/captcha]', req.query)
 	try {
 		const type = (req.query.type as CaptchaType) || 'slider'
 		const width = Number(req.query.width) || 300
@@ -135,7 +135,7 @@ app.get('/api/captcha', async (req: Request, res: Response) => {
  */
 app.post('/api/captcha/verify', async (req: Request, res: Response) => {
 	const ip = securityManager.getClientIP(req)
-	console.log('[POST /api/captcha/verify]', { ip, captchaId: req.body?.captchaId, type: req.body?.type })
+	console.info('[POST /api/captcha/verify]', { ip, captchaId: req.body?.captchaId, type: req.body?.type })
 
 	try {
 		const data: VerifyRequest = req.body
@@ -280,7 +280,7 @@ app.post('/api/captcha/verify', async (req: Request, res: Response) => {
  * Health check
  */
 app.get('/api/health', (_req: Request, res: Response) => {
-	console.log('[GET /api/health]')
+	console.info('[GET /api/health]')
 	res.json({
 		status: 'ok',
 		timestamp: Date.now(),
@@ -292,7 +292,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
  * Get server info
  */
 app.get('/api/info', (_req: Request, res: Response) => {
-	console.log('[GET /api/info]')
+	console.info('[GET /api/info]')
 	res.json({
 		name: 'captcha-pro-server-demo',
 		version: '1.0.0',
@@ -312,7 +312,7 @@ app.get('/api/info', (_req: Request, res: Response) => {
  */
 app.get('/api/security/status/:ip', (req: Request, res: Response) => {
 	const ip = Array.isArray(req.params.ip) ? req.params.ip[0] : req.params.ip
-	console.log('[GET /api/security/status]', ip)
+	console.info('[GET /api/security/status]', ip)
 	const status = securityManager.getStatus(ip)
 
 	res.json({
@@ -326,7 +326,7 @@ app.get('/api/security/status/:ip', (req: Request, res: Response) => {
  */
 app.post('/api/security/blacklist', (req: Request, res: Response) => {
 	const { ip, reason, duration } = req.body
-	console.log('[POST /api/security/blacklist]', { ip, reason, duration })
+	console.info('[POST /api/security/blacklist]', { ip, reason, duration })
 
 	if (!ip) {
 		res.status(400).json({
@@ -351,7 +351,7 @@ app.post('/api/security/blacklist', (req: Request, res: Response) => {
  */
 app.delete('/api/security/blacklist/:ip', (req: Request, res: Response) => {
 	const ip = Array.isArray(req.params.ip) ? req.params.ip[0] : req.params.ip
-	console.log('[DELETE /api/security/blacklist]', ip)
+	console.info('[DELETE /api/security/blacklist]', ip)
 	const removed = securityManager.removeFromBlacklist(ip)
 
 	res.json({
@@ -364,7 +364,7 @@ app.delete('/api/security/blacklist/:ip', (req: Request, res: Response) => {
  * Get blacklist entries (admin endpoint)
  */
 app.get('/api/security/blacklist', (_req: Request, res: Response) => {
-	console.log('[GET /api/security/blacklist]')
+	console.info('[GET /api/security/blacklist]')
 	const blacklist = securityManager.getBlacklist()
 
 	res.json({

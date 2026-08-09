@@ -189,11 +189,11 @@ export default {
 			<text class="prompt-text">请依次点击：</text>
 			<view class="prompt-chars">
 				<template v-if="clickCharImages.length > 0">
-					<view v-for="(img, i) in clickCharImages" :key="'img'+i" class="char-item"
+					<view v-for="(img, i) in clickCharImages" :key="`img${i}`" class="char-item"
 						><image :src="img" class="char-img" mode="aspectFit" /></view>
 				</template>
 				<template v-else>
-					<view v-for="(t, i) in clickTexts" :key="'txt'+i" class="char-item"
+					<view v-for="(t, i) in clickTexts" :key="`txt${i}`" class="char-item"
 						><text class="char-text">{{ t }}</text></view>
 				</template>
 			</view>

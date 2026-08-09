@@ -1,3 +1,31 @@
+<script>
+import { ClickCaptcha } from '@captcha-pro/vue2'
+
+export default {
+  name: 'ClickDemo',
+  components: { ClickCaptcha },
+  props: {
+    locale: { type: String, default: 'zh-CN' }
+  },
+  data() {
+    return { count: 3 }
+  },
+  methods: {
+    onSuccess() {
+      console.log('Click success:', this.$refs.captchaRef?.getData())
+    },
+    reset() {
+      this.$refs.captchaRef?.refresh()
+    },
+    getData() {
+      const data = this.$refs.captchaRef?.getData()
+      console.log('Click data:', data)
+      alert(this.locale === 'zh-CN' ? '验证数据已输出到控制台' : 'Data logged to console')
+    }
+  }
+}
+</script>
+
 <template>
   <section class="demo-section">
     <h2>🎯 {{ locale === 'zh-CN' ? '点选文字验证码' : 'Click Captcha' }}</h2>
@@ -34,31 +62,3 @@
     </div>
   </section>
 </template>
-
-<script>
-import { ClickCaptcha } from '@captcha-pro/vue2'
-
-export default {
-  name: 'ClickDemo',
-  components: { ClickCaptcha },
-  props: {
-    locale: { type: String, default: 'zh-CN' }
-  },
-  data() {
-    return { count: 3 }
-  },
-  methods: {
-    onSuccess() {
-      console.log('Click success:', this.$refs.captchaRef?.getData())
-    },
-    reset() {
-      this.$refs.captchaRef?.refresh()
-    },
-    getData() {
-      const data = this.$refs.captchaRef?.getData()
-      console.log('Click data:', data)
-      alert(this.locale === 'zh-CN' ? '验证数据已输出到控制台' : 'Data logged to console')
-    }
-  }
-}
-</script>

@@ -1,3 +1,12 @@
+<script>
+export default {
+  name: 'AppFeatures',
+  props: {
+    locale: { type: String, default: 'zh-CN' }
+  }
+}
+</script>
+
 <template>
   <section class="features">
     <h2>{{ locale === 'zh-CN' ? '功能特性' : 'Features' }}</h2>
@@ -13,12 +22,3 @@
     </div>
   </section>
 </template>
-
-<script>
-export default {
-  name: 'AppFeatures',
-  props: {
-    locale: { type: String, default: 'zh-CN' }
-  }
-}
-</script>
