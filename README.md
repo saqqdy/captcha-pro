@@ -47,7 +47,7 @@ Captcha Pro supports **10+ platforms** with consistent APIs:
 | Android Compose | `captcha-compose` | Jetpack Compose |
 | iOS | `CaptchaPro` | Swift SDK (UIKit + SwiftUI) |
 
-See [PLATFORM_ROADMAP.md](./docs/PLATFORM_ROADMAP.md) for detailed implementation.
+See [PLATFORM_ROADMAP.md](./internal/PLATFORM_ROADMAP.md) for detailed implementation.
 
 ## Quick Start
 

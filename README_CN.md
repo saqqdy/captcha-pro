@@ -47,7 +47,7 @@ Captcha Pro 支持 **10+ 平台**，API 保持一致：
 | Android Compose | `captcha-compose` | Jetpack Compose |
 | iOS | `CaptchaPro` | Swift SDK (UIKit + SwiftUI) |
 
-详见 [PLATFORM_ROADMAP.md](./docs/PLATFORM_ROADMAP.md)。
+详见 [PLATFORM_ROADMAP.md](./internal/PLATFORM_ROADMAP.md)。
 
 ## 快速开始
 
