@@ -44,7 +44,7 @@
     "lint": "eslint --fix .",
     "prettier": "prettier --write \"**/*.{js,ts,jsx,tsx,vue,yml,json,md}\"",
     "clean": "turbo clean && rm -rf node_modules",
-    "pub": "pnpm -r publish --access public",
+    "pub": "pnpm -r publish --access public --no-git-checks",
     "changeset": "changeset",
     "version": "changeset version",
     "docs:dev": "vitepress dev docs",
