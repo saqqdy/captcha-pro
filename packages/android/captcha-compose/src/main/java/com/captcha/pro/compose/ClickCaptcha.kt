@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.captcha.pro.core.BackendVerifyOptions
@@ -231,7 +232,7 @@ fun ClickCaptcha(
             }
 
             // Status overlay — centered, white@75%, animated fade-in + scale
-            AnimatedVisibility(
+            androidx.compose.animation.AnimatedVisibility(
                 visible = status != null,
                 enter = fadeIn(animationSpec = tween(200)) +
                     scaleIn(initialScale = 0.9f, animationSpec = tween(200)),
@@ -247,7 +248,7 @@ fun ClickCaptcha(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Box(
                             modifier = Modifier
-                                .size(64.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
                                 .background(
                                     if (s == "success") Color(0xFF52C41A).copy(alpha = 0.85f)
@@ -258,7 +259,7 @@ fun ClickCaptcha(
                             Text(
                                 text = if (s == "success") "✓" else "✕",
                                 color = Color.White,
-                                style = MaterialTheme.typography.h5
+                                style = MaterialTheme.typography.h6
                             )
                         }
                         Spacer(modifier = Modifier.height(8.dp))

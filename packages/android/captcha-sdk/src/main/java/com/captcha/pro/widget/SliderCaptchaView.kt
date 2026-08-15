@@ -166,6 +166,8 @@ class SliderCaptchaView @JvmOverloads constructor(
     private suspend fun refreshSuspend() {
         loadingView.text = LocaleMessages.get(locale, "loading")
         loadingView.visibility = View.VISIBLE
+        bgView.setImageDrawable(null)
+        sliderView.visibility = View.INVISIBLE
         statusOverlay.hide()
 
         val options = CaptchaOptions(
@@ -191,6 +193,7 @@ class SliderCaptchaView @JvmOverloads constructor(
             sliderView.setImageBitmap(sliderBitmap)
             sliderView.translationX = 0f
             sliderView.translationY = sliderY
+            sliderView.visibility = View.VISIBLE
 
             loadingView.visibility = View.GONE
             sliderBar.reset()
@@ -438,7 +441,7 @@ class StatusOverlayView @JvmOverloads constructor(
 
         iconView = TextView(context).apply {
             gravity = Gravity.CENTER
-            textSize = 28f
+            textSize = 18f
             setTextColor(Color.WHITE)
         }
 
@@ -447,7 +450,7 @@ class StatusOverlayView @JvmOverloads constructor(
             textSize = 14f
         }
 
-        content.addView(iconView, LinearLayout.LayoutParams((64 * density).toInt(), (64 * density).toInt()).apply {
+        content.addView(iconView, LinearLayout.LayoutParams((32 * density).toInt(), (32 * density).toInt()).apply {
             bottomMargin = (8 * density).toInt()
         })
         content.addView(textView, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))

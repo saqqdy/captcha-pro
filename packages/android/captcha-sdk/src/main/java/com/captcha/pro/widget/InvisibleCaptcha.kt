@@ -3,9 +3,11 @@ package com.captcha.pro.widget
 import android.content.Context
 import android.view.MotionEvent
 import android.view.View
-import com.captcha.pro.core.CaptchaType
-import com.captcha.pro.core.VerifyResult
 import com.captcha.pro.core.CaptchaPoint
+import com.captcha.pro.core.CaptchaType
+import com.captcha.pro.core.ClickCaptchaCallback
+import com.captcha.pro.core.SliderCaptchaCallback
+import com.captcha.pro.core.VerifyResult
 import kotlinx.coroutines.*
 import java.util.*
 

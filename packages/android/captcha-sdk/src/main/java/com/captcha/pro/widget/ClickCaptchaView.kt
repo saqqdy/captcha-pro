@@ -150,6 +150,8 @@ class ClickCaptchaView @JvmOverloads constructor(
     private suspend fun refreshSuspend() {
         loadingView.text = LocaleMessages.get(locale, "loading")
         loadingView.visibility = View.VISIBLE
+        bgView.setImageDrawable(null)
+        clickOverlayView.clear()
         statusOverlay.hide()
 
         val options = CaptchaOptions(
