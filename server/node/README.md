@@ -370,3 +370,69 @@ To integrate with your own Node.js backend:
 ## License
 
 MIT
+
+## Start Server & Verify Guide (No Coding Experience Needed)
+
+This section is for people who have never run a backend service before. Follow it step by step and you will have the captcha service running in your browser.
+
+### 1. What software to install
+
+1. **Node.js 18 LTS** — Go to https://nodejs.org, download the version marked "LTS" (Long Term Support), and double-click the installer. On Windows it is an `.msi`, on macOS a `.pkg`. Finish the installer with all default options.
+2. **pnpm** (a package manager) — After Node.js is installed, open a terminal (macOS: the "Terminal" app; Windows: "PowerShell" or "Command Prompt") and run:
+   ```bash
+   npm install -g pnpm
+   ```
+   Wait until it finishes. You only do this once.
+
+How to check it worked: in the terminal run `node -v` (should print `v18...` or higher) and `pnpm -v` (should print a version number).
+
+> **About the `canvas` module**: This project uses a native image library called `canvas`. Under Node.js 18 it usually installs without problems. If `pnpm install` later fails with a python/canvas-related error message, install Python 3.11 and retry with `PYTHON=/usr/local/bin/python3.11 pnpm install` (macOS/Linux). On Windows, install Python from https://www.python.org and retry `pnpm install`; that usually fixes it. Most people on Node 18 will not hit this.
+
+### 2. Start the service
+
+In the terminal:
+
+```bash
+# Go into the server directory (replace the path with your own)
+cd /your/path/to/captcha-pro/server/node
+
+# Install dependencies (first time only, can take a few minutes)
+pnpm install
+
+# Start the dev server
+pnpm dev
+```
+
+When you see a line in the terminal like `Captcha Pro Server running at http://localhost:3001` (the address is `http://localhost:3001` by default), the service has started. Keep this terminal window open — closing it stops the service.
+
+### 3. Verify it works
+
+Open your web browser (Chrome, Safari, Edge, any one). In the address bar, paste this and press Enter:
+
+```
+http://localhost:3001/api/captcha?type=slider
+```
+
+If you see a page full of text starting with something like `{"success":true,"data":{"captchaId":...,"bgImage":"data:image/jpeg;base64,...}}`, then it works — that JSON text is the captcha data your service just generated.
+
+You can also try the health check: open `http://localhost:3001/api/health`.
+
+### 4. Build (optional)
+
+If you only want to run the service locally, you do not need to build — `pnpm dev` is enough. If you do want a production build:
+
+```bash
+pnpm build
+```
+
+The output goes into the `dist/` folder. Run the built version with `pnpm start` (which runs `node dist/cli.js`).
+
+### 5. Common errors and fixes
+
+- **`EADDRINUSE` or "port 3001 already in use"** — Another program is using port 3001. Either close that program, or start the service on a different port: on macOS/Linux run `PORT=3002 pnpm dev`; on Windows PowerShell run `$env:PORT=3002; pnpm dev`.
+- **`pnpm install` fails on `canvas`** — See the note in step 1 about installing Python 3.11 and retrying with `PYTHON=/usr/local/bin/python3.11 pnpm install`.
+- **`pnpm: command not found`** — pnpm did not install. Re-run `npm install -g pnpm`.
+
+### 6. Connect it to a frontend example
+
+The frontend demos in this repo (for example `examples/vue`) can talk to this service. In the frontend demo, set the backend address to `http://localhost:3001`, so that the captcha fetch URL is `http://localhost:3001/api/captcha?type=slider` and the verify URL is `http://localhost:3001/api/captcha/verify`. See each frontend example's own README for the exact config field name.

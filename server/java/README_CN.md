@@ -342,3 +342,70 @@ public class MyApplication {
 ## License
 
 MIT
+
+## 启动服务与验证指南（零基础也能跟着做）
+
+这一节专门写给从没跑过后端服务的朋友。照着一步步来，就能在浏览器里把验证码服务跑起来。
+
+### 1. 要装什么软件
+
+1. **JDK 17** —— 打开 https://adoptium.net ，下载 **Temurin 17 LTS**（macOS 是 `.pkg`，Windows 是 `.msi`），双击默认安装。本项目指定要 Java 17。
+2. **Maven** —— 本项目没有自带 `mvnw` 包装器，所以需要单独装 Maven。
+   - macOS（有 Homebrew）：`brew install maven`
+   - Windows：去 https://maven.apache.org/download.cgi 下载压缩包，解压后把它的 `bin` 目录加到环境变量 PATH 里（下载页上有说明）。
+   - 如果你用 IntelliJ IDEA 或装了 Java 扩展的 VS Code，一般自带 Maven，不用单独装。
+
+怎么确认装好了：打开终端（macOS 用"终端"App，Windows 用 PowerShell），输 `java -version` 回车（应显示版本 `17`），再输 `mvn -v` 回车（应显示一个 Maven 版本号）。
+
+### 2. 起服务
+
+终端里依次输入：
+
+```bash
+# 进入服务端目录（路径换成你自己的）
+cd /你的路径/captcha-pro/server/java
+
+# 直接启动 Spring Boot 服务（第一次会下载依赖，可能要好几分钟）
+mvn spring-boot:run
+```
+
+看到 Spring Boot 的图标和类似 `Tomcat started on port 8080` 的一行字（地址就是 `http://localhost:8080`），就说明起来了。这个终端窗口别关，关了服务就停了。
+
+> 端口在 `src/main/resources/application.yml` 里配置（`server.port: 8080`）。
+
+### 3. 验证服务
+
+打开浏览器（Chrome、Safari、Edge 都行），地址栏粘下面这串，回车：
+
+```
+http://localhost:8080/api/captcha?type=slider
+```
+
+看到一屏字，开头类似 `{"success":true,"data":{"captchaId":...,"bgImage":...}}`，就成了——这段 JSON 就是服务刚生成的验证码数据。
+
+也可以试下健康检查：打开 `http://localhost:8080/api/health`。
+
+### 4. 构建（可选）
+
+只是本地起服务的话，`mvn spring-boot:run` 就够了，不用构建。想要一个独立可运行的 jar：
+
+```bash
+# 构建
+mvn clean package
+
+# 运行打好的 jar
+java -jar target/captcha-pro-spring-boot-starter-2.0.0.jar
+```
+
+jar 文件在 `target/` 目录下。
+
+### 5. 常见报错
+
+- **`java: command not found` 或 Java 版本不对** —— JDK 17 没装或没生效。从 https://adoptium.net 重装 Temurin 17，重开终端。
+- **`mvn: command not found`** —— Maven 没装或没进环境变量。看上面第 1 步装 Maven。
+- **`Web server failed to start. Port 8080 was already in use.`（8080 端口被占）** —— 有别的程序占着 8080。要么关了它，要么换个端口起：`mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8081`。
+- **第一次很慢** —— Maven 在下载依赖，第一次正常，可能要好几分钟。
+
+### 6. 跟前端示例联调
+
+本仓库的前端示例（比如 `examples/vue`）可以连这个服务。在前端示例里把后端地址配成 `http://localhost:8080`，验证码取图地址就是 `http://localhost:8080/api/captcha?type=slider`，校验地址就是 `http://localhost:8080/api/captcha/verify`。具体配置项字段名看各前端示例自己的 README。

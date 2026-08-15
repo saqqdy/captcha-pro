@@ -164,3 +164,55 @@ Pass `locale: .zhCN` or `.enUS` to any component. Status strings resolve via
 ## License
 
 MIT
+
+---
+
+## Build & Verify Guide (No Coding Experience Needed)
+
+> **Read this first:** `CaptchaPro` (iOS) is an **SDK library**, not a stand-alone app. It has no screen you can tap to "see a captcha". It is a box of parts that developers embed inside a bigger iOS app. This guide shows you how to build the library itself and confirm the build succeeded. To actually *see* a captcha working (fastest, no Xcode needed), open the **`examples/vue`** folder — see the root `README.md`.
+>
+> **Important:** iOS development only works on a **Mac**. You cannot build this on Windows or Linux.
+
+### 1. Install the software
+
+1. Open the **Mac App Store**, search for **Xcode**, and install it (it is large, ~10 GB+, give it time).
+2. Open Xcode once and accept the license agreement when prompted.
+
+That's it — Xcode includes everything (Swift toolchain, iOS SDK).
+
+### 2. Open the project
+
+- **Easiest:** in Finder, double-click `packages/ios/Package.swift`. It opens in Xcode.
+- Or in Xcode: **File → Open…** and select the `packages/ios` folder.
+
+### 3. Build
+
+**In Xcode (recommended):**
+1. At the top of the window, pick the scheme **CaptchaPro**.
+2. Menu **Product → Build** (shortcut ⌘B).
+3. Wait for the progress bar at the top to finish.
+
+**Command line (advanced):**
+Open the macOS **Terminal** and run:
+
+```bash
+cd packages/ios
+xcodebuild -scheme CaptchaPro -destination 'generic/platform=iOS' -derivedDataPath .build build
+```
+
+You should see `** BUILD SUCCEEDED **`.
+
+> **Do not use `swift build`.** It compiles for macOS by default and will fail with `no such module 'UIKit'`. The iOS SDK requires `xcodebuild` with an iOS destination, as shown above.
+
+### 4. How to know it worked
+
+The output says `** BUILD SUCCEEDED **` (Xcode) or `BUILD SUCCEEDED` (command line).
+
+### 5. How to actually see a captcha
+
+This package is a library — no UI to open. The quickest way to see a captcha is the **`examples/vue`** example (browser). See the root `README.md`.
+
+### 6. Common errors
+
+- `no such module 'UIKit'` → you ran `swift build`. Use the `xcodebuild` command from step 3 instead.
+- **Code-signing error** → in Xcode, select the scheme and enable **Automatically manage signing**, or sign in with your Apple ID under **Xcode → Settings → Accounts**. Building for the simulator needs no signing.

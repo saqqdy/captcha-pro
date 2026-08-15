@@ -154,3 +154,95 @@ Server runs at `http://localhost:3001`
 ## License
 
 MIT
+
+## Run & Verify Guide (No Coding Experience Needed)
+
+This guide is for complete beginners. The HTML example is the simplest one — you don't need to install anything to see it work.
+
+### 1. Software You Need to Install
+
+**Simplest approach**: All you need is a browser (Chrome, Edge, or Safari). No extra software required.
+
+If you want to run it via a local server (optional), you'll need Node.js:
+
+1. Open https://nodejs.org in your browser.
+2. Download the **LTS** version. The site auto-detects your OS and gives you the right installer:
+   - **Windows**: Download the `.msi` file, double-click it, and click "Next" through the wizard.
+   - **macOS**: Download the `.pkg` file, double-click it, and follow the prompts.
+3. After installation, verify by opening a terminal and typing `node -v` — if a version number appears, it's installed.
+
+> If you'd rather use Python to start a local server, install Python 3 from https://python.org. Download and double-click to install.
+
+### 2. How to Open the Project
+
+Use Finder (macOS) or File Explorer (Windows) to locate the `examples/html` folder inside the captcha-pro project. Inside it you'll find an `index.html` file — that's the demo page.
+
+### 3. How to Run
+
+There are three ways to run the HTML demo. Pick whichever you like:
+
+#### Option 1: Just Open the File (Simplest, Recommended for Beginners)
+
+Double-click `index.html`. It opens in your default browser. Once the page loads, you'll see the captcha components.
+
+> This is the easiest method, but some features (like backend verification) may not work properly. For backend testing, use Option 2 or 3.
+
+#### Option 2: Run a Local Server with Node.js (Recommended)
+
+1. Open a terminal and navigate to the project directory:
+   ```bash
+   # macOS
+   cd ~/Downloads/captcha-pro/examples/html
+
+   # Windows
+   cd %USERPROFILE%\Downloads\captcha-pro\examples\html
+   ```
+   > Replace the path with wherever you actually saved the project. On macOS, you can drag the `html` folder into the terminal to auto-fill the path.
+2. Run:
+   ```bash
+   npx serve .
+   ```
+3. The terminal displays a local URL (e.g. `http://localhost:3000`). Copy it into your browser.
+
+#### Option 3: Run a Local Server with Python
+
+1. Open a terminal and navigate to the project directory (same as Option 2, step 1).
+2. Run:
+   ```bash
+   python -m http.server 8080
+   ```
+3. Open `http://localhost:8080` in your browser.
+
+### 4. How to View the Result
+
+Once the page is open in your browser, you'll see various captcha components: slider puzzles, click-to-verify text, popup captcha, and more. Try interacting with them — if they respond to your actions, everything is working.
+
+### 5. How to Build
+
+The HTML example doesn't require a build step. `index.html` is the final product — you can deploy it directly to any static server or web hosting.
+
+### 6. How to Verify Success / Common Errors
+
+| Symptom | Meaning | Solution |
+|---------|---------|----------|
+| Browser shows captcha components | Success | Start interacting with the captcha |
+| Page is blank or styles are broken | File may not have loaded correctly | Switch to a local server method (Option 2 or 3) |
+| `command not found: npx` | Node.js not installed | Install Node.js per step 1, or just use Option 1 (double-click) |
+| `command not found: python` | Python not installed | Use Option 1 or Option 2 instead |
+| Browser says "cannot connect" | Local server isn't running | Check that the server is still running in the terminal |
+
+### 7. Backend Verification Demo
+
+The backend verification feature on the page requires a backend server. To test it:
+
+1. Open a terminal and navigate to the backend server directory:
+   ```bash
+   # From examples/html
+   cd ../../server/node
+   pnpm install
+   pnpm dev
+   ```
+   > You'll need Node.js and pnpm installed (run `npm install -g pnpm` in the terminal).
+2. The backend server runs at `http://localhost:3001`.
+3. Then open the HTML demo via a local server (Option 2 or 3 above), find the backend verification section on the page, and try it out.
+4. See `server/node/README_CN.md` for more details.

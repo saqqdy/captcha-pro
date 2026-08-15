@@ -351,3 +351,70 @@ r.Use(server.Middleware())
 ## License
 
 MIT
+
+## Start Server & Verify Guide (No Coding Experience Needed)
+
+This section is for people who have never run a backend service before. Follow it step by step and you will have the captcha service running in your browser.
+
+### 1. What software to install
+
+**Go 1.21 or newer** — Go to https://go.dev/dl/, download the installer for your system (macOS: `.pkg`; Windows: `.msi`), and double-click to install. Use all default options.
+
+How to check it worked: open a terminal (macOS: the "Terminal" app; Windows: PowerShell) and run `go version`. You should see something like `go1.21.x`.
+
+### 2. Start the service
+
+In the terminal:
+
+```bash
+# Go into the server directory (replace the path with your own)
+cd /your/path/to/captcha-pro/server/go
+
+# (Optional, first time) download and tidy dependencies
+go mod tidy
+
+# Start the server
+go run cmd/server/main.go
+```
+
+The first time you run this, Go downloads dependencies, which can take a few minutes and may look stuck — wait for it. When you see a line like `Captcha Pro Server running at http://localhost:8082`, the service has started. Keep this terminal window open — closing it stops the service.
+
+> The entry file is `cmd/server/main.go` (not `main.go` at the root).
+
+### 3. Verify it works
+
+Open your web browser (Chrome, Safari, Edge, any one). In the address bar, paste this and press Enter:
+
+```
+http://localhost:8082/api/captcha?type=slider
+```
+
+If you see a page full of text starting with something like `{"success":true,"data":{"captchaId":...,"bgImage":...}}`, then it works — that JSON is the captcha data your service just generated.
+
+You can also try the health check: open `http://localhost:8082/api/health`.
+
+### 4. Build (optional)
+
+If you only want to run the service locally, `go run cmd/server/main.go` is enough — no build needed. If you want a single runnable file:
+
+```bash
+go build -o captcha-server ./cmd/server
+```
+
+This produces an executable file:
+- macOS/Linux: `captcha-server` — run it with `./captcha-server`
+- Windows: `captcha-server.exe` — double-click it or run `captcha-server.exe` in PowerShell
+
+### 5. Common errors and fixes
+
+- **Dependency download times out / is very slow** — This is a network issue. Configure a Go module proxy mirror and retry:
+  ```bash
+  go env -w GOPROXY=https://goproxy.cn,direct
+  ```
+  Then run `go mod tidy` and `go run cmd/server/main.go` again.
+- **`listen tcp :8082: bind: address already in use` (port in use)** — Another program is using port 8082. Either close it, or start on a different port: `PORT=8083 go run cmd/server/main.go` (macOS/Linux), or in PowerShell `$env:PORT=8083; go run cmd/server/main.go`.
+- **`go: command not found`** — Go did not install or is not in your PATH. Reopen the terminal, or reinstall Go.
+
+### 6. Connect it to a frontend example
+
+The frontend demos in this repo (for example `examples/vue`) can talk to this service. In the frontend demo, set the backend address to `http://localhost:8082`, so the captcha fetch URL is `http://localhost:8082/api/captcha?type=slider` and the verify URL is `http://localhost:8082/api/captcha/verify`. See each frontend example's own README for the exact config field name.

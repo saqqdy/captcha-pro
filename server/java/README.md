@@ -341,3 +341,70 @@ public class MyApplication {
 ## License
 
 MIT
+
+## Start Server & Verify Guide (No Coding Experience Needed)
+
+This section is for people who have never run a backend service before. Follow it step by step and you will have the captcha service running in your browser.
+
+### 1. What software to install
+
+1. **JDK 17** — Go to https://adoptium.net and download **Temurin 17 LTS** for your system (macOS: `.pkg`; Windows: `.msi`). Double-click to install with default options. This project requires Java 17 specifically.
+2. **Maven** — This project does not include the `mvnw` wrapper, so you need Maven installed separately.
+   - macOS (with Homebrew): `brew install maven`
+   - Windows: download from https://maven.apache.org/download.cgi, unzip, and add its `bin` folder to your PATH (the download page has instructions).
+   - If you use IntelliJ IDEA or VS Code with Java extensions, Maven is usually bundled — no separate install needed.
+
+How to check it worked: in a terminal (macOS: the "Terminal" app; Windows: PowerShell) run `java -version` (should mention version `17`) and `mvn -v` (should print a Maven version number).
+
+### 2. Start the service
+
+In the terminal:
+
+```bash
+# Go into the server directory (replace the path with your own)
+cd /your/path/to/captcha-pro/server/java
+
+# Start the Spring Boot service directly (downloads dependencies on first run, can take several minutes)
+mvn spring-boot:run
+```
+
+When you see Spring Boot's banner and a line like `Tomcat started on port 8080` (the address is `http://localhost:8080`), the service has started. Keep this terminal window open — closing it stops the service.
+
+> The port is set in `src/main/resources/application.yml` (`server.port: 8080`).
+
+### 3. Verify it works
+
+Open your web browser (Chrome, Safari, Edge, any one). In the address bar, paste this and press Enter:
+
+```
+http://localhost:8080/api/captcha?type=slider
+```
+
+If you see a page full of text starting with something like `{"success":true,"data":{"captchaId":...,"bgImage":...}}`, then it works — that JSON is the captcha data your service just generated.
+
+You can also try the health check: open `http://localhost:8080/api/health`.
+
+### 4. Build (optional)
+
+If you only want to run the service locally, `mvn spring-boot:run` is enough — no build needed. If you want a standalone runnable jar:
+
+```bash
+# Build
+mvn clean package
+
+# Run the built jar
+java -jar target/captcha-pro-spring-boot-starter-2.0.0.jar
+```
+
+The jar file is in the `target/` folder.
+
+### 5. Common errors and fixes
+
+- **`java: command not found` or wrong Java version** — JDK 17 is not installed or not active. Reinstall Temurin 17 from https://adoptium.net and reopen the terminal.
+- **`mvn: command not found`** — Maven is not installed or not in your PATH. See step 1 for how to install Maven.
+- **`Web server failed to start. Port 8080 was already in use.`** — Another program is using port 8080. Either close it, or start on a different port: `mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=8081`.
+- **First run is slow** — Maven is downloading dependencies. This is normal the first time and can take several minutes.
+
+### 6. Connect it to a frontend example
+
+The frontend demos in this repo (for example `examples/vue`) can talk to this service. In the frontend demo, set the backend address to `http://localhost:8080`, so the captcha fetch URL is `http://localhost:8080/api/captcha?type=slider` and the verify URL is `http://localhost:8080/api/captcha/verify`. See each frontend example's own README for the exact config field name.

@@ -162,3 +162,55 @@ BackendVerifyOptions(
 ## 许可证
 
 MIT
+
+---
+
+## 构建与验证指南（零基础也能跟着做）
+
+> **先看这里：** `CaptchaPro`（iOS）是一个 **SDK 库**，不是能单独运行的 App。它本身没有界面让你直接「看到验证码」。它是给开发人员嵌进更大 iOS 应用的一组零件。本指南教你怎么把这个库构建出来、怎么确认构建成功。想**亲眼看到验证码效果**（最快、不用装 Xcode），打开 **`examples/vue`**，见根目录 `README.md`。
+>
+> **重要：** iOS 开发只能在 **Mac** 上做，Windows / Linux 不行。
+
+### 1. 装软件
+
+1. 打开 **Mac App Store**，搜 **Xcode**，安装（约 10GB+，耐心等）。
+2. 打开一次 Xcode，同意协议。
+
+Xcode 自带所有东西（Swift 工具链、iOS SDK），不用再装别的。
+
+### 2. 打开项目
+
+- **最简单：** 在 Finder 里双击 `packages/ios/Package.swift`，会自动用 Xcode 打开。
+- 或在 Xcode 里 **File → Open…** 选 `packages/ios` 文件夹。
+
+### 3. 构建
+
+**在 Xcode 里（推荐）：**
+1. 窗口顶部选 scheme **CaptchaPro**。
+2. 菜单 **Product → Build**（快捷键 ⌘B）。
+3. 等顶部进度条走完。
+
+**命令行（进阶）：**
+打开 Mac **「终端」**，输入：
+
+```bash
+cd packages/ios
+xcodebuild -scheme CaptchaPro -destination 'generic/platform=iOS' -derivedDataPath .build build
+```
+
+看到 `** BUILD SUCCEEDED **` 即成功。
+
+> **不要用 `swift build`。** 它默认编 macOS，会报 `no such module 'UIKit'`。iOS SDK 必须用上面的 `xcodebuild` + iOS destination。
+
+### 4. 怎么算成功
+
+输出出现 `** BUILD SUCCEEDED **`（Xcode）或 `BUILD SUCCEEDED`（命令行）即成功。
+
+### 5. 怎么看验证码效果
+
+这是库不是 App，没界面。想看效果最快去 **`examples/vue`**（浏览器），见根目录 `README.md`。
+
+### 6. 常见报错
+
+- `no such module 'UIKit'` → 你用了 `swift build`。改用第 3 步的 `xcodebuild` 命令。
+- **签名错误** → 在 Xcode 里勾选 **Automatically manage signing**，或在 **Xcode → Settings → Accounts** 登录 Apple 账号。编模拟器不需要签名。

@@ -761,6 +761,155 @@ pnpm lint
 cd server/node && pnpm dev
 ```
 
+## 零基础快速上手（非开发人员指南）
+
+> 这一节是写给**完全不会写代码**的朋友的。跟着做完，你能在浏览器里亲眼看验证码长什么样。
+
+### 1. 这是什么项目
+
+一句话：这是一套「验证码」组件库——就是网页或 App 登录时让你拖动滑块、点选文字来证明「你是真人」的那个东西。它同时支持网页、微信小程序、Android、iOS、Flutter 多端。你不用懂代码，只想最快看它长啥样？跑一个网页示例就够了，下面一步步教你。
+
+### 2. 需要装什么软件
+
+你需要准备三样东西：
+
+**① Node.js 18 LTS（必装）**
+
+- 打开官网 https://nodejs.org
+- 在首页找到标着 **LTS**（长期支持版）的那一栏，下载对应你系统的安装包：
+  - Windows：下载 `.msi` 文件，双击一路「下一步」装完。
+  - macOS：下载 `.pkg` 文件，双击装完。
+- 装好后验证：打开终端——
+  - Windows：开始菜单搜「PowerShell」，打开它。
+  - macOS：启动台 →「其他」→「终端」（或 Spotlight 搜「终端」）。
+- 在终端里输入下面这行，按回车：
+
+  ```bash
+  node -v
+  ```
+
+  能看到类似 `v18.19.0` 的版本号，就说明装好了。如果不是 v18 开头，回去重下 LTS 版。
+
+**② pnpm（必装）**
+
+Node 装好后，在终端里输入下面这行按回车：
+
+```bash
+npm install -g pnpm
+```
+
+再输 `pnpm -v`，看到版本号（比如 `9.15.3`）就 OK。
+
+**③ 浏览器**
+
+Chrome / Edge / Safari 任选一个，系统自带的就行，不用额外装。
+
+### 3. 拿到项目代码
+
+两种方式，挑一种：
+
+- **方式一（推荐新手）**：到项目 GitHub 页面 https://github.com/saqqdy/captcha-pro ，点绿色「Code」按钮 →「Download ZIP」，下载后解压到任意文件夹。
+- **方式二（需要 git）**：如果你电脑装了 git，在终端里：
+
+  ```bash
+  git clone https://github.com/saqqdy/captcha-pro.git
+  ```
+
+  没装 git 就用方式一，一样能用。
+
+### 4. 安装依赖（第一次会慢，耐心等）
+
+1. 在终端里进入项目根目录。比如你解压在 `D:\code\captcha-pro`，就输：
+
+   ```bash
+   cd D:/code/captcha-pro
+   ```
+
+   macOS 类似：`cd /Users/你的名字/code/captcha-pro`。
+
+2. 输入下面这行，按回车：
+
+   ```bash
+   pnpm install
+   ```
+
+3. 第一次运行会下载所有依赖，大约 **3-10 分钟**，看到进度跑完、出现 `Done` 或回到命令提示符就完成了。
+
+> ⚠️ 如果这一步报和 `python` / `canvas` 相关的错误：那是 `@captcha-pro/core` 包在编译本地模块时需要 Python，**不影响你跑网页示例，可以忽略**。如果确实需要它，装好 Python 3.11 后再用下面的命令重装：
+>
+> ```bash
+> PYTHON=/usr/local/bin/python3.11 pnpm install
+> ```
+
+### 5. 最快看到效果（跑网页示例）
+
+在项目根目录的终端里，输入下面任意一行（推荐先试 vue）：
+
+```bash
+pnpm play:vue      # Vue 3 网页示例
+pnpm play:react    # React 网页示例
+pnpm play:vue2     # Vue 2 网页示例
+```
+
+回车后，终端会打印一行类似这样的地址：
+
+```
+  ➜  Local:   http://localhost:5173/
+```
+
+把 `http://localhost:5173/` 复制到浏览器打开，看到验证码组件的演示页面 = 成功！你可以拖拖滑块、点选文字试试效果。详细说明见 [examples/vue/README_CN.md](./examples/vue/README_CN.md)。
+
+> 想停掉这个本地服务：在终端窗口里按 `Ctrl + C`（macOS 也是 Control 不是 Command）。
+
+### 6. 想看其它端的示例
+
+下面这张表给你指路，点对应链接看各端详细说明：
+
+| 想看哪端 | 进入目录 | 指南 |
+|---|---|---|
+| 网页 Vue 3 | `examples/vue` | [README_CN.md](./examples/vue/README_CN.md) |
+| 网页 React | `examples/react` | [README_CN.md](./examples/react/README_CN.md) |
+| 微信小程序 | `examples/weixin` | [README_CN.md](./examples/weixin/README_CN.md) |
+| Taro 小程序 | `examples/taro-vue` | [README_CN.md](./examples/taro-vue/README_CN.md) |
+| Android SDK | `packages/android` | [README_CN.md](./packages/android/README_CN.md) |
+| iOS SDK | `packages/ios` | [README_CN.md](./packages/ios/README_CN.md) |
+| Flutter | `packages/flutter` | [README_CN.md](./packages/flutter/README_CN.md) |
+| 后端服务 | `server/node` | [README_CN.md](./server/node/README_CN.md) |
+
+> 小程序 / Android / iOS / Flutter 这些端需要各自的开发工具（微信开发者工具、Android Studio、Xcode、Flutter SDK），比网页麻烦不少，建议先把网页示例跑通再说。
+
+### 7. 构建全部包（非开发人员一般用不到）
+
+如果你想产出最终可发布的文件，在根目录输：
+
+```bash
+pnpm build
+```
+
+构建产物会输出到各个包的 `dist/` 目录里。普通用户只想看效果的话，跳过这步，用第 5 步的 `pnpm play:vue` 就行。
+
+### 8. 在线文档站点
+
+项目自带完整文档网站。在根目录输：
+
+```bash
+pnpm docs:dev
+```
+
+终端会打印一个本地地址（一般是 `http://localhost:5173/` 或别的端口），复制到浏览器打开就能看完整文档。想生成静态站点文件就输 `pnpm docs:build`。
+
+### 9. 验证成功 / 常见报错对照表
+
+| 现象 / 报错 | 原因 | 怎么办 |
+|---|---|---|
+| `pnpm: command not found` | pnpm 没装好 | 回到第 2 步重装 pnpm |
+| `node -v` 显示的不是 v18 | Node 版本不对 | 去 nodejs.org 重下 **LTS** 版安装 |
+| `EADDRINUSE` 或提示端口被占用 | 5173 端口被别的程序占了 | 关掉占用 5173 的程序，或在示例目录的 vite 配置里改端口 |
+| `pnpm install` 卡住不动 | 网络问题 / 源慢 | 换国内镜像：`pnpm config set registry https://registry.npmmirror.com` 后重试 |
+| 浏览器打开是空白页 | 本地服务没启动 / 地址输错 | 确认终端里打印的地址，照抄进浏览器 |
+
+祝你好运！跑通后如果对验证码的具体用法感兴趣，再回头看本文件上方的「快速开始」「特性」等章节。
+
 ## 许可证
 
 [MIT](LICENSE)

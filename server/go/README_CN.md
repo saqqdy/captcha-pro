@@ -351,3 +351,70 @@ r.Use(server.Middleware())
 ## License
 
 MIT
+
+## 启动服务与验证指南（零基础也能跟着做）
+
+这一节专门写给从没跑过后端服务的朋友。照着一步步来，就能在浏览器里把验证码服务跑起来。
+
+### 1. 要装什么软件
+
+**Go 1.21 或更高版本** —— 打开 https://go.dev/dl/ ，下载对应系统的安装包（macOS 是 `.pkg`，Windows 是 `.msi`），双击安装，一路默认下一步。
+
+怎么确认装好了：打开终端（macOS 用"终端"App，Windows 用 PowerShell），输 `go version` 回车，能看到类似 `go1.21.x` 就行。
+
+### 2. 起服务
+
+终端里依次输入：
+
+```bash
+# 进入服务端目录（路径换成你自己的）
+cd /你的路径/captcha-pro/server/go
+
+# （第一次可选）下载并整理依赖
+go mod tidy
+
+# 启动服务
+go run cmd/server/main.go
+```
+
+第一次跑会下载依赖，可能要几分钟，看着像卡住了其实是正常下载，耐心等。看到终端打印类似 `Captcha Pro Server running at http://localhost:8082`，就说明起来了。这个终端窗口别关，关了服务就停了。
+
+> 入口文件是 `cmd/server/main.go`（不是根目录的 `main.go`）。
+
+### 3. 验证服务
+
+打开浏览器（Chrome、Safari、Edge 都行），地址栏粘下面这串，回车：
+
+```
+http://localhost:8082/api/captcha?type=slider
+```
+
+看到一屏字，开头类似 `{"success":true,"data":{"captchaId":...,"bgImage":...}}`，就成了——这段 JSON 就是服务刚生成的验证码数据。
+
+也可以试下健康检查：打开 `http://localhost:8082/api/health`。
+
+### 4. 构建（可选）
+
+只是本地起服务的话，`go run cmd/server/main.go` 就够了，不用构建。想要一个单独的可执行文件：
+
+```bash
+go build -o captcha-server ./cmd/server
+```
+
+产物是一个可执行文件：
+- macOS/Linux：`captcha-server`，用 `./captcha-server` 运行
+- Windows：`captcha-server.exe`，双击或在 PowerShell 里输 `captcha-server.exe` 运行
+
+### 5. 常见报错
+
+- **下载依赖超时 / 很慢** —— 网络问题。配一个 Go 模块代理镜像后重试：
+  ```bash
+  go env -w GOPROXY=https://goproxy.cn,direct
+  ```
+  然后重新 `go mod tidy` 和 `go run cmd/server/main.go`。
+- **`listen tcp :8082: bind: address already in use`（端口被占）** —— 有别的程序占着 8082。要么关了它，要么换个端口起：`PORT=8083 go run cmd/server/main.go`（macOS/Linux），PowerShell 用 `$env:PORT=8083; go run cmd/server/main.go`。
+- **`go: command not found`** —— Go 没装好或没进环境变量。重开终端，或重装 Go。
+
+### 6. 跟前端示例联调
+
+本仓库的前端示例（比如 `examples/vue`）可以连这个服务。在前端示例里把后端地址配成 `http://localhost:8082`，验证码取图地址就是 `http://localhost:8082/api/captcha?type=slider`，校验地址就是 `http://localhost:8082/api/captcha/verify`。具体配置项字段名看各前端示例自己的 README。

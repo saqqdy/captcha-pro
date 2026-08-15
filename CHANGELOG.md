@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2026-08-10
+
+### Native 三端功能契约对齐
+
+- **flutter**: BackendConfig + fetchCaptcha/verifyCaptcha（后端模式，无客户端生成）、14 键 i18n、PopupCaptcha 全 props（autoClose 500ms / 失败刷新 800ms）、onError 回调
+- **android**: LocaleMessages 补 loading/slider_hint、移除 precision 死参数、verify 请求体移除 timestamp、timeout 默认 10s、CaptchaDialog title prop
+- **ios**: 同 android 对齐（UIKit + SwiftUI 双范式）
+
+### Native 样式复刻（Phase 2）
+
+- 验证码区域：线性渐变 `#667EEA→#764BA2` + 阴影 + 圆角
+- 状态反馈：居中遮罩（白@75%）+ 32px 圆图标 + 文本 + 淡入 0.2s（替换底部条）
+- loading 态：渐变底 + 白字文案（替换系统 spinner）
+- 滑块条/拇指、点击标记、提示条（渐变字符格）、popup 自定义卡片
+- 强调蓝统一 `#1991FA`
+
+### 全端版本统一
+
+- root + 11 个 JS 包 + 3 个 native 包（android/ios/flutter）统一 2.1.0
+
+### Documentation
+
+- 移除 native README 中的 AES/encryption 不实声明
+
 ## [2.0.0] - 2026-08-09
 
 🚀 **Multi-Platform Release** - Captcha Pro now supports 14+ platform targets across web, mini-programs, and mobile!

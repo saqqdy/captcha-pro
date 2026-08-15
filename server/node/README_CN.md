@@ -370,3 +370,69 @@ server/node/
 ## License
 
 MIT
+
+## 启动服务与验证指南（零基础也能跟着做）
+
+这一节专门写给从没跑过后端服务的朋友。照着一步步来，就能在浏览器里把验证码服务跑起来。
+
+### 1. 要装什么软件
+
+1. **Node.js 18 LTS** —— 打开 https://nodejs.org，下载页面上标着 "LTS"（长期支持版）的那个安装包，双击安装。Windows 是 `.msi`，macOS 是 `.pkg`，一路下一步默认装就行。
+2. **pnpm**（一个包管理工具）—— Node.js 装好后，打开终端（macOS 用"终端"App，Windows 用 PowerShell 或命令提示符），输入下面这条命令回车：
+   ```bash
+   npm install -g pnpm
+   ```
+   等它跑完，这一步只做一次。
+
+怎么确认装好了：终端里输 `node -v` 回车（应显示 `v18...` 或更高），再输 `pnpm -v` 回车（应显示一个版本号）。
+
+> **关于 `canvas` 这个模块**：本项目用到一个叫 `canvas` 的原生图片库。在 Node.js 18 下通常能直接装好。如果后面 `pnpm install` 报了跟 python / canvas 相关的错，装一个 Python 3.11，然后用 `PYTHON=/usr/local/bin/python3.11 pnpm install` 重试（macOS/Linux）。Windows 上从 https://www.python.org 装好 Python 后直接重试 `pnpm install` 一般就好了。绝大多数用 Node 18 的人不会遇到这个。
+
+### 2. 起服务
+
+终端里依次输入：
+
+```bash
+# 进入服务端目录（路径换成你自己的）
+cd /你的路径/captcha-pro/server/node
+
+# 安装依赖（第一次装，可能要几分钟）
+pnpm install
+
+# 启动开发服务
+pnpm dev
+```
+
+终端里打印出类似 `Captcha Pro Server running at http://localhost:3001` 的一行字（地址默认就是 `http://localhost:3001`），就说明起来了。这个终端窗口别关，关了服务就停了。
+
+### 3. 验证服务
+
+打开浏览器（Chrome、Safari、Edge 都行），在地址栏粘下面这串，回车：
+
+```
+http://localhost:3001/api/captcha?type=slider
+```
+
+如果看到一屏密密麻麻的字，开头类似 `{"success":true,"data":{"captchaId":...,"bgImage":"data:image/jpeg;base64,...}}`，那就成了——这段 JSON 就是服务刚给你生成的验证码数据。
+
+也可以试下健康检查：打开 `http://localhost:3001/api/health`。
+
+### 4. 构建（可选）
+
+只是本地起服务的话，不用构建，`pnpm dev` 就够了。想要生产构建产物的话：
+
+```bash
+pnpm build
+```
+
+产物在 `dist/` 目录下，用 `pnpm start`（实际跑的是 `node dist/cli.js`）运行。
+
+### 5. 常见报错
+
+- **`EADDRINUSE` 或提示 3001 端口被占** —— 有别的程序占着 3001。要么把那个程序关了，要么换个端口起：macOS/Linux 输 `PORT=3002 pnpm dev`，Windows PowerShell 输 `$env:PORT=3002; pnpm dev`。
+- **`pnpm install` 在 `canvas` 上失败** —— 见上面第 1 步关于装 Python 3.11 的说明。
+- **`pnpm: command not found`** —— pnpm 没装上，重新跑一遍 `npm install -g pnpm`。
+
+### 6. 跟前端示例联调
+
+本仓库的前端示例（比如 `examples/vue`）可以连这个服务。在前端示例里把后端地址配成 `http://localhost:3001`，验证码取图地址就是 `http://localhost:3001/api/captcha?type=slider`，校验地址就是 `http://localhost:3001/api/captcha/verify`。具体配置项字段名看各前端示例自己的 README。

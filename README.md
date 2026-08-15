@@ -763,6 +763,155 @@ pnpm lint
 cd server/node && pnpm dev
 ```
 
+## Quick Start for Non-Developers
+
+> This section is for people who **don't write code at all**. Follow it through and you'll see the captcha running in your browser in no time.
+
+### 1. What is this project
+
+In one sentence: it's a "captcha" component library — the thing on login pages that asks you to drag a slider or click words to prove you're a real human. It works across web, WeChat mini-program, Android, iOS, and Flutter. You don't need to know code; you just want to see what it looks like fastest? Running the web example is enough, and we'll walk you through it step by step.
+
+### 2. Software you need to install
+
+You need three things:
+
+**① Node.js 18 LTS (required)**
+
+- Open https://nodejs.org
+- On the homepage find the row labeled **LTS** (Long Term Support) and download the installer for your system:
+  - Windows: download the `.msi` file, double-click and keep clicking "Next" to install.
+  - macOS: download the `.pkg` file, double-click to install.
+- Verify it: open a terminal —
+  - Windows: search "PowerShell" in the Start menu and open it.
+  - macOS: Launchpad → "Other" → "Terminal" (or Spotlight-search "Terminal").
+- In the terminal type the following and press Enter:
+
+  ```bash
+  node -v
+  ```
+
+  You should see something like `v18.19.0`. If it doesn't start with `v18`, go back and reinstall the LTS version.
+
+**② pnpm (required)**
+
+Once Node is installed, type this in the terminal and press Enter:
+
+```bash
+npm install -g pnpm
+```
+
+Then type `pnpm -v` — seeing a version number (e.g. `9.15.3`) means it's ready.
+
+**③ A browser**
+
+Chrome / Edge / Safari — any one is fine. The one that came with your system works; no need to install anything extra.
+
+### 3. Get the project code
+
+Two options, pick one:
+
+- **Option 1 (recommended for beginners)**: Go to the project's GitHub page https://github.com/saqqdy/captcha-pro , click the green "Code" button → "Download ZIP". After downloading, unzip it into any folder.
+- **Option 2 (requires git)**: If you have git installed, in the terminal run:
+
+  ```bash
+  git clone https://github.com/saqqdy/captcha-pro.git
+  ```
+
+  If you don't have git, just use Option 1 — it works just as well.
+
+### 4. Install dependencies (the first run is slow — be patient)
+
+1. In the terminal, navigate into the project root folder. For example, if you unzipped it to `D:\code\captcha-pro`, type:
+
+   ```bash
+   cd D:/code/captcha-pro
+   ```
+
+   macOS is similar: `cd /Users/yourname/code/captcha-pro`.
+
+2. Type the following and press Enter:
+
+   ```bash
+   pnpm install
+   ```
+
+3. The first run downloads all dependencies, about **3-10 minutes**. When the progress finishes and you see `Done` or the prompt returns, you're done.
+
+> ⚠️ If this step reports errors related to `python` / `canvas`: that's the `@captcha-pro/core` package compiling a native module that needs Python. **It does not affect running the web examples — you can ignore it.** If you really need it, install Python 3.11 and re-run:
+>
+> ```bash
+> PYTHON=/usr/local/bin/python3.11 pnpm install
+> ```
+
+### 5. See it in action the fastest way (run a web example)
+
+From the project root in the terminal, type any one of these (vue is recommended to start):
+
+```bash
+pnpm play:vue      # Vue 3 web example
+pnpm play:react    # React web example
+pnpm play:vue2     # Vue 2 web example
+```
+
+After pressing Enter, the terminal prints an address like:
+
+```
+  ➜  Local:   http://localhost:5173/
+```
+
+Open `http://localhost:5173/` in your browser — seeing the captcha demo page means success! You can drag the slider and click words to try it out. See [examples/vue/README.md](./examples/vue/README.md) for details.
+
+> To stop this local server: in the terminal window press `Ctrl + C`.
+
+### 6. Looking at other platforms
+
+This table points you to each platform's guide:
+
+| Platform | Directory | Guide |
+|---|---|---|
+| Web Vue 3 | `examples/vue` | [README.md](./examples/vue/README.md) |
+| Web React | `examples/react` | [README.md](./examples/react/README.md) |
+| WeChat Mini-Program | `examples/weixin` | [README.md](./examples/weixin/README.md) |
+| Taro Mini-Program | `examples/taro-vue` | [README.md](./examples/taro-vue/README.md) |
+| Android SDK | `packages/android` | [README.md](./packages/android/README.md) |
+| iOS SDK | `packages/ios` | [README.md](./packages/ios/README.md) |
+| Flutter | `packages/flutter` | [README.md](./packages/flutter/README.md) |
+| Backend service | `server/node` | [README.md](./server/node/README.md) |
+
+> Mini-program / Android / iOS / Flutter platforms each need their own dev tools (WeChat DevTools, Android Studio, Xcode, Flutter SDK) — much more involved than web. Best to get the web example running first.
+
+### 7. Build all packages (non-developers usually don't need this)
+
+If you want to produce the final publishable files, from the root run:
+
+```bash
+pnpm build
+```
+
+Build output goes into each package's `dist/` folder. If you just want to see the captcha, skip this step and use `pnpm play:vue` from step 5.
+
+### 8. Online documentation site
+
+The project ships with a full documentation website. From the root run:
+
+```bash
+pnpm docs:dev
+```
+
+The terminal prints a local address (usually `http://localhost:5173/` or another port). Open it in the browser to read the full docs. To build a static site run `pnpm docs:build`.
+
+### 9. Verifying success / common errors
+
+| Symptom / error | Cause | Fix |
+|---|---|---|
+| `pnpm: command not found` | pnpm not installed | Go back to step 2 and install pnpm |
+| `node -v` shows something other than v18 | Wrong Node version | Reinstall the **LTS** version from nodejs.org |
+| `EADDRINUSE` or "port in use" | Port 5173 is taken by another program | Close the program using 5173, or change the port in the example's vite config |
+| `pnpm install` hangs | Network / slow registry | Switch to a mirror: `pnpm config set registry https://registry.npmmirror.com` then retry |
+| Browser shows a blank page | Local server not running / wrong address | Confirm the address printed in the terminal and copy it exactly into the browser |
+
+Good luck! Once it's running and you're curious about how to actually use the captcha, come back up to the "Quick Start" and "Features" sections above.
+
 ## License
 
 [MIT](LICENSE)

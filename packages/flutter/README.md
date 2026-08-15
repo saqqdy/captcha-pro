@@ -155,3 +155,43 @@ Show it via `PopupCaptcha.show(context, ...)`.
 ## License
 
 MIT
+
+---
+
+## Build & Verify Guide (No Coding Experience Needed)
+
+> **Read this first:** `captcha_pro` is a **plugin package**, not a stand-alone app. It has no screen you can tap to "see a captcha", and it has no `lib/main.dart`. It is a box of parts that developers add to a bigger Flutter app via `flutter pub add captcha_pro`. This guide shows you how to verify the package builds correctly. To actually *see* a captcha working (fastest, no Flutter setup), open the **`examples/vue`** folder — see the root `README.md`.
+
+### 1. Install the software
+
+1. Install the **Flutter SDK**. Go to <https://docs.flutter.dev/get-started/install>, pick your OS, download the zip, extract it, and add `flutter/bin` to your PATH as the page describes.
+   - **macOS shortcut:** `brew install --cask flutter`.
+2. Open a terminal and run:
+
+   ```bash
+   flutter doctor
+   ```
+
+   Follow its hints to install anything it says is missing (for example the Android toolchain or Xcode). You only need a text editor — **Android Studio** or **VS Code** are optional and make editing easier.
+
+### 2. Verify the package
+
+A plugin package is verified with the analyzer, not with `flutter build`:
+
+```bash
+cd packages/flutter
+flutter analyze
+```
+
+You should see `No issues found!` — that means the code is valid and the package is healthy.
+
+> **This is expected, not an error:** if you run `flutter build apk` here you will get `Target file "lib/main.dart" not found`. That is because this is a plugin package, not an app. Use `flutter analyze` as your verification step.
+
+### 3. How to actually see a captcha
+
+There is no standalone app to run. A developer would add the plugin to a Flutter app with `flutter pub add captcha_pro` and then import it. Non-developers should just look at **`examples/vue`** in a browser — see the root `README.md`.
+
+### 4. Common errors
+
+- `flutter: command not found` → the Flutter `bin` folder is not on your PATH. Redo the install steps and restart your terminal.
+- `flutter analyze` reports issues → copy the whole error text and hand it to a developer; do not try to fix Dart code yourself.
