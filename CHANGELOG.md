@@ -25,6 +25,8 @@ All notable changes to this project will be documented in this file.
 ### Documentation
 
 - 移除 native README 中的 AES/encryption 不实声明
+- 各可运行项目（examples / android / ios / flutter / server）README 增加面向非开发人员的「起服务 / 构建 / 验证 / 用什么软件 / 怎么打开」指南（EN+CN，含新建 examples/weixin/README_CN.md 与 packages/flutter/README_CN.md）
+- VitePress 文档站新增「跑通示例（零基础也能跟着做）」页面（EN + zh）并注册进侧栏；导航版本下拉更新至 v2.1.0
 
 ## [2.0.0] - 2026-08-09
 

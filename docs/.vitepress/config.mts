@@ -19,7 +19,7 @@ export default defineConfig({
 			{ text: 'API', link: '/api/' },
 			{ text: 'Backend', link: '/backend/' },
 			{
-				text: 'v2.0.0',
+				text: 'v2.1.0',
 				items: [
 					{ text: 'Changelog', link: 'https://github.com/saqqdy/captcha-pro/blob/master/CHANGELOG.md' },
 					{ text: 'GitHub', link: 'https://github.com/saqqdy/captcha-pro' },
@@ -33,6 +33,7 @@ export default defineConfig({
 					text: 'Guide',
 					items: [
 						{ text: 'Getting Started', link: '/guide/getting-started' },
+						{ text: 'Run the Examples', link: '/guide/running-examples' },
 						{ text: 'Basic Usage', link: '/guide/basic-usage' },
 						{ text: 'Advanced Usage', link: '/guide/advanced-usage' },
 						{ text: 'Internationalization', link: '/guide/i18n' },
@@ -123,7 +124,7 @@ export default defineConfig({
 					{ text: 'API', link: '/zh/api/' },
 					{ text: '后端', link: '/zh/backend/' },
 					{
-						text: 'v2.0.0',
+						text: 'v2.1.0',
 						items: [
 							{ text: '更新日志', link: 'https://github.com/saqqdy/captcha-pro/blob/master/CHANGELOG.md' },
 							{ text: 'GitHub', link: 'https://github.com/saqqdy/captcha-pro' },
@@ -136,6 +137,7 @@ export default defineConfig({
 							text: '指南',
 							items: [
 								{ text: '快速开始', link: '/zh/guide/getting-started' },
+								{ text: '跑通示例', link: '/zh/guide/running-examples' },
 								{ text: '基础用法', link: '/zh/guide/basic-usage' },
 								{ text: '进阶用法', link: '/zh/guide/advanced-usage' },
 								{ text: '多语言', link: '/zh/guide/i18n' },

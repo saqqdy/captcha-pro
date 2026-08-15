@@ -13,3 +13,29 @@ stats.html
 
 # VitePress build cache
 docs/.vitepress/cache/
+
+# Flutter source — overrides lib/ above (which ignores JS build-output dirs)
+!packages/flutter/lib/
+
+# Native build artifacts
+## Android (Gradle)
+packages/android/build/
+packages/android/.gradle/
+packages/android/captcha-sdk/build/
+packages/android/captcha-compose/build/
+packages/android/local.properties
+packages/android/**/*.iml
+
+## iOS (Swift Package Manager + Xcode)
+packages/ios/.build/
+packages/ios/.swiftpm/
+packages/ios/build/
+packages/ios/Pods/
+packages/ios/DerivedData/
+
+## Flutter
+packages/flutter/.dart_tool/
+packages/flutter/.flutter-plugins
+packages/flutter/.flutter-plugins-dependencies
+packages/flutter/build/
+packages/flutter/.packages
