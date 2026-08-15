@@ -1,7 +1,7 @@
 {
   "name": "@captcha-pro/mp-shared",
   "description": "Shared types, logic, constants and utils for captcha-pro mini-program packages (backend-only mode)",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",

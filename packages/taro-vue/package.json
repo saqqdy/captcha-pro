@@ -2,7 +2,7 @@
   "name": "@captcha-pro/taro-vue",
   "description": "Taro + Vue 3 captcha components for captcha-pro (backend-only mode)",
   "type": "module",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,9 @@
     },
     "./dist/style.css": "./dist/style.css"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "vite build -c build/vite.config.ts",
     "watch": "vite build -c build/vite.config.ts -w",
@@ -41,10 +43,20 @@
     "vue": "^3.0.0"
   },
   "peerDependenciesMeta": {
-    "@tarojs/components": { "optional": true },
-    "@tarojs/taro": { "optional": true }
+    "@tarojs/components": {
+      "optional": true
+    },
+    "@tarojs/taro": {
+      "optional": true
+    }
   },
-  "keywords": ["captcha", "taro", "vue3", "slider-captcha", "click-captcha"],
+  "keywords": [
+    "captcha",
+    "taro",
+    "vue3",
+    "slider-captcha",
+    "click-captcha"
+  ],
   "license": "MIT",
   "author": "saqqdy<https://github.com/saqqdy>",
   "publishConfig": {

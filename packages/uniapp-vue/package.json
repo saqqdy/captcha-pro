@@ -2,7 +2,7 @@
 	"name": "@captcha-pro/uniapp-vue",
 	"description": "uni-app + Vue 3 captcha components for captcha-pro (backend-only mode)",
 	"type": "module",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -21,7 +21,12 @@
 		"./types": "./dist/types.js",
 		"./dist/style.css": "./dist/style.css"
 	},
-	"files": ["src/components", "src/styles", "src/index.ts", "dist"],
+	"files": [
+		"src/components",
+		"src/styles",
+		"src/index.ts",
+		"dist"
+	],
 	"scripts": {
 		"build": "vite build -c build/vite.config.ts",
 		"watch": "vite build -c build/vite.config.ts -w",
@@ -41,7 +46,13 @@
 	"peerDependencies": {
 		"vue": "^3.0.0"
 	},
-	"keywords": ["captcha", "uniapp", "vue3", "slider-captcha", "click-captcha"],
+	"keywords": [
+		"captcha",
+		"uniapp",
+		"vue3",
+		"slider-captcha",
+		"click-captcha"
+	],
 	"license": "MIT",
 	"author": "saqqdy<https://github.com/saqqdy>",
 	"publishConfig": {
