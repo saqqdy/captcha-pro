@@ -3,6 +3,7 @@ import SwiftUI
 /// Popup captcha view for SwiftUI — presents slider or click captcha in a modal overlay.
 ///
 /// Mirrors the UIKit `PopupCaptchaView` so callers can use either paradigm.
+@available(iOS 14.0, *)
 public struct PopupCaptcha: View {
     // MARK: - Configuration
     public let type: CaptchaType
@@ -119,7 +120,7 @@ public struct PopupCaptcha: View {
                 .frame(width: cardWidth)
                 .background(Color.white)
                 .cornerRadius(24)
-                .shadow(radius: 12)
+                .shadow(color: Color.black.opacity(0.2), radius: 16, x: 0, y: 4)
                 .transition(.opacity.combined(with: .scale(scale: 0.9)))
             }
         }
@@ -129,7 +130,7 @@ public struct PopupCaptcha: View {
     private var header: some View {
         HStack {
             Text(displayTitle)
-                .font(.system(size: 16, weight: .medium))
+                .font(.system(size: 16, weight: .semibold))
                 .foregroundColor(.primary)
             Spacer()
             if showCloseButton {
@@ -219,6 +220,7 @@ public struct PopupCaptcha: View {
 // MARK: - View modifier convenience
 public extension View {
     /// Presents a popup captcha bound to a Boolean binding.
+    @available(iOS 14, *)
     func popupCaptcha(
         isPresented: Binding<Bool>,
         configuration: PopupCaptcha,

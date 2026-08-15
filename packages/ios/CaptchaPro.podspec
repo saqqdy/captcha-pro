@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'CaptchaPro'
-  s.version          = '2.0.0'
+  s.version          = '2.1.0'
   s.summary          = 'A powerful captcha library for iOS'
   s.description      = <<-DESC
 CaptchaPro provides slider and click captcha components for iOS applications.
@@ -12,7 +12,7 @@ Supports both UIKit and SwiftUI with customizable options.
   s.author           = { 'saqqdy' => 'saqqdy@qq.com' }
   s.source           = { :git => 'https://github.com/saqqdy/captcha-pro.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '12.0'
+  s.ios.deployment_target = '13.0'
   s.swift_version = '5.9'
 
   s.source_files = 'Sources/**/*.{swift}'
@@ -32,7 +32,7 @@ Supports both UIKit and SwiftUI with customizable options.
   s.subspec 'SwiftUI' do |swiftui|
     swiftui.source_files = 'Sources/SwiftUI/**/*.swift'
     swiftui.dependency 'CaptchaPro/Core'
-    swiftui.ios.deployment_target = '13.0'
+    swiftui.ios.deployment_target = '14.0'
   end
 
   s.subspec 'Renderers' do |renderers|

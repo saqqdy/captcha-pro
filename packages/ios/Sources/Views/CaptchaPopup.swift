@@ -73,6 +73,10 @@ public class PopupCaptchaView: UIView {
         containerView.backgroundColor = .white
         containerView.layer.cornerRadius = 24
         containerView.clipsToBounds = true
+        containerView.layer.shadowColor = UIColor.black.cgColor
+        containerView.layer.shadowOpacity = 0.2
+        containerView.layer.shadowOffset = CGSize(width: 0, height: 4)
+        containerView.layer.shadowRadius = 16
         containerView.alpha = 0
         containerView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         addSubview(containerView)
@@ -140,6 +144,15 @@ public class PopupCaptchaView: UIView {
             contentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
         ])
+    }
+
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        // Rounded shadow path matching the card corners.
+        containerView.layer.shadowPath = UIBezierPath(
+            roundedRect: containerView.bounds,
+            cornerRadius: 24
+        ).cgPath
     }
 
     // MARK: - Public

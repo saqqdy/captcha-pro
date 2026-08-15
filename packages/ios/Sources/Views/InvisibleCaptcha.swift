@@ -88,8 +88,8 @@ public class InvisibleCaptcha {
     public func getDeviceFingerprint() -> String { deviceFingerprint }
 
     private static func generateDeviceFingerprint() -> String {
-        let components = [UIDevice.current.identifierForVendor?.uuidString ?? "", UIDevice.current.model, UIDevice.current.systemVersion,
-                          String(UIScreen.main.scale), String(format: "%dx%d", Int(UIScreen.main.bounds.width), Int(UIScreen.main.bounds.height))]
+        let components: [String] = [UIDevice.current.identifierForVendor?.uuidString ?? "", UIDevice.current.model, UIDevice.current.systemVersion,
+                          String(describing: UIScreen.main.scale), String(format: "%dx%d", Int(UIScreen.main.bounds.width), Int(UIScreen.main.bounds.height))]
         return components.joined(separator: "-").data(using: .utf8)?.base64EncodedString() ?? ""
     }
 }

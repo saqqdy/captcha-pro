@@ -19,6 +19,7 @@ public class ClickCaptchaView: UIView {
     private var loadingLabel = UILabel()
     private var clickPointViews: [UIView] = []
     private var statusView = UIView()
+    private var statusStackView = UIStackView()
     private var statusIconView = UIView()
     private var statusIconLabel = UILabel()
     private var statusTextLabel = UILabel()
@@ -145,13 +146,22 @@ public class ClickCaptchaView: UIView {
             statusView.bottomAnchor.constraint(equalTo: captchaClipView.bottomAnchor),
         ])
 
+        // Status content — vertical stack centered in the overlay
+        statusStackView.axis = .vertical
+        statusStackView.spacing = 12
+        statusStackView.alignment = .center
+        statusView.addSubview(statusStackView)
+        statusStackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            statusStackView.centerXAnchor.constraint(equalTo: statusView.centerXAnchor),
+            statusStackView.centerYAnchor.constraint(equalTo: statusView.centerYAnchor),
+        ])
+
         statusIconView.layer.cornerRadius = 32
         statusIconView.layer.masksToBounds = true
-        statusView.addSubview(statusIconView)
+        statusStackView.addArrangedSubview(statusIconView)
         statusIconView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            statusIconView.centerXAnchor.constraint(equalTo: statusView.centerXAnchor),
-            statusIconView.topAnchor.constraint(equalTo: statusView.topAnchor, constant: 28),
             statusIconView.widthAnchor.constraint(equalToConstant: 64),
             statusIconView.heightAnchor.constraint(equalToConstant: 64),
         ])
@@ -168,12 +178,8 @@ public class ClickCaptchaView: UIView {
 
         statusTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
         statusTextLabel.textAlignment = .center
-        statusView.addSubview(statusTextLabel)
+        statusStackView.addArrangedSubview(statusTextLabel)
         statusTextLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            statusTextLabel.topAnchor.constraint(equalTo: statusIconView.bottomAnchor, constant: 12),
-            statusTextLabel.centerXAnchor.constraint(equalTo: statusView.centerXAnchor),
-        ])
 
         // Prompt bar
         infoBarView.backgroundColor = UIColor(red: 247/255, green: 249/255, blue: 250/255, alpha: 1)

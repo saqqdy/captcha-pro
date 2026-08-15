@@ -17,7 +17,10 @@ public class CaptchaGenerator {
         currentTimestamp = data.timestamp ?? Date().timeIntervalSince1970 * 1000
 
         let bgImage = try await loadImage(from: data.bgImage)
-        let sliderImage = try await data.sliderImage.map { try await loadImage(from: $0) }
+        var sliderImage: UIImage? = nil
+        if let sliderStr = data.sliderImage {
+            sliderImage = try await loadImage(from: sliderStr)
+        }
 
         var targetPoints: [CaptchaPoint] = []
         if let sliderY = data.sliderY {

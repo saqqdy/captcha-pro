@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 
 /// Click captcha view for SwiftUI — backend verification only.
+@available(iOS 14.0, *)
 public struct ClickCaptcha: View {
     @StateObject private var viewModel: ClickCaptchaViewModel
 
@@ -15,7 +16,7 @@ public struct ClickCaptcha: View {
         onSuccess: @escaping (VerifyResult?) -> Void = { _ in },
         onFail: @escaping () -> Void = {},
         onRefresh: @escaping () -> Void = {},
-        onError: @escaping (Error) -> Void = {}
+        onError: @escaping (Error) -> Void = { _ in }
     ) {
         _viewModel = StateObject(wrappedValue: ClickCaptchaViewModel(
             width: width,
@@ -102,10 +103,10 @@ public struct ClickCaptcha: View {
                                 .fill(status == .success
                                       ? Color(red: 82/255, green: 196/255, blue: 26/255, opacity: 0.85)
                                       : Color(red: 255/255, green: 77/255, blue: 79/255, opacity: 0.85))
-                                .frame(width: 64, height: 64)
+                                .frame(width: 32, height: 32)
                             Text(status == .success ? "✓" : "✕")
                                 .foregroundColor(.white)
-                                .font(.system(size: 36, weight: .bold))
+                                .font(.system(size: 18, weight: .bold))
                         }
                         Text(status == .success
                              ? LocaleMessages.get(viewModel.locale, key: "click_success")
@@ -122,7 +123,7 @@ public struct ClickCaptcha: View {
             }
             .frame(width: CGFloat(viewModel.width), height: CGFloat(viewModel.height))
             .cornerRadius(16)
-            .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 4)
+            .shadow(color: Color.black.opacity(0.15), radius: 16, x: 0, y: 4)
             .animation(.easeInOut(duration: 0.2), value: viewModel.status)
 
             // Prompt bar
@@ -134,7 +135,8 @@ public struct ClickCaptcha: View {
                 if !viewModel.clickCharImages.isEmpty {
                     HStack(spacing: 6) {
                         ForEach(viewModel.clickCharImages.indices, id: \.self) { i in
-                            if i < viewModel.charImages.count, let img = viewModel.charImages[i] {
+                            if i < viewModel.charImages.count {
+                                let img = viewModel.charImages[i]
                                 Image(uiImage: img)
                                     .resizable()
                                     .frame(width: 28, height: 28)
