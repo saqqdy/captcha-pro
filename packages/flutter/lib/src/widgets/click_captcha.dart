@@ -169,9 +169,13 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
   }
 
   Widget _buildCaptchaArea() {
-    return GestureDetector(
-      key: _areaKey,
-      onTapDown: _onTapDown,
+    return Semantics(
+      button: true,
+      label: t('click_prompt'),
+      value: '${_clickPoints.length}/$_maxClicks',
+      child: GestureDetector(
+        key: _areaKey,
+        onTapDown: _onTapDown,
       child: Container(
         width: widget.width,
         height: widget.height,
@@ -221,6 +225,7 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
           ),
         ),
       ),
+      ),
     );
   }
 
@@ -261,22 +266,33 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
   }
 
   Widget _buildRefreshButton() {
-    return GestureDetector(
-      onTap: _refresh,
-      child: Container(
-        width: 28,
-        height: 28,
-        decoration: BoxDecoration(
-          color: const Color(0xE6FFFFFF),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Center(
-          child: Text(
-            '⟳',
-            style: TextStyle(
-              color: Color(0xFF666666),
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+    return Semantics(
+      button: true,
+      label: t('refresh'),
+      child: SizedBox(
+        width: 44,
+        height: 44,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _refresh,
+          child: Center(
+            child: Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: const Color(0xE6FFFFFF),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Center(
+                child: Text(
+                  '⟳',
+                  style: TextStyle(
+                    color: Color(0xFF666666),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -287,8 +303,10 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
   Widget _buildStatusOverlay() {
     final success = _status == 'success';
     return Positioned.fill(
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.0, end: 1.0),
+      child: Semantics(
+        liveRegion: true,
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
         duration: const Duration(milliseconds: 200),
         builder: (context, v, child) {
           return Opacity(
@@ -331,6 +349,7 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

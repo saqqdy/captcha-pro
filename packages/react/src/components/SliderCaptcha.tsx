@@ -5,6 +5,7 @@ import {
   SliderCaptcha as SliderCaptchaCore,
   type SliderCaptchaInstance,
   type SliderCaptchaOptions,
+  t,
 } from '@captcha-pro/core'
 import * as React from 'react'
 import { useEffect, useImperativeHandle, useRef } from 'react'
@@ -100,7 +101,7 @@ export const SliderCaptcha = React.forwardRef<SliderCaptchaRef, SliderCaptchaPro
     }))
 
     return (
-      <div className={`captcha-react-wrapper ${className || ''}`}>
+      <div className={`captcha-react-wrapper ${className || ''}`} role="region" aria-label={t('slider.slide', locale)}>
         <div ref={containerRef} className="captcha-container" />
       </div>
     )

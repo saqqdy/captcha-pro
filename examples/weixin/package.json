@@ -1,7 +1,7 @@
 {
   "name": "example-weixin",
   "description": "微信小程序验证码示例",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "private": true,
   "dependencies": {
     "@captcha-pro/weixin": "workspace:*"

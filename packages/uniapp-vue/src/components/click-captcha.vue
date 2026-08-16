@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getCurrentInstance } from 'vue'
 import { useClickCaptcha } from '../composables/useClickCaptcha'
-import { DEFAULT_CLICK_COUNT } from '@captcha-pro/mp-shared'
+import { DEFAULT_CLICK_COUNT, DEFAULT_LOCALE, getLocaleMessage } from '@captcha-pro/mp-shared'
 import '../styles/captcha.scss'
 
 const props = defineProps({
@@ -14,6 +14,8 @@ const props = defineProps({
 	onRefresh: { type: Function, default: undefined },
 	onError: { type: Function, default: undefined },
 })
+
+const t = (key: string) => getLocaleMessage(DEFAULT_LOCALE, key)
 
 const {
 	bgImage,
@@ -78,6 +80,8 @@ defineExpose({ refresh })
         height: `${heightPx}px`,
         borderRadius: '16rpx',
       }"
+      role="button"
+      :aria-label="t('click_prompt')"
       @tap="handleClick"
     >
       <image
@@ -100,15 +104,16 @@ defineExpose({ refresh })
         :key="idx"
         class="click-marker"
         :style="{ left: `${marker.x}px`, top: `${marker.y}px` }"
+        :aria-label="String(idx + 1)"
       >
         <text class="marker-text">{{ idx + 1 }}</text>
       </view>
 
-      <view v-if="showRefresh && !loading" class="refresh-btn" @tap.stop="refresh">
+      <view v-if="showRefresh && !loading" class="refresh-btn" role="button" :aria-label="t('refresh')" @tap.stop="refresh">
         <text class="refresh-icon">⟳</text>
       </view>
 
-      <view v-if="status" class="status-overlay" :class="status">
+      <view v-if="status" class="status-overlay" :class="status" aria-live="polite" aria-atomic="true">
         <view class="status-icon"><text>{{ status === 'success' ? '✓' : '✕' }}</text></view>
         <text class="status-text">{{ status === 'success' ? '验证成功' : '验证失败' }}</text>
       </view>

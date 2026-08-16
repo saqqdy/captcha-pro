@@ -5,6 +5,7 @@ import {
   ClickCaptcha as ClickCaptchaCore,
   type ClickCaptchaInstance,
   type ClickCaptchaOptions,
+  t,
 } from '@captcha-pro/core'
 import * as React from 'react'
 import { useEffect, useImperativeHandle, useRef } from 'react'
@@ -91,7 +92,7 @@ export const ClickCaptcha = React.forwardRef<ClickCaptchaRef, ClickCaptchaProps>
     }))
 
     return (
-      <div className={`captcha-react-wrapper ${className || ''}`}>
+      <div className={`captcha-react-wrapper ${className || ''}`} role="region" aria-label={t('click.prompt', locale)}>
         <div ref={containerRef} className="captcha-container" />
       </div>
     )

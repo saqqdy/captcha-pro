@@ -23,10 +23,10 @@ public class SliderCaptchaView: UIView {
     private var statusIconView = UIView()
     private var statusIconLabel = UILabel()
     private var statusTextLabel = UILabel()
-    private var refreshButton = UIButton()
+    private var refreshButton = RefreshButton()
     private var sliderBarView = UIView()
     private var sliderHintLabel = UILabel()
-    private var sliderThumbView = UIView()
+    private var sliderThumbView = SliderThumbView()
     private var sliderArrowLabel = UILabel()
 
     private var targetX: CGFloat = 0
@@ -129,6 +129,8 @@ public class SliderCaptchaView: UIView {
         refreshButton.setTitleColor(UIColor(white: 0.4, alpha: 1), for: .normal)
         refreshButton.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
         refreshButton.addTarget(self, action: #selector(refresh), for: .touchUpInside)
+        refreshButton.accessibilityLabel = LocaleMessages.get(locale, key: "refresh")
+        refreshButton.accessibilityTraits = .button
         captchaClipView.addSubview(refreshButton)
         refreshButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -196,7 +198,7 @@ public class SliderCaptchaView: UIView {
         ])
 
         sliderHintLabel.text = LocaleMessages.get(locale, key: "slider_hint")
-        sliderHintLabel.textColor = UIColor(white: 0.6, alpha: 1)
+        sliderHintLabel.textColor = UIColor(white: 0.4, alpha: 1)
         sliderHintLabel.font = .systemFont(ofSize: 14)
         sliderHintLabel.textAlignment = .center
         sliderBarView.addSubview(sliderHintLabel)
@@ -212,6 +214,24 @@ public class SliderCaptchaView: UIView {
         sliderThumbView.layer.borderColor = UIColor(red: 225/255, green: 228/255, blue: 232/255, alpha: 1).cgColor
         sliderBarView.addSubview(sliderThumbView)
         sliderThumbView.frame = CGRect(x: 2, y: 2, width: 36, height: 36)
+        sliderThumbView.accessibilityLabel = LocaleMessages.get(locale, key: "slider_hint")
+        sliderThumbView.accessibilityTraits = .adjustable
+        sliderThumbView.accessibilityValue = "\(Int(currentX))"
+        sliderThumbView.onIncrement = { [weak self] in
+            guard let self = self else { return }
+            let maxX = CGFloat(self.captchaWidth - self.sliderWidth)
+            self.currentX = min(self.currentX + 10, maxX)
+            self.sliderThumbView.frame.origin.x = self.currentX + 2
+            self.sliderImageView.frame.origin.x = self.currentX
+            self.sliderThumbView.accessibilityValue = "\(Int(self.currentX))"
+        }
+        sliderThumbView.onDecrement = { [weak self] in
+            guard let self = self else { return }
+            self.currentX = max(self.currentX - 10, 0)
+            self.sliderThumbView.frame.origin.x = self.currentX + 2
+            self.sliderImageView.frame.origin.x = self.currentX
+            self.sliderThumbView.accessibilityValue = "\(Int(self.currentX))"
+        }
 
         sliderArrowLabel.text = "→"
         sliderArrowLabel.textColor = UIColor(red: 25/255, green: 145/255, blue: 250/255, alpha: 1)
@@ -274,6 +294,7 @@ public class SliderCaptchaView: UIView {
             currentX = max(0, min(currentX + translation.x, maxX))
             sliderThumbView.frame.origin.x = currentX + 2
             sliderImageView.frame.origin.x = currentX
+            sliderThumbView.accessibilityValue = "\(Int(currentX))"
             gesture.setTranslation(.zero, in: sliderBarView)
             callback?.onDrag(distance: currentX)
         case .ended:
@@ -332,6 +353,10 @@ public class SliderCaptchaView: UIView {
             ? UIColor(red: 56/255, green: 158/255, blue: 13/255, alpha: 1)
             : UIColor(red: 207/255, green: 19/255, blue: 34/255, alpha: 1)
 
+        if let resolved = statusTextLabel.text, !resolved.isEmpty {
+            UIAccessibility.post(notification: .announcement, argument: resolved)
+        }
+
         statusView.alpha = 0
         statusView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         statusView.isHidden = false
@@ -348,4 +373,21 @@ public class SliderCaptchaView: UIView {
     public func getStatistics() -> CaptchaStatistics { statisticsData.toStatistics() }
     public func resetStatistics() { statisticsData.reset() }
     public func destroy() {}
+}
+
+// MARK: - Accessibility helpers
+/// Refresh button with an expanded 44pt touch target while keeping the 28pt visual centered.
+private final class RefreshButton: UIButton {
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        bounds.insetBy(dx: -8, dy: -8).contains(point)
+    }
+}
+
+/// Slider thumb exposing VoiceOver increment/decrement adjustment.
+private final class SliderThumbView: UIView {
+    var onIncrement: (() -> Void)?
+    var onDecrement: (() -> Void)?
+
+    override func accessibilityIncrement() { onIncrement?() }
+    override func accessibilityDecrement() { onDecrement?() }
 }

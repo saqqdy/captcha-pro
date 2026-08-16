@@ -1,13 +1,13 @@
-<view wx:if="{{visible}}" class="popup-captcha">
+<view wx:if="{{visible}}" class="popup-captcha" aria-role="dialog" aria-label="{{title}}">
   <!-- Mask -->
-  <view class="popup-mask" catchtap="onMaskTap" />
+  <view class="popup-mask" catchtap="onMaskTap" aria-label="关闭" aria-role="button" />
 
   <!-- Content card -->
   <view class="popup-content">
     <!-- Header -->
     <view class="popup-header">
       <text class="popup-title">{{title}}</text>
-      <view wx:if="{{showClose}}" class="popup-close" catchtap="hide">
+      <view wx:if="{{showClose}}" class="popup-close" catchtap="hide" aria-label="关闭" aria-role="button">
         <text>×</text>
       </view>
     </view>

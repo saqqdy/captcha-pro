@@ -6,12 +6,14 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import com.captcha.pro.core.*
 import kotlinx.coroutines.*
 
@@ -81,6 +83,8 @@ class ClickCaptchaView @JvmOverloads constructor(
         bgView = ImageView(context).apply {
             scaleType = ImageView.ScaleType.FIT_XY
             background = gradientDrawable
+            // a11y: label the click interaction area for TalkBack
+            contentDescription = LocaleMessages.get(locale, "click_prompt")
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
                     outline.setRoundRect(0, 0, view.width, view.height, 16f * density)
@@ -111,6 +115,8 @@ class ClickCaptchaView @JvmOverloads constructor(
                 setColor(Color.argb(230, 255, 255, 255))
                 cornerRadius = 8f * density
             }
+            // a11y: label refresh button for TalkBack
+            contentDescription = LocaleMessages.get(locale, "refresh")
             setOnClickListener { refresh() }
         }
         addView(refreshBtn, LayoutParams(dp(28), dp(28)).apply {
@@ -119,7 +125,22 @@ class ClickCaptchaView @JvmOverloads constructor(
             marginEnd = dp(8)
         })
 
+        // a11y: expand refresh touch target to 48dp (visual 28dp unchanged, centered)
+        refreshBtn.post {
+            val parent = refreshBtn.parent as? View ?: return@post
+            val pad = (dp(48) - dp(28)) / 2
+            val rect = Rect()
+            refreshBtn.getHitRect(rect)
+            rect.inset(-pad, -pad)
+            parent.touchDelegate = TouchDelegate(rect, refreshBtn)
+        }
+
         statusOverlay = StatusOverlayView(context)
+        // a11y: announce status changes (success/fail) via polite live region
+        ViewCompat.setAccessibilityLiveRegion(
+            statusOverlay,
+            ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE
+        )
         addView(statusOverlay, LayoutParams(captchaWidth, captchaHeight))
 
         promptBar = LinearLayout(context).apply {
@@ -364,12 +385,15 @@ class ClickOverlayView @JvmOverloads constructor(
     fun addClickPoint(x: Float, y: Float, index: Int) {
         clickPoints.add(Pair(x, y))
         clickIndices.add(index)
+        // a11y: expose the latest marker index (Canvas-drawn markers -> single label)
+        contentDescription = index.toString()
         invalidate()
     }
 
     fun clear() {
         clickPoints.clear()
         clickIndices.clear()
+        contentDescription = null
         invalidate()
     }
 

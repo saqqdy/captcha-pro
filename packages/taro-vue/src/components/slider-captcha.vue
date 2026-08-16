@@ -56,6 +56,8 @@ defineExpose({ refresh })
         height: `${heightPx}px`,
         borderRadius: '16rpx',
       }"
+      role="region"
+      :aria-label="t('slider_hint')"
     >
       <Image
         v-if="bgImage"
@@ -84,11 +86,11 @@ defineExpose({ refresh })
         }"
       />
 
-      <View v-if="showRefresh && !loading" class="refresh-btn" @tap="refresh">
+      <View v-if="showRefresh && !loading" class="refresh-btn" role="button" :aria-label="t('refresh')" @tap="refresh">
         <Text class="refresh-icon">⟳</Text>
       </View>
 
-      <View v-if="status" class="status-overlay" :class="status">
+      <View v-if="status" class="status-overlay" :class="status" aria-live="polite" aria-atomic="true">
         <View class="status-icon"><Text>{{ status === 'success' ? '✓' : '✕' }}</Text></View>
         <Text class="status-text">{{ status === 'success' ? t('slider_success') : t('slider_fail') }}</Text>
       </View>
@@ -106,6 +108,11 @@ defineExpose({ refresh })
           direction="horizontal"
           :x="sliderX"
           :damping="40"
+          role="slider"
+          :aria-label="t('slider_hint')"
+          :aria-valuemin="0"
+          :aria-valuemax="widthPx - actualSliderWidth"
+          :aria-valuenow="sliderX"
           @change="(e: any) => handleSliderChange(e.detail.x)"
           @touchend="handleSliderEnd"
           :style="{ width: `${actualSliderWidth}px`, height: `${sliderBarHeight}px` }"

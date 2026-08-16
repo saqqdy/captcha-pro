@@ -11,6 +11,9 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.captcha.pro.core.BackendVerifyOptions
 import com.captcha.pro.core.CaptchaCallback
 import com.captcha.pro.core.CaptchaLocale
@@ -66,6 +69,19 @@ class CaptchaDialog(
             setPadding(dp(24), dp(24), dp(24), dp(24))
             isClickable = true
         }
+
+        // a11y: give the dialog an accessible name + role via delegate
+        val dialogTitle = if (title.isNotEmpty()) title else LocaleMessages.get(locale, "popup_title")
+        card.contentDescription = dialogTitle
+        ViewCompat.setAccessibilityDelegate(card, object : AccessibilityDelegateCompat() {
+            override fun onInitializeAccessibilityNodeInfo(
+                host: View,
+                info: AccessibilityNodeInfoCompat
+            ) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+                info.contentDescription = dialogTitle
+            }
+        })
 
         card.addView(createHeader())
 
@@ -154,6 +170,8 @@ class CaptchaDialog(
                     textSize = 20f
                     setTextColor(Color.parseColor("#999999"))
                     setPadding(dp(12), 0, dp(12), 0)
+                    // a11y: label the close button for TalkBack
+                    contentDescription = LocaleMessages.get(locale, "popup_close")
                     setOnClickListener { dismiss() }
                 })
             }

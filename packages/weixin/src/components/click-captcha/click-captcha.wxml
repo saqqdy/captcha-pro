@@ -1,5 +1,5 @@
 <view class="captcha-container">
-  <view class="captcha-area" style="width: {{width}}rpx; height: {{height}}rpx; border-radius: 8rpx;" bindtap="onAreaTap">
+  <view class="captcha-area" style="width: {{width}}rpx; height: {{height}}rpx; border-radius: 8rpx;" bindtap="onAreaTap" aria-role="button" aria-label="请依次点击：">
     <image wx:if="{{bgImage}}" src="{{bgImage}}" mode="aspectFill" class="bg-image" style="width: {{width}}rpx; height: {{height}}rpx;" />
     <view wx:else class="captcha-loading" style="width: {{width}}rpx; height: {{height}}rpx;">
       <text>{{errorMsg || '加载中...'}}</text>
@@ -10,11 +10,12 @@
       wx:key="index"
       class="click-marker"
       style="left: {{item.x}}rpx; top: {{item.y}}rpx;"
+      aria-label="{{item.index}}"
     >
       <text class="marker-text">{{item.index}}</text>
     </view>
 
-    <view wx:if="{{showRefresh && !loading}}" class="refresh-btn" catchtap="handleRefresh">
+    <view wx:if="{{showRefresh && !loading}}" class="refresh-btn" catchtap="handleRefresh" aria-label="刷新" aria-role="button">
       <text class="refresh-icon">⟳</text>
     </view>
 

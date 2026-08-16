@@ -1,7 +1,7 @@
 {
   "name": "@captcha-pro/taro-react",
   "description": "Taro + React captcha components for captcha-pro (backend-only mode)",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",

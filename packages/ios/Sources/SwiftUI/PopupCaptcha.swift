@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Popup captcha view for SwiftUI — presents slider or click captcha in a modal overlay.
 ///
@@ -122,6 +123,12 @@ public struct PopupCaptcha: View {
                 .cornerRadius(24)
                 .shadow(color: Color.black.opacity(0.2), radius: 16, x: 0, y: 4)
                 .transition(.opacity.combined(with: .scale(scale: 0.9)))
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel(displayTitle)
+                .accessibilityAddTraits(.isModal)
+                .onAppear {
+                    UIAccessibility.post(notification: .screenChanged, argument: nil)
+                }
             }
         }
     }
@@ -137,9 +144,10 @@ public struct PopupCaptcha: View {
                 Button(action: { hide() }) {
                     Text("×")
                         .font(.system(size: 24))
-                        .foregroundColor(Color(white: 0.6))
+                        .foregroundColor(Color(white: 0.4))
                         .frame(width: 28, height: 28)
                 }
+                .accessibilityLabel(LocaleMessages.get(locale, key: "popup_close"))
             }
         }
         .padding(.horizontal, 16)

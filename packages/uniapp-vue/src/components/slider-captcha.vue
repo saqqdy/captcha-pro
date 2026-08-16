@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useSliderCaptcha } from '../composables/useSliderCaptcha'
+import { DEFAULT_LOCALE, getLocaleMessage } from '@captcha-pro/mp-shared'
 import '../styles/captcha.scss'
 
 const props = defineProps({
@@ -14,6 +15,8 @@ const props = defineProps({
 	onRefresh: { type: Function, default: undefined },
 	onError: { type: Function, default: undefined },
 })
+
+const t = (key: string) => getLocaleMessage(DEFAULT_LOCALE, key)
 
 const {
 	bgImage,
@@ -56,6 +59,8 @@ defineExpose({ refresh })
         height: `${heightPx}px`,
         borderRadius: '16rpx',
       }"
+      role="region"
+      :aria-label="t('slider_hint')"
     >
       <image
         v-if="bgImage"
@@ -84,11 +89,11 @@ defineExpose({ refresh })
         }"
       />
 
-      <view v-if="showRefresh && !loading" class="refresh-btn" @tap="refresh">
+      <view v-if="showRefresh && !loading" class="refresh-btn" role="button" :aria-label="t('refresh')" @tap="refresh">
         <text class="refresh-icon">⟳</text>
       </view>
 
-      <view v-if="status" class="status-overlay" :class="status">
+      <view v-if="status" class="status-overlay" :class="status" aria-live="polite" aria-atomic="true">
         <view class="status-icon"><text>{{ status === 'success' ? '✓' : '✕' }}</text></view>
         <text class="status-text">{{ status === 'success' ? '验证成功' : '验证失败' }}</text>
       </view>
@@ -106,6 +111,11 @@ defineExpose({ refresh })
           direction="horizontal"
           :x="sliderX"
           :damping="40"
+          role="slider"
+          :aria-label="t('slider_hint')"
+          :aria-valuemin="0"
+          :aria-valuemax="widthPx - actualSliderWidth"
+          :aria-valuenow="sliderX"
           @change="(e: any) => handleSliderChange(e.detail.x)"
           @touchend="handleSliderEnd"
           :style="{ width: `${actualSliderWidth}px`, height: `${sliderBarHeight}px` }"

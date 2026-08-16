@@ -108,6 +108,8 @@ public class ClickCaptchaView: UIView {
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         bgImageView.addGestureRecognizer(tapGesture)
+        bgImageView.accessibilityLabel = LocaleMessages.get(locale, key: "click_prompt")
+        bgImageView.accessibilityTraits = .button
 
         loadingLabel.text = LocaleMessages.get(locale, key: "loading")
         loadingLabel.textColor = .white
@@ -388,6 +390,7 @@ public class ClickCaptchaView: UIView {
         label.font = .boldSystemFont(ofSize: 12)
         label.textAlignment = .center
         pointView.addSubview(label)
+        pointView.accessibilityLabel = "\(index)"
 
         bgImageView.addSubview(pointView)
         clickPointViews.append(pointView)

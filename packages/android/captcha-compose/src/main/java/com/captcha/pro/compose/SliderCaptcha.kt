@@ -24,6 +24,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.unit.dp
 import com.captcha.pro.core.BackendVerifyOptions
 import com.captcha.pro.core.CaptchaGenerator
@@ -167,19 +176,28 @@ fun SliderCaptcha(
                 }
             }
 
-            // Refresh button
+            // Refresh button — 44dp hit area centered on 28dp visual (a11y: role=Button + label)
             if (showRefresh && !loading) {
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .size(28.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.White.copy(alpha = 0.9f))
+                        .size(44.dp)
+                        .semantics {
+                            role = Role.Button
+                            contentDescription = LocaleMessages.get(locale, "refresh")
+                        }
                         .clickable { refresh() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("⟳", color = Color(0xFF666666))
+                    Box(
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.White.copy(alpha = 0.9f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("⟳", color = Color(0xFF666666))
+                    }
                 }
             }
 
@@ -194,6 +212,7 @@ fun SliderCaptcha(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .semantics { liveRegion = LiveRegionMode.Polite }
                         .background(Color.White.copy(alpha = 0.75f)),
                     contentAlignment = Alignment.Center
                 ) {
@@ -248,7 +267,7 @@ fun SliderCaptcha(
             // Hint text centered
             Text(
                 text = LocaleMessages.get(locale, "slider_hint"),
-                color = Color(0xFF999999),
+                color = Color(0xFF666666),
                 modifier = Modifier.align(Alignment.Center)
             )
 
@@ -257,7 +276,18 @@ fun SliderCaptcha(
                 modifier = Modifier
                     .offset(x = currentX.dp, y = 2.dp)
                     .width(42.dp)
-                    .height(42.dp),
+                    .height(42.dp)
+                    .semantics {
+                        contentDescription = LocaleMessages.get(locale, "slider_hint")
+                        progressBarRangeInfo = ProgressBarRangeInfo(
+                            current = currentX,
+                            range = 0f..(width - sliderWidth).toFloat()
+                        )
+                        setProgress {
+                            currentX = it.coerceIn(0f, (width - sliderWidth).toFloat())
+                            true
+                        }
+                    },
                 color = Color.White,
                 shape = RoundedCornerShape(8.dp),
                 border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE1E4E8))

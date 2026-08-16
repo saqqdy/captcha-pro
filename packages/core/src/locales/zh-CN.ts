@@ -2,6 +2,7 @@
  * Chinese Simplified (zh-CN) locale messages
  */
 export default {
+	refresh: '刷新',
 	slider: {
 		success: '验证成功',
 		fail: '验证失败',

@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import {
   type ClickCaptchaInstance,
   type BackendVerifyOptions,
+  t,
 } from '@captcha-pro/core'
 import { useClickCaptcha, type UseClickCaptchaOptions } from '../composables/useClickCaptcha'
 
@@ -66,7 +67,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="captcha-vue-wrapper">
+  <div class="captcha-vue-wrapper" role="region" :aria-label="t('click.prompt', props.locale)">
     <div ref="containerRef" class="captcha-container" />
   </div>
 </template>

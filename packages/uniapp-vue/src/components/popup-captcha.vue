@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { DEFAULT_LOCALE, getLocaleMessage } from '@captcha-pro/mp-shared'
 import ClickCaptcha from './click-captcha.vue'
 import SliderCaptcha from './slider-captcha.vue'
 import '../styles/captcha.scss'
@@ -19,6 +20,8 @@ const props = defineProps({
 	onOpen: { type: Function, default: undefined },
 	onClose: { type: Function, default: undefined },
 })
+
+const t = (key: string) => getLocaleMessage(DEFAULT_LOCALE, key)
 
 const visible = ref(false)
 
@@ -47,6 +50,9 @@ defineExpose({ show, hide, isVisible: () => visible.value })
   <view
     v-if="visible"
     class="popup-captcha"
+    role="dialog"
+    aria-modal="true"
+    :aria-label="title"
     :style="{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
       zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -54,6 +60,8 @@ defineExpose({ show, hide, isVisible: () => visible.value })
   >
     <view
       class="popup-mask"
+      role="button"
+      :aria-label="t('popup_close')"
       :style="{
         position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
         background: 'rgba(0, 0, 0, 0.5)',
@@ -80,6 +88,8 @@ defineExpose({ show, hide, isVisible: () => visible.value })
         <view
           v-if="showClose"
           class="popup-close"
+          role="button"
+          :aria-label="t('popup_close')"
           :style="{
             width: '48rpx', height: '48rpx',
             display: 'flex', alignItems: 'center', justifyContent: 'center',

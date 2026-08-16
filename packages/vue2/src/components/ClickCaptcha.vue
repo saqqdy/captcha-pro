@@ -1,5 +1,5 @@
 <script>
-import { ClickCaptcha } from '@captcha-pro/core'
+import { ClickCaptcha, t } from '@captcha-pro/core'
 
 export default {
   name: 'ClickCaptcha',
@@ -87,11 +87,17 @@ export default {
       this.refresh()
     },
   },
+
+  computed: {
+    captchaAriaLabel() {
+      return t('click.prompt', this.locale)
+    },
+  },
 }
 </script>
 
 <template>
-  <div class="captcha-vue2-wrapper">
+  <div class="captcha-vue2-wrapper" role="region" :aria-label="captchaAriaLabel">
     <div ref="containerRef" class="captcha-container" />
   </div>
 </template>

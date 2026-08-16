@@ -181,37 +181,47 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
         child: Stack(
           children: [
             Positioned.fill(
-              child: GestureDetector(
-                onTap: () {
-                  if (widget.maskClosable) hide();
-                },
-                child: Container(color: const Color(0x80000000)),
+              child: Semantics(
+                button: widget.maskClosable,
+                label: widget.maskClosable
+                    ? getLocaleMessage(widget.locale, 'popup_close')
+                    : null,
+                child: GestureDetector(
+                  onTap: () {
+                    if (widget.maskClosable) hide();
+                  },
+                  child: Container(color: const Color(0x80000000)),
+                ),
               ),
             ),
             Center(
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 320),
-                margin: const EdgeInsets.symmetric(horizontal: 24),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x33000000),
-                      offset: Offset(0, 4),
-                      blurRadius: 16,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildHeader(),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: _buildBody(),
-                    ),
-                  ],
+              child: Semantics(
+                container: true,
+                label: _displayTitle,
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: 320),
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x33000000),
+                        offset: Offset(0, 4),
+                        blurRadius: 16,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildHeader(),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: _buildBody(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -241,18 +251,22 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
             ),
           ),
           if (widget.showClose)
-            GestureDetector(
-              onTap: hide,
-              child: SizedBox(
-                width: 24,
-                height: 24,
-                child: const Center(
-                  child: Text(
-                    '×',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Color(0xFF999999),
-                      height: 1.0,
+            Semantics(
+              button: true,
+              label: getLocaleMessage(widget.locale, 'popup_close'),
+              child: GestureDetector(
+                onTap: hide,
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: const Center(
+                    child: Text(
+                      '×',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF999999),
+                        height: 1.0,
+                      ),
                     ),
                   ),
                 ),

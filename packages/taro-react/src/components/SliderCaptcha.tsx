@@ -1,4 +1,5 @@
 import type { SliderCaptchaProps, SliderCaptchaRef } from '../types'
+import { DEFAULT_LOCALE, getLocaleMessage } from '@captcha-pro/mp-shared'
 import { Image, MovableArea, MovableView, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
@@ -19,6 +20,8 @@ const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(({
   onRefresh,
   onError,
 }, ref) => {
+  const t = (key: string): string => getLocaleMessage(DEFAULT_LOCALE, key)
+
   // Backend data
   const [captchaId, setCaptchaId] = useState('')
   const [bgImage, setBgImage] = useState('')
@@ -163,6 +166,8 @@ const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(({
       {/* Captcha area */}
       <View
         class="captcha-area"
+        role="region"
+        aria-label={t('slider_hint')}
         style={{
           width: `${widthPx}px`,
           height: `${heightPx}px`,
@@ -202,14 +207,14 @@ const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(({
 
         {/* Refresh button */}
         <Show when={showRefresh && !loading}>
-          <View class="refresh-btn" onClick={refresh}>
+          <View class="refresh-btn" role="button" aria-label={t('refresh')} onClick={refresh}>
             <Text class="refresh-icon">⟳</Text>
           </View>
         </Show>
 
         {/* Status overlay */}
         <Show when={status}>
-          <View class={`status-overlay ${status}`}>
+          <View class={`status-overlay ${status}`} aria-live="polite" aria-atomic="true">
             <View class="status-icon"><Text>{status === 'success' ? '✓' : '✕'}</Text></View>
             <Text class="status-text">{status === 'success' ? '验证成功' : '验证失败'}</Text>
           </View>
@@ -234,6 +239,11 @@ const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(({
             direction="horizontal"
             x={sliderX}
             damping={40}
+            role="slider"
+            aria-label={t('slider_hint')}
+            aria-valuemin={0}
+            aria-valuemax={widthPx - actualSliderWidth}
+            aria-valuenow={sliderX}
             onChange={handleSliderChange}
             onTouchEnd={handleSliderEnd}
             style={{ width: `${actualSliderWidth}px`, height: `${sliderBarHeight}px` }}

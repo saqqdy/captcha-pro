@@ -2,7 +2,7 @@
 	"name": "@captcha-pro/uniapp-vue",
 	"description": "uni-app + Vue 3 captcha components for captcha-pro (backend-only mode)",
 	"type": "module",
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"main": "dist/index.cjs",
 	"module": "dist/index.js",
 	"types": "dist/index.d.ts",

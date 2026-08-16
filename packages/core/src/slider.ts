@@ -17,6 +17,7 @@ import {
 	generateSignature,
 	getElement,
 	getEventPosition,
+	injectA11yStyles,
 	injectShakeAnimation,
 	loadImage,
 	off,
@@ -176,7 +177,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 
 		// Accessibility: Set container role and label
 		this.container.setAttribute('role', 'application')
-		this.container.setAttribute('aria-label', 'Slider Captcha Verification')
+		this.container.setAttribute('aria-label', t('slider.slide'))
 
 		// Screen reader instructions (visually hidden)
 		const instructions = createElement('div', {
@@ -253,8 +254,8 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			const refreshBtn = createElement('button', {
 				class: 'captcha-refresh-btn',
 				type: 'button',
-				'aria-label': 'Refresh captcha',
-				title: 'Refresh',
+				'aria-label': t('refresh'),
+				title: t('refresh'),
 			}, {
 				position: 'absolute',
 				top: '10px',
@@ -283,7 +284,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		const sliderContainer = createElement('div', {
 			class: 'captcha-slider-track',
 			role: 'slider',
-			'aria-label': 'Verification slider',
+			'aria-label': t('slider.slide'),
 			'aria-valuemin': '0',
 			'aria-valuemax': String(this.options.width! - this.options.sliderWidth!),
 			'aria-valuenow': '0',
@@ -1060,6 +1061,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 
 		// Inject shake animation CSS
 		injectShakeAnimation()
+		injectA11yStyles()
 
 		// Add shake animation
 		addClass(this.container, 'captcha-shake')

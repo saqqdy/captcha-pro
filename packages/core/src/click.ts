@@ -17,6 +17,7 @@ import {
 	generateSignature,
 	getElement,
 	getEventPosition,
+	injectA11yStyles,
 	injectShakeAnimation,
 	loadImage,
 	off,
@@ -226,7 +227,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 
 		// Accessibility: Set container role and label
 		this.container.setAttribute('role', 'application')
-		this.container.setAttribute('aria-label', 'Click Captcha Verification')
+		this.container.setAttribute('aria-label', t('click.prompt'))
 
 		// Screen reader instructions (visually hidden)
 		const instructions = createElement('div', {
@@ -250,7 +251,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		const imageContainer = createElement('div', {
 			class: 'captcha-image-container',
 			role: 'img',
-			'aria-label': 'Captcha image with characters',
+			'aria-label': t('click.prompt'),
 		}, {
 			position: 'relative',
 			width: '100%',
@@ -271,7 +272,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		// Text canvas (overlay for click points)
 		this.textCanvas = createElement('canvas', {
 			role: 'button',
-			'aria-label': 'Click area - click on the characters in order',
+			'aria-label': t('click.prompt'),
 			tabindex: '0',
 		}, {
 			position: 'absolute',
@@ -288,8 +289,8 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 			const refreshBtn = createElement('button', {
 				class: 'captcha-refresh-btn',
 				type: 'button',
-				'aria-label': 'Refresh captcha',
-				title: 'Refresh',
+				'aria-label': t('refresh'),
+				title: t('refresh'),
 			}, {
 				position: 'absolute',
 				top: '10px',
@@ -748,6 +749,7 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 
 		// Inject shake animation CSS
 		injectShakeAnimation()
+		injectA11yStyles()
 
 		// Add shake animation
 		addClass(this.container, 'captcha-shake')
@@ -771,6 +773,11 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 
 		on(this.textCanvas, 'click', this.onClick)
 		on(this.textCanvas, 'touchend', this.onTouchEnd, { passive: false })
+
+		// Keyboard accessibility
+		on(this.textCanvas, 'keydown', this.onKeyDown as (e: Event) => void)
+		on(this.textCanvas, 'focus', this.onFocus)
+		on(this.textCanvas, 'blur', this.onBlur)
 	}
 
 	/**
@@ -787,6 +794,45 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 	 */
 	private onClick = (e: Event): void => {
 		this.handleClick(e)
+	}
+
+	/**
+	 * Keyboard navigation handler — Enter/Space clicks at canvas center
+	 */
+	private onKeyDown = (e: KeyboardEvent): void => {
+		if (this._verified) return
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault()
+			const rect = this.textCanvas?.getBoundingClientRect()
+			if (rect) {
+				const clickEvent = new MouseEvent('click', {
+					clientX: rect.left + rect.width / 2,
+					clientY: rect.top + rect.height / 2,
+				})
+				this.handleClick(clickEvent)
+			}
+		}
+	}
+
+	/**
+	 * Focus handler — WCAG 2.4.7 focus visible
+	 */
+	private onFocus = (): void => {
+		if (this.textCanvas) {
+			setStyle(this.textCanvas, {
+				outline: '2px solid #1991fa',
+				outlineOffset: '2px',
+			})
+		}
+	}
+
+	/**
+	 * Blur handler
+	 */
+	private onBlur = (): void => {
+		if (this.textCanvas) {
+			setStyle(this.textCanvas, { outline: 'none' })
+		}
 	}
 
 	/**
@@ -807,6 +853,9 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 
 		const pos = getEventPosition(e as MouseEvent | TouchEvent, this.textCanvas!)
 		this.clickPoints.push(pos)
+
+		// Update aria-label with click count for screen readers
+		this.textCanvas?.setAttribute('aria-label', `${t('click.prompt')}: ${this.clickPoints.length}/${this.clickTexts.length}`)
 
 		// Draw click marker
 		this.drawClickMarker(pos.x, pos.y, this.clickPoints.length)
@@ -968,6 +1017,8 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		if (this.textCanvas) {
 			const ctx = this.textCanvas.getContext('2d')!
 			ctx.clearRect(0, 0, this.options.width!, this.options.height!)
+			// Reset aria-label
+			this.textCanvas.setAttribute('aria-label', t('click.prompt'))
 		}
 
 		// Hide status overlay
@@ -983,6 +1034,9 @@ export class ClickCaptcha implements ClickCaptchaInstance {
 		if (this.textCanvas) {
 			off(this.textCanvas, 'click', this.onClick)
 			off(this.textCanvas, 'touchend', this.onTouchEnd)
+			off(this.textCanvas, 'keydown', this.onKeyDown as (e: Event) => void)
+			off(this.textCanvas, 'focus', this.onFocus)
+			off(this.textCanvas, 'blur', this.onBlur)
 		}
 
 		if (this.container) {

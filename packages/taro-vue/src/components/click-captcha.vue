@@ -71,6 +71,8 @@ defineExpose({ refresh })
         height: `${heightPx}px`,
         borderRadius: '16rpx',
       }"
+      role="button"
+      :aria-label="t('click_prompt')"
       @click="handleClick"
     >
       <Image
@@ -93,15 +95,16 @@ defineExpose({ refresh })
         :key="idx"
         class="click-marker"
         :style="{ left: `${marker.x}px`, top: `${marker.y}px` }"
+        :aria-label="String(idx + 1)"
       >
         <Text class="marker-text">{{ idx + 1 }}</Text>
       </View>
 
-      <View v-if="showRefresh && !loading" class="refresh-btn" @click.stop="refresh">
+      <View v-if="showRefresh && !loading" class="refresh-btn" role="button" :aria-label="t('refresh')" @click.stop="refresh">
         <Text class="refresh-icon">⟳</Text>
       </View>
 
-      <View v-if="status" class="status-overlay" :class="status">
+      <View v-if="status" class="status-overlay" :class="status" aria-live="polite" aria-atomic="true">
         <View class="status-icon"><Text>{{ status === 'success' ? '✓' : '✕' }}</Text></View>
         <Text class="status-text">{{ status === 'success' ? t('click_success') : t('click_fail') }}</Text>
       </View>

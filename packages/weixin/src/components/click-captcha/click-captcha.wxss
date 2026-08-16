@@ -102,3 +102,21 @@
 
 .char-text { font-size: 32rpx; color: #fff; font-weight: 500; }
 .char-img { width: 100%; height: 100%; }
+
+/* WCAG 2.2 a11y: focus-visible outline for interactive elements */
+.refresh-btn:focus-visible,
+.slider-thumb:focus-visible,
+.popup-close:focus-visible,
+.click-marker:focus-visible {
+  outline: 2px solid #1991fa;
+  outline-offset: 2px;
+}
+
+/* WCAG 2.2 a11y: expand refresh button hit area to >=44px (visual 56rpx≈28px unchanged) */
+/* 56rpx + 2*16rpx = 88rpx = 44px on 375 screen */
+.refresh-btn::before {
+  content: '';
+  position: absolute;
+  inset: -16rpx;
+  background: transparent;
+}

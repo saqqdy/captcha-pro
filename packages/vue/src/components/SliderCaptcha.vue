@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import {
   type SliderCaptchaInstance,
   type BackendVerifyOptions,
+  t,
 } from '@captcha-pro/core'
 import { useSliderCaptcha, type UseSliderCaptchaOptions } from '../composables/useSliderCaptcha'
 
@@ -74,7 +75,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="captcha-vue-wrapper">
+  <div class="captcha-vue-wrapper" role="region" :aria-label="t('slider.slide', props.locale)">
     <div ref="containerRef" class="captcha-container" />
   </div>
 </template>

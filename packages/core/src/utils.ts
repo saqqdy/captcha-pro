@@ -596,3 +596,23 @@ export function injectShakeAnimation(): void {
 		}
 	`)
 }
+
+/**
+ * Inject WCAG 2.2 a11y styles: focus-visible outline + 44px refresh hit area.
+ * Applies to web wrappers (vue/vue2/react) that render core's DOM.
+ * 28px button + 2×8px transparent ::before = 44px tap target (WCAG 2.5.5).
+ */
+export function injectA11yStyles(): void {
+	injectStyles('captcha-a11y-styles', `
+		.captcha-refresh-btn:focus-visible {
+			outline: 2px solid #1991fa;
+			outline-offset: 2px;
+		}
+		.captcha-refresh-btn::before {
+			content: '';
+			position: absolute;
+			inset: -8px;
+			background: transparent;
+		}
+	`)
+}

@@ -79,6 +79,8 @@ public class PopupCaptchaView: UIView {
         containerView.layer.shadowRadius = 16
         containerView.alpha = 0
         containerView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        containerView.accessibilityViewIsModal = true
+        containerView.accessibilityLabel = title.isEmpty ? LocaleMessages.get(locale, key: "popup_title") : title
         addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -111,9 +113,10 @@ public class PopupCaptchaView: UIView {
 
         // Close button
         closeButton.setTitle("×", for: .normal)
-        closeButton.setTitleColor(UIColor(white: 0.6, alpha: 1), for: .normal)
+        closeButton.setTitleColor(UIColor(white: 0.4, alpha: 1), for: .normal)
         closeButton.titleLabel?.font = .systemFont(ofSize: 24)
         closeButton.addTarget(self, action: #selector(hide), for: .touchUpInside)
+        closeButton.accessibilityLabel = LocaleMessages.get(locale, key: "popup_close")
         headerView.addSubview(closeButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -184,6 +187,8 @@ public class PopupCaptchaView: UIView {
         isHidden = false
         buildCaptchaView()
         titleLabel.text = title.isEmpty ? LocaleMessages.get(locale, key: "popup_title") : title
+        containerView.accessibilityLabel = titleLabel.text
+        UIAccessibility.post(notification: .screenChanged, argument: containerView)
 
         UIView.animate(withDuration: 0.25) {
             self.overlayView.alpha = 1

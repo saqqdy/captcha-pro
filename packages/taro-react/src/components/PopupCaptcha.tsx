@@ -1,4 +1,5 @@
 import type { ClickCaptchaProps, PopupCaptchaProps, PopupCaptchaRef, SliderCaptchaProps } from '../types'
+import { DEFAULT_LOCALE, getLocaleMessage } from '@captcha-pro/mp-shared'
 import { Text, View } from '@tarojs/components'
 import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react'
 import { Show } from 'solid-js'
@@ -10,6 +11,8 @@ const EMPTY_OPTS: Record<string, unknown> = {}
 
 const PopupCaptcha = forwardRef<PopupCaptchaRef, PopupCaptchaProps>((props, ref) => {
   const { type = 'slider', title = '安全验证', maskClosable: _maskClosable = true, showClose = true, autoClose = true, closeDelay = 500, sliderOptions: _sliderOptions = EMPTY_OPTS, clickOptions: _clickOptions = EMPTY_OPTS, backend: _backend, onSuccess, onFail, onRefresh: _onRefresh, onOpen, onClose } = props
+
+  const t = (key: string): string => getLocaleMessage(DEFAULT_LOCALE, key)
 
   const [visible, setVisible] = useState(false)
 
@@ -65,9 +68,11 @@ const PopupCaptcha = forwardRef<PopupCaptchaRef, PopupCaptchaProps>((props, ref)
   const clickProps: ClickCaptchaProps = { ...props.clickOptions, backend: props.backend, onSuccess: handleSuccess, onFail: handleFail, onRefresh: props.onRefresh }
 
   return (
-    <View class="popup-captcha" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 'z-index': 1000, display: 'flex', 'align-items': 'center', 'justify-content': 'center' }}>
+    <View class="popup-captcha" role="dialog" aria-modal="true" aria-label={title} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 'z-index': 1000, display: 'flex', 'align-items': 'center', 'justify-content': 'center' }}>
       <View
         class="popup-mask"
+        role="button"
+        aria-label={t('popup_close')}
         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)' }}
         onClick={handleMaskClick}
       />
@@ -83,6 +88,8 @@ const PopupCaptcha = forwardRef<PopupCaptchaRef, PopupCaptchaProps>((props, ref)
           <Show when={showClose}>
             <View
               class="popup-close"
+              role="button"
+              aria-label={t('popup_close')}
               style={{ width: '48rpx', height: '48rpx', display: 'flex', 'align-items': 'center', 'justify-content': 'center' }}
               onClick={() => { setVisible(false); onClose?.() }}
             >

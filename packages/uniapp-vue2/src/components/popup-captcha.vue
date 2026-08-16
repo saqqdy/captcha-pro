@@ -1,4 +1,5 @@
 <script>
+import { getLocaleMessage, DEFAULT_LOCALE } from '@captcha-pro/mp-shared'
 import SliderCaptcha from './slider-captcha.vue'
 import ClickCaptcha from './click-captcha.vue'
 
@@ -24,6 +25,9 @@ export default {
 	},
 
 	methods: {
+		t(key) {
+			return getLocaleMessage(DEFAULT_LOCALE, key)
+		},
 		show() {
 			this.visible = true
 			this.$emit('open')
@@ -53,12 +57,12 @@ export default {
 </script>
 
 <template>
-	<view v-if="visible" class="popup-captcha">
-		<view class="popup-mask" @tap="onMaskTap" />
+	<view v-if="visible" class="popup-captcha" role="dialog" aria-modal="true" :aria-label="title">
+		<view class="popup-mask" role="button" :aria-label="t('popup_close')" @tap="onMaskTap" />
 		<view class="popup-content">
 			<view class="popup-header">
 				<text class="popup-title">{{ title }}</text>
-				<view v-if="showClose" class="popup-close" @tap="hide"><text>×</text></view>
+				<view v-if="showClose" class="popup-close" role="button" :aria-label="t('popup_close')" @tap="hide"><text>×</text></view>
 			</view>
 			<view class="popup-body">
 				<SliderCaptcha

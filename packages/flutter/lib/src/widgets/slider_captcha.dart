@@ -205,9 +205,12 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
               )
             else
               Center(
-                child: Text(
-                  _errorMsg.isNotEmpty ? _errorMsg : t('loading'),
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                child: Semantics(
+                  label: t('loading'),
+                  child: Text(
+                    _errorMsg.isNotEmpty ? _errorMsg : t('loading'),
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
                 ),
               ),
             if (_sliderImage.isNotEmpty && !_loading)
@@ -235,22 +238,33 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
   }
 
   Widget _buildRefreshButton() {
-    return GestureDetector(
-      onTap: _refresh,
-      child: Container(
-        width: 28,
-        height: 28,
-        decoration: BoxDecoration(
-          color: const Color(0xE6FFFFFF),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Center(
-          child: Text(
-            '⟳',
-            style: TextStyle(
-              color: Color(0xFF666666),
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
+    return Semantics(
+      button: true,
+      label: t('refresh'),
+      child: SizedBox(
+        width: 44,
+        height: 44,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _refresh,
+          child: Center(
+            child: Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: const Color(0xE6FFFFFF),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Center(
+                child: Text(
+                  '⟳',
+                  style: TextStyle(
+                    color: Color(0xFF666666),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -261,8 +275,10 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
   Widget _buildStatusOverlay() {
     final success = _status == 'success';
     return Positioned.fill(
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.0, end: 1.0),
+      child: Semantics(
+        liveRegion: true,
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
         duration: const Duration(milliseconds: 200),
         builder: (context, v, child) {
           return Opacity(
@@ -306,6 +322,7 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
           ),
         ),
       ),
+      ),
     );
   }
 
@@ -327,27 +344,32 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
             Center(
               child: Text(
                 t('slider_hint'),
-                style: const TextStyle(color: Color(0xFF999999), fontSize: 14),
+                style: const TextStyle(color: Color(0xFF666666), fontSize: 14),
               ),
             ),
             Positioned(
               left: _sliderX,
               top: 0,
               bottom: 0,
-              child: Container(
-                width: widget.sliderWidth,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: const Color(0xFFE1E4E8)),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Text(
-                    '→',
-                    style: const TextStyle(
-                      color: Color(0xFF1991FA),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+              child: Semantics(
+                button: true,
+                label: t('slider_hint'),
+                value: '${_sliderX.toInt()}',
+                child: Container(
+                  width: widget.sliderWidth,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: const Color(0xFFE1E4E8)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '→',
+                      style: const TextStyle(
+                        color: Color(0xFF1991FA),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),

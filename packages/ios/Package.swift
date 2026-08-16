@@ -6,8 +6,7 @@ import PackageDescription
 let package = Package(
     name: "CaptchaPro",
     platforms: [
-        .iOS(.v13),
-        .macOS(.v10_14)
+        .iOS(.v13)
     ],
     products: [
         .library(

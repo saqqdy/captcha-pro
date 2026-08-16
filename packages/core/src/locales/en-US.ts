@@ -2,6 +2,7 @@
  * English (en-US) locale messages
  */
 export default {
+	refresh: 'Refresh',
 	slider: {
 		success: 'Verification passed',
 		fail: 'Verification failed',

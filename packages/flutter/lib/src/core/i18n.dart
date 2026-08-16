@@ -1,6 +1,6 @@
 /// Captcha Pro i18n.
 ///
-/// 14-key locale map copied verbatim from @captcha-pro/mp-shared `i18n.ts`.
+/// 15-key locale map copied verbatim from @captcha-pro/mp-shared `i18n.ts`.
 /// Keys are identical across platforms (android/ios/flutter/mp-shared).
 
 /// Default locale code.
@@ -19,6 +19,7 @@ const Map<String, Map<String, String>> localeMessages = {
     'click_fail': '验证失败',
     'popup_title': '请完成安全验证',
     'popup_close': '关闭',
+    'refresh': '刷新',
     'error_network': '网络错误',
     'error_expired': '验证码已过期',
     'error_invalid': '验证失败',
@@ -35,6 +36,7 @@ const Map<String, Map<String, String>> localeMessages = {
     'click_fail': 'Verification failed',
     'popup_title': 'Please complete security verification',
     'popup_close': 'Close',
+    'refresh': 'Refresh',
     'error_network': 'Network error',
     'error_expired': 'Captcha expired',
     'error_invalid': 'Verification failed',

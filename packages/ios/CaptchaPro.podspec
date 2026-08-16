@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'CaptchaPro'
-  s.version          = '2.1.0'
+  s.version          = '2.2.0'
   s.summary          = 'A powerful captcha library for iOS'
   s.description      = <<-DESC
 CaptchaPro provides slider and click captcha components for iOS applications.

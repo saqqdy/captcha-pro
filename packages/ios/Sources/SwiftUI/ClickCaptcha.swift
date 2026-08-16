@@ -56,6 +56,8 @@ public struct ClickCaptcha: View {
                                     viewModel.handleClick(at: value.location)
                                 }
                         )
+                        .accessibilityLabel(LocaleMessages.get(viewModel.locale, key: "click_prompt"))
+                        .accessibilityAddTraits(.isButton)
                 } else if let msg = viewModel.errorMsg {
                     Text(msg)
                         .foregroundColor(.white)
@@ -80,6 +82,7 @@ public struct ClickCaptcha: View {
                                 .fontWeight(.bold)
                         )
                         .offset(x: point.x - 12, y: point.y - 12)
+                        .accessibilityLabel("\(index + 1)")
                 }
 
                 // Refresh button

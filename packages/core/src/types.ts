@@ -200,6 +200,7 @@ export type Locale = 'zh-CN' | 'en-US'
  * Locale messages interface
  */
 export interface LocaleMessages {
+	refresh: string
 	slider: {
 		success: string
 		fail: string

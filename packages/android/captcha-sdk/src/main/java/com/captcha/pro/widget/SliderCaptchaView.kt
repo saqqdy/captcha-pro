@@ -6,12 +6,16 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.AccessibilityDelegateCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import com.captcha.pro.core.*
 import kotlinx.coroutines.*
 
@@ -121,6 +125,8 @@ class SliderCaptchaView @JvmOverloads constructor(
                 setColor(Color.argb(230, 255, 255, 255))
                 cornerRadius = 8f * density
             }
+            // a11y: label refresh button for TalkBack
+            contentDescription = LocaleMessages.get(locale, "refresh")
             setOnClickListener { refresh() }
         }
         addView(refreshBtn, LayoutParams(dp(28), dp(28)).apply {
@@ -129,15 +135,48 @@ class SliderCaptchaView @JvmOverloads constructor(
             marginEnd = dp(8)
         })
 
+        // a11y: expand refresh touch target to 48dp (visual 28dp unchanged, centered)
+        refreshBtn.post {
+            val parent = refreshBtn.parent as? View ?: return@post
+            val pad = (dp(48) - dp(28)) / 2
+            val rect = Rect()
+            refreshBtn.getHitRect(rect)
+            rect.inset(-pad, -pad)
+            parent.touchDelegate = TouchDelegate(rect, refreshBtn)
+        }
+
         statusOverlay = StatusOverlayView(context)
+        // a11y: announce status changes (success/fail) via polite live region
+        ViewCompat.setAccessibilityLiveRegion(
+            statusOverlay,
+            ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE
+        )
         addView(statusOverlay, LayoutParams(captchaWidth, captchaHeight))
 
         sliderBar = SliderBarView(context).apply {
             hintText = LocaleMessages.get(locale, "slider_hint")
+            // a11y: label slider thumb and expose current value/range to TalkBack
+            contentDescription = LocaleMessages.get(locale, "slider_hint")
         }
         addView(sliderBar, LayoutParams(captchaWidth, dp(42)).apply {
             gravity = Gravity.BOTTOM
             topMargin = captchaHeight + dp(10)
+        })
+
+        // a11y: expose slider role + current value/range so TalkBack announces progress
+        ViewCompat.setAccessibilityDelegate(sliderBar, object : AccessibilityDelegateCompat() {
+            override fun onInitializeAccessibilityNodeInfo(
+                host: View,
+                info: AccessibilityNodeInfoCompat
+            ) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+                info.className = "android.widget.SeekBar"
+                info.contentDescription = LocaleMessages.get(locale, "slider_hint")
+                val max = (captchaWidth - sliderWidth).toFloat()
+                info.rangeInfo = AccessibilityNodeInfoCompat.RangeInfoCompat(
+                    AccessibilityNodeInfoCompat.RangeInfoCompat.RANGE_TYPE_FLOAT, 0f, max, currentX
+                )
+            }
         })
 
         sliderBar.onDragListener = { delta ->
@@ -327,7 +366,7 @@ class SliderBarView @JvmOverloads constructor(
     }
 
     private val hintPaint = Paint().apply {
-        color = Color.parseColor("#999999")
+        color = Color.parseColor("#666666")
         textSize = dp(12f)
         textAlign = Paint.Align.CENTER
         isAntiAlias = true
@@ -475,6 +514,8 @@ class StatusOverlayView @JvmOverloads constructor(
         alpha = 0f
         scaleX = 0.9f
         scaleY = 0.9f
+        // a11y: announce success/fail message to TalkBack (native View API, API 16+)
+        announceForAccessibility(message)
         animate()
             .alpha(1f).scaleX(1f).scaleY(1f)
             .setDuration(200)

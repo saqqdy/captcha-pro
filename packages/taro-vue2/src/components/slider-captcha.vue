@@ -4,6 +4,8 @@ import {
 	loadCaptcha,
 	verifySlider,
 	resetCaptcha,
+	getLocaleMessage,
+	DEFAULT_LOCALE,
 } from '@captcha-pro/mp-shared'
 import { fetchCaptcha, verifyCaptcha } from '../request'
 import {
@@ -64,6 +66,9 @@ export default {
 	},
 
 	methods: {
+		t(key) {
+			return getLocaleMessage(DEFAULT_LOCALE, key)
+		},
 		async load() {
 			const state = this._gs()
 			await loadCaptcha(
@@ -158,6 +163,8 @@ export default {
 		<View
 			class="captcha-area"
 			:style="{ width: `${widthPx}px`, height: `${heightPx}px`, borderRadius: '16rpx' }"
+			role="region"
+			:aria-label="t('slider_hint')"
 		>
 			<Image
 				v-if="bgImage"
@@ -183,10 +190,10 @@ export default {
 					left: `${sliderX}px`,
 				}"
 			/>
-			<View v-if="showRefresh && !loading" class="refresh-btn" @tap="handleRefresh"
+			<View v-if="showRefresh && !loading" class="refresh-btn" role="button" :aria-label="t('refresh')" @tap="handleRefresh"
 				><Text class="refresh-icon">⟳</Text></View
 			>
-			<View v-if="status" class="status-overlay" :class="status">
+			<View v-if="status" class="status-overlay" :class="status" aria-live="polite" aria-atomic="true">
 				<View class="status-icon"
 					><Text>{{ status === 'success' ? '✓' : '✕' }}</Text></View
 				>
@@ -205,6 +212,11 @@ export default {
 					height: `${sliderBarHeight}px`,
 					left: `${sliderX}px`,
 				}"
+				role="slider"
+				:aria-label="t('slider_hint')"
+				:aria-valuemin="0"
+				:aria-valuemax="maxX"
+				:aria-valuenow="sliderX"
 				@touchstart="handleTouchStart"
 				@touchmove.stop.prevent="handleTouchMove"
 				@touchend="handleTouchEnd"

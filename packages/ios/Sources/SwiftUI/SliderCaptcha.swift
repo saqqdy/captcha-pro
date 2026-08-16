@@ -80,7 +80,10 @@ public struct SliderCaptcha: View {
                             .background(Color.white.opacity(0.9))
                             .cornerRadius(8)
                     }
-                    .padding(8)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+                    .accessibilityLabel(LocaleMessages.get(viewModel.locale, key: "refresh"))
+                    .accessibilityAddTraits(.isButton)
                 }
 
                 // Status overlay (centered)
@@ -113,6 +116,13 @@ public struct SliderCaptcha: View {
             .cornerRadius(16)
             .shadow(color: Color.black.opacity(0.15), radius: 16, x: 0, y: 4)
             .animation(.easeInOut(duration: 0.2), value: viewModel.status)
+            .onChange(of: viewModel.status) { newValue in
+                guard let status = newValue else { return }
+                let message = status == .success
+                    ? LocaleMessages.get(viewModel.locale, key: "slider_success")
+                    : LocaleMessages.get(viewModel.locale, key: "slider_fail")
+                UIAccessibility.post(notification: .announcement, argument: message)
+            }
 
             // Slider bar
             ZStack(alignment: .leading) {
@@ -120,7 +130,7 @@ public struct SliderCaptcha: View {
                     .cornerRadius(8)
 
                 Text(LocaleMessages.get(viewModel.locale, key: "slider_hint"))
-                    .foregroundColor(Color(white: 0.6))
+                    .foregroundColor(Color(white: 0.4))
                     .font(.system(size: 14))
                     .frame(maxWidth: .infinity)
 
@@ -147,6 +157,19 @@ public struct SliderCaptcha: View {
                                 viewModel.verify()
                             }
                     )
+                    .accessibilityLabel(LocaleMessages.get(viewModel.locale, key: "slider_hint"))
+                    .accessibilityValue("\(Int(viewModel.currentX))")
+                    .accessibilityAdjustableAction { direction in
+                        let maxX = CGFloat(viewModel.width - viewModel.sliderWidth)
+                        switch direction {
+                        case .increment:
+                            viewModel.currentX = min(viewModel.currentX + 10, maxX)
+                        case .decrement:
+                            viewModel.currentX = max(viewModel.currentX - 10, 0)
+                        @unknown default:
+                            break
+                        }
+                    }
             }
             .frame(width: CGFloat(viewModel.width), height: 40)
         }

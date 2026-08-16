@@ -28,6 +28,12 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.captcha.pro.core.BackendVerifyOptions
 import com.captcha.pro.core.CaptchaGenerator
@@ -176,6 +182,10 @@ fun ClickCaptcha(
                 Canvas(
                     modifier = Modifier
                         .matchParentSize()
+                        .semantics {
+                            role = Role.Button
+                            contentDescription = LocaleMessages.get(locale, "click_prompt")
+                        }
                         .pointerInput(Unit) {
                             detectTapGestures { offset ->
                                 handleClick(offset.x, offset.y)
@@ -203,6 +213,7 @@ fun ClickCaptcha(
                     modifier = Modifier
                         .offset(x = (point.x - 12).dp, y = (point.y - 12).dp)
                         .size(24.dp)
+                        .semantics { contentDescription = "${point.index + 1}" }
                         .background(Color(0xFF1991FA), CircleShape)
                         .border(3.dp, Color.White, CircleShape),
                     contentAlignment = Alignment.Center
@@ -215,19 +226,28 @@ fun ClickCaptcha(
                 }
             }
 
-            // Refresh button
+            // Refresh button — 44dp hit area centered on 28dp visual (a11y: role=Button + label)
             if (showRefresh && !loading) {
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .size(28.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.White.copy(alpha = 0.9f))
+                        .size(44.dp)
+                        .semantics {
+                            role = Role.Button
+                            contentDescription = LocaleMessages.get(locale, "refresh")
+                        }
                         .clickable { refresh() },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("⟳", color = Color(0xFF666666))
+                    Box(
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.White.copy(alpha = 0.9f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("⟳", color = Color(0xFF666666))
+                    }
                 }
             }
 
@@ -242,6 +262,7 @@ fun ClickCaptcha(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .semantics { liveRegion = LiveRegionMode.Polite }
                         .background(Color.White.copy(alpha = 0.75f)),
                     contentAlignment = Alignment.Center
                 ) {

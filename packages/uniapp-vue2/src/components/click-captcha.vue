@@ -1,5 +1,5 @@
 <script>
-import { createInitialCaptchaState, verifyClick, resetCaptcha } from '@captcha-pro/mp-shared'
+import { createInitialCaptchaState, verifyClick, resetCaptcha, getLocaleMessage, DEFAULT_LOCALE } from '@captcha-pro/mp-shared'
 import { fetchCaptcha, verifyCaptcha } from '../request'
 import { DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_CLICK_COUNT } from '@captcha-pro/mp-shared'
 
@@ -39,6 +39,9 @@ export default {
 	},
 
 	methods: {
+		t(key) {
+			return getLocaleMessage(DEFAULT_LOCALE, key)
+		},
 		async load() {
 			const state = this._gs()
 			this.clickMarkers = []
@@ -155,6 +158,8 @@ export default {
 		<view
 			class="captcha-area"
 			:style="{ width: `${widthPx}px`, height: `${heightPx}px`, borderRadius: '16rpx' }"
+			role="button"
+			:aria-label="t('click_prompt')"
 			@tap="onAreaTap"
 		>
 			<image
@@ -174,10 +179,11 @@ export default {
 				:key="i"
 				class="click-marker"
 				:style="{ left: `${m.x}px`, top: `${m.y}px` }"
+				:aria-label="String(m.index)"
 			><text class="marker-text">{{ m.index }}</text></view>
-			<view v-if="showRefresh && !loading" class="refresh-btn" @tap.stop="handleRefresh"
+			<view v-if="showRefresh && !loading" class="refresh-btn" role="button" :aria-label="t('refresh')" @tap.stop="handleRefresh"
 				><text class="refresh-icon">⟳</text></view>
-			<view v-if="status" class="status-overlay" :class="status">
+			<view v-if="status" class="status-overlay" :class="status" aria-live="polite" aria-atomic="true">
 				<view class="status-icon"
 					><text>{{ status === 'success' ? '✓' : '✕' }}</text></view>
 				<text class="status-text">{{
@@ -348,5 +354,20 @@ export default {
 .char-img {
 	width: 100%;
 	height: 100%;
+}
+
+.refresh-btn:focus-visible,
+.slider-thumb:focus-visible,
+.popup-close:focus-visible,
+.click-marker:focus-visible {
+	outline: 2px solid #1991fa;
+	outline-offset: 2px;
+}
+
+.refresh-btn::before {
+	content: '';
+	position: absolute;
+	inset: -16rpx;
+	background: transparent;
 }
 </style>

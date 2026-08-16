@@ -1,4 +1,5 @@
 import type { ClickCaptchaProps, ClickCaptchaRef, Point } from '../types'
+import { DEFAULT_LOCALE, getLocaleMessage } from '@captcha-pro/mp-shared'
 import { Image, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
@@ -9,6 +10,8 @@ import '../styles/captcha.scss'
 const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(({
   width = 650, height = 380, showRefresh = true, backend, onSuccess, onFail, onRefresh, onError,
 }, ref) => {
+  const t = (key: string): string => getLocaleMessage(DEFAULT_LOCALE, key)
+
   const [captchaId, setCaptchaId] = useState('')
   const [bgImage, setBgImage] = useState('')
   const [clickTexts, setClickTexts] = useState<string[]>([])
@@ -100,22 +103,22 @@ const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(({
 
   return (
     <View class="captcha-container">
-      <View class="captcha-area" style={{ width: `${widthPx}px`, height: `${heightPx}px` }} onClick={handleClick}>
+      <View class="captcha-area" role="button" aria-label={t('click_prompt')} style={{ width: `${widthPx}px`, height: `${heightPx}px` }} onClick={handleClick}>
         <Show when={bgImage} fallback={<View class="captcha-loading"><Text>{errorMsg || '加载中...'}</Text></View>}><Image src={bgImage} mode="aspectFill" class="bg-image" style={{ width: `${widthPx}px`, height: `${heightPx}px` }} /></Show>
         <For each={clickMarkers}>
           {m => (
-            <View key={m.index} class="click-marker" style={{ left: `${m.x}px`, top: `${m.y}px` }}>
+            <View key={m.index} class="click-marker" aria-label={String(m.index)} style={{ left: `${m.x}px`, top: `${m.y}px` }}>
               <Text class="marker-text">{m.index}</Text>
             </View>
           )}
         </For>
         <Show when={showRefresh && !loading}>
-          <View class="refresh-btn" onClick={e => { e.stopPropagation(); refresh() }}>
+          <View class="refresh-btn" role="button" aria-label={t('refresh')} onClick={e => { e.stopPropagation(); refresh() }}>
             <Text class="refresh-icon">⟳</Text>
           </View>
         </Show>
         <Show when={status}>
-          <View class={`status-overlay ${status}`}>
+          <View class={`status-overlay ${status}`} aria-live="polite" aria-atomic="true">
             <View class="status-icon"><Text>{status === 'success' ? '✓' : '✕'}</Text></View>
             <Text class="status-text">{status === 'success' ? '验证成功' : '验证失败'}</Text>
           </View>
