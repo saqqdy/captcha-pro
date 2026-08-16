@@ -4,29 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ## [2.1.0] - 2026-08-10
 
-### Native 三端功能契约对齐
+### Native Three-Platform Feature Contract Alignment
 
-- **flutter**: BackendConfig + fetchCaptcha/verifyCaptcha（后端模式，无客户端生成）、14 键 i18n、PopupCaptcha 全 props（autoClose 500ms / 失败刷新 800ms）、onError 回调
-- **android**: LocaleMessages 补 loading/slider_hint、移除 precision 死参数、verify 请求体移除 timestamp、timeout 默认 10s、CaptchaDialog title prop
-- **ios**: 同 android 对齐（UIKit + SwiftUI 双范式）
+- **flutter**: BackendConfig + fetchCaptcha/verifyCaptcha (backend mode, no client-side generation), 14-key i18n, PopupCaptcha full props (autoClose 500ms / refresh on failure 800ms), onError callback
+- **android**: Added loading/slider_hint to LocaleMessages, removed dead precision parameter, removed timestamp from verify request body, timeout default 10s, CaptchaDialog title prop
+- **ios**: Aligned with android (UIKit + SwiftUI dual paradigms)
 
-### Native 样式复刻（Phase 2）
+### Native Style Replication (Phase 2)
 
-- 验证码区域：线性渐变 `#667EEA→#764BA2` + 阴影 + 圆角
-- 状态反馈：居中遮罩（白@75%）+ 32px 圆图标 + 文本 + 淡入 0.2s（替换底部条）
-- loading 态：渐变底 + 白字文案（替换系统 spinner）
-- 滑块条/拇指、点击标记、提示条（渐变字符格）、popup 自定义卡片
-- 强调蓝统一 `#1991FA`
+- Captcha area: linear gradient `#667EEA→#764BA2` + shadow + rounded corners
+- Status feedback: centered overlay (white@75%) + 32px circular icon + text + fade-in 0.2s (replaces bottom bar)
+- Loading state: gradient background + white text label (replaces system spinner)
+- Slider bar/thumb, click markers, hint bar (gradient character cells), popup custom card
+- Unified accent blue `#1991FA`
 
-### 全端版本统一
+### Unified Version Across All Platforms
 
-- root + 11 个 JS 包 + 3 个 native 包（android/ios/flutter）统一 2.1.0
+- root + 11 JS packages + 3 native packages (android/ios/flutter) unified to 2.1.0
 
 ### Documentation
 
-- 移除 native README 中的 AES/encryption 不实声明
-- 各可运行项目（examples / android / ios / flutter / server）README 增加面向非开发人员的「起服务 / 构建 / 验证 / 用什么软件 / 怎么打开」指南（EN+CN，含新建 examples/weixin/README_CN.md 与 packages/flutter/README_CN.md）
-- VitePress 文档站新增「跑通示例（零基础也能跟着做）」页面（EN + zh）并注册进侧栏；导航版本下拉更新至 v2.1.0
+- Removed inaccurate AES/encryption claims from native READMEs
+- Added non-developer-facing guides ("start service / build / verify / what software to use / how to open") to READMEs of all runnable projects (examples / android / ios / flutter / server) (EN+CN, including new examples/weixin/README_CN.md and packages/flutter/README_CN.md)
+- Added a "Run the Examples (beginner-friendly walkthrough)" page to the VitePress docs site (EN + zh) and registered it in the sidebar; updated the navigation version dropdown to v2.1.0
 
 ## [2.0.0] - 2026-08-09
 
@@ -94,7 +94,7 @@ All notable changes to this project will be documented in this file.
 
 ### Documentation
 
-- **VitePress docs site** (`docs/`) with English + 简体中文 content
+- **VitePress docs site** (`docs/`) with English + Simplified Chinese content
   - Guide (getting-started, basic/advanced usage, i18n)
   - API reference (methods, options)
   - Component docs (slider, click, invisible, popup)
