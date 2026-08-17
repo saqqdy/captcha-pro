@@ -19,7 +19,7 @@ export default defineConfig({
 			{ text: 'API', link: '/api/' },
 			{ text: 'Backend', link: '/backend/' },
 			{
-				text: 'v2.1.0',
+				text: 'v2.2.0',
 				items: [
 					{ text: 'Changelog', link: 'https://github.com/saqqdy/captcha-pro/blob/master/CHANGELOG.md' },
 					{ text: 'GitHub', link: 'https://github.com/saqqdy/captcha-pro' },
@@ -38,6 +38,7 @@ export default defineConfig({
 						{ text: 'Advanced Usage', link: '/guide/advanced-usage' },
 						{ text: 'Internationalization', link: '/guide/i18n' },
 						{ text: 'Migration from v1', link: '/guide/migration' },
+						{ text: 'Accessibility', link: '/accessibility' },
 					],
 				},
 			],
@@ -124,7 +125,7 @@ export default defineConfig({
 					{ text: 'API', link: '/zh/api/' },
 					{ text: '后端', link: '/zh/backend/' },
 					{
-						text: 'v2.1.0',
+						text: 'v2.2.0',
 						items: [
 							{ text: '更新日志', link: 'https://github.com/saqqdy/captcha-pro/blob/master/CHANGELOG.md' },
 							{ text: 'GitHub', link: 'https://github.com/saqqdy/captcha-pro' },
@@ -142,6 +143,7 @@ export default defineConfig({
 								{ text: '进阶用法', link: '/zh/guide/advanced-usage' },
 								{ text: '多语言', link: '/zh/guide/i18n' },
 								{ text: '从 v1 升级', link: '/zh/guide/migration' },
+								{ text: '无障碍', link: '/zh/accessibility' },
 							],
 						},
 					],
