@@ -283,8 +283,8 @@ describe('SliderCaptcha', () => {
 			showRefresh: true,
 		})
 
-		// Find and click the refresh button
-		const refreshBtn = container.querySelector('[aria-label="Refresh captcha"]') as HTMLElement
+		// Find and click the refresh button (class selector stays stable across locales)
+		const refreshBtn = container.querySelector('.captcha-refresh-btn') as HTMLElement
 		expect(refreshBtn).toBeDefined()
 		refreshBtn?.click()
 		expect(onRefresh).toHaveBeenCalled()

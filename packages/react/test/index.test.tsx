@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { act } from 'react'
+import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useClickCaptcha } from '../src/hooks/useClickCaptcha'
@@ -49,7 +50,9 @@ function renderHook<T>(useHook: () => T): { result: { current: T }; unmount: () 
 		return <div ref={ref} />
 	}
 	act(() => {
-		root.render(<Probe />)
+		flushSync(() => {
+			root.render(<Probe />)
+		})
 	})
 	roots.push({ root, container })
 	return {
