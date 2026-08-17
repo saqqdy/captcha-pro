@@ -94,7 +94,7 @@ new SliderCaptcha({
 - 📦 **Lightweight** - ~35KB minified, no dependencies
 - 🖼️ **Custom Images** - Support custom background and slider images
 - 📱 **Mobile Friendly** - Full touch events support
-- ♿ **Accessibility** - ARIA attributes, keyboard navigation support
+- ♿ **Accessibility (WCAG 2.2 AA)** - ARIA labels & roles, full keyboard operability, 44px touch targets, live-region status announcements
 - 🌐 **IE11+ Support** - Requires Promise polyfill
 
 ## Installing
@@ -116,13 +116,13 @@ $ pnpm add @captcha-pro/react
 $ pnpm add @captcha-pro/weixin
 
 # Flutter - add to pubspec.yaml
-captcha_pro: ^2.0.0
+captcha_pro: ^2.2.0
 
 # Android - add to build.gradle
-implementation 'com.captcha.pro:captcha-sdk:2.0.0'
+implementation 'com.captcha.pro:captcha-sdk:2.2.0'
 
 # iOS - CocoaPods
-pod 'CaptchaPro', '~> 2.0.0'
+pod 'CaptchaPro', '~> 2.2.0'
 ```
 
 ## Framework Usage

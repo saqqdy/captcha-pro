@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2026-08-16
+
+### Full-Platform Accessibility (a11y) Compliance — WCAG 2.2 Level AA
+
+- **Screen reader semantics**: added accessibility labels + roles to all icon buttons (refresh, close, slider thumb, click markers) across all platforms, stopping verbatim reading of `⟳ → ✓ ✕` glyphs
+- **Touch targets**: refresh button hit area enlarged to 44px / 44pt / 48dp (visual size unchanged, transparent overlay only)
+- **Keyboard operability (web)**: Tab focus order, Enter to refresh/submit, `←`/`→` to adjust the slider
+- **Status live region**: success/failure announced in real time (`aria-live` / `announceForAccessibility` / `UIAccessibility.post`)
+- **i18n**: added `refresh` key (14 → 15 keys)
+- **Contrast fix**: slider_hint text and iOS close-button × `#999`→`#666` (now meet 4.5:1)
+- **Docs**: added `docs/accessibility.md` conformance statement + keyboard shortcuts + screen reader matrix
+- **iOS package**: declared iOS-only (removed the unsupported `.macOS` platform from `Package.swift`; build with `xcodebuild -destination 'platform=iOS Simulator'`)
+
+### Documentation
+
+- `docs/accessibility.md`: WCAG 2.2 conformance, keyboard table, screen reader support
+
 ## [2.1.0] - 2026-08-10
 
 ### Native Three-Platform Feature Contract Alignment

@@ -94,7 +94,7 @@ new SliderCaptcha({
 - 📦 **轻量级** - 约 35KB 压缩后，无额外依赖
 - 🖼️ **自定义图片** - 支持自定义背景和滑块图片
 - 📱 **移动端友好** - 完整支持触摸事件
-- ♿ **无障碍支持** - ARIA属性、键盘导航支持
+- ♿ **无障碍支持（WCAG 2.2 AA）** - ARIA 标签与角色、完整键盘操作、44px 触摸目标、实时区域状态播报
 - 🌐 **IE11+ 支持** - 需要 Promise polyfill
 
 ## 安装
@@ -116,13 +116,13 @@ $ pnpm add @captcha-pro/react
 $ pnpm add @captcha-pro/weixin
 
 # Flutter - 添加到 pubspec.yaml
-captcha_pro: ^2.0.0
+captcha_pro: ^2.2.0
 
 # Android - 添加到 build.gradle
-implementation 'com.captcha.pro:captcha-sdk:2.0.0'
+implementation 'com.captcha.pro:captcha-sdk:2.2.0'
 
 # iOS - CocoaPods
-pod 'CaptchaPro', '~> 2.0.0'
+pod 'CaptchaPro', '~> 2.2.0'
 ```
 
 ## 框架使用
