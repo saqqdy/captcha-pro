@@ -14,6 +14,12 @@ import PopupDemo from './pages/PopupDemo.vue'
 import BackendDemo from './pages/BackendDemo.vue'
 import InvisibleDemo from './pages/InvisibleDemo.vue'
 import CustomImageDemo from './pages/CustomImageDemo.vue'
+import AccessibilityDemo from './pages/AccessibilityDemo.vue'
+import LocaleDemo from './pages/LocaleDemo.vue'
+import StatisticsDemo from './pages/StatisticsDemo.vue'
+import OptionsDemo from './pages/OptionsDemo.vue'
+import ErrorDemo from './pages/ErrorDemo.vue'
+import DarkModeDemo from './pages/DarkModeDemo.vue'
 
 export default {
   name: 'App',
@@ -27,12 +33,24 @@ export default {
     PopupDemo,
     BackendDemo,
     InvisibleDemo,
-    CustomImageDemo
+    CustomImageDemo,
+    AccessibilityDemo,
+    LocaleDemo,
+    StatisticsDemo,
+    OptionsDemo,
+    ErrorDemo,
+    DarkModeDemo
   },
   data() {
     return {
       currentLocale: getLocale(),
       activeTab: 'slider'
+    }
+  },
+  mounted() {
+    const saved = localStorage.getItem('cp-theme')
+    if (saved === 'dark' || (saved === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('cp-dark')
     }
   },
   methods: {
@@ -56,6 +74,12 @@ export default {
     <BackendDemo v-show="activeTab === 'backend'" :locale="currentLocale" />
     <InvisibleDemo v-show="activeTab === 'invisible'" :locale="currentLocale" />
     <CustomImageDemo v-show="activeTab === 'custom'" :locale="currentLocale" />
+    <AccessibilityDemo v-show="activeTab === 'accessibility'" :locale="currentLocale" />
+    <LocaleDemo v-show="activeTab === 'locale'" :locale="currentLocale" />
+    <StatisticsDemo v-show="activeTab === 'statistics'" :locale="currentLocale" />
+    <OptionsDemo v-show="activeTab === 'options'" :locale="currentLocale" />
+    <ErrorDemo v-show="activeTab === 'error'" :locale="currentLocale" />
+    <DarkModeDemo v-show="activeTab === 'dark'" :locale="currentLocale" />
 
     <AppFooter />
   </div>

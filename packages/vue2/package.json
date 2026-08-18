@@ -1,7 +1,7 @@
 {
   "name": "@captcha-pro/vue2",
   "description": "Vue 2 components for captcha-pro",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -34,6 +34,7 @@
     "typescript": "^5.9.3",
     "vite": "^4.5.14",
     "vite-plugin-vue2": "^2.0.3",
+    "vitest": "^3.2.4",
     "vue": "^2.7.16",
     "vue-template-compiler": "^2.7.16"
   },

@@ -1,9 +1,9 @@
 {
   "name": "example-vue2",
-  "version": "2.0.2",
+  "version": "2.3.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "NODE_OPTIONS='-r ./build/preload-vue2.cjs' vite",
     "build": "NODE_OPTIONS='-r ./build/preload-vue2.cjs' vite build",
     "preview": "vite preview"
   },

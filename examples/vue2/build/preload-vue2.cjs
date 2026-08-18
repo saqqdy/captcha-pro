@@ -2,7 +2,7 @@
 
 // Preload vue@2 into require.cache before vite starts.
 //
-// With node-linker=hoisted, vue@3 is hoisted to root node_modules/vue.
+// With shamefully-hoist=true, vue@3 is hoisted to root node_modules/vue.
 // vue-template-compiler lives at root node_modules/vue-template-compiler
 // and does require('vue') which resolves to the hoisted vue@3, triggering:
 //   "Vue packages version mismatch: vue@3.x vs vue-template-compiler@2.x"
