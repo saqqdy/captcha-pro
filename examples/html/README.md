@@ -37,6 +37,7 @@ php -S localhost:8080
 - **Backend Verification** - Server-side validation
 - **Custom Images** - Use your own images
 - **IE11 Support** - Legacy browser support with polyfill
+- **Dark Mode** - Automatic system theme detection (v2.3.0+)
 
 ## Usage
 

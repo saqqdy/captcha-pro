@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Captcha Pro v1.0 - 行为验证码演示</title>
+    <title>Captcha Pro v2.3.0 - 行为验证码演示</title>
+    <!-- Captcha Pro core styles (includes dark mode CSS variables) -->
+    <link rel="stylesheet" href="core-dist/style.css">
     <style>
         * {
             margin: 0;
@@ -19,7 +21,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -351,6 +353,126 @@
             color: #6a9955;
         }
 
+        #dark-preview-wrapper {
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch {
+            display: inline-flex;
+            gap: 10px;
+            margin-left: 10px;
+        }
+
+        .theme-switch button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Whole-page dark mode - manual toggle */
+        html.cp-dark body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        html.cp-dark .demo-section {
+            background: #1f1f1f;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        html.cp-dark .demo-section h2 {
+            color: #eeeeee;
+        }
+
+        html.cp-dark .demo-section p {
+            color: #aaaaaa;
+        }
+
+        html.cp-dark .options,
+        html.cp-dark .statistics {
+            background: #2a2a2a;
+        }
+
+        html.cp-dark .options-title,
+        html.cp-dark .statistics-title {
+            color: #eeeeee;
+        }
+
+        html.cp-dark .option-row label {
+            color: #aaaaaa;
+        }
+
+        html.cp-dark .option-row input,
+        html.cp-dark .option-row select {
+            background: #1f1f1f;
+            color: #eeeeee;
+            border-color: #3a3a3a;
+        }
+
+        html.cp-dark .feature-item {
+            background: #2a2a2a;
+            color: #dddddd;
+        }
+
+        html.cp-dark .info-box {
+            background: #1e293b;
+            border-left-color: #60a5fa;
+            color: #bfdbfe;
+        }
+
+        html.cp-dark .info-box strong {
+            color: #bfdbfe;
+        }
+
+        html.cp-dark .result.success {
+            background: #1e3a1e;
+            color: #5cb85c;
+        }
+
+        html.cp-dark .result.error {
+            background: #3a1e1e;
+            color: #ff7875;
+        }
+
+        html.cp-dark .btn-secondary {
+            background: #2a2a2a;
+            color: #eeeeee;
+        }
+
+        html.cp-dark .btn-secondary:hover {
+            background: #3a3a3a;
+        }
+
+        html.cp-dark .code-block {
+            background: #0f0f0f;
+        }
+
+        html.cp-dark .tab {
+            color: #aaaaaa;
+        }
+
+        html.cp-dark .tab:hover {
+            color: #a78bfa;
+        }
+
+        html.cp-dark .tab.active {
+            color: #a78bfa;
+            border-bottom-color: #a78bfa;
+        }
+
+        html.cp-dark .tabs {
+            border-bottom-color: #3a3a3a;
+        }
+
         @media (max-width: 600px) {
             h1 {
                 font-size: 24px;
@@ -372,13 +494,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Captcha Pro <span class="version-badge">v1.0.0</span></h1>
+        <h1>🔐 Captcha Pro <span class="version-badge">v2.3.0</span></h1>
         <p class="subtitle">轻量级行为验证码库 - 滑动拼图 · 点选文字 · 智能无感 · 弹窗模式 · 多语言</p>
 
-        <!-- Language Switcher -->
+        <!-- Language & Theme Switcher -->
         <div style="text-align: center; margin-bottom: 20px;">
             <button class="btn btn-secondary" onclick="switchLanguage('zh-CN')" id="lang-zh" style="padding: 8px 16px;">中文</button>
             <button class="btn btn-secondary" onclick="switchLanguage('en-US')" id="lang-en" style="padding: 8px 16px;">English</button>
+            <span class="theme-switch">
+                <button class="btn btn-secondary" id="theme-toggle" onclick="toggleTheme()" style="padding: 8px 16px;">🌙 暗色模式</button>
+            </span>
         </div>
 
         <!-- Features Overview -->
@@ -393,7 +518,11 @@
                 <div class="feature-item" data-i18n="feature.mode">前后端验证模式</div>
                 <div class="feature-item" data-i18n="feature.security">数据加密安全</div>
                 <div class="feature-item" data-i18n="feature.stats">统计API接口</div>
-                <div class="feature-item new-badge" data-i18n="feature.i18n">多语言支持 (中/英)</div>
+                <div class="feature-item" data-i18n="feature.i18n">多语言支持 (中/英)</div>
+                <div class="feature-item new-badge" data-i18n="feature.dark">系统暗色模式 <span class="new-badge">v2.3.0</span></div>
+                <div class="feature-item new-badge" data-i18n="feature.focustrap">弹窗焦点陷阱 <span class="new-badge">v2.3.0</span></div>
+                <div class="feature-item new-badge" data-i18n="feature.a11y">无障碍支持 <span class="new-badge">v2.2.0</span></div>
+                <div class="feature-item new-badge" data-i18n="feature.native">Native 三端功能对齐 <span class="new-badge">v2.1.0</span></div>
             </div>
         </div>
 
@@ -621,6 +750,35 @@
             <div id="backend-popup-result" class="result"></div>
         </div>
 
+        <!-- Dark Mode Demo (v2.3.0) -->
+        <div class="demo-section">
+            <h2><span data-i18n="darkMode.title">暗色模式</span> <span class="new-badge">v2.3.0</span></h2>
+
+            <div class="info-box">
+                <p data-i18n="darkMode.info">
+                    验证码组件会自动跟随系统暗色主题（prefers-color-scheme: dark），也可以通过页面顶部开关手动切换。切换后整个页面会进入暗色模式。
+                </p>
+            </div>
+
+            <div id="dark-preview-wrapper">
+                <div class="captcha-container">
+                    <div id="dark-slider-captcha"></div>
+                </div>
+                <div id="dark-slider-result" class="result"></div>
+                <div class="captcha-container">
+                    <div id="dark-click-captcha"></div>
+                </div>
+                <div id="dark-click-result" class="result"></div>
+            </div>
+
+            <div class="info-box" style="margin-top: 20px; background: #f3e5f5; border-left-color: #9c27b0; color: #6a1b9a;">
+                <p>
+                    <strong data-i18n="darkMode.preserved.title">已保留:</strong>
+                    <span data-i18n="darkMode.preserved.text">验证码区域渐变 #667eea → #764ba2、点击标记 #1991fa、滑块箭头 #1991fa 在 light/dark 下保持一致，作为品牌识别。</span>
+                </p>
+            </div>
+        </div>
+
         <!-- Factory Functions Demo -->
         <div class="demo-section">
             <h2>工厂函数</h2>
@@ -658,9 +816,8 @@
         </div>
     </div>
 
-    <!-- Load CaptchaPro from local dist (relative path) -->
-    <script src="https://unpkg.com/captcha-pro/dist/index.global.min.js"></script>
-    <!-- <script src="../../dist/index.global.js"></script> -->
+    <!-- Load CaptchaPro from local core build (v2.3.0 includes dark mode CSS variables) -->
+    <script src="core-dist/index.global.js"></script>
     <script>
         // Captcha Instances
         let sliderCaptcha = null
@@ -670,6 +827,8 @@
         let popupCaptcha = null
         let customCaptcha = null
         let backendPopupCaptcha = null
+        let darkSliderCaptcha = null
+        let darkClickCaptcha = null
 
         // Sample images for custom captcha
         const sampleImages = [
@@ -1012,6 +1171,83 @@
             }
         }
 
+        // Initialize Dark Mode Captchas
+        function initDarkModeCaptchas() {
+            const sliderContainer = document.getElementById('dark-slider-captcha')
+            const clickContainer = document.getElementById('dark-click-captcha')
+            if (!sliderContainer || !clickContainer) return
+
+            sliderContainer.innerHTML = ''
+            clickContainer.innerHTML = ''
+
+            darkSliderCaptcha = new CaptchaPro.SliderCaptcha({
+                el: sliderContainer,
+                width: 300,
+                height: 170,
+                precision: 5,
+                onSuccess: () => {
+                    showResult('dark-slider-result', '✅ 验证成功！', true)
+                },
+                onFail: () => {
+                    showResult('dark-slider-result', '❌ 验证失败，请重试', false)
+                },
+                onRefresh: () => {
+                    hideResult('dark-slider-result')
+                }
+            })
+
+            darkClickCaptcha = new CaptchaPro.ClickCaptcha({
+                el: clickContainer,
+                width: 300,
+                height: 170,
+                onSuccess: () => {
+                    showResult('dark-click-result', '✅ 验证成功！', true)
+                },
+                onFail: () => {
+                    showResult('dark-click-result', '❌ 验证失败，请重试', false)
+                },
+                onRefresh: () => {
+                    hideResult('dark-click-result')
+                }
+            })
+        }
+
+        // Apply theme on load
+        function applyTheme() {
+            const saved = localStorage.getItem('cp-theme')
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+            const html = document.documentElement
+            if (saved === 'dark' || (saved === null && prefersDark)) {
+                html.classList.add('cp-dark')
+                html.classList.remove('cp-light')
+            } else if (saved === 'light') {
+                html.classList.add('cp-light')
+                html.classList.remove('cp-dark')
+            } else {
+                html.classList.remove('cp-dark', 'cp-light')
+            }
+            updateThemeButton()
+        }
+
+        // Toggle whole-page dark mode
+        function toggleTheme() {
+            const html = document.documentElement
+            const isDark = !html.classList.contains('cp-dark')
+            html.classList.toggle('cp-dark', isDark)
+            html.classList.toggle('cp-light', !isDark)
+            localStorage.setItem('cp-theme', isDark ? 'dark' : 'light')
+            updateThemeButton()
+        }
+
+        function updateThemeButton() {
+            const btn = document.getElementById('theme-toggle')
+            if (!btn) return
+            const isDark = document.documentElement.classList.contains('cp-dark')
+            btn.textContent = isDark
+                ? (currentLanguage === 'zh-CN' ? '☀️ 浅色模式' : '☀️ Light')
+                : (currentLanguage === 'zh-CN' ? '🌙 暗色模式' : '🌙 Dark')
+        }
+
         // Demo Factory Functions
         function demoFactoryFunctions() {
             // Using factory functions
@@ -1130,6 +1366,10 @@
                     security: '数据加密安全',
                     stats: '统计API接口',
                     i18n: '多语言支持 (中/英)',
+                    dark: '系统暗色模式',
+                    focustrap: '弹窗焦点陷阱',
+                    a11y: '无障碍支持',
+                    native: 'Native 三端功能对齐',
                 },
                 sliderTitle: '滑动拼图验证码',
                 clickTitle: '点选文字验证码',
@@ -1138,6 +1378,15 @@
                 customTitle: '自定义图片验证码',
                 backendTitle: '后端验证演示',
                 backendPopupTitle: '后端验证弹窗演示',
+                darkMode: {
+                    title: '暗色模式',
+                    info: '验证码组件会自动跟随系统暗色主题（prefers-color-scheme: dark），也可以通过页面顶部开关手动切换。切换后整个页面会进入暗色模式。',
+                    toggle: '切换为暗色预览',
+                    preserved: {
+                        title: '已保留:',
+                        text: '验证码区域渐变 #667eea → #764ba2、点击标记 #1991fa、滑块箭头 #1991fa 在 light/dark 下保持一致，作为品牌识别。'
+                    }
+                },
                 factoryTitle: '工厂函数',
             },
             'en-US': {
@@ -1154,6 +1403,10 @@
                     security: 'Data encryption security',
                     stats: 'Statistics API',
                     i18n: 'Multi-language (zh/en)',
+                    dark: 'System dark mode',
+                    focustrap: 'Popup focus trap',
+                    a11y: 'Accessibility support',
+                    native: 'Native alignment',
                 },
                 sliderTitle: 'Slider Captcha',
                 clickTitle: 'Click Captcha',
@@ -1162,6 +1415,15 @@
                 customTitle: 'Custom Image Captcha',
                 backendTitle: 'Backend Verification Demo',
                 backendPopupTitle: 'Backend Popup Demo',
+                darkMode: {
+                    title: 'Dark Mode',
+                    info: 'The captcha automatically follows the system dark theme (prefers-color-scheme: dark), and you can also toggle it manually via the switch at the top of the page. The whole page will enter dark mode.',
+                    toggle: 'Switch to Dark Preview',
+                    preserved: {
+                        title: 'Preserved:',
+                        text: 'The captcha gradient #667eea → #764ba2, click marker #1991fa and slider arrow #1991fa remain consistent in light/dark as brand identity.'
+                    }
+                },
                 factoryTitle: 'Factory Functions',
             },
         }
@@ -1182,7 +1444,18 @@
                 const key = el.getAttribute('data-i18n')
                 if (key.startsWith('feature.')) {
                     const featureKey = key.replace('feature.', '')
-                    el.textContent = messages.feature[featureKey] || el.textContent
+                    const text = messages.feature[featureKey]
+                    if (text) {
+                        const badge = el.querySelector('.new-badge')
+                        el.childNodes[0].textContent = text + (badge ? ' ' : '')
+                    }
+                } else if (key.startsWith('darkMode.')) {
+                    const path = key.replace('darkMode.', '').split('.')
+                    let value = messages.darkMode
+                    path.forEach(p => {
+                        value = value ? value[p] : undefined
+                    })
+                    if (value) el.textContent = value
                 }
             })
 
@@ -1211,6 +1484,12 @@
                 backendPopupCaptcha.destroy()
                 initBackendPopupCaptcha()
             }
+            if (darkSliderCaptcha) {
+                darkSliderCaptcha.destroy()
+                darkClickCaptcha.destroy()
+                initDarkModeCaptchas()
+            }
+            updateThemeButton()
         }
 
         // Setup event listeners
@@ -1238,6 +1517,12 @@
 
         // Initialize everything
         function init() {
+            applyTheme()
+            // Allow forcing dark mode via URL for testing/headless verification
+            const urlParams = new URLSearchParams(window.location.search)
+            if (urlParams.get('theme') === 'dark' && !document.documentElement.classList.contains('cp-dark')) {
+                toggleTheme()
+            }
             setupEventListeners()
             initSliderCaptcha()
             initClickCaptcha()
@@ -1245,6 +1530,7 @@
             initPopupCaptcha()
             initCustomCaptcha()
             initBackendPopupCaptcha()
+            initDarkModeCaptchas()
         }
 
         // Check if DOM is ready
