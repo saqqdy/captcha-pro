@@ -25,6 +25,7 @@ The app runs at `http://localhost:5173`
 - **Backend Verification** - Server-side validation demo
 - **Custom Images** - Use your own background/slider images
 - **Composables** - useSliderCaptcha, useClickCaptcha hooks
+- **Dark Mode** - Automatic system theme detection (v2.3.0+)
 
 ## Project Structure
 

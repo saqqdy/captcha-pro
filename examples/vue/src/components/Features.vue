@@ -16,6 +16,22 @@ const { currentLocale, t } = useLocale()
       <div class="feature-item">✓ {{ currentLocale === 'zh-CN' ? '后端验证' : 'Backend verify' }}</div>
       <div class="feature-item">✓ {{ currentLocale === 'zh-CN' ? '智能无感验证' : 'Invisible captcha' }}</div>
       <div class="feature-item">✓ {{ currentLocale === 'zh-CN' ? '多语言支持' : 'i18n support' }}</div>
+      <div class="feature-item">
+        ✓ {{ currentLocale === 'zh-CN' ? '系统暗色模式' : 'System dark mode' }}
+        <span class="new-badge">v2.3.0</span>
+      </div>
+      <div class="feature-item">
+        ✓ {{ currentLocale === 'zh-CN' ? '弹窗焦点陷阱' : 'Popup focus trap' }}
+        <span class="new-badge">v2.3.0</span>
+      </div>
+      <div class="feature-item">
+        ✓ {{ currentLocale === 'zh-CN' ? '无障碍(a11y)' : 'Accessibility (a11y)' }}
+        <span class="new-badge">v2.2.0</span>
+      </div>
+      <div class="feature-item">
+        ✓ {{ currentLocale === 'zh-CN' ? 'Native 三端对齐' : 'Native alignment' }}
+        <span class="new-badge">v2.1.0</span>
+      </div>
     </div>
   </section>
 </template>

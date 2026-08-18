@@ -23,6 +23,7 @@ pnpm dev
 - **后端验证** - 服务端验证演示
 - **自定义图片** - 使用自定义背景/滑块图片
 - **Composables** - useSliderCaptcha、useClickCaptcha 钩子
+- **暗色模式** - 自动跟随系统主题（v2.3.0+）
 
 ## 项目结构
 
