@@ -3,11 +3,11 @@ import { resolve } from 'node:path'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig, type Plugin } from 'vite'
 
-// Plugin to copy CSS from core package
+// Plugin to copy CSS from core package after Vite writes its own style.css
 function copyCoreCss(): Plugin {
   return {
     name: 'copy-core-css',
-    buildStart() {
+    writeBundle() {
       const src = resolve(__dirname, '../../core/src/styles/index.css')
       const dest = resolve(__dirname, '../dist/style.css')
       if (existsSync(src)) {
