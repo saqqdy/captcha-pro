@@ -1,7 +1,7 @@
 {
   "name": "@captcha-pro/react",
   "description": "React components for captcha-pro",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -38,7 +38,8 @@
     "react-dom": "^19.2.7",
     "rm-all": "^1.1.1",
     "typescript": "^5.9.3",
-    "vite": "^5.4.19"
+    "vite": "^5.4.19",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "react": ">=17.0.0",
