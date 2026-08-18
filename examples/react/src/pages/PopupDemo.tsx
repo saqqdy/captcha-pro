@@ -10,14 +10,14 @@ export function PopupDemo(): ReactElement {
   const popupRef = useRef<PopupCaptchaInstance>(null)
 
   return (
-    <section class="demo-section">
+    <section className="demo-section">
       <h2>
         💬
         {t('弹窗验证码', 'Popup Captcha')}
       </h2>
 
-      <div class="options">
-        <div class="option-row">
+      <div className="options">
+        <div className="option-row">
           <label>
             {t('验证码类型', 'Type')}
             :
@@ -27,7 +27,7 @@ export function PopupDemo(): ReactElement {
             <option value="click">{t('点击验证', 'Click')}</option>
           </select>
         </div>
-        <div class="option-row">
+        <div className="option-row">
           <label>
             {t('自动关闭', 'Auto Close')}
             :
@@ -36,8 +36,8 @@ export function PopupDemo(): ReactElement {
         </div>
       </div>
 
-      <div class="btn-group">
-        <button class="btn btn-primary" onClick={() => popupRef.current?.show()}>
+      <div className="btn-group">
+        <button className="btn btn-primary" onClick={() => popupRef.current?.show()}>
           {t('打开验证弹窗', 'Open Popup')}
         </button>
       </div>

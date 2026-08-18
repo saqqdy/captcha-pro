@@ -9,20 +9,20 @@ export function ClickDemo(): ReactElement {
   const captchaRef = useRef<ClickCaptchaInstance>(null)
 
   return (
-    <section class="demo-section">
+    <section className="demo-section">
       <h2>
         🎯
         {t('点选文字验证码', 'Click Captcha')}
       </h2>
 
-      <div class="info-box">
+      <div className="info-box">
         💡
         {' '}
         {t('使用中文词汇库自动生成，包含200+常用成语和词汇。', 'Auto-generated from Chinese vocabulary (200+ words).')}
       </div>
 
-      <div class="options">
-        <div class="option-row">
+      <div className="options">
+        <div className="option-row">
           <label>
             {t('点击数量', 'Click Count')}
             :
@@ -35,7 +35,7 @@ export function ClickDemo(): ReactElement {
         </div>
       </div>
 
-      <div class="captcha-box">
+      <div className="captcha-box">
         <ClickCaptcha
           ref={captchaRef}
           width={320}
@@ -46,12 +46,12 @@ export function ClickDemo(): ReactElement {
         />
       </div>
 
-      <div class="btn-group">
-        <button class="btn btn-primary" onClick={() => captchaRef.current?.refresh()}>
+      <div className="btn-group">
+        <button className="btn btn-primary" onClick={() => captchaRef.current?.refresh()}>
           {t('重置验证码', 'Reset')}
         </button>
         <button
-          class="btn btn-secondary"
+          className="btn btn-secondary"
           onClick={() => {
             // eslint-disable-next-line no-alert
             alert(t('验证数据已输出到控制台', 'Data logged to console'))

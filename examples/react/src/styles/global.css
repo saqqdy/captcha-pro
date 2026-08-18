@@ -11,7 +11,7 @@ body {
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
 }
@@ -63,6 +63,33 @@ h1 {
 }
 
 .lang-switch button:hover {
+  opacity: 1;
+}
+
+.theme-switch {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.theme-switch button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+  opacity: 0.6;
+}
+
+.theme-switch button.active {
+  background: rgba(255, 255, 255, 0.4);
+  opacity: 1;
+}
+
+.theme-switch button:hover {
   opacity: 1;
 }
 
@@ -309,6 +336,101 @@ h1 {
 .result.error {
   background: #f8d7da;
   color: #721c24;
+}
+
+/* Whole-page dark mode */
+html.cp-dark body {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+html.cp-dark .features,
+html.cp-dark .tabs,
+html.cp-dark .demo-section {
+  background: #1f1f1f;
+  color: #eeeeee;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+html.cp-dark .features h2,
+html.cp-dark .demo-section h2 {
+  color: #eeeeee;
+}
+
+html.cp-dark .feature-item {
+  background: #2a2a2a;
+  color: #dddddd;
+}
+
+html.cp-dark .tabs button {
+  background: #1f1f1f;
+  color: #aaaaaa;
+}
+
+html.cp-dark .tabs button:hover {
+  color: #a78bfa;
+  background: #2a2a2a;
+}
+
+html.cp-dark .tabs button.active {
+  color: #a78bfa;
+  background: #1f1f1f;
+  border-bottom-color: #a78bfa;
+}
+
+html.cp-dark .options {
+  background: #2a2a2a;
+}
+
+html.cp-dark .option-row label {
+  color: #aaaaaa;
+}
+
+html.cp-dark .option-row select,
+html.cp-dark .option-row input[type="text"] {
+  background: #1f1f1f;
+  color: #eeeeee;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .info-box {
+  background: #1e293b;
+  border-left-color: #60a5fa;
+  color: #bfdbfe;
+}
+
+html.cp-dark .btn-secondary {
+  background: #2a2a2a;
+  color: #eeeeee;
+}
+
+html.cp-dark .btn-secondary:hover {
+  background: #3a3a3a;
+}
+
+html.cp-dark .stats {
+  background: #2a2a2a;
+}
+
+html.cp-dark .stat-item {
+  background: #1f1f1f;
+}
+
+html.cp-dark .stat-label {
+  color: #aaaaaa;
+}
+
+html.cp-dark .image-info {
+  color: #aaaaaa;
+}
+
+html.cp-dark .result.success {
+  background: #14532d;
+  color: #bbf7d0;
+}
+
+html.cp-dark .result.error {
+  background: #450a0a;
+  color: #fecaca;
 }
 
 @media (max-width: 600px) {

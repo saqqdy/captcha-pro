@@ -24,6 +24,7 @@ The app runs at `http://localhost:5173`
 - **InvisibleCaptcha** - Risk-based invisible verification
 - **Backend Verification** - Server-side validation demo
 - **Custom Images** - Use your own background/slider images
+- **Dark Mode** - Automatic system theme detection (v2.3.0+)
 
 ## Project Structure
 

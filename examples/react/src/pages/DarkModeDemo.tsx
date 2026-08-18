@@ -1,0 +1,49 @@
+import type { ReactElement } from 'react'
+import { ClickCaptcha, SliderCaptcha } from '@captcha-pro/react'
+import { useLocale } from '../hooks/useLocale'
+
+export function DarkModeDemo(): ReactElement {
+  const { currentLocale } = useLocale()
+
+  return (
+    <section className="demo-section">
+      <h2>
+        {currentLocale === 'zh-CN' ? '暗色模式' : 'Dark Mode'}
+        <span className="new-badge">v2.3.0</span>
+      </h2>
+
+      <div className="info-box">
+        <p>
+          {currentLocale === 'zh-CN'
+            ? '验证码组件会自动跟随系统暗色主题（prefers-color-scheme: dark），也可以通过页面右上角的开关手动切换。切换后整个页面会进入暗色模式。'
+            : 'The captcha automatically follows the system dark theme (prefers-color-scheme: dark), and you can also toggle it manually via the switch in the page header. The whole page will enter dark mode.'}
+        </p>
+      </div>
+
+      <div className="captcha-box">
+        <SliderCaptcha />
+      </div>
+      <div className="captcha-box">
+        <ClickCaptcha />
+      </div>
+
+      <div className="info-box" style={{ marginTop: 20, background: '#f3e5f5', borderLeftColor: '#9c27b0', color: '#6a1b9a' }}>
+        <p>
+          <strong>{currentLocale === 'zh-CN' ? '已保留' : 'Preserved'}:</strong>{' '}
+          {currentLocale === 'zh-CN'
+            ? '验证码区域渐变 #667eea → #764ba2、点击标记 #1991fa、滑块箭头 #1991fa 在 light/dark 下保持一致，作为品牌识别。'
+            : 'The captcha gradient #667eea → #764ba2, click marker #1991fa and slider arrow #1991fa remain consistent in light/dark as brand identity.'}
+        </p>
+      </div>
+
+      <div className="info-box" style={{ marginTop: 10 }}>
+        <p>
+          <strong>{currentLocale === 'zh-CN' ? '支持范围' : 'Supported Platforms'}:</strong>{' '}
+          {currentLocale === 'zh-CN'
+            ? 'Vue / Vue2 / React / HTML、Taro-Vue / Taro-Vue2 / Taro-React / UniApp-Vue / 微信小程序、Flutter、Android（Compose+View）、iOS（SwiftUI+UIKit）。'
+            : 'Vue / Vue2 / React / HTML, Taro-Vue / Taro-Vue2 / Taro-React / UniApp-Vue / WeChat Mini Program, Flutter, Android (Compose+View), iOS (SwiftUI+UIKit).'}
+        </p>
+      </div>
+    </section>
+  )
+}

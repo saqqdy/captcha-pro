@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 
 export function Footer(): ReactElement {
   return (
-    <footer class="footer">
+    <footer className="footer">
       <p>
         <a href="https://github.com/saqqdy/captcha-pro" target="_blank" rel="noopener">GitHub</a>
         {' '}

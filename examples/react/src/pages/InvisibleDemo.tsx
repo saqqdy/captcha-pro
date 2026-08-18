@@ -1,7 +1,6 @@
 import type { ReactElement } from 'react'
 import { createInvisibleCaptcha, type InvisibleCaptchaInstance } from '@captcha-pro/react'
 import { useEffect, useRef, useState } from 'react'
-import { Show } from "solid-js";
 import { useLocale } from '../hooks/useLocale'
 
 export function InvisibleDemo(): ReactElement {
@@ -30,21 +29,21 @@ export function InvisibleDemo(): ReactElement {
   }, [threshold, challengeType, currentLocale, t])
 
   return (
-    <section class="demo-section">
+    <section className="demo-section">
       <h2>
         👻
         {t('智能无感验证', 'Invisible Captcha')}
-        <span class="new-badge">NEW</span>
+        <span className="new-badge">NEW</span>
       </h2>
 
-      <div class="info-box">
+      <div className="info-box">
         💡
         {' '}
         {t('基于风险评估的无感验证，仅在检测到可疑行为时才显示验证码挑战。', 'Risk-based invisible verification that only shows captcha challenge when suspicious behavior is detected.')}
       </div>
 
-      <div class="options">
-        <div class="option-row">
+      <div className="options">
+        <div className="option-row">
           <label>
             {t('风险阈值', 'Threshold')}
             :
@@ -56,7 +55,7 @@ export function InvisibleDemo(): ReactElement {
             <option value={0.9}>{t('非常严格 (0.9)', 'Very Strict (0.9)')}</option>
           </select>
         </div>
-        <div class="option-row">
+        <div className="option-row">
           <label>
             {t('挑战类型', 'Challenge')}
             :
@@ -68,23 +67,27 @@ export function InvisibleDemo(): ReactElement {
         </div>
       </div>
 
-      <div class="btn-group" style={{ "margin-bottom": '20px' }}>
-        <button id="invisible-trigger" class="btn btn-primary">
+      <div className="btn-group" style={{ marginBottom: '20px' }}>
+        <button id="invisible-trigger" className="btn btn-primary">
           {t('点击验证', 'Click to Verify')}
         </button>
       </div>
 
-      <Show when={result}><div class={`result ${result.success ? 'success' : 'error'}`}>
+      {result && (
+        <div className={`result ${result.success ? 'success' : 'error'}`}>
           {result.message}
-          <Show when={result.riskScore !== undefined}><span>
+          {result.riskScore !== undefined && (
+            <span>
               {' '}
               (
               {t('风险评分', 'Risk Score')}
               :
               {result.riskScore.toFixed(2)}
               )
-            </span></Show>
-        </div></Show>
+            </span>
+          )}
+        </div>
+      )}
     </section>
   )
 }

@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react'
-import { For } from "solid-js";
 import { useLocale } from '../hooks/useLocale'
 
 export function Features(): ReactElement {
@@ -14,18 +13,23 @@ export function Features(): ReactElement {
     { zh: '后端验证', en: 'Backend verify' },
     { zh: '智能无感验证', en: 'Invisible captcha' },
     { zh: '多语言支持', en: 'i18n support' },
+    { zh: '系统暗色模式', en: 'System dark mode', badge: 'v2.3.0' },
+    { zh: '弹窗焦点陷阱', en: 'Popup focus trap', badge: 'v2.3.0' },
+    { zh: '无障碍(a11y)', en: 'Accessibility (a11y)', badge: 'v2.2.0' },
+    { zh: 'Native 三端对齐', en: 'Native alignment', badge: 'v2.1.0' },
   ]
 
   return (
-    <section class="features">
+    <section className="features">
       <h2>{t('功能特性', 'Features')}</h2>
-      <div class="feature-grid">
-        <For each={features}>{(f) => (
-          <div class="feature-item">
+      <div className="feature-grid">
+        {features.map((f) => (
+          <div key={f.en} className="feature-item">
             ✓
             {currentLocale === 'zh-CN' ? f.zh : f.en}
+            {f.badge && <span className="new-badge">{f.badge}</span>}
           </div>
-        )}</For>
+        ))}
       </div>
     </section>
   )

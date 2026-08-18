@@ -15,19 +15,19 @@ export function CustomImageDemo(): ReactElement {
   const captchaRef = useRef<SliderCaptchaInstance>(null)
 
   return (
-    <section class="demo-section">
+    <section className="demo-section">
       <h2>
         🖼️
         {t('自定义图片验证码', 'Custom Image Captcha')}
       </h2>
 
-      <div class="info-box">
+      <div className="info-box">
         💡
         {' '}
         {t('支持使用自定义背景图片。', 'Support custom background images.')}
       </div>
 
-      <div class="captcha-box">
+      <div className="captcha-box">
         <SliderCaptcha
           ref={captchaRef}
           width={320}
@@ -38,13 +38,13 @@ export function CustomImageDemo(): ReactElement {
         />
       </div>
 
-      <div class="btn-group">
-        <button class="btn btn-primary" onClick={() => setIndex(i => (i + 1) % images.length)}>
+      <div className="btn-group">
+        <button className="btn btn-primary" onClick={() => setIndex(i => (i + 1) % images.length)}>
           {t('更换图片', 'Change Image')}
         </button>
       </div>
 
-      <p class="image-info">
+      <p className="image-info">
         {t('当前图片', 'Current image')}
         :
         {index + 1}
