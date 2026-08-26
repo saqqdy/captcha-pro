@@ -1,3 +1,35 @@
+## [2.3.0] - 2026-08-18
+
+### Dark Mode Support Across All Platforms
+
+- **Automatic system theme detection**: Captcha components now follow the system's color scheme preference (`prefers-color-scheme` / `userInterfaceStyle`) with no manual toggle
+- **Web**: CSS `@media (prefers-color-scheme: dark)` media query for automatic dark mode
+- **Flutter**: `CaptchaColorScheme` with `MediaQuery.platformBrightness` detection
+- **Android**: `values-night/colors.xml` resources (View) + `isSystemInDarkTheme()` (Compose)
+- **iOS**: Dynamic `UIColor` providers + `@Environment(\.colorScheme)` (SwiftUI)
+- **Popup focus trap**: Complete keyboard focus trap for web popups (deferred from 2.2.0, WCAG 2.2 compliance)
+- **WCAG 2.2 Level AA contrast**: All dark mode text colors meet ≥ 4.5:1 contrast ratio
+- **Mini-program compatibility**: Requires base library ≥ 2.11 for `prefers-color-scheme` support
+
+### Color Token Mapping
+
+| Element | Light | Dark |
+| --- | --- | --- |
+| Slider bar bg | `#F7F9FA` | `#1F1F1F` |
+| Slider hint text | `#666` | `#AAA` |
+| Prompt bar bg | `#F7F9FA` | `#1F1F1F` |
+| Prompt text | `#666` | `#AAA` |
+| Success text | `#389E0D` | `#5CB85C` |
+| Fail text | `#CF1322` | `#FF7875` |
+| Popup title | `#333` | `#EEE` |
+| Popup close | `#999` | `#AAA` |
+
+Preserved colors (light/dark universal):
+- Brand gradient: `#667EEA→#764BA2`
+- Accent color: `#1991FA`
+
+No API changes - follows system preference automatically.
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
