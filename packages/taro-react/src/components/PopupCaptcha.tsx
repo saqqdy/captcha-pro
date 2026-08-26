@@ -1,8 +1,8 @@
 import type { ClickCaptchaProps, PopupCaptchaProps, PopupCaptchaRef, SliderCaptchaProps } from '../types'
 import { DEFAULT_LOCALE, getLocaleMessage } from '@captcha-pro/mp-shared'
 import { Text, View } from '@tarojs/components'
-import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react'
-import { Show } from 'solid-js'
+import Taro from '@tarojs/taro'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import ClickCaptcha from './ClickCaptcha'
 import SliderCaptcha from './SliderCaptcha'
 import '../styles/captcha.scss'
@@ -11,6 +11,18 @@ const EMPTY_OPTS: Record<string, unknown> = {}
 
 const PopupCaptcha = forwardRef<PopupCaptchaRef, PopupCaptchaProps>((props, ref) => {
   const { type = 'slider', title = '安全验证', maskClosable: _maskClosable = true, showClose = true, autoClose = true, closeDelay = 500, sliderOptions: _sliderOptions = EMPTY_OPTS, clickOptions: _clickOptions = EMPTY_OPTS, backend: _backend, onSuccess, onFail, onRefresh: _onRefresh, onOpen, onClose } = props
+
+  const [isDark, setIsDark] = useState(false)
+
+  useEffect(() => {
+    try {
+      const saved = Taro.getStorageSync('cp-theme')
+      const systemDark = Taro.getSystemInfoSync().theme === 'dark'
+      setIsDark(saved === 'dark' || (saved !== 'light' && systemDark))
+    } catch {
+      // ignore
+    }
+  }, [])
 
   const t = (key: string): string => getLocaleMessage(DEFAULT_LOCALE, key)
 
@@ -68,37 +80,29 @@ const PopupCaptcha = forwardRef<PopupCaptchaRef, PopupCaptchaProps>((props, ref)
   const clickProps: ClickCaptchaProps = { ...props.clickOptions, backend: props.backend, onSuccess: handleSuccess, onFail: handleFail, onRefresh: props.onRefresh }
 
   return (
-    <View class="popup-captcha" role="dialog" aria-modal="true" aria-label={title} style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 'z-index': 1000, display: 'flex', 'align-items': 'center', 'justify-content': 'center' }}>
+    <View className={`popup-captcha ${isDark ? 'cp-dark' : 'cp-light'}`} role="dialog" aria-modal="true" aria-label={title}>
       <View
-        class="popup-mask"
+        className="popup-mask"
         role="button"
         aria-label={t('popup_close')}
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)' }}
         onClick={handleMaskClick}
       />
-      <View
-        class="popup-content"
-        style={{ position: 'relative', 'z-index': 1, background: '#fff', 'border-radius': '24rpx', overflow: 'hidden', 'box-shadow': '0 8rpx 32rpx rgba(0, 0, 0, 0.2)', 'max-width': '90vw' }}
-      >
-        <View
-          class="popup-header"
-          style={{ display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', padding: '24rpx 32rpx', 'border-bottom': '1rpx solid #eee' }}
-        >
-          <Text style={{ 'font-size': '32rpx', 'font-weight': '600', color: '#333' }}>{title}</Text>
-          <Show when={showClose}>
+      <View className="popup-content">
+        <View className="popup-header">
+          <Text className="popup-title">{title}</Text>
+          {showClose && (
             <View
-              class="popup-close"
+              className="popup-close"
               role="button"
               aria-label={t('popup_close')}
-              style={{ width: '48rpx', height: '48rpx', display: 'flex', 'align-items': 'center', 'justify-content': 'center' }}
               onClick={() => { setVisible(false); onClose?.() }}
             >
-              <Text style={{ 'font-size': '40rpx', color: '#999', 'line-height': '1' }}>×</Text>
+              <Text className="popup-close-text">×</Text>
             </View>
-          </Show>
+          )}
         </View>
-        <View class="popup-body" style={{ padding: '32rpx' }}>
-          <Show when={type === 'slider'} fallback={<ClickCaptcha {...clickProps} />}><SliderCaptcha {...sliderProps} /></Show>
+        <View className="popup-body">
+          {type === 'slider' ? <SliderCaptcha {...sliderProps} /> : <ClickCaptcha {...clickProps} />}
         </View>
       </View>
     </View>

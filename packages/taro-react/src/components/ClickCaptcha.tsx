@@ -3,7 +3,6 @@ import { DEFAULT_LOCALE, getLocaleMessage } from '@captcha-pro/mp-shared'
 import { Image, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
-import { For, Show } from 'solid-js'
 import { fetchCaptcha, verifyCaptcha } from '../request'
 import '../styles/captcha.scss'
 
@@ -104,25 +103,23 @@ const ClickCaptcha = forwardRef<ClickCaptchaRef, ClickCaptchaProps>(({
   return (
     <View class="captcha-container">
       <View class="captcha-area" role="button" aria-label={t('click_prompt')} style={{ width: `${widthPx}px`, height: `${heightPx}px` }} onClick={handleClick}>
-        <Show when={bgImage} fallback={<View class="captcha-loading"><Text>{errorMsg || '加载中...'}</Text></View>}><Image src={bgImage} mode="aspectFill" class="bg-image" style={{ width: `${widthPx}px`, height: `${heightPx}px` }} /></Show>
-        <For each={clickMarkers}>
-          {m => (
-            <View key={m.index} class="click-marker" aria-label={String(m.index)} style={{ left: `${m.x}px`, top: `${m.y}px` }}>
-              <Text class="marker-text">{m.index}</Text>
-            </View>
-          )}
-        </For>
-        <Show when={showRefresh && !loading}>
+        {bgImage ? <Image src={bgImage} mode="aspectFill" class="bg-image" style={{ width: `${widthPx}px`, height: `${heightPx}px` }} /> : <View class="captcha-loading"><Text>{errorMsg || '加载中...'}</Text></View>}
+        {clickMarkers.map(m => (
+          <View key={m.index} class="click-marker" aria-label={String(m.index)} style={{ left: `${m.x}px`, top: `${m.y}px` }}>
+            <Text class="marker-text">{m.index}</Text>
+          </View>
+        ))}
+        {showRefresh && !loading && (
           <View class="refresh-btn" role="button" aria-label={t('refresh')} onClick={e => { e.stopPropagation(); refresh() }}>
             <Text class="refresh-icon">⟳</Text>
           </View>
-        </Show>
-        <Show when={status}>
+        )}
+        {status && (
           <View class={`status-overlay ${status}`} aria-live="polite" aria-atomic="true">
             <View class="status-icon"><Text>{status === 'success' ? '✓' : '✕'}</Text></View>
             <Text class="status-text">{status === 'success' ? '验证成功' : '验证失败'}</Text>
           </View>
-        </Show>
+        )}
       </View>
       <View class="prompt-bar" style={{ width: `${widthPx}px` }}>
         <Text class="prompt-text">请依次点击：</Text>

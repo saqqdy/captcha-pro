@@ -3,7 +3,6 @@ import { DEFAULT_LOCALE, getLocaleMessage } from '@captcha-pro/mp-shared'
 import { Image, MovableArea, MovableView, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
-import { Show } from 'solid-js'
 import { fetchCaptcha, verifyCaptcha } from '../request'
 import '../styles/captcha.scss'
 
@@ -175,24 +174,21 @@ const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(({
         }}
       >
         {/* Background image from backend */}
-        <Show
-          when={bgImage}
-          fallback={(
-            <View class="captcha-loading" style={{ width: `${widthPx}px`, height: `${heightPx}px` }}>
-              <Text>{errorMsg || '加载中...'}</Text>
-            </View>
-          )}
-        >
+        {bgImage ? (
           <Image
             src={bgImage}
             mode="aspectFill"
             class="bg-image"
             style={{ width: `${widthPx}px`, height: `${heightPx}px` }}
           />
-        </Show>
+        ) : (
+          <View class="captcha-loading" style={{ width: `${widthPx}px`, height: `${heightPx}px` }}>
+            <Text>{errorMsg || '加载中...'}</Text>
+          </View>
+        )}
 
         {/* Slider block overlay from backend */}
-        <Show when={sliderImage && !loading}>
+        {sliderImage && !loading && (
           <Image
             src={sliderImage}
             class="slider-block"
@@ -203,22 +199,22 @@ const SliderCaptcha = forwardRef<SliderCaptchaRef, SliderCaptchaProps>(({
               left: `${sliderX}px`,
             }}
           />
-        </Show>
+        )}
 
         {/* Refresh button */}
-        <Show when={showRefresh && !loading}>
+        {showRefresh && !loading && (
           <View class="refresh-btn" role="button" aria-label={t('refresh')} onClick={refresh}>
             <Text class="refresh-icon">⟳</Text>
           </View>
-        </Show>
+        )}
 
         {/* Status overlay */}
-        <Show when={status}>
+        {status && (
           <View class={`status-overlay ${status}`} aria-live="polite" aria-atomic="true">
             <View class="status-icon"><Text>{status === 'success' ? '✓' : '✕'}</Text></View>
             <Text class="status-text">{status === 'success' ? '验证成功' : '验证失败'}</Text>
           </View>
-        </Show>
+        )}
       </View>
 
       {/* Slider bar */}

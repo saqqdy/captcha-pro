@@ -4,6 +4,7 @@ import { Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import * as React from 'react'
 import { useState } from 'react'
+import { useTheme } from '../../hooks/useTheme'
 import './index.scss'
 
 // 移到组件外部，避免每次渲染创建新引用
@@ -14,6 +15,7 @@ const backend: BackendConfig = {
 }
 
 export default function Slider(): React.ReactNode {
+  const { isDark } = useTheme()
   const [status, setStatus] = useState('')
 
   const onSuccess = (): void => {
@@ -36,8 +38,8 @@ export default function Slider(): React.ReactNode {
   }
 
   return (
-    <View class="container">
-      <View class="title">滑块验证码</View>
+    <View className={`container ${isDark ? 'cp-dark' : 'cp-light'}`}>
+      <View className="title">滑块验证码</View>
 
       <View class="section captcha-section">
         <SliderCaptcha

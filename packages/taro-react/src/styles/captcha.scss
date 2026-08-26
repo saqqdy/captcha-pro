@@ -264,3 +264,207 @@
   inset: -16rpx;
   background: transparent;
 }
+
+/* Dark mode - follows system prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  .slider-bar {
+    background: #1f1f1f;
+  }
+
+  .slider-progress {
+    border-color: #1f1f1f;
+    background: #1f1f1f;
+  }
+
+  .slider-hint text {
+    color: #aaaaaa;
+  }
+
+  .slider-thumb {
+    background: #2a2a2a;
+    border-color: #3a3a3a;
+  }
+
+  .slider-thumb:active {
+    background: #3a3a3a;
+  }
+
+  .prompt-bar {
+    background: #1f1f1f;
+    border-color: #3a3a3a;
+  }
+
+  .prompt-text {
+    color: #aaaaaa;
+  }
+
+  .refresh-btn {
+    background: rgba(60, 60, 60, 0.9);
+  }
+
+  .refresh-icon {
+    color: #aaaaaa;
+  }
+
+  .status-overlay {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .status-overlay.success .status-text {
+    color: #5cb85c;
+  }
+
+  .status-overlay.fail .status-text {
+    color: #ff7875;
+  }
+}
+
+/* Dark mode - manual toggle via .cp-dark class (parent or self) */
+.cp-dark .slider-bar,
+.slider-bar.cp-dark {
+  background: #1f1f1f;
+}
+
+.cp-dark .slider-progress,
+.slider-progress.cp-dark {
+  border-color: #1f1f1f;
+  background: #1f1f1f;
+}
+
+.cp-dark .slider-hint text,
+.slider-hint.cp-dark text {
+  color: #aaaaaa;
+}
+
+.cp-dark .slider-thumb,
+.slider-thumb.cp-dark {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+.cp-dark .slider-thumb:active,
+.slider-thumb.cp-dark:active {
+  background: #3a3a3a;
+}
+
+.cp-dark .prompt-bar,
+.prompt-bar.cp-dark {
+  background: #1f1f1f;
+  border-color: #3a3a3a;
+}
+
+.cp-dark .prompt-text,
+.prompt-text.cp-dark {
+  color: #aaaaaa;
+}
+
+.cp-dark .refresh-btn,
+.refresh-btn.cp-dark {
+  background: rgba(60, 60, 60, 0.9);
+}
+
+.cp-dark .refresh-icon,
+.refresh-icon.cp-dark {
+  color: #aaaaaa;
+}
+
+.cp-dark .status-overlay,
+.status-overlay.cp-dark {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.cp-dark .status-overlay.success .status-text,
+.status-overlay.cp-dark.success .status-text {
+  color: #5cb85c;
+}
+
+.cp-dark .status-overlay.fail .status-text,
+.status-overlay.cp-dark.fail .status-text {
+  color: #ff7875;
+}
+
+/* Popup captcha */
+.popup-captcha {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.popup-content {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.2);
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.popup-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.popup-close {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-close-text {
+  font-size: 40rpx;
+  color: #999;
+  line-height: 1;
+}
+
+.popup-body {
+  padding: 32rpx;
+}
+
+/* Popup dark mode */
+.cp-dark .popup-content,
+.popup-content.cp-dark {
+  background: #2a2a2a;
+}
+
+.cp-dark .popup-header,
+.popup-header.cp-dark {
+  border-color: #3a3a3a;
+}
+
+.cp-dark .popup-title,
+.popup-title.cp-dark {
+  color: #fff;
+}
+
+.cp-dark .popup-close-text,
+.popup-close-text.cp-dark {
+  color: #aaaaaa;
+}
