@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Taro from '@tarojs/taro'
 import { SliderCaptcha } from '@captcha-pro/taro-vue'
 import type { BackendConfig } from '@captcha-pro/taro-vue'
@@ -11,6 +11,17 @@ const backend: BackendConfig = {
 }
 
 const status = ref('')
+const isDark = ref(false)
+
+onMounted(() => {
+  try {
+    const saved = Taro.getStorageSync('cp-theme')
+    const systemDark = Taro.getSystemInfoSync().theme === 'dark'
+    isDark.value = saved === 'dark' || (saved !== 'light' && systemDark)
+  } catch (e) {
+    // ignore
+  }
+})
 
 const onSuccess = () => {
   status.value = '验证成功'
@@ -33,7 +44,7 @@ const onError = (err: unknown) => {
 </script>
 
 <template>
-  <view class="container">
+  <view class="container" :class="isDark ? 'cp-dark' : 'cp-light'">
     <view class="title">滑块验证码</view>
 
     <view class="section captcha-section">
@@ -93,5 +104,31 @@ const onError = (err: unknown) => {
   font-size: 26px;
   color: #666;
   line-height: 1.6;
+}
+
+/* Dark mode */
+.container.cp-dark {
+  background: #1a1a1a;
+}
+
+.container.cp-dark .title {
+  color: #fff;
+}
+
+.container.cp-dark .captcha-section {
+  background: #2a2a2a;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.container.cp-dark .section-title {
+  color: #eeeeee;
+}
+
+.container.cp-dark .desc {
+  color: #aaaaaa;
+}
+
+.container.cp-dark .section {
+  color: #eeeeee;
 }
 </style>

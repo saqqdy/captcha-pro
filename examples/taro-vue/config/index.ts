@@ -18,10 +18,9 @@ export default defineConfig(async (merge) => {
     defineConstants: {},
     copy: { patterns: [], options: {} },
     framework: 'vue3',
-    compiler: 'webpack5',
+    compiler: { type: 'webpack5', prebundle: { enable: false } },
     cache: { enable: false },
     mini: {
-      prebundle: { enable: false },
       postcss: {
         pxtransform: { enable: true, config: {} },
         url: { enable: true, config: { limit: 1024 } },
