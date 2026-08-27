@@ -1,4 +1,4 @@
-<view class="captcha-container">
+<view class="captcha-container {{isDark ? 'cp-dark' : 'cp-light'}}">
   <view class="captcha-area" style="width: {{width}}rpx; height: {{height}}rpx; border-radius: 8rpx;" aria-role="region" aria-label="→ 按住滑块，拖动完成验证">
     <image wx:if="{{bgImage}}" src="{{bgImage}}" mode="aspectFill" class="bg-image" style="width: {{width}}rpx; height: {{height}}rpx;" />
     <view wx:else class="captcha-loading" style="width: {{width}}rpx; height: {{height}}rpx;">

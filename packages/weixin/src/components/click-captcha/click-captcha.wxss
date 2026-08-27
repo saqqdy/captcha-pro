@@ -120,3 +120,72 @@
   inset: -16rpx;
   background: transparent;
 }
+
+/* Dark mode - follows system prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  .prompt-bar {
+    background: #1f1f1f;
+    border-color: #3a3a3a;
+  }
+
+  .prompt-text {
+    color: #aaaaaa;
+  }
+
+  .refresh-btn {
+    background: rgba(60, 60, 60, 0.9);
+  }
+
+  .refresh-icon {
+    color: #aaaaaa;
+  }
+
+  .status-overlay {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .status-overlay.success .status-text {
+    color: #5cb85c;
+  }
+
+  .status-overlay.fail .status-text {
+    color: #ff7875;
+  }
+}
+
+/* Dark mode - manual .cp-dark class toggle (mirrors prefers-color-scheme) */
+.cp-dark .prompt-bar,
+.prompt-bar.cp-dark {
+  background: #1f1f1f;
+  border-color: #3a3a3a;
+}
+
+.cp-dark .prompt-text,
+.prompt-text.cp-dark {
+  color: #aaaaaa;
+}
+
+.cp-dark .refresh-btn,
+.refresh-btn.cp-dark {
+  background: rgba(60, 60, 60, 0.9);
+}
+
+.cp-dark .refresh-icon,
+.refresh-icon.cp-dark {
+  color: #aaaaaa;
+}
+
+.cp-dark .status-overlay,
+.status-overlay.cp-dark {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.cp-dark .status-overlay.success .status-text,
+.status-overlay.success.cp-dark .status-text {
+  color: #5cb85c;
+}
+
+.cp-dark .status-overlay.fail .status-text,
+.status-overlay.fail.cp-dark .status-text {
+  color: #ff7875;
+}

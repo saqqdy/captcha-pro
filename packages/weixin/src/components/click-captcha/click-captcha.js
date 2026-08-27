@@ -21,12 +21,18 @@ Component({
     loading: true,
     errorMsg: '',
     rpxRatio: 1,
+    isDark: false,
   },
 
   lifetimes: {
     attached() {
       const sysInfo = wx.getSystemInfoSync()
       this.setData({ rpxRatio: sysInfo.windowWidth / 750 })
+      try {
+        const saved = wx.getStorageSync('cp-theme')
+        const systemDark = sysInfo.theme === 'dark'
+        this.setData({ isDark: saved === 'dark' || (saved !== 'light' && systemDark) })
+      } catch (e) { /* ignore storage read errors */ }
       this.loadCaptcha()
     },
   },

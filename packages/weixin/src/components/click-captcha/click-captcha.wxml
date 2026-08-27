@@ -1,4 +1,4 @@
-<view class="captcha-container">
+<view class="captcha-container {{isDark ? 'cp-dark' : 'cp-light'}}">
   <view class="captcha-area" style="width: {{width}}rpx; height: {{height}}rpx; border-radius: 8rpx;" bindtap="onAreaTap" aria-role="button" aria-label="请依次点击：">
     <image wx:if="{{bgImage}}" src="{{bgImage}}" mode="aspectFill" class="bg-image" style="width: {{width}}rpx; height: {{height}}rpx;" />
     <view wx:else class="captcha-loading" style="width: {{width}}rpx; height: {{height}}rpx;">

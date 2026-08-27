@@ -90,6 +90,7 @@
 
 .slider-progress {
   position: absolute; left: 0; top: 0; height: 100%;
+  box-sizing: border-box;
   border: 2rpx solid #f7f9fa; background: #f7f9fa;
   pointer-events: none; z-index: 1; border-radius: 8rpx;
   transition: border-color 0.2s ease, background-color 0.2s ease;
@@ -132,4 +133,102 @@
   position: absolute;
   inset: -16rpx;
   background: transparent;
+}
+
+/* Dark mode - follows system prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  .slider-bar {
+    background: #1f1f1f;
+  }
+
+  .slider-progress {
+    border-color: #1f1f1f;
+    background: #1f1f1f;
+  }
+
+  .slider-hint text {
+    color: #aaaaaa;
+  }
+
+  .slider-thumb {
+    background: #2a2a2a;
+    border-color: #3a3a3a;
+  }
+
+  .slider-thumb:active {
+    background: #3a3a3a;
+  }
+
+  .refresh-btn {
+    background: rgba(60, 60, 60, 0.9);
+  }
+
+  .refresh-icon {
+    color: #aaaaaa;
+  }
+
+  .status-overlay {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .status-overlay.success .status-text {
+    color: #5cb85c;
+  }
+
+  .status-overlay.fail .status-text {
+    color: #ff7875;
+  }
+}
+
+/* Dark mode - manual .cp-dark class toggle (mirrors prefers-color-scheme) */
+.cp-dark .slider-bar,
+.slider-bar.cp-dark {
+  background: #1f1f1f;
+}
+
+.cp-dark .slider-progress,
+.slider-progress.cp-dark {
+  border-color: #1f1f1f;
+  background: #1f1f1f;
+}
+
+.cp-dark .slider-hint text,
+.slider-hint.cp-dark text {
+  color: #aaaaaa;
+}
+
+.cp-dark .slider-thumb,
+.slider-thumb.cp-dark {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+.cp-dark .slider-thumb:active,
+.slider-thumb.cp-dark:active {
+  background: #3a3a3a;
+}
+
+.cp-dark .refresh-btn,
+.refresh-btn.cp-dark {
+  background: rgba(60, 60, 60, 0.9);
+}
+
+.cp-dark .refresh-icon,
+.refresh-icon.cp-dark {
+  color: #aaaaaa;
+}
+
+.cp-dark .status-overlay,
+.status-overlay.cp-dark {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.cp-dark .status-overlay.success .status-text,
+.status-overlay.success.cp-dark .status-text {
+  color: #5cb85c;
+}
+
+.cp-dark .status-overlay.fail .status-text,
+.status-overlay.fail.cp-dark .status-text {
+  color: #ff7875;
 }

@@ -1,4 +1,4 @@
-<view wx:if="{{visible}}" class="popup-captcha" aria-role="dialog" aria-label="{{title}}">
+<view wx:if="{{visible}}" class="popup-captcha {{isDark ? 'cp-dark' : 'cp-light'}}" aria-role="dialog" aria-label="{{title}}">
   <!-- Mask -->
   <view class="popup-mask" catchtap="onMaskTap" aria-label="关闭" aria-role="button" />
 

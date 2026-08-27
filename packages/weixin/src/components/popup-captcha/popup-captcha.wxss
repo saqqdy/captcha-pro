@@ -69,3 +69,54 @@
 .popup-body .slider-bar {
   width: 100% !important;
 }
+
+/* Dark mode - follows system prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  .popup-content {
+    background: #2a2a2a;
+    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.4);
+  }
+
+  .popup-header {
+    border-bottom-color: #3a3a3a;
+  }
+
+  .popup-title {
+    color: #fff;
+  }
+
+  .popup-close text {
+    color: #aaaaaa;
+  }
+
+  .popup-mask {
+    background: rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* Dark mode - manual .cp-dark class toggle (mirrors prefers-color-scheme) */
+.cp-dark .popup-content,
+.popup-content.cp-dark {
+  background: #2a2a2a;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.4);
+}
+
+.cp-dark .popup-header,
+.popup-header.cp-dark {
+  border-bottom-color: #3a3a3a;
+}
+
+.cp-dark .popup-title,
+.popup-title.cp-dark {
+  color: #fff;
+}
+
+.cp-dark .popup-close text,
+.popup-close.cp-dark text {
+  color: #aaaaaa;
+}
+
+.cp-dark .popup-mask,
+.popup-mask.cp-dark {
+  background: rgba(0, 0, 0, 0.7);
+}

@@ -1,5 +1,20 @@
-<view class="container">
+<view class="container {{ isDark ? 'cp-dark' : 'cp-light' }}">
   <view class="title">验证码示例</view>
+
+  <view class="theme-switch">
+    <button bindtap="toggleTheme">{{ isDark ? '☀️ 浅色模式' : '🌙 暗色模式' }}</button>
+  </view>
+
+  <view class="features">
+    <view class="features-title">v2.x 功能特性</view>
+    <view class="feature-item">✓ 系统暗色模式 <text class="badge">v2.3.0</text></view>
+    <view class="feature-item">✓ 弹窗焦点陷阱 <text class="badge">v2.3.0</text></view>
+    <view class="feature-item">✓ 无障碍(a11y) <text class="badge">v2.2.0</text></view>
+    <view class="feature-item">✓ Native 三端对齐 <text class="badge">v2.1.0</text></view>
+    <view class="feature-item">✓ 后端验证</view>
+    <view class="feature-item">✓ 智能无感验证</view>
+    <view class="feature-item">✓ 多语言支持</view>
+  </view>
 
   <view class="section">
     <view class="section-title">滑块验证码</view>

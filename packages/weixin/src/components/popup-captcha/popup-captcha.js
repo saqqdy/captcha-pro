@@ -26,6 +26,18 @@ Component({
 
   data: {
     visible: false,
+    isDark: false,
+  },
+
+  lifetimes: {
+    attached() {
+      try {
+        const sysInfo = wx.getSystemInfoSync()
+        const saved = wx.getStorageSync('cp-theme')
+        const systemDark = sysInfo.theme === 'dark'
+        this.setData({ isDark: saved === 'dark' || (saved !== 'light' && systemDark) })
+      } catch (e) { /* ignore */ }
+    },
   },
 
   methods: {

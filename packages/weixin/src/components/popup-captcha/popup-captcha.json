@@ -1,5 +1,6 @@
 {
   "component": true,
+  "styleIsolation": "apply-shared",
   "usingComponents": {
     "slider-captcha": "../slider-captcha/slider-captcha",
     "click-captcha": "../click-captcha/click-captcha"

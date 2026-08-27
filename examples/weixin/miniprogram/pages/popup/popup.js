@@ -1,6 +1,7 @@
 /* global Page, wx */
 Page({
 	data: {
+		isDark: false,
 		status: '',
 		captchaType: 'slider',
 		backend: {
@@ -8,6 +9,16 @@ Page({
 			verify: 'http://localhost:3001/api/captcha/verify',
 			timeout: 10000,
 		},
+	},
+
+	onLoad() {
+		try {
+			const saved = wx.getStorageSync('cp-theme')
+			const systemDark = wx.getSystemInfoSync().theme === 'dark'
+			this.setData({ isDark: saved === 'dark' || (saved !== 'light' && systemDark) })
+		} catch {
+			// ignore
+		}
 	},
 
 	onShowSliderPopup() {

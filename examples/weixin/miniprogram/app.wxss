@@ -39,3 +39,27 @@ page {
 .btn:active {
   opacity: 0.8;
 }
+
+/* Dark mode - manual .cp-dark class toggle (global, shared by all pages) */
+.container.cp-dark {
+  min-height: 100vh;
+  background: #1a1a1a;
+}
+
+.container.cp-dark .title {
+  color: #fff;
+}
+
+.container.cp-dark .section {
+  background: #2a2a2a;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.3);
+  color: #eeeeee;
+}
+
+.container.cp-dark .section-title {
+  color: #eeeeee;
+}
+
+.container.cp-dark .desc {
+  color: #aaaaaa;
+}
