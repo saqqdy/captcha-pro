@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import PopupCaptcha from '@captcha-pro/uniapp-vue/popup-captcha.vue'
 import type { BackendConfig, PopupCaptchaRef } from '@captcha-pro/uniapp-vue'
+
+const isDark = ref(false)
+
+onMounted(() => {
+  try {
+    const saved = uni.getStorageSync('cp-theme')
+    const systemDark = uni.getSystemInfoSync().theme === 'dark'
+    isDark.value = saved === 'dark' || (saved !== 'light' && systemDark)
+  } catch (e) {
+    // ignore
+  }
+})
 
 const backend: BackendConfig = {
   getCaptcha: 'http://localhost:3001/api/captcha',
@@ -45,7 +57,7 @@ const onClose = () => {
 </script>
 
 <template>
-  <view class="container">
+  <view class="container" :class="{ 'cp-dark': isDark }">
     <view class="title">弹窗验证码</view>
 
     <view class="section captcha-section">
@@ -135,5 +147,31 @@ const onClose = () => {
   font-size: 26rpx;
   color: #666;
   line-height: 1.6;
+}
+
+/* Dark mode */
+.container.cp-dark {
+  background: #1a1a1a;
+}
+
+.container.cp-dark .title {
+  color: #fff;
+}
+
+.container.cp-dark .captcha-section {
+  background: #2a2a2a;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.3);
+}
+
+.container.cp-dark .section-title {
+  color: #eeeeee;
+}
+
+.container.cp-dark .desc {
+  color: #aaaaaa;
+}
+
+.container.cp-dark .section {
+  color: #eeeeee;
 }
 </style>

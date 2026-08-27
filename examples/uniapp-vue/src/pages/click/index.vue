@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import ClickCaptcha from '@captcha-pro/uniapp-vue/click-captcha.vue'
 import type { BackendConfig } from '@captcha-pro/uniapp-vue'
+
+const isDark = ref(false)
+
+onMounted(() => {
+  try {
+    const saved = uni.getStorageSync('cp-theme')
+    const systemDark = uni.getSystemInfoSync().theme === 'dark'
+    isDark.value = saved === 'dark' || (saved !== 'light' && systemDark)
+  } catch (e) {
+    // ignore
+  }
+})
 
 const backend: BackendConfig = {
   getCaptcha: 'http://localhost:3001/api/captcha',
@@ -32,7 +44,7 @@ const onError = (err: unknown) => {
 </script>
 
 <template>
-  <view class="container">
+  <view class="container" :class="{ 'cp-dark': isDark }">
     <view class="title">点击验证码</view>
 
     <view class="section captcha-section">
@@ -92,5 +104,31 @@ const onError = (err: unknown) => {
   font-size: 26rpx;
   color: #666;
   line-height: 1.6;
+}
+
+/* Dark mode */
+.container.cp-dark {
+  background: #1a1a1a;
+}
+
+.container.cp-dark .title {
+  color: #fff;
+}
+
+.container.cp-dark .captcha-section {
+  background: #2a2a2a;
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.3);
+}
+
+.container.cp-dark .section-title {
+  color: #eeeeee;
+}
+
+.container.cp-dark .desc {
+  color: #aaaaaa;
+}
+
+.container.cp-dark .section {
+  color: #eeeeee;
 }
 </style>

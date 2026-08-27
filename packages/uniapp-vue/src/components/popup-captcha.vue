@@ -69,34 +69,17 @@ defineExpose({ show, hide, isVisible: () => visible.value })
       @tap="handleMaskClick"
     />
 
-    <view
-      class="popup-content"
-      :style="{
-        position: 'relative', zIndex: 1, background: '#fff',
-        borderRadius: '24rpx', overflow: 'hidden',
-        boxShadow: '0 8rpx 32rpx rgba(0, 0, 0, 0.2)', maxWidth: '90vw',
-      }"
-    >
-      <view
-        class="popup-header"
-        :style="{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '24rpx 32rpx', borderBottom: '1rpx solid #eee',
-        }"
-      >
-        <text :style="{ fontSize: '32rpx', fontWeight: '600', color: '#333' }">{{ title }}</text>
+    <view class="popup-content">
+      <view class="popup-header">
+        <text class="popup-title">{{ title }}</text>
         <view
           v-if="showClose"
           class="popup-close"
           role="button"
           :aria-label="t('popup_close')"
-          :style="{
-            width: '48rpx', height: '48rpx',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }"
           @tap="hide"
         >
-          <text :style="{ fontSize: '40rpx', color: '#999', lineHeight: 1 }">×</text>
+          <text class="popup-close-icon">×</text>
         </view>
       </view>
 
