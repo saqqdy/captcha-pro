@@ -142,4 +142,25 @@ export default {
 .popup-body {
 	padding: 32rpx;
 }
+
+/* Dark mode */
+.cp-dark .popup-content,
+.popup-content.cp-dark {
+	background: #2a2a2a;
+}
+
+.cp-dark .popup-header,
+.popup-header.cp-dark {
+	border-color: #3a3a3a;
+}
+
+.cp-dark .popup-title,
+.popup-title.cp-dark {
+	color: #fff;
+}
+
+.cp-dark .popup-close text,
+.popup-close.cp-dark text {
+	color: #aaaaaa;
+}
 </style>

@@ -363,4 +363,41 @@ export default {
 	width: 100%;
 	height: 100%;
 }
+
+/* Dark mode - manual toggle via .cp-dark class */
+.cp-dark .prompt-bar,
+.prompt-bar.cp-dark {
+	background: #1f1f1f;
+	border-color: #3a3a3a;
+}
+
+.cp-dark .prompt-text,
+.prompt-text.cp-dark {
+	color: #aaaaaa;
+}
+
+.cp-dark .refresh-btn,
+.refresh-btn.cp-dark {
+	background: rgba(60, 60, 60, 0.9);
+}
+
+.cp-dark .refresh-icon,
+.refresh-icon.cp-dark {
+	color: #aaaaaa;
+}
+
+.cp-dark .status-overlay,
+.status-overlay.cp-dark {
+	background: rgba(0, 0, 0, 0.6);
+}
+
+.cp-dark .status-overlay.success .status-text,
+.status-overlay.cp-dark.success .status-text {
+	color: #5cb85c;
+}
+
+.cp-dark .status-overlay.fail .status-text,
+.status-overlay.cp-dark.fail .status-text {
+	color: #ff7875;
+}
 </style>

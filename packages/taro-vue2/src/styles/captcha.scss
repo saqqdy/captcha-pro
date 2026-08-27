@@ -264,3 +264,57 @@
   inset: -16rpx;
   background: transparent;
 }
+
+/* Dark mode - follows system prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  .slider-bar {
+    background: #1f1f1f;
+  }
+
+  .slider-progress {
+    border-color: #1f1f1f;
+    background: #1f1f1f;
+  }
+
+  .slider-hint text {
+    color: #aaaaaa;
+  }
+
+  .slider-thumb {
+    background: #2a2a2a;
+    border-color: #3a3a3a;
+  }
+
+  .slider-thumb:active {
+    background: #3a3a3a;
+  }
+
+  .prompt-bar {
+    background: #1f1f1f;
+    border-color: #3a3a3a;
+  }
+
+  .prompt-text {
+    color: #aaaaaa;
+  }
+
+  .refresh-btn {
+    background: rgba(60, 60, 60, 0.9);
+  }
+
+  .refresh-icon {
+    color: #aaaaaa;
+  }
+
+  .status-overlay {
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .status-overlay.success .status-text {
+    color: #5cb85c;
+  }
+
+  .status-overlay.fail .status-text {
+    color: #ff7875;
+  }
+}
