@@ -378,4 +378,56 @@ export default {
 	inset: -16rpx;
 	background: transparent;
 }
+
+/* Dark mode - manual toggle via .cp-dark class */
+.cp-dark .slider-bar,
+.slider-bar.cp-dark {
+	background: #1f1f1f;
+}
+
+.cp-dark .slider-track,
+.slider-track.cp-dark {
+	background: #1f1f1f;
+}
+
+.cp-dark .slider-hint text,
+.slider-hint.cp-dark text {
+	color: #aaaaaa;
+}
+
+.cp-dark .slider-thumb,
+.slider-thumb.cp-dark {
+	background: #2a2a2a;
+	border-color: #3a3a3a;
+}
+
+.cp-dark .slider-thumb:active,
+.slider-thumb.cp-dark:active {
+	background: #3a3a3a;
+}
+
+.cp-dark .refresh-btn,
+.refresh-btn.cp-dark {
+	background: rgba(60, 60, 60, 0.9);
+}
+
+.cp-dark .refresh-icon,
+.refresh-icon.cp-dark {
+	color: #aaaaaa;
+}
+
+.cp-dark .status-overlay,
+.status-overlay.cp-dark {
+	background: rgba(0, 0, 0, 0.6);
+}
+
+.cp-dark .status-overlay.success .status-text,
+.status-overlay.cp-dark.success .status-text {
+	color: #5cb85c;
+}
+
+.cp-dark .status-overlay.fail .status-text,
+.status-overlay.cp-dark.fail .status-text {
+	color: #ff7875;
+}
 </style>
