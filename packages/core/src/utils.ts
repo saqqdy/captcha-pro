@@ -616,3 +616,91 @@ export function injectA11yStyles(): void {
 		}
 	`)
 }
+
+/**
+ * Inject CSS custom properties for theming (light/dark mode).
+ * Core slider/click use these variables so web wrappers (vue/vue2/react/html)
+ * automatically follow the system `prefers-color-scheme` setting.
+ */
+export function injectThemeStyles(): void {
+	injectStyles('captcha-theme-styles', `
+		.captcha-slider,
+		.captcha-click {
+			--cp-bg: #fff;
+			--cp-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			--cp-refresh-bg: rgba(255, 255, 255, 0.9);
+			--cp-refresh-icon: #666;
+			--cp-track-bg: #f7f9fa;
+			--cp-track-border: #f7f9fa;
+			--cp-thumb-bg: #fff;
+			--cp-thumb-border: #e1e4e8;
+			--cp-hint-color: #999;
+			--cp-prompt-bg: #f7f9fa;
+			--cp-prompt-color: #333;
+			--cp-status-success-bg: rgba(82, 196, 26, 0.9);
+			--cp-status-warn-bg: rgba(250, 173, 20, 0.9);
+			--cp-status-fail-bg: rgba(245, 34, 45, 0.9);
+			--cp-status-text: #fff;
+		}
+		@media (prefers-color-scheme: dark) {
+			.captcha-slider,
+			.captcha-click {
+				--cp-bg: #1f1f1f;
+				--cp-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+				--cp-refresh-bg: rgba(60, 60, 60, 0.9);
+				--cp-refresh-icon: #aaa;
+				--cp-track-bg: #1f1f1f;
+				--cp-track-border: #1f1f1f;
+				--cp-thumb-bg: #2a2a2a;
+				--cp-thumb-border: #3a3a3a;
+				--cp-hint-color: #aaa;
+				--cp-prompt-bg: #1f1f1f;
+				--cp-prompt-color: #eee;
+				--cp-status-success-bg: rgba(82, 196, 26, 0.9);
+				--cp-status-warn-bg: rgba(250, 173, 20, 0.9);
+				--cp-status-fail-bg: rgba(245, 34, 45, 0.9);
+				--cp-status-text: #fff;
+			}
+		}
+		.cp-dark .captcha-slider,
+		.cp-dark .captcha-click,
+		.captcha-slider.cp-dark,
+		.captcha-click.cp-dark {
+			--cp-bg: #1f1f1f;
+			--cp-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+			--cp-refresh-bg: rgba(60, 60, 60, 0.9);
+			--cp-refresh-icon: #aaa;
+			--cp-track-bg: #1f1f1f;
+			--cp-track-border: #1f1f1f;
+			--cp-thumb-bg: #2a2a2a;
+			--cp-thumb-border: #3a3a3a;
+			--cp-hint-color: #aaa;
+			--cp-prompt-bg: #1f1f1f;
+			--cp-prompt-color: #eee;
+			--cp-status-success-bg: rgba(82, 196, 26, 0.9);
+			--cp-status-warn-bg: rgba(250, 173, 20, 0.9);
+			--cp-status-fail-bg: rgba(245, 34, 45, 0.9);
+			--cp-status-text: #fff;
+		}
+		.cp-light .captcha-slider,
+		.cp-light .captcha-click,
+		.captcha-slider.cp-light,
+		.captcha-click.cp-light {
+			--cp-bg: #fff;
+			--cp-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			--cp-refresh-bg: rgba(255, 255, 255, 0.9);
+			--cp-refresh-icon: #666;
+			--cp-track-bg: #f7f9fa;
+			--cp-track-border: #f7f9fa;
+			--cp-thumb-bg: #fff;
+			--cp-thumb-border: #e1e4e8;
+			--cp-hint-color: #999;
+			--cp-prompt-bg: #f7f9fa;
+			--cp-prompt-color: #333;
+			--cp-status-success-bg: rgba(82, 196, 26, 0.9);
+			--cp-status-warn-bg: rgba(250, 173, 20, 0.9);
+			--cp-status-fail-bg: rgba(245, 34, 45, 0.9);
+			--cp-status-text: #fff;
+		}
+	`)
+}

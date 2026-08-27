@@ -1,5 +1,25 @@
 # @captcha-pro/mp-shared
 
+## 2.3.0
+
+### Minor Changes
+
+- Dark mode support across all platforms
+  - Mini-program: CSS `@media (prefers-color-scheme: dark)` media query (requires base library ≥ 2.11)
+  - All dark mode text colors meet WCAG 2.2 Level AA contrast requirements (≥ 4.5:1)
+
+### Patch Changes
+
+- Updated dependencies
+  - @captcha-pro/core@2.3.0
+
+## 2.2.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @captcha-pro/core@2.3.0
+
 ## 2.2.0
 
 ### Minor Changes

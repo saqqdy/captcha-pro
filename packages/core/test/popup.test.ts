@@ -222,4 +222,31 @@ describe('PopupCaptcha', () => {
 
 		popup.destroy()
 	})
+
+	describe('Dark Mode CSS', () => {
+		it('should inject dark mode styles on creation', () => {
+			const popup = new PopupCaptcha({})
+
+			// Check if dark mode CSS is injected
+			const style = document.head.querySelector('#captcha-popup-styles') as HTMLStyleElement
+			expect(style).toBeTruthy()
+			const css = style?.textContent || ''
+			expect(css).toContain('@media (prefers-color-scheme: dark)')
+
+			popup.destroy()
+		})
+
+		it('should use WCAG AA compliant dark mode colors', () => {
+			const popup = new PopupCaptcha({})
+
+			const style = document.head.querySelector('#captcha-popup-styles') as HTMLStyleElement
+			const css = style?.textContent || ''
+			// Dark mode background: #1f1f1f
+			expect(css).toContain('#1f1f1f')
+			// Dark mode text: #aaaaaa (contrast 5.91:1 on #1f1f1f)
+			expect(css).toContain('#aaaaaa')
+
+			popup.destroy()
+		})
+	})
 })

@@ -7,6 +7,106 @@
   20%, 40%, 60%, 80% { transform: translateX(4px); }
 }
 
+/* Theme variables for slider/click captcha (web wrappers) */
+.captcha-slider,
+.captcha-click {
+  --cp-bg: #fff;
+  --cp-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --cp-refresh-bg: rgba(255, 255, 255, 0.9);
+  --cp-refresh-icon: #666;
+  --cp-track-bg: #f7f9fa;
+  --cp-track-border: #f7f9fa;
+  --cp-thumb-bg: #fff;
+  --cp-thumb-border: #e1e4e8;
+  --cp-hint-color: #999;
+  --cp-prompt-bg: #f7f9fa;
+  --cp-prompt-color: #333;
+  --cp-status-success-bg: rgba(82, 196, 26, 0.9);
+  --cp-status-warn-bg: rgba(250, 173, 20, 0.9);
+  --cp-status-fail-bg: rgba(245, 34, 45, 0.9);
+  --cp-status-text: #fff;
+}
+
+/* System dark mode preference */
+@media (prefers-color-scheme: dark) {
+  .captcha-slider,
+  .captcha-click {
+    --cp-bg: #1f1f1f;
+    --cp-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    --cp-refresh-bg: rgba(60, 60, 60, 0.9);
+    --cp-refresh-icon: #aaa;
+    --cp-track-bg: #1f1f1f;
+    --cp-track-border: #1f1f1f;
+    --cp-thumb-bg: #2a2a2a;
+    --cp-thumb-border: #3a3a3a;
+    --cp-hint-color: #aaa;
+    --cp-prompt-bg: #1f1f1f;
+    --cp-prompt-color: #eee;
+    --cp-status-success-bg: rgba(82, 196, 26, 0.9);
+    --cp-status-warn-bg: rgba(250, 173, 20, 0.9);
+    --cp-status-fail-bg: rgba(245, 34, 45, 0.9);
+    --cp-status-text: #fff;
+  }
+}
+
+/* Manual dark mode toggle via .cp-dark */
+.cp-dark .captcha-slider,
+.cp-dark .captcha-click,
+.captcha-slider.cp-dark,
+.captcha-click.cp-dark {
+  --cp-bg: #1f1f1f;
+  --cp-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  --cp-refresh-bg: rgba(60, 60, 60, 0.9);
+  --cp-refresh-icon: #aaa;
+  --cp-track-bg: #1f1f1f;
+  --cp-track-border: #1f1f1f;
+  --cp-thumb-bg: #2a2a2a;
+  --cp-thumb-border: #3a3a3a;
+  --cp-hint-color: #aaa;
+  --cp-prompt-bg: #1f1f1f;
+  --cp-prompt-color: #eee;
+  --cp-status-success-bg: rgba(82, 196, 26, 0.9);
+  --cp-status-warn-bg: rgba(250, 173, 20, 0.9);
+  --cp-status-fail-bg: rgba(245, 34, 45, 0.9);
+  --cp-status-text: #fff;
+}
+
+/* Explicit light mode override - must come after @media (prefers-color-scheme: dark)
+   so that toggling back to light while the OS is in dark mode actually shows light */
+.cp-light .captcha-slider,
+.cp-light .captcha-click,
+.captcha-slider.cp-light,
+.captcha-click.cp-light {
+  --cp-bg: #fff;
+  --cp-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --cp-refresh-bg: rgba(255, 255, 255, 0.9);
+  --cp-refresh-icon: #666;
+  --cp-track-bg: #f7f9fa;
+  --cp-track-border: #f7f9fa;
+  --cp-thumb-bg: #fff;
+  --cp-thumb-border: #e1e4e8;
+  --cp-hint-color: #999;
+  --cp-prompt-bg: #f7f9fa;
+  --cp-prompt-color: #333;
+  --cp-status-success-bg: rgba(82, 196, 26, 0.9);
+  --cp-status-warn-bg: rgba(250, 173, 20, 0.9);
+  --cp-status-fail-bg: rgba(245, 34, 45, 0.9);
+  --cp-status-text: #fff;
+}
+
+/* WCAG 2.2 a11y: focus-visible outline + 44px refresh hit area */
+.captcha-refresh-btn:focus-visible {
+  outline: 2px solid #1991fa;
+  outline-offset: 2px;
+}
+
+.captcha-refresh-btn::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  background: transparent;
+}
+
 /* Popup Overlay */
 .captcha-popup-overlay {
   position: fixed;
@@ -94,4 +194,78 @@
 .captcha-popup-body .captcha-click {
   box-shadow: none;
   border-radius: 0;
+}
+
+/* Dark mode - system preference */
+@media (prefers-color-scheme: dark) {
+  .captcha-popup-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+  .captcha-popup-container {
+    background: #1f1f1f;
+  }
+  .captcha-popup-header {
+    border-bottom-color: #3a3a3a;
+  }
+  .captcha-popup-title {
+    color: #eeeeee;
+  }
+  .captcha-popup-close:hover {
+    background: #3a3a3a;
+  }
+  .captcha-popup-close svg {
+    fill: #aaaaaa;
+  }
+}
+
+/* Dark mode - manual toggle via .cp-dark */
+.cp-dark .captcha-popup-overlay,
+.captcha-popup-overlay.cp-dark {
+  background: rgba(0, 0, 0, 0.7);
+}
+.cp-dark .captcha-popup-container,
+.captcha-popup-container.cp-dark {
+  background: #1f1f1f;
+}
+.cp-dark .captcha-popup-header,
+.captcha-popup-header.cp-dark {
+  border-bottom-color: #3a3a3a;
+}
+.cp-dark .captcha-popup-title,
+.captcha-popup-title.cp-dark {
+  color: #eeeeee;
+}
+.cp-dark .captcha-popup-close:hover,
+.captcha-popup-close.cp-dark:hover {
+  background: #3a3a3a;
+}
+.cp-dark .captcha-popup-close svg,
+.captcha-popup-close.cp-dark svg {
+  fill: #aaaaaa;
+}
+
+/* Explicit light mode override for popup */
+.cp-light .captcha-popup-overlay,
+.captcha-popup-overlay.cp-light {
+  background: rgba(0, 0, 0, 0.5);
+}
+.cp-light .captcha-popup-container,
+.captcha-popup-container.cp-light {
+  background: #fff;
+}
+.cp-light .captcha-popup-header,
+.captcha-popup-header.cp-light {
+  border-bottom-color: #f0f0f0;
+}
+.cp-light .captcha-popup-title,
+.captcha-popup-title.cp-light {
+  color: #333;
+}
+.cp-light .captcha-popup-close:hover,
+.captcha-popup-close.cp-light:hover {
+  background: #f5f5f5;
+}
+.cp-light .captcha-popup-close svg,
+.captcha-popup-close.cp-light svg {
+  fill: #999;
 }

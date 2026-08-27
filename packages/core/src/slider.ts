@@ -19,6 +19,7 @@ import {
 	getEventPosition,
 	injectA11yStyles,
 	injectShakeAnimation,
+	injectThemeStyles,
 	loadImage,
 	off,
 	on,
@@ -170,8 +171,8 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			position: 'relative',
 			overflow: 'hidden',
 			borderRadius: '8px',
-			background: '#fff',
-			boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+			background: 'var(--cp-bg)',
+			boxShadow: 'var(--cp-shadow)',
 			padding: '10px',
 		})
 
@@ -260,19 +261,19 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 				position: 'absolute',
 				top: '10px',
 				right: '10px',
-				width: '28px',
-				height: '28px',
-				background: 'rgba(255,255,255,0.9)',
-				borderRadius: '4px',
-				cursor: 'pointer',
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-				zIndex: '10',
-				transition: 'transform 0.2s ease',
-				border: 'none',
-			})
-			refreshBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#666" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>'
+			width: '28px',
+			height: '28px',
+			background: 'var(--cp-refresh-bg)',
+			borderRadius: '4px',
+			cursor: 'pointer',
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'center',
+			zIndex: '10',
+			transition: 'transform 0.2s ease',
+			border: 'none',
+		})
+		refreshBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="var(--cp-refresh-icon)" d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>'
 			on(refreshBtn, 'click', () => {
 				this.refresh()
 				this.options.onRefresh?.()
@@ -293,7 +294,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		}, {
 			width: '100%',
 			height: '40px',
-			background: '#f7f9fa',
+			background: 'var(--cp-track-bg)',
 			position: 'relative',
 			display: 'flex',
 			alignItems: 'center',
@@ -310,8 +311,8 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			top: '0',
 			height: '40px',
 			width: '40px', // Initial width = slider width 36px + right margin 2px
-			border: '1px solid #f7f9fa',
-			background: '#f7f9fa',
+			border: '1px solid var(--cp-track-border)',
+			background: 'var(--cp-track-bg)',
 			pointerEvents: 'none',
 			zIndex: '1',
 			borderRadius: '4px 4px 4px 4px',
@@ -325,7 +326,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 			top: '50%',
 			transform: 'translate(-50%, -50%)',
 			fontSize: '14px',
-			color: '#999',
+			color: 'var(--cp-hint-color)',
 			pointerEvents: 'none',
 			transition: 'opacity 0.2s ease',
 			zIndex: '1',
@@ -338,8 +339,8 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		this.sliderBtn = createElement('div', { class: 'captcha-slider-btn' }, {
 			width: '36px',
 			height: '36px',
-			background: '#fff',
-			border: '1px solid #e1e4e8',
+			background: 'var(--cp-thumb-bg)',
+			border: '1px solid var(--cp-thumb-border)',
 			borderRadius: '4px',
 			position: 'absolute',
 			left: '2px',
@@ -1062,6 +1063,7 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		// Inject shake animation CSS
 		injectShakeAnimation()
 		injectA11yStyles()
+		injectThemeStyles()
 
 		// Add shake animation
 		addClass(this.container, 'captcha-shake')
@@ -1149,16 +1151,16 @@ export class SliderCaptcha implements SliderCaptchaInstance {
 		if (this.sliderBtn) {
 			setStyle(this.sliderBtn, {
 				left: '2px',
-				background: '#fff',
-				borderColor: '#e1e4e8',
+				background: 'var(--cp-thumb-bg)',
+				borderColor: 'var(--cp-thumb-border)',
 			})
 			this.sliderBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" style="pointer-events: none;"><path fill="#1991fa" d="M8 5v14l11-7z"/></svg>'
 		}
 		if (this.sliderProgress) {
 			setStyle(this.sliderProgress, {
 				width: '40px',
-				border: '1px solid #f7f9fa',
-				background: '#f7f9fa',
+				border: '1px solid var(--cp-track-border)',
+				background: 'var(--cp-track-bg)',
 			})
 		}
 		if (this.hintText) {

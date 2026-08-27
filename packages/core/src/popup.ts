@@ -24,7 +24,7 @@ const defaultModalOptions = {
 	maskClosable: true,
 	escClosable: true,
 	showClose: true,
-	title: '',
+	title: t('popup.title'),
 }
 
 const defaultOptions: Partial<PopupCaptchaOptions> = {
@@ -111,6 +111,80 @@ function injectPopupStyles(): void {
 .captcha-popup-body .captcha-click {
   box-shadow: none;
   border-radius: 0;
+}
+
+/* Dark mode - system preference */
+@media (prefers-color-scheme: dark) {
+  .captcha-popup-overlay {
+    background: rgba(0, 0, 0, 0.7);
+  }
+  .captcha-popup-container {
+    background: #1f1f1f;
+  }
+  .captcha-popup-header {
+    border-bottom-color: #3a3a3a;
+  }
+  .captcha-popup-title {
+    color: #eeeeee;
+  }
+  .captcha-popup-close:hover {
+    background: #3a3a3a;
+  }
+  .captcha-popup-close svg {
+    fill: #aaaaaa;
+  }
+}
+
+/* Dark mode - manual toggle via .cp-dark */
+.cp-dark .captcha-popup-overlay,
+.captcha-popup-overlay.cp-dark {
+  background: rgba(0, 0, 0, 0.7);
+}
+.cp-dark .captcha-popup-container,
+.captcha-popup-container.cp-dark {
+  background: #1f1f1f;
+}
+.cp-dark .captcha-popup-header,
+.captcha-popup-header.cp-dark {
+  border-bottom-color: #3a3a3a;
+}
+.cp-dark .captcha-popup-title,
+.captcha-popup-title.cp-dark {
+  color: #eeeeee;
+}
+.cp-dark .captcha-popup-close:hover,
+.captcha-popup-close.cp-dark:hover {
+  background: #3a3a3a;
+}
+.cp-dark .captcha-popup-close svg,
+.captcha-popup-close.cp-dark svg {
+  fill: #aaaaaa;
+}
+
+/* Explicit light mode override for popup */
+.cp-light .captcha-popup-overlay,
+.captcha-popup-overlay.cp-light {
+  background: rgba(0, 0, 0, 0.5);
+}
+.cp-light .captcha-popup-container,
+.captcha-popup-container.cp-light {
+  background: #fff;
+}
+.cp-light .captcha-popup-header,
+.captcha-popup-header.cp-light {
+  border-bottom-color: #f0f0f0;
+}
+.cp-light .captcha-popup-title,
+.captcha-popup-title.cp-light {
+  color: #333;
+}
+.cp-light .captcha-popup-close:hover,
+.captcha-popup-close.cp-light:hover {
+  background: #f5f5f5;
+}
+.cp-light .captcha-popup-close svg,
+.captcha-popup-close.cp-light svg {
+  fill: #999;
 }
 `,
 	)
@@ -309,6 +383,31 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 	// Store the element that had focus before popup opened
 	private previousActiveElement: HTMLElement | null = null
 
+	// Focus trap handler
+	private handleTabKey = (e: KeyboardEvent): void => {
+		if (e.key !== 'Tab' || !this.container) return
+
+		const focusableElements = this.container.querySelectorAll<HTMLElement>(
+			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+		)
+		const firstElement = focusableElements[0]
+		const lastElement = focusableElements[focusableElements.length - 1]
+
+		if (e.shiftKey) {
+			// Shift+Tab: if on first element, go to last
+			if (document.activeElement === firstElement) {
+				e.preventDefault()
+				lastElement?.focus()
+			}
+		} else {
+			// Tab: if on last element, go to first
+			if (document.activeElement === lastElement) {
+				e.preventDefault()
+				firstElement?.focus()
+			}
+		}
+	}
+
 	/**
 	 * Show popup
 	 */
@@ -333,6 +432,9 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 		this._visible = true
 		addClass(this.overlay, 'visible')
 
+		// Add focus trap
+		on(this.container!, 'keydown', this.handleTabKey as (e: Event) => void)
+
 		// Focus management - focus the first focusable element
 		setTimeout(() => {
 			const closeBtn = this.container?.querySelector('.captcha-popup-close') as HTMLElement
@@ -356,6 +458,11 @@ export class PopupCaptcha implements PopupCaptchaInstance {
 
 		this._visible = false
 		removeClass(this.overlay, 'visible')
+
+		// Remove focus trap
+		if (this.container) {
+			off(this.container, 'keydown', this.handleTabKey as (e: Event) => void)
+		}
 
 		// Restore body scroll
 		setStyle(document.body, { overflow: '' })
