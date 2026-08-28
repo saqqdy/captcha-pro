@@ -26,6 +26,12 @@ packages/android/captcha-compose/build/
 packages/android/local.properties
 packages/android/**/*.iml
 
+## Android example app (examples/android — standalone Gradle project)
+examples/android/build/
+examples/android/.gradle/
+examples/android/local.properties
+examples/android/**/*.iml
+
 ## iOS (Swift Package Manager + Xcode)
 packages/ios/.build/
 packages/ios/.swiftpm/
