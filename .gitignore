@@ -38,6 +38,18 @@ packages/ios/.swiftpm/
 packages/ios/build/
 packages/ios/Pods/
 packages/ios/DerivedData/
+packages/ios/**/*.xcuserstate
+packages/ios/**/*.xcuserdata/
+
+## iOS example app (examples/ios — standalone Xcode project)
+examples/ios/build/
+examples/ios/DerivedData/
+examples/ios/Pods/
+examples/ios/.swiftpm/
+examples/ios/**/*.xcuserstate
+examples/ios/**/*.xcuserdata/
+examples/ios/**/*.xcscmblueprint
+examples/ios/**/*.moved-aside
 
 ## Flutter
 packages/flutter/.dart_tool/
