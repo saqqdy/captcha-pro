@@ -123,10 +123,10 @@ public class SliderCaptchaView: UIView {
         sliderImageView.clipsToBounds = true
         captchaClipView.addSubview(sliderImageView)
 
-        refreshButton.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+        refreshButton.backgroundColor = UIColor.captchaRefreshBtnBg
         refreshButton.layer.cornerRadius = 8
         refreshButton.setTitle("⟳", for: .normal)
-        refreshButton.setTitleColor(UIColor(white: 0.4, alpha: 1), for: .normal)
+        refreshButton.setTitleColor(UIColor.captchaRefreshIcon, for: .normal)
         refreshButton.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
         refreshButton.addTarget(self, action: #selector(refresh), for: .touchUpInside)
         refreshButton.accessibilityLabel = LocaleMessages.get(locale, key: "refresh")
@@ -141,7 +141,7 @@ public class SliderCaptchaView: UIView {
         ])
 
         statusView.isHidden = true
-        statusView.backgroundColor = UIColor.white.withAlphaComponent(0.75)
+        statusView.backgroundColor = UIColor.captchaStatusOverlayBg
         captchaClipView.addSubview(statusView)
         statusView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -186,7 +186,7 @@ public class SliderCaptchaView: UIView {
         statusStackView.addArrangedSubview(statusTextLabel)
         statusTextLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        sliderBarView.backgroundColor = UIColor(red: 247/255, green: 249/255, blue: 250/255, alpha: 1)
+        sliderBarView.backgroundColor = UIColor.captchaSliderBarBg
         sliderBarView.layer.cornerRadius = 8
         addSubview(sliderBarView)
         sliderBarView.translatesAutoresizingMaskIntoConstraints = false
@@ -198,7 +198,7 @@ public class SliderCaptchaView: UIView {
         ])
 
         sliderHintLabel.text = LocaleMessages.get(locale, key: "slider_hint")
-        sliderHintLabel.textColor = UIColor(white: 0.4, alpha: 1)
+        sliderHintLabel.textColor = UIColor.captchaSliderHintText
         sliderHintLabel.font = .systemFont(ofSize: 14)
         sliderHintLabel.textAlignment = .center
         sliderBarView.addSubview(sliderHintLabel)
@@ -208,10 +208,10 @@ public class SliderCaptchaView: UIView {
             sliderHintLabel.centerYAnchor.constraint(equalTo: sliderBarView.centerYAnchor),
         ])
 
-        sliderThumbView.backgroundColor = .white
+        sliderThumbView.backgroundColor = UIColor.captchaSliderThumbBg
         sliderThumbView.layer.cornerRadius = 8
         sliderThumbView.layer.borderWidth = 1
-        sliderThumbView.layer.borderColor = UIColor(red: 225/255, green: 228/255, blue: 232/255, alpha: 1).cgColor
+        sliderThumbView.layer.borderColor = UIColor.captchaSliderThumbBorder.cgColor
         sliderBarView.addSubview(sliderThumbView)
         sliderThumbView.frame = CGRect(x: 2, y: 2, width: 36, height: 36)
         sliderThumbView.accessibilityLabel = LocaleMessages.get(locale, key: "slider_hint")
@@ -350,8 +350,8 @@ public class SliderCaptchaView: UIView {
         statusIconLabel.text = success ? "✓" : "✕"
         statusTextLabel.text = message ?? (success ? LocaleMessages.get(locale, key: "slider_success") : LocaleMessages.get(locale, key: "slider_fail"))
         statusTextLabel.textColor = success
-            ? UIColor(red: 56/255, green: 158/255, blue: 13/255, alpha: 1)
-            : UIColor(red: 207/255, green: 19/255, blue: 34/255, alpha: 1)
+            ? UIColor.captchaSuccessText
+            : UIColor.captchaFailText
 
         if let resolved = statusTextLabel.text, !resolved.isEmpty {
             UIAccessibility.post(notification: .announcement, argument: resolved)

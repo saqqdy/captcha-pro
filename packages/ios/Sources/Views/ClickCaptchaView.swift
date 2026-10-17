@@ -122,10 +122,10 @@ public class ClickCaptchaView: UIView {
             loadingLabel.centerYAnchor.constraint(equalTo: captchaClipView.centerYAnchor),
         ])
 
-        refreshButton.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+        refreshButton.backgroundColor = UIColor.captchaRefreshBtnBg
         refreshButton.layer.cornerRadius = 8
         refreshButton.setTitle("⟳", for: .normal)
-        refreshButton.setTitleColor(UIColor(white: 0.4, alpha: 1), for: .normal)
+        refreshButton.setTitleColor(UIColor.captchaRefreshIcon, for: .normal)
         refreshButton.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
         refreshButton.addTarget(self, action: #selector(refresh), for: .touchUpInside)
         captchaClipView.addSubview(refreshButton)
@@ -138,7 +138,7 @@ public class ClickCaptchaView: UIView {
         ])
 
         statusView.isHidden = true
-        statusView.backgroundColor = UIColor.white.withAlphaComponent(0.75)
+        statusView.backgroundColor = UIColor.captchaStatusOverlayBg
         captchaClipView.addSubview(statusView)
         statusView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -184,10 +184,10 @@ public class ClickCaptchaView: UIView {
         statusTextLabel.translatesAutoresizingMaskIntoConstraints = false
 
         // Prompt bar
-        infoBarView.backgroundColor = UIColor(red: 247/255, green: 249/255, blue: 250/255, alpha: 1)
+        infoBarView.backgroundColor = UIColor.captchaPromptBarBg
         infoBarView.layer.cornerRadius = 16
         infoBarView.layer.borderWidth = 1
-        infoBarView.layer.borderColor = UIColor(red: 232/255, green: 232/255, blue: 232/255, alpha: 1).cgColor
+        infoBarView.layer.borderColor = UIColor.captchaPromptBarBorder.cgColor
         addSubview(infoBarView)
         infoBarView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -198,7 +198,7 @@ public class ClickCaptchaView: UIView {
         ])
 
         tipLabel.font = .systemFont(ofSize: 14)
-        tipLabel.textColor = UIColor(white: 0.4, alpha: 1)
+        tipLabel.textColor = UIColor.captchaPromptText
         infoBarView.addSubview(tipLabel)
         tipLabel.translatesAutoresizingMaskIntoConstraints = false
         tipLabel.leadingAnchor.constraint(equalTo: infoBarView.leadingAnchor, constant: 12).isActive = true
@@ -403,8 +403,8 @@ public class ClickCaptchaView: UIView {
         statusIconLabel.text = success ? "✓" : "✕"
         statusTextLabel.text = message ?? (success ? LocaleMessages.get(locale, key: "click_success") : LocaleMessages.get(locale, key: "click_fail"))
         statusTextLabel.textColor = success
-            ? UIColor(red: 56/255, green: 158/255, blue: 13/255, alpha: 1)
-            : UIColor(red: 207/255, green: 19/255, blue: 34/255, alpha: 1)
+            ? UIColor.captchaSuccessText
+            : UIColor.captchaFailText
 
         statusView.alpha = 0
         statusView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)

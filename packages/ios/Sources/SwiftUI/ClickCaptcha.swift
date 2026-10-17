@@ -68,7 +68,7 @@ public struct ClickCaptcha: View {
                         .font(.system(size: 14))
                 }
 
-                // Click markers
+                // Click markers — absolute position, independent of ZStack alignment
                 ForEach(viewModel.clickPoints.indices, id: \.self) { index in
                     let point = viewModel.clickPoints[index]
                     Circle()
@@ -81,7 +81,7 @@ public struct ClickCaptcha: View {
                                 .font(.system(size: 12))
                                 .fontWeight(.bold)
                         )
-                        .offset(x: point.x - 12, y: point.y - 12)
+                        .position(x: point.x, y: point.y)
                         .accessibilityLabel("\(index + 1)")
                 }
 
@@ -89,10 +89,10 @@ public struct ClickCaptcha: View {
                 if viewModel.showRefresh, !viewModel.loading {
                     Button(action: { viewModel.refresh() }) {
                         Text("⟳")
-                            .foregroundColor(Color(white: 0.4))
+                            .foregroundColor(Color.captchaRefreshIcon)
                             .font(.system(size: 20, weight: .bold))
                             .frame(width: 28, height: 28)
-                            .background(Color.white.opacity(0.9))
+                            .background(Color.captchaRefreshBtnBg)
                             .cornerRadius(8)
                     }
                     .padding(8)
@@ -116,11 +116,11 @@ public struct ClickCaptcha: View {
                              : LocaleMessages.get(viewModel.locale, key: "click_fail"))
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(status == .success
-                                             ? Color(red: 56/255, green: 158/255, blue: 13/255)
-                                             : Color(red: 207/255, green: 19/255, blue: 34/255))
+                                             ? Color.captchaSuccessText
+                                             : Color.captchaFailText)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.white.opacity(0.75))
+                    .background(Color.captchaStatusOverlayBg)
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
                 }
             }
@@ -133,7 +133,7 @@ public struct ClickCaptcha: View {
             HStack(spacing: 8) {
                 Text(LocaleMessages.get(viewModel.locale, key: "click_prompt"))
                     .font(.system(size: 14))
-                    .foregroundColor(Color(white: 0.4))
+                    .foregroundColor(Color.captchaPromptText)
 
                 if !viewModel.clickCharImages.isEmpty {
                     HStack(spacing: 6) {
@@ -203,11 +203,11 @@ public struct ClickCaptcha: View {
             }
             .padding(.horizontal, 12)
             .frame(width: CGFloat(viewModel.width), height: 56)
-            .background(Color(red: 247/255, green: 249/255, blue: 250/255))
+            .background(Color.captchaPromptBarBg)
             .cornerRadius(16)
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color(red: 232/255, green: 232/255, blue: 232/255), lineWidth: 1)
+                    .stroke(Color.captchaPromptBarBorder, lineWidth: 1)
             )
         }
         .onAppear { viewModel.refresh() }

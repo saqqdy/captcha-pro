@@ -57,7 +57,7 @@ public class PopupCaptchaView: UIView {
 
     private func setupViews() {
         // Overlay
-        overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        overlayView.backgroundColor = UIColor.captchaPopupMask
         overlayView.alpha = 0
         overlayView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(overlayTapped)))
         addSubview(overlayView)
@@ -70,7 +70,7 @@ public class PopupCaptchaView: UIView {
         ])
 
         // Container
-        containerView.backgroundColor = .white
+        containerView.backgroundColor = UIColor.captchaPopupCard
         containerView.layer.cornerRadius = 24
         containerView.clipsToBounds = true
         containerView.layer.shadowColor = UIColor.black.cgColor
@@ -90,7 +90,7 @@ public class PopupCaptchaView: UIView {
         ])
 
         // Header
-        headerView.backgroundColor = .white
+        headerView.backgroundColor = UIColor.captchaPopupCard
         containerView.addSubview(headerView)
         headerView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -103,7 +103,7 @@ public class PopupCaptchaView: UIView {
         // Title
         titleLabel.text = title
         titleLabel.font = .systemFont(ofSize: 16, weight: .medium)
-        titleLabel.textColor = .darkText
+        titleLabel.textColor = UIColor.captchaPopupTitle
         headerView.addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -113,7 +113,7 @@ public class PopupCaptchaView: UIView {
 
         // Close button
         closeButton.setTitle("×", for: .normal)
-        closeButton.setTitleColor(UIColor(white: 0.4, alpha: 1), for: .normal)
+        closeButton.setTitleColor(UIColor.captchaPopupClose, for: .normal)
         closeButton.titleLabel?.font = .systemFont(ofSize: 24)
         closeButton.addTarget(self, action: #selector(hide), for: .touchUpInside)
         closeButton.accessibilityLabel = LocaleMessages.get(locale, key: "popup_close")
@@ -128,7 +128,7 @@ public class PopupCaptchaView: UIView {
 
         // Separator
         let separator = UIView()
-        separator.backgroundColor = UIColor(white: 0.94, alpha: 1)
+        separator.backgroundColor = UIColor.captchaPopupSeparator
         headerView.addSubview(separator)
         separator.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

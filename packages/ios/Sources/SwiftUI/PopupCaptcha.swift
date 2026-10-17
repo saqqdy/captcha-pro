@@ -27,6 +27,22 @@ public struct PopupCaptcha: View {
     @State private var isVisible: Bool
     @State private var isClosing = false
 
+    /// External binding supplied by `popupCaptcha(isPresented:configuration:)`.
+    /// When present it is the source of truth — `isVisible` is only used by the
+    /// standalone `show()` / `dismiss()` path. (`@State` is initialised once per
+    /// view identity, so a plain Bool snapshot from the caller never updates.)
+    private let externalBinding: Binding<Bool>?
+
+    private var isShown: Bool { externalBinding?.wrappedValue ?? isVisible }
+
+    private func setShown(_ newValue: Bool) {
+        if let binding = externalBinding {
+            binding.wrappedValue = newValue
+        } else {
+            isVisible = newValue
+        }
+    }
+
     public struct SliderConfig {
         public let width: Int
         public let height: Int
@@ -80,6 +96,7 @@ public struct PopupCaptcha: View {
         sliderConfig: SliderConfig = SliderConfig(),
         clickConfig: ClickConfig = ClickConfig(),
         isVisible: Bool = false,
+        isPresented: Binding<Bool>? = nil,
         onSuccess: @escaping (VerifyResult?) -> Void = { _ in },
         onFail: @escaping () -> Void = {},
         onClose: @escaping () -> Void = {}
@@ -98,6 +115,7 @@ public struct PopupCaptcha: View {
         self.onFail = onFail
         self.onClose = onClose
         self._isVisible = State(initialValue: isVisible)
+        self.externalBinding = isPresented
     }
 
     private var displayTitle: String {
@@ -106,20 +124,20 @@ public struct PopupCaptcha: View {
 
     public var body: some View {
         ZStack {
-            if isVisible {
-                Color.black.opacity(0.5)
+            if isShown {
+                Color.captchaPopupMask
                     .ignoresSafeArea()
                     .onTapGesture { if maskClosable { hide() } }
                     .transition(.opacity)
 
                 VStack(spacing: 0) {
                     header
-                    Divider().background(Color(white: 0.94))
+                    Divider().background(Color.captchaPopupSeparator)
                     captchaContent
                         .padding(12)
                 }
                 .frame(width: cardWidth)
-                .background(Color.white)
+                .background(Color.captchaPopupCard)
                 .cornerRadius(24)
                 .shadow(color: Color.black.opacity(0.2), radius: 16, x: 0, y: 4)
                 .transition(.opacity.combined(with: .scale(scale: 0.9)))
@@ -144,7 +162,7 @@ public struct PopupCaptcha: View {
                 Button(action: { hide() }) {
                     Text("×")
                         .font(.system(size: 24))
-                        .foregroundColor(Color(white: 0.4))
+                        .foregroundColor(Color.captchaPopupClose)
                         .frame(width: 28, height: 28)
                 }
                 .accessibilityLabel(LocaleMessages.get(locale, key: "popup_close"))
@@ -208,7 +226,7 @@ public struct PopupCaptcha: View {
     }
 
     private func hide() {
-        withAnimation(.easeInOut(duration: 0.25)) { isVisible = false }
+        withAnimation(.easeInOut(duration: 0.25)) { setShown(false) }
         isClosing = false
         onClose()
     }
@@ -246,7 +264,7 @@ public extension View {
                 locale: configuration.locale,
                 sliderConfig: configuration.sliderConfig,
                 clickConfig: configuration.clickConfig,
-                isVisible: isPresented.wrappedValue,
+                isPresented: isPresented,
                 onSuccess: configuration.onSuccess,
                 onFail: configuration.onFail,
                 onClose: { withAnimation(.easeInOut(duration: 0.25)) { isPresented.wrappedValue = false }; onClose() }

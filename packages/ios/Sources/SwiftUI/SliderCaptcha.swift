@@ -5,6 +5,8 @@ import UIKit
 @available(iOS 14.0, *)
 public struct SliderCaptcha: View {
     @StateObject private var viewModel: SliderCaptchaViewModel
+    /// Slider position captured when a drag begins.
+    @State private var dragStartX: CGFloat = 0
 
     public init(
         width: Int = 300,
@@ -62,22 +64,25 @@ public struct SliderCaptcha: View {
                         .font(.system(size: 14))
                 }
 
-                // Slider piece
+                // Slider piece — absolute position, independent of ZStack alignment
                 if let sliderImage = viewModel.sliderImage, !viewModel.loading {
                     Image(uiImage: sliderImage)
                         .resizable()
                         .frame(width: CGFloat(viewModel.sliderWidth), height: CGFloat(viewModel.sliderHeight))
-                        .offset(x: viewModel.currentX, y: viewModel.sliderY)
+                        .position(
+                            x: viewModel.currentX + CGFloat(viewModel.sliderWidth) / 2,
+                            y: viewModel.sliderY + CGFloat(viewModel.sliderHeight) / 2
+                        )
                 }
 
                 // Refresh button
                 if viewModel.showRefresh, !viewModel.loading {
                     Button(action: { viewModel.refresh() }) {
                         Text("⟳")
-                            .foregroundColor(Color(white: 0.4))
+                            .foregroundColor(Color.captchaRefreshIcon)
                             .font(.system(size: 20, weight: .bold))
                             .frame(width: 28, height: 28)
-                            .background(Color.white.opacity(0.9))
+                            .background(Color.captchaRefreshBtnBg)
                             .cornerRadius(8)
                     }
                     .frame(width: 44, height: 44)
@@ -104,11 +109,11 @@ public struct SliderCaptcha: View {
                              : LocaleMessages.get(viewModel.locale, key: "slider_fail"))
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(status == .success
-                                             ? Color(red: 56/255, green: 158/255, blue: 13/255)
-                                             : Color(red: 207/255, green: 19/255, blue: 34/255))
+                                             ? Color.captchaSuccessText
+                                             : Color.captchaFailText)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.white.opacity(0.75))
+                    .background(Color.captchaStatusOverlayBg)
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
                 }
             }
@@ -126,19 +131,19 @@ public struct SliderCaptcha: View {
 
             // Slider bar
             ZStack(alignment: .leading) {
-                Color(red: 247/255, green: 249/255, blue: 250/255)
+                Color.captchaSliderBarBg
                     .cornerRadius(8)
 
                 Text(LocaleMessages.get(viewModel.locale, key: "slider_hint"))
-                    .foregroundColor(Color(white: 0.4))
+                    .foregroundColor(Color.captchaSliderHintText)
                     .font(.system(size: 14))
                     .frame(maxWidth: .infinity)
 
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.white)
+                    .fill(Color.captchaSliderThumbBg)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color(red: 225/255, green: 228/255, blue: 232/255), lineWidth: 1)
+                            .stroke(Color.captchaSliderThumbBorder, lineWidth: 1)
                     )
                     .frame(width: 36, height: 36)
                     .overlay(
@@ -150,10 +155,17 @@ public struct SliderCaptcha: View {
                     .gesture(
                         DragGesture()
                             .onChanged { value in
+                                if !viewModel.isDragging {
+                                    viewModel.isDragging = true
+                                    dragStartX = viewModel.currentX
+                                }
                                 let maxX = CGFloat(viewModel.width - viewModel.sliderWidth)
-                                viewModel.currentX = max(0, min(viewModel.currentX + value.translation.width, maxX))
+                                // translation is cumulative from gesture start — anchor to the
+                                // position captured on first change, otherwise it compounds.
+                                viewModel.currentX = max(0, min(dragStartX + value.translation.width, maxX))
                             }
                             .onEnded { _ in
+                                viewModel.isDragging = false
                                 viewModel.verify()
                             }
                     )
@@ -187,6 +199,8 @@ final class SliderCaptchaViewModel: ObservableObject {
     @Published var status: Status?
     @Published var loading = false
     @Published var errorMsg: String?
+    /// True while a drag gesture is in progress.
+    var isDragging = false
 
     private let generator = CaptchaGenerator()
 

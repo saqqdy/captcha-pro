@@ -1,0 +1,35 @@
+name: CaptchaProExample
+options:
+  bundleIdPrefix: com.captchapro
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+settings:
+  base:
+    CODE_SIGNING_ALLOWED: "NO"
+    CODE_SIGNING_REQUIRED: "NO"
+    CODE_SIGN_IDENTITY: ""
+    DEVELOPMENT_TEAM: ""
+    SWIFT_VERSION: "5.9"
+    IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+packages:
+  CaptchaPro:
+    path: ../../packages/ios
+targets:
+  CaptchaProExample:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    dependencies:
+      - package: CaptchaPro
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: CaptchaPro Demo
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
