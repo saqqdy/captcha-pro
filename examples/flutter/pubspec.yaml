@@ -1,0 +1,20 @@
+name: captcha_pro_example
+description: Captcha Pro Flutter example app (slider + click + popup).
+publish_to: "none"
+version: 1.0.0
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  captcha_pro:
+    path: ../../packages/flutter
+
+dev_dependencies:
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

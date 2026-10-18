@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../core/theme.dart';
+
 
 import '../core/backend.dart';
 import '../core/i18n.dart';
@@ -155,8 +157,10 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
 
   @override
   Widget build(BuildContext context) {
+    // No horizontal padding: `width` is the exact occupied width (same
+    // reasoning as SliderCaptcha — see its build method).
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      width: widget.width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -280,14 +284,14 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: const Color(0xE6FFFFFF),
+                color: CaptchaColorScheme.of(context).refreshBtnBg,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
                   '⟳',
                   style: TextStyle(
-                    color: Color(0xFF666666),
+                    color: CaptchaColorScheme.of(context).promptText,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
@@ -315,7 +319,7 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
           );
         },
         child: Container(
-          color: const Color(0xBFFFFFFF),
+          color: CaptchaColorScheme.of(context).statusOverlayBg,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -325,8 +329,8 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: success
-                      ? const Color(0xD952C41A)
-                      : const Color(0xD9FF4D4F),
+                      ? CaptchaColorScheme.of(context).successIconBg
+                      : CaptchaColorScheme.of(context).failIconBg,
                 ),
                 child: Center(
                   child: Text(
@@ -342,8 +346,8 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                   color: success
-                      ? const Color(0xFF389E0D)
-                      : const Color(0xFFCF1322),
+                      ? CaptchaColorScheme.of(context).successText
+                      : CaptchaColorScheme.of(context).failText,
                 ),
               ),
             ],
@@ -359,9 +363,9 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
       width: widget.width,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F9FA),
+        color: CaptchaColorScheme.of(context).promptBarBg,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE8E8E8)),
+        border: Border.all(color: CaptchaColorScheme.of(context).promptBarBorder),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -369,7 +373,7 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
           Flexible(
             child: Text(
               t('click_prompt'),
-              style: const TextStyle(color: Color(0xFF666666), fontSize: 14),
+              style: TextStyle(color: CaptchaColorScheme.of(context).promptText, fontSize: 14),
             ),
           ),
           const SizedBox(width: 8),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../core/theme.dart';
+
 
 import '../core/backend.dart';
 import '../core/i18n.dart';
@@ -148,11 +150,37 @@ class PopupCaptcha extends StatefulWidget {
 }
 
 class _PopupCaptchaState extends State<PopupCaptcha> {
+  /// Outer horizontal margin around the card.
+  static const double cardMargin = 16;
+
+  /// Card inner padding (all sides). Matches iOS's `.padding(12)`, so the gap
+  /// between the captcha and the card edge is 12 on each side.
+  static const double cardPadding = 12;
+
   @override
   void initState() {
     super.initState();
     widget.onOpen?.call();
   }
+
+  /// The width actually handed to the embedded captcha.
+  ///
+  /// The image is generated at the width we request, and the drag/click
+  /// coordinates are reported in the width we render. If those two ever
+  /// disagree, every verification is off by the compression ratio. So the
+  /// card is sized FROM the captcha width instead of clamping it to a fixed
+  /// max, and [captchaWidth] is what we request AND render.
+  double get _captchaWidth {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final requested = widget.type == 'click'
+        ? widget.clickOptions.width
+        : widget.sliderOptions.width;
+    final available =
+        screenWidth - 2 * cardMargin - 2 * cardPadding;
+    return requested <= available ? requested : available;
+  }
+
+  double get cardWidth => _captchaWidth + 2 * cardPadding;
 
   String get _displayTitle => widget.title.isNotEmpty
       ? widget.title
@@ -190,7 +218,7 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
                   onTap: () {
                     if (widget.maskClosable) hide();
                   },
-                  child: Container(color: const Color(0x80000000)),
+                  child: Container(color: CaptchaColorScheme.of(context).popupMask),
                 ),
               ),
             ),
@@ -199,10 +227,9 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
                 container: true,
                 label: _displayTitle,
                 child: Container(
-                  constraints: const BoxConstraints(maxWidth: 320),
-                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  width: cardWidth,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: CaptchaColorScheme.of(context).popupCard,
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: const [
                       BoxShadow(
@@ -217,7 +244,7 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
                     children: [
                       _buildHeader(),
                       Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(cardPadding),
                         child: _buildBody(),
                       ),
                     ],
@@ -234,9 +261,9 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: Color(0xFFEEEEEE)),
+          bottom: BorderSide(color: CaptchaColorScheme.of(context).popupSeparator),
         ),
       ),
       child: Row(
@@ -244,10 +271,10 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
         children: [
           Text(
             _displayTitle,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF333333),
+              color: CaptchaColorScheme.of(context).popupTitle,
             ),
           ),
           if (widget.showClose)
@@ -259,12 +286,12 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
                 child: SizedBox(
                   width: 24,
                   height: 24,
-                  child: const Center(
+                  child: Center(
                     child: Text(
                       '×',
                       style: TextStyle(
                         fontSize: 20,
-                        color: Color(0xFF999999),
+                        color: CaptchaColorScheme.of(context).popupClose,
                         height: 1.0,
                       ),
                     ),
@@ -284,7 +311,7 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
       return ClickCaptcha(
         backend: widget.backend,
         locale: widget.locale,
-        width: c.width,
+        width: _captchaWidth,
         height: c.height,
         showRefresh: c.showRefresh,
         onSuccess: handleSuccess,
@@ -296,7 +323,7 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
     return SliderCaptcha(
       backend: widget.backend,
       locale: widget.locale,
-      width: o.width,
+      width: _captchaWidth,
       height: o.height,
       sliderWidth: o.sliderWidth,
       sliderHeight: o.sliderHeight,

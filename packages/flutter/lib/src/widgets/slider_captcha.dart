@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/backend.dart';
 import '../core/i18n.dart';
+import '../core/theme.dart';
 
 /// Slider captcha widget (backend-driven).
 ///
@@ -56,6 +57,17 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
   bool _loading = false;
   String _errorMsg = '';
   bool _isDragging = false;
+  /// Guards against a second verify while one is in flight.
+  bool _verifying = false;
+
+  /// Cached image providers.
+  ///
+  /// `resolveCaptchaImage` returns a NEW provider instance on every call, so
+  /// calling it inside `build` makes Flutter re-decode the image on every
+  /// rebuild — the drag loop rebuilds per frame, which is what makes the
+  /// background flicker. Cache the provider keyed by its source string.
+  ImageProvider? _bgProvider;
+  ImageProvider? _sliderProvider;
 
   @override
   void initState() {
@@ -90,8 +102,14 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
       if (!mounted) return;
       setState(() {
         _captchaId = d.captchaId;
-        _bgImage = d.bgImage;
-        _sliderImage = d.sliderImage ?? '';
+        if (d.bgImage != _bgImage) {
+          _bgImage = d.bgImage;
+          _bgProvider = resolveCaptchaImage(d.bgImage);
+        }
+        if ((d.sliderImage ?? '') != _sliderImage) {
+          _sliderImage = d.sliderImage ?? '';
+          _sliderProvider = _sliderImage.isEmpty ? null : resolveCaptchaImage(_sliderImage);
+        }
         _sliderY = d.sliderY ?? 0;
       });
     } catch (e) {
@@ -119,9 +137,11 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
   Future<void> _onDragEnd(DragEndDetails _) async {
     if (!_isDragging) return;
     setState(() => _isDragging = false);
-    if (_status.isNotEmpty || _loading || _captchaId.isEmpty) return;
+    if (_status.isNotEmpty || _loading || _verifying || _captchaId.isEmpty) return;
 
-    setState(() => _loading = true);
+    // Deliberately not setting `_loading` here: it also hides the slider piece
+    // (`!_loading`), so the piece would blink out the instant the drag ends.
+    _verifying = true;
     try {
       final res = await verifyCaptcha(
         widget.backend,
@@ -145,7 +165,7 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
       setState(() => _status = 'fail');
       _scheduleReload();
     } finally {
-      if (mounted) setState(() => _loading = false);
+      _verifying = false;
     }
   }
 
@@ -159,8 +179,11 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
   @override
   Widget build(BuildContext context) {
     const barHeight = 40.0;
+    // No horizontal padding: `width` is the exact occupied width. The popup
+    // sizes its card from this, and any hidden padding here would both widen
+    // the card and compress the rendered captcha below the requested width.
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      width: widget.width,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -196,11 +219,12 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            if (_bgImage.isNotEmpty)
+            if (_bgProvider != null)
               Positioned.fill(
                 child: Image(
-                  image: resolveCaptchaImage(_bgImage),
+                  image: _bgProvider!,
                   fit: BoxFit.fill,
+                  gaplessPlayback: true,
                 ),
               )
             else
@@ -213,15 +237,16 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
                   ),
                 ),
               ),
-            if (_sliderImage.isNotEmpty && !_loading)
+            if (_sliderProvider != null && !_loading)
               Positioned(
                 left: _sliderX,
                 top: _sliderY,
                 child: Image(
-                  image: resolveCaptchaImage(_sliderImage),
+                  image: _sliderProvider!,
                   width: widget.sliderWidth,
                   height: widget.sliderHeight,
                   fit: BoxFit.fill,
+                  gaplessPlayback: true,
                 ),
               ),
             if (widget.showRefresh && !_loading)
@@ -252,14 +277,14 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: const Color(0xE6FFFFFF),
+                color: CaptchaColorScheme.of(context).refreshBtnBg,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
                   '⟳',
                   style: TextStyle(
-                    color: Color(0xFF666666),
+                    color: CaptchaColorScheme.of(context).sliderHintText,
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                   ),
@@ -287,7 +312,7 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
           );
         },
         child: Container(
-          color: const Color(0xBFFFFFFF),
+          color: CaptchaColorScheme.of(context).statusOverlayBg,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -297,8 +322,8 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: success
-                      ? const Color(0xD952C41A)
-                      : const Color(0xD9FF4D4F),
+                      ? CaptchaColorScheme.of(context).successIconBg
+                      : CaptchaColorScheme.of(context).failIconBg,
                 ),
                 child: Center(
                   child: Text(
@@ -314,8 +339,8 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                   color: success
-                      ? const Color(0xFF389E0D)
-                      : const Color(0xFFCF1322),
+                      ? CaptchaColorScheme.of(context).successText
+                      : CaptchaColorScheme.of(context).failText,
                 ),
               ),
             ],
@@ -327,11 +352,12 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
   }
 
   Widget _buildSliderBar(double barHeight) {
+    final scheme = CaptchaColorScheme.of(context);
     return Container(
       width: widget.width,
       height: barHeight,
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F9FA),
+        color: CaptchaColorScheme.of(context).sliderBarBg,
         borderRadius: BorderRadius.circular(8),
       ),
       child: GestureDetector(
@@ -344,7 +370,7 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
             Center(
               child: Text(
                 t('slider_hint'),
-                style: const TextStyle(color: Color(0xFF666666), fontSize: 14),
+                style: TextStyle(color: CaptchaColorScheme.of(context).sliderHintText, fontSize: 14),
               ),
             ),
             Positioned(
@@ -358,8 +384,8 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
                 child: Container(
                   width: widget.sliderWidth,
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: const Color(0xFFE1E4E8)),
+                    color: scheme.sliderThumbBg,
+                    border: Border.all(color: CaptchaColorScheme.of(context).sliderThumbBorder),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(

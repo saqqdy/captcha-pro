@@ -180,12 +180,27 @@ A plugin package is verified with the analyzer, not with `flutter build`:
 
 ```bash
 cd packages/flutter
+flutter pub get
 flutter analyze
 ```
 
 You should see `No issues found!` — that means the code is valid and the package is healthy.
 
 > **This is expected, not an error:** if you run `flutter build apk` here you will get `Target file "lib/main.dart" not found`. That is because this is a plugin package, not an app. Use `flutter analyze` as your verification step.
+
+### 3. Run the example app
+
+To actually see the widgets on screen, run the companion app in `examples/flutter`:
+
+```bash
+cd ../../server/node && pnpm install && pnpm dev   # backend on :3001
+cd ../../examples/flutter
+flutter pub get
+flutter run -d "iPhone 16e"                        # iOS simulator
+```
+
+See [examples/flutter/README.md](../../examples/flutter/README.md) for the full
+setup, platform-specific backend URLs, and hot-reload keys.
 
 ### 3. How to actually see a captcha
 
