@@ -4,4 +4,9 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Debug backend serves plain HTTP. From targetSdk 28 up, cleartext is
+         blocked unless opted into, so the captcha images silently fail to load
+         on a real device. Debug/profile only; release keeps the default. -->
+    <application android:usesCleartextTraffic="true" />
 </manifest>

@@ -49,7 +49,13 @@ flutter run
 | Android 模拟器 | `http://10.0.2.2:3001`（`10.0.2.2` 是宿主 loopback 别名） |
 | 真机 | `http://<宿主局域网 IP>:3001` |
 
-如需切换地址，改 [lib/main.dart](lib/main.dart) 顶部的 `_backend` 常量即可。
+如需切换地址，改 [lib/main.dart](lib/main.dart) 顶部的 `_backend` 常量即可（它已按 `Platform.isAndroid` 自动选 `10.0.2.2`）。
+
+后端默认只监听 `::1`，Android 模拟器与真机都连不上，启动时必须显式绑定到所有网卡：
+
+```bash
+HOST=0.0.0.0 pnpm dev:server
+```
 
 ### 调试
 
@@ -63,7 +69,12 @@ flutter build ios --simulator
 flutter build apk --debug
 ```
 
-> Android 路径在本机可能不可用：模拟器在这台 Intel Mac 上常无法启动，优先用 iOS 模拟器验证。
+> **Android 路径在本机可能不可用**，优先用 iOS 模拟器验证。两个已知卡点：
+>
+> 1. 模拟器起不来——`emulator -accel-check` 返回 `accel: 0`（无硬件加速），只能软件渲染，冷启动后长期停在 `emulator-5554 offline`。
+> 2. Gradle 下载断流——`gradle-9.1.0-all.zip` 从 `services.gradle.org` 下不完（只留下 `.part`），`android/gradle/wrapper/gradle-wrapper.properties` 已改成阿里云镜像。
+>
+> 可行替代：用 USB 真机（`adb devices` 能看到即可），或从 Android Studio 启动 AVD。
 
 ## 功能
 

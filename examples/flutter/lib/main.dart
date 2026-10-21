@@ -9,7 +9,21 @@ import 'package:captcha_pro/captcha_pro.dart';
 /// The Android emulator has its own loopback and reaches the host through the
 /// `10.0.2.2` alias, so pick the host per platform instead of editing this
 /// file each time you switch targets.
-final String _host = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+/// Override with `flutter run --dart-define=CAPTCHA_HOST=<host>`.
+///
+/// Needed on a real device: `10.0.2.2` is the *emulator's* alias for the host
+/// and is not routable there. For USB debugging use
+/// `adb reverse tcp:3001 tcp:3001` and pass `--dart-define=CAPTCHA_HOST=localhost`;
+/// over Wi-Fi pass the host's LAN IP instead.
+/// Read as a `const` so `--dart-define=CAPTCHA_HOST=...` is baked in at compile
+/// time. With a non-const default (e.g. `Platform.isAndroid ? ...`) the whole
+/// expression is evaluated at runtime instead, and the define silently does not
+/// apply. Empty string means "not overridden".
+const String _hostOverride = String.fromEnvironment('CAPTCHA_HOST');
+
+final String _host = _hostOverride.isNotEmpty
+    ? _hostOverride
+    : (Platform.isAndroid ? '10.0.2.2' : 'localhost');
 
 final _backend = BackendConfig(
   getCaptcha: 'http://$_host:3001/api/captcha',

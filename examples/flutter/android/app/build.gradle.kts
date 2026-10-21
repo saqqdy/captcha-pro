@@ -7,7 +7,9 @@ plugins {
 android {
     namespace = "com.captchapro.captcha_pro_example"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // AGP 9.0.1 defaults to build-tools 36.0.0, which is only a half-downloaded
+    // stub in this SDK install; 36.1.0 is present and newer.
+    buildToolsVersion = "36.1.0"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

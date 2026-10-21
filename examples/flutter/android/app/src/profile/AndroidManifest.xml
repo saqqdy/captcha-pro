@@ -4,4 +4,8 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- See debug/AndroidManifest.xml: profile builds also talk to the local
+         plain-HTTP demo backend. -->
+    <application android:usesCleartextTraffic="true" />
 </manifest>
