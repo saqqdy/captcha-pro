@@ -88,9 +88,9 @@ public struct ClickCaptcha: View {
                 // Refresh button
                 if viewModel.showRefresh, !viewModel.loading {
                     Button(action: { viewModel.refresh() }) {
-                        Text("⟳")
+                        Image(systemName: "arrow.clockwise")
                             .foregroundColor(Color.captchaRefreshIcon)
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.system(size: 16, weight: .semibold))
                             .frame(width: 28, height: 28)
                             .background(Color.captchaRefreshBtnBg)
                             .cornerRadius(8)
@@ -107,7 +107,7 @@ public struct ClickCaptcha: View {
                                       ? Color(red: 82/255, green: 196/255, blue: 26/255, opacity: 0.85)
                                       : Color(red: 255/255, green: 77/255, blue: 79/255, opacity: 0.85))
                                 .frame(width: 32, height: 32)
-                            Text(status == .success ? "✓" : "✕")
+                            Image(systemName: status == .success ? "checkmark" : "xmark")
                                 .foregroundColor(.white)
                                 .font(.system(size: 18, weight: .bold))
                         }

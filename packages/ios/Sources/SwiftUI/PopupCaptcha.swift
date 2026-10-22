@@ -160,8 +160,8 @@ public struct PopupCaptcha: View {
             Spacer()
             if showCloseButton {
                 Button(action: { hide() }) {
-                    Text("×")
-                        .font(.system(size: 24))
+                    Image(systemName: "xmark")
+                        .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(Color.captchaPopupClose)
                         .frame(width: 28, height: 28)
                 }

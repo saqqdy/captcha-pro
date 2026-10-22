@@ -78,9 +78,9 @@ public struct SliderCaptcha: View {
                 // Refresh button
                 if viewModel.showRefresh, !viewModel.loading {
                     Button(action: { viewModel.refresh() }) {
-                        Text("⟳")
+                        Image(systemName: "arrow.clockwise")
                             .foregroundColor(Color.captchaRefreshIcon)
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.system(size: 16, weight: .semibold))
                             .frame(width: 28, height: 28)
                             .background(Color.captchaRefreshBtnBg)
                             .cornerRadius(8)
@@ -100,7 +100,7 @@ public struct SliderCaptcha: View {
                                       ? Color(red: 82/255, green: 196/255, blue: 26/255, opacity: 0.85)
                                       : Color(red: 255/255, green: 77/255, blue: 79/255, opacity: 0.85))
                                 .frame(width: 32, height: 32)
-                            Text(status == .success ? "✓" : "✕")
+                            Image(systemName: status == .success ? "checkmark" : "xmark")
                                 .foregroundColor(.white)
                                 .font(.system(size: 18, weight: .bold))
                         }
@@ -147,9 +147,9 @@ public struct SliderCaptcha: View {
                     )
                     .frame(width: 36, height: 36)
                     .overlay(
-                        Text("→")
+                        Image(systemName: "play.fill")
                             .foregroundColor(Color(red: 25/255, green: 145/255, blue: 250/255))
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.system(size: 20))
                     )
                     .offset(x: viewModel.currentX + 2)
                     .gesture(

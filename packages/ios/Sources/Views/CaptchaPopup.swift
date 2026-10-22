@@ -112,9 +112,10 @@ public class PopupCaptchaView: UIView {
         ])
 
         // Close button
-        closeButton.setTitle("×", for: .normal)
-        closeButton.setTitleColor(UIColor.captchaPopupClose, for: .normal)
-        closeButton.titleLabel?.font = .systemFont(ofSize: 24)
+        // SF Symbol rather than the "×" glyph: the glyph renders well below
+        // its point size and does not sit centred in the 28x28 button.
+        closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
+        closeButton.tintColor = UIColor.captchaPopupClose
         closeButton.addTarget(self, action: #selector(hide), for: .touchUpInside)
         closeButton.accessibilityLabel = LocaleMessages.get(locale, key: "popup_close")
         headerView.addSubview(closeButton)

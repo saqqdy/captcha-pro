@@ -21,7 +21,7 @@ public class ClickCaptchaView: UIView {
     private var statusView = UIView()
     private var statusStackView = UIStackView()
     private var statusIconView = UIView()
-    private var statusIconLabel = UILabel()
+    private var statusIconImageView = UIImageView()
     private var statusTextLabel = UILabel()
     private var refreshButton = UIButton()
     private var infoBarView = UIView()
@@ -124,9 +124,11 @@ public class ClickCaptchaView: UIView {
 
         refreshButton.backgroundColor = UIColor.captchaRefreshBtnBg
         refreshButton.layer.cornerRadius = 8
-        refreshButton.setTitle("⟳", for: .normal)
-        refreshButton.setTitleColor(UIColor.captchaRefreshIcon, for: .normal)
-        refreshButton.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        // SF Symbol rather than the "⟳" glyph: the glyph's visual size is well
+        // below its point size and its baseline sits off-centre in the 28x28
+        // button, so it reads small and vertically misaligned.
+        refreshButton.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
+        refreshButton.tintColor = UIColor.captchaRefreshIcon
         refreshButton.addTarget(self, action: #selector(refresh), for: .touchUpInside)
         captchaClipView.addSubview(refreshButton)
         refreshButton.translatesAutoresizingMaskIntoConstraints = false
@@ -168,14 +170,13 @@ public class ClickCaptchaView: UIView {
             statusIconView.heightAnchor.constraint(equalToConstant: 64),
         ])
 
-        statusIconLabel.font = .systemFont(ofSize: 36, weight: .bold)
-        statusIconLabel.textColor = .white
-        statusIconLabel.textAlignment = .center
-        statusIconView.addSubview(statusIconLabel)
-        statusIconLabel.translatesAutoresizingMaskIntoConstraints = false
+        statusIconImageView.tintColor = .white
+        statusIconImageView.contentMode = .center
+        statusIconView.addSubview(statusIconImageView)
+        statusIconImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            statusIconLabel.centerXAnchor.constraint(equalTo: statusIconView.centerXAnchor),
-            statusIconLabel.centerYAnchor.constraint(equalTo: statusIconView.centerYAnchor),
+            statusIconImageView.centerXAnchor.constraint(equalTo: statusIconView.centerXAnchor),
+            statusIconImageView.centerYAnchor.constraint(equalTo: statusIconView.centerYAnchor),
         ])
 
         statusTextLabel.font = .systemFont(ofSize: 14, weight: .medium)
@@ -400,7 +401,7 @@ public class ClickCaptchaView: UIView {
         statusIconView.backgroundColor = success
             ? UIColor(red: 82/255, green: 196/255, blue: 26/255, alpha: 0.85)
             : UIColor(red: 255/255, green: 77/255, blue: 79/255, alpha: 0.85)
-        statusIconLabel.text = success ? "✓" : "✕"
+        statusIconImageView.image = UIImage(systemName: success ? "checkmark" : "xmark")
         statusTextLabel.text = message ?? (success ? LocaleMessages.get(locale, key: "click_success") : LocaleMessages.get(locale, key: "click_fail"))
         statusTextLabel.textColor = success
             ? UIColor.captchaSuccessText
