@@ -288,12 +288,14 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
-                child: Text(
-                  '⟳',
-                  style: TextStyle(
+                // Matches the core SVG (16x16). Locked against text scaling:
+                // this box is a fixed 28x28, so a scaled glyph underflows it
+                // and drifts off centre (MIUI's font_scale can be < 1).
+                child: MediaQuery.withNoTextScaling(
+                  child: Icon(
+                    Icons.refresh,
+                    size: 16,
                     color: CaptchaColorScheme.of(context).promptText,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -333,9 +335,14 @@ class _ClickCaptchaState extends State<ClickCaptcha> {
                       : CaptchaColorScheme.of(context).failIconBg,
                 ),
                 child: Center(
-                  child: Text(
-                    success ? '✓' : '✕',
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                  // 32x32 circle, fixed. Locked against text scaling: a scaled
+                  // glyph underflows the circle and drifts off centre.
+                  child: MediaQuery.withNoTextScaling(
+                    child: Icon(
+                      success ? Icons.check : Icons.close,
+                      size: 18,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

@@ -287,12 +287,14 @@ class _PopupCaptchaState extends State<PopupCaptcha> {
                   width: 24,
                   height: 24,
                   child: Center(
-                    child: Text(
-                      '×',
-                      style: TextStyle(
-                        fontSize: 20,
+                    // Matches the 16x16 close icon core/popup.ts draws. Locked
+                    // against text scaling: the button is a fixed 24x24, so a
+                    // scaled glyph underflows it and drifts off centre.
+                    child: MediaQuery.withNoTextScaling(
+                      child: Icon(
+                        Icons.close,
+                        size: 16,
                         color: CaptchaColorScheme.of(context).popupClose,
-                        height: 1.0,
                       ),
                     ),
                   ),

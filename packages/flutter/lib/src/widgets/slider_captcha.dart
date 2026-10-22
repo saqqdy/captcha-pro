@@ -281,12 +281,14 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Center(
-                child: Text(
-                  '⟳',
-                  style: TextStyle(
+                // Matches the core SVG (16x16). Locked against text scaling:
+                // this box is a fixed 28x28, so a scaled glyph underflows it
+                // and drifts off centre (MIUI's font_scale can be < 1).
+                child: MediaQuery.withNoTextScaling(
+                  child: Icon(
+                    Icons.refresh,
+                    size: 16,
                     color: CaptchaColorScheme.of(context).sliderHintText,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -326,9 +328,14 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
                       : CaptchaColorScheme.of(context).failIconBg,
                 ),
                 child: Center(
-                  child: Text(
-                    success ? '✓' : '✕',
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                  // 32x32 circle, fixed. Locked against text scaling so the
+                  // glyph stays centred instead of drifting under a scaled font.
+                  child: MediaQuery.withNoTextScaling(
+                    child: Icon(
+                      success ? Icons.check : Icons.close,
+                      size: 18,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -389,12 +396,14 @@ class _SliderCaptchaState extends State<SliderCaptcha> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
-                    child: Text(
-                      '→',
-                      style: const TextStyle(
+                    // Matches the 20x20 triangle core/slider.ts draws. Locked
+                    // against text scaling: the thumb is a fixed size, so a
+                    // scaled glyph underflows it and drifts off centre.
+                    child: MediaQuery.withNoTextScaling(
+                      child: const Icon(
+                        Icons.play_arrow,
+                        size: 20,
                         color: Color(0xFF1991FA),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
