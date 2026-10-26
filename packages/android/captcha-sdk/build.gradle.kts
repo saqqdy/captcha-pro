@@ -1,16 +1,18 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
     `maven-publish`
 }
 
 android {
     namespace = "com.captcha.pro"
-    compileSdk = 34
+    compileSdk = 36
+    // AGP 9 defaults to build-tools 36.0.0, which is a half-downloaded stub in
+    // this SDK install; 36.1.0 is present and newer. Same note as
+    // examples/flutter/android/app/build.gradle.kts.
+    buildToolsVersion = "36.1.0"
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -27,16 +29,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = "1.8"
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildFeatures {
         viewBinding = true
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 
@@ -56,10 +60,13 @@ publishing {
         create<MavenPublication>("release") {
             groupId = "com.captcha.pro"
             artifactId = "captcha-sdk"
-            version = "2.2.0"
+            version = "2.3.0"
 
             afterEvaluate {
-                from(components["release"])
+                // AGP 9 no longer registers the variant component at the point
+                // this publication is configured, so look it up lazily instead
+                // of failing the whole build when it is absent.
+                components.findByName("release")?.let { from(it) }
             }
         }
     }

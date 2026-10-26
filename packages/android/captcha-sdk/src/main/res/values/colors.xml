@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Slider colors -->
+    <color name="captcha_slider_bar_bg">#F7F9FA</color>
+    <color name="captcha_slider_hint_text">#666666</color>
+    <color name="captcha_slider_thumb_bg">#FFFFFF</color>
+    <color name="captcha_slider_thumb_border">#E1E4E8</color>
+
+    <!-- Prompt bar colors -->
+    <color name="captcha_prompt_bar_bg">#F7F9FA</color>
+    <color name="captcha_prompt_bar_border">#E8E8E8</color>
+    <color name="captcha_prompt_text">#666666</color>
+
+    <!-- Refresh button colors -->
+    <color name="captcha_refresh_btn_bg">#E6FFFFFF</color>
+    <color name="captcha_refresh_icon">#666666</color>
+
+    <!-- Status overlay colors -->
+    <color name="captcha_status_overlay_bg">#BFFFFFFF</color>
+    <color name="captcha_success_text">#389E0D</color>
+    <color name="captcha_fail_text">#CF1322</color>
+    <color name="captcha_success_icon_bg">#D952C41A</color>
+    <color name="captcha_fail_icon_bg">#D9FF4D4F</color>
+
+    <!-- Popup colors -->
+    <color name="captcha_popup_card">#FFFFFF</color>
+    <color name="captcha_popup_title">#333333</color>
+    <color name="captcha_popup_close">#999999</color>
+    <color name="captcha_popup_separator">#EEEEEE</color>
+    <color name="captcha_popup_mask">#80000000</color>
+</resources>

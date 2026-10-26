@@ -1,0 +1,13 @@
+<resources>
+    <!-- Material 3, not Material Components (M2). examples/flutter's MaterialApp
+         defaults to useMaterial3: true, so M3 is what the Flutter side renders —
+         under M2 the Material 3 type-scale attributes the layouts reference
+         (?attr/textAppearanceTitleMedium) resolve to nothing and the tab titles
+         render at a fraction of their intended size. -->
+    <style name="Theme.CaptchaSample" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#667EEA</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#667EEA</item>
+        <item name="colorOnPrimaryContainer">#FFFFFF</item>
+    </style>
+</resources>

@@ -17,6 +17,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +38,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.captcha.pro.core.BackendVerifyOptions
 import com.captcha.pro.core.CaptchaGenerator
 import com.captcha.pro.core.CaptchaLocale
@@ -75,6 +81,7 @@ fun ClickCaptcha(
     onRefresh: () -> Unit = {},
     onError: (Throwable) -> Unit = {},
 ) {
+    val colors = CaptchaColorScheme.get()
     val generator = remember { CaptchaGenerator() }
     val scope = rememberCoroutineScope()
 
@@ -173,8 +180,9 @@ fun ClickCaptcha(
             modifier = Modifier
                 .width(width.dp)
                 .height(height.dp)
-                .shadow(8.dp, RoundedCornerShape(16.dp))
-                .clip(RoundedCornerShape(16.dp))
+                // 8, matching BorderRadius.circular(8) in click_captcha.dart.
+                .shadow(8.dp, RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(8.dp))
                 .background(Brush.linearGradient(gradientColors))
         ) {
             // Background image
@@ -204,6 +212,8 @@ fun ClickCaptcha(
             } ?: Text(
                 text = errorMsg ?: LocaleMessages.get(locale, "loading"),
                 color = Color.White,
+                // 14, matching the loading Text in click_captcha.dart.
+                style = MaterialTheme.typography.body2,
                 modifier = Modifier.align(Alignment.Center)
             )
 
@@ -221,7 +231,9 @@ fun ClickCaptcha(
                     Text(
                         text = "${point.index + 1}",
                         color = Color.White,
-                        style = MaterialTheme.typography.caption
+                        // 12 bold, matching the marker Text in click_captcha.dart.
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -231,6 +243,9 @@ fun ClickCaptcha(
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
+                        // Flutter's 44dp hit box is Positioned(top: 8, right: 8)
+                        // (the 28dp visual is centred inside it).
+                        .offset(x = (-8).dp, y = 8.dp)
                         .size(44.dp)
                         .semantics {
                             role = Role.Button
@@ -243,10 +258,19 @@ fun ClickCaptcha(
                         modifier = Modifier
                             .size(28.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .background(Color.White.copy(alpha = 0.9f)),
+                            .background(colors.refreshBtnBg),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("⟳", color = Color(0xFF666666))
+                        // Material icon rather than the "⟳" glyph: the glyph
+                        // renders well below its point size and its baseline
+                        // sits off-centre in this fixed 28dp box. The label
+                        // lives on the 44dp parent, so no description here.
+                        Icon(
+                            Icons.Filled.Refresh,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = colors.promptText
+                        )
                     }
                 }
             }
@@ -263,7 +287,7 @@ fun ClickCaptcha(
                     modifier = Modifier
                         .fillMaxSize()
                         .semantics { liveRegion = LiveRegionMode.Polite }
-                        .background(Color.White.copy(alpha = 0.75f)),
+                        .background(colors.statusOverlayBg),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -272,15 +296,17 @@ fun ClickCaptcha(
                                 .size(32.dp)
                                 .clip(CircleShape)
                                 .background(
-                                    if (s == "success") Color(0xFF52C41A).copy(alpha = 0.85f)
-                                    else Color(0xFFFF4D4F).copy(alpha = 0.85f)
+                                    if (s == "success") colors.successIconBg
+                                    else colors.failIconBg
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = if (s == "success") "✓" else "✕",
-                                color = Color.White,
-                                style = MaterialTheme.typography.h6
+                            // Material icons rather than the "✓"/"✕" glyphs.
+                            Icon(
+                                if (s == "success") Icons.Filled.Check else Icons.Filled.Close,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                                tint = Color.White
                             )
                         }
                         Spacer(modifier = Modifier.height(8.dp))
@@ -288,7 +314,9 @@ fun ClickCaptcha(
                             text = if (s == "success")
                                 LocaleMessages.get(locale, "click_success")
                             else LocaleMessages.get(locale, "click_fail"),
-                            color = if (s == "success") Color(0xFF389E0D) else Color(0xFFCF1322)
+                            // 13, matching the status Text in click_captcha.dart.
+                            fontSize = 13.sp,
+                            color = if (s == "success") colors.successText else colors.failText
                         )
                     }
                 }
@@ -300,9 +328,9 @@ fun ClickCaptcha(
         // Prompt bar
         Surface(
             modifier = Modifier.fillMaxWidth(),
-            color = Color(0xFFF7F9FA),
+            color = colors.promptBarBg,
             shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, Color(0xFFE8E8E8))
+            border = BorderStroke(1.dp, colors.promptBarBorder)
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
@@ -314,7 +342,7 @@ fun ClickCaptcha(
                 ) {
                     Text(
                         text = LocaleMessages.get(locale, "click_prompt"),
-                        color = Color(0xFF666666),
+                        color = colors.promptText,
                         style = MaterialTheme.typography.body2
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -322,7 +350,11 @@ fun ClickCaptcha(
                         charBitmaps.forEachIndexed { i, bitmap ->
                             Box(
                                 modifier = Modifier
-                                    .padding(start = 6.dp)
+                                    // Flutter puts the 6 gap *between* cells
+                                    // (if (i > 0) SizedBox(width: 6)); the 8
+                                    // gap after the prompt text already
+                                    // separates the first one.
+                                    .padding(start = if (i == 0) 0.dp else 6.dp)
                                     .size(28.dp)
                                     .shadow(2.dp, RoundedCornerShape(8.dp))
                                     .clip(RoundedCornerShape(8.dp))
@@ -337,10 +369,10 @@ fun ClickCaptcha(
                             }
                         }
                     } else {
-                        clickTexts.forEach { char ->
+                        clickTexts.forEachIndexed { i, char ->
                             Box(
                                 modifier = Modifier
-                                    .padding(start = 6.dp)
+                                    .padding(start = if (i == 0) 0.dp else 6.dp)
                                     .size(28.dp)
                                     .shadow(2.dp, RoundedCornerShape(8.dp))
                                     .clip(RoundedCornerShape(8.dp))

@@ -14,6 +14,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +39,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.captcha.pro.core.BackendVerifyOptions
 import com.captcha.pro.core.CaptchaGenerator
 import com.captcha.pro.core.CaptchaLocale
@@ -62,6 +68,7 @@ fun SliderCaptcha(
     onRefresh: () -> Unit = {},
     onError: (Throwable) -> Unit = {},
 ) {
+    val colors = CaptchaColorScheme.get()
     val generator = remember { CaptchaGenerator() }
     val scope = rememberCoroutineScope()
 
@@ -138,8 +145,9 @@ fun SliderCaptcha(
             modifier = Modifier
                 .width(width.dp)
                 .height(height.dp)
-                .shadow(8.dp, RoundedCornerShape(16.dp))
-                .clip(RoundedCornerShape(16.dp))
+                // 8, matching BorderRadius.circular(8) in slider_captcha.dart.
+                .shadow(8.dp, RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(8.dp))
                 .background(Brush.linearGradient(gradientColors))
         ) {
             // Background image
@@ -157,6 +165,8 @@ fun SliderCaptcha(
             } ?: Text(
                 text = errorMsg ?: LocaleMessages.get(locale, "loading"),
                 color = Color.White,
+                // 14, matching the loading Text in slider_captcha.dart.
+                style = MaterialTheme.typography.body2,
                 modifier = Modifier.align(Alignment.Center)
             )
 
@@ -181,6 +191,9 @@ fun SliderCaptcha(
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
+                        // Flutter's 44dp hit box is Positioned(top: 8, right: 8)
+                        // (the 28dp visual is centred inside it).
+                        .offset(x = (-8).dp, y = 8.dp)
                         .size(44.dp)
                         .semantics {
                             role = Role.Button
@@ -193,10 +206,19 @@ fun SliderCaptcha(
                         modifier = Modifier
                             .size(28.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .background(Color.White.copy(alpha = 0.9f)),
+                            .background(colors.refreshBtnBg),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("⟳", color = Color(0xFF666666))
+                        // Material icon rather than the "⟳" glyph: the glyph
+                        // renders well below its point size and its baseline
+                        // sits off-centre in this fixed 28dp box. The label
+                        // lives on the 44dp parent, so no description here.
+                        Icon(
+                            Icons.Filled.Refresh,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = colors.sliderHintText
+                        )
                     }
                 }
             }
@@ -213,7 +235,7 @@ fun SliderCaptcha(
                     modifier = Modifier
                         .fillMaxSize()
                         .semantics { liveRegion = LiveRegionMode.Polite }
-                        .background(Color.White.copy(alpha = 0.75f)),
+                        .background(colors.statusOverlayBg),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -222,15 +244,17 @@ fun SliderCaptcha(
                                 .size(32.dp)
                                 .clip(CircleShape)
                                 .background(
-                                    if (s == "success") Color(0xFF52C41A).copy(alpha = 0.85f)
-                                    else Color(0xFFFF4D4F).copy(alpha = 0.85f)
+                                    if (s == "success") colors.successIconBg
+                                    else colors.failIconBg
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = if (s == "success") "✓" else "✕",
-                                color = Color.White,
-                                style = MaterialTheme.typography.h6
+                            // Material icons rather than the "✓"/"✕" glyphs.
+                            Icon(
+                                if (s == "success") Icons.Filled.Check else Icons.Filled.Close,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                                tint = Color.White
                             )
                         }
                         Spacer(modifier = Modifier.height(8.dp))
@@ -238,7 +262,9 @@ fun SliderCaptcha(
                             text = if (s == "success")
                                 LocaleMessages.get(locale, "slider_success")
                             else LocaleMessages.get(locale, "slider_fail"),
-                            color = if (s == "success") Color(0xFF389E0D) else Color(0xFFCF1322)
+                            // 13, matching the status Text in slider_captcha.dart.
+                            fontSize = 13.sp,
+                            color = if (s == "success") colors.successText else colors.failText
                         )
                     }
                 }
@@ -251,9 +277,10 @@ fun SliderCaptcha(
         Box(
             modifier = Modifier
                 .width(width.dp)
-                .height(42.dp)
+                // barHeight = 40.0 in slider_captcha.dart (was 42).
+                .height(40.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(Color(0xFFF7F9FA))
+                .background(colors.sliderBarBg)
                 .pointerInput(Unit) {
                     detectHorizontalDragGestures(
                         onDragEnd = { if (status == null) verify() }
@@ -267,16 +294,20 @@ fun SliderCaptcha(
             // Hint text centered
             Text(
                 text = LocaleMessages.get(locale, "slider_hint"),
-                color = Color(0xFF666666),
+                color = colors.sliderHintText,
+                // 14, matching the hint Text in slider_captcha.dart.
+                style = MaterialTheme.typography.body2,
                 modifier = Modifier.align(Alignment.Center)
             )
 
             // Thumb
             Surface(
                 modifier = Modifier
-                    .offset(x = currentX.dp, y = 2.dp)
+                    // Full-height thumb (Flutter: Positioned top:0 bottom:0),
+                    // so no y offset and the bar's 40dp height.
+                    .offset(x = currentX.dp)
                     .width(42.dp)
-                    .height(42.dp)
+                    .height(40.dp)
                     .semantics {
                         contentDescription = LocaleMessages.get(locale, "slider_hint")
                         progressBarRangeInfo = ProgressBarRangeInfo(
@@ -288,14 +319,18 @@ fun SliderCaptcha(
                             true
                         }
                     },
-                color = Color.White,
+                color = colors.sliderThumbBg,
                 shape = RoundedCornerShape(8.dp),
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE1E4E8))
+                border = androidx.compose.foundation.BorderStroke(1.dp, colors.sliderThumbBorder)
             ) {
-                Text(
-                    "→",
-                    color = Color(0xFF1991FA),
-                    modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center)
+                // Material icon rather than the "→" glyph: the glyph renders
+                // well below its point size and its baseline is hard to centre
+                // in the thumb. Matches the 20dp triangle core/slider.ts draws.
+                Icon(
+                    Icons.Filled.PlayArrow,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = Color(0xFF1991FA)
                 )
             }
         }

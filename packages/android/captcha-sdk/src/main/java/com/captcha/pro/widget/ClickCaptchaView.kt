@@ -1,4 +1,7 @@
+
 package com.captcha.pro.widget
+import com.captcha.pro.core.CaptchaColors
+import com.captcha.pro.R
 
 import android.content.Context
 import android.graphics.*
@@ -42,7 +45,7 @@ class ClickCaptchaView @JvmOverloads constructor(
     private val clickOverlayView: ClickOverlayView
     private val loadingView: TextView
     private val statusOverlay: StatusOverlayView
-    private val refreshBtn: TextView
+    private val refreshBtn: ImageView
     private val promptBar: LinearLayout
 
     var callback: ClickCaptchaCallback? = null
@@ -75,10 +78,16 @@ class ClickCaptchaView @JvmOverloads constructor(
     private var currentJob: Job? = null
 
     init {
+        // See SliderCaptchaView: bgView's shadow falls outside this view's
+        // bounds, so children must be allowed to draw outside it.
+        clipChildren = false
+
         val gradientDrawable = GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
             intArrayOf(Color.parseColor("#667eea"), Color.parseColor("#764ba2"))
-        ).apply { cornerRadius = 16f * density }
+        // 8, matching BorderRadius.circular(8) on the captcha card in
+        // click_captcha.dart (and iOS captchaClipView's cornerRadius).
+        ).apply { cornerRadius = 8f * density }
 
         bgView = ImageView(context).apply {
             scaleType = ImageView.ScaleType.FIT_XY
@@ -87,42 +96,58 @@ class ClickCaptchaView @JvmOverloads constructor(
             contentDescription = LocaleMessages.get(locale, "click_prompt")
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
-                    outline.setRoundRect(0, 0, view.width, view.height, 16f * density)
+                    outline.setRoundRect(0, 0, view.width, view.height, 8f * density)
                 }
             }
             clipToOutline = true
             elevation = 8f * density
         }
-        addView(bgView, LayoutParams(captchaWidth, captchaHeight))
+        // captchaWidth/Height are logical pixels (see SliderCaptchaView): scale
+        // by density for rendering only, so the click coordinates sent for
+        // verification stay in the backend's 0..300 image space.
+        addView(bgView, LayoutParams(dp(captchaWidth), dp(captchaHeight)))
+
+        // See SliderCaptchaView: overlays need a higher elevation than bgView
+        // or the image covers them regardless of add order.
+        val overlayElevation = 9f * density
 
         loadingView = TextView(context).apply {
             text = LocaleMessages.get(locale, "loading")
             textSize = 14f
             setTextColor(Color.WHITE)
             gravity = Gravity.CENTER
+            elevation = overlayElevation
         }
-        addView(loadingView, LayoutParams(captchaWidth, captchaHeight))
+        addView(loadingView, LayoutParams(dp(captchaWidth), dp(captchaHeight)))
 
         clickOverlayView = ClickOverlayView(context)
-        addView(clickOverlayView, LayoutParams(captchaWidth, captchaHeight))
+        clickOverlayView.elevation = overlayElevation
+        addView(clickOverlayView, LayoutParams(dp(captchaWidth), dp(captchaHeight)))
 
-        refreshBtn = TextView(context).apply {
-            text = "⟳"
-            textSize = 16f
-            setTextColor(Color.parseColor("#666666"))
-            gravity = Gravity.CENTER
+        refreshBtn = ImageView(context).apply {
+            // Vector drawable rather than the "⟳" glyph: the glyph renders well
+            // below its point size and its baseline sits off-centre in this
+            // fixed 28dp box. Matches the core SVG (16dp).
+            setImageResource(R.drawable.ic_captcha_refresh)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            // 28dp hit box with a 16dp glyph: 6dp padding each side.
+            setPadding(dp(6), dp(6), dp(6), dp(6))
+            setColorFilter(CaptchaColors.getPromptText(context))
             background = GradientDrawable().apply {
-                setColor(Color.argb(230, 255, 255, 255))
+                setColor(CaptchaColors.getRefreshBtnBg(context))
                 cornerRadius = 8f * density
             }
             // a11y: label refresh button for TalkBack
             contentDescription = LocaleMessages.get(locale, "refresh")
             setOnClickListener { refresh() }
+            elevation = overlayElevation
         }
         addView(refreshBtn, LayoutParams(dp(28), dp(28)).apply {
             gravity = Gravity.TOP or Gravity.END
-            topMargin = dp(8)
-            marginEnd = dp(8)
+            // See SliderCaptchaView: Flutter centres the 28dp box inside a
+            // 44dp Positioned(top: 8, right: 8) -> 16 from each edge.
+            topMargin = dp(16)
+            marginEnd = dp(16)
         })
 
         // a11y: expand refresh touch target to 48dp (visual 28dp unchanged, centered)
@@ -136,25 +161,31 @@ class ClickCaptchaView @JvmOverloads constructor(
         }
 
         statusOverlay = StatusOverlayView(context)
+        statusOverlay.elevation = overlayElevation
         // a11y: announce status changes (success/fail) via polite live region
         ViewCompat.setAccessibilityLiveRegion(
             statusOverlay,
             ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE
         )
-        addView(statusOverlay, LayoutParams(captchaWidth, captchaHeight))
+        addView(statusOverlay, LayoutParams(dp(captchaWidth), dp(captchaHeight)))
 
         promptBar = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
+            // See SliderCaptchaView's sliderBar: raise above bgView's shadow,
+            // and null out the outline so the bar itself casts none (Flutter's
+            // prompt bar has no boxShadow).
+            elevation = overlayElevation
+            outlineProvider = null
             background = GradientDrawable().apply {
-                setColor(Color.parseColor("#F7F9FA"))
+                setColor(CaptchaColors.getPromptBarBg(context))
                 cornerRadius = 16f * density
-                setStroke(dp(1), Color.parseColor("#E8E8E8"))
+                setStroke(dp(1), CaptchaColors.getPromptBarBorder(context))
             }
             setPadding(dp(12), dp(10), dp(12), dp(10))
         }
-        addView(promptBar, LayoutParams(captchaWidth, LayoutParams.WRAP_CONTENT).apply {
-            topMargin = captchaHeight + dp(12)
+        addView(promptBar, LayoutParams(dp(captchaWidth), LayoutParams.WRAP_CONTENT).apply {
+            topMargin = dp(captchaHeight) + dp(12)
         })
     }
 
@@ -216,7 +247,7 @@ class ClickCaptchaView @JvmOverloads constructor(
         promptBar.addView(TextView(context).apply {
             text = LocaleMessages.get(locale, "click_prompt")
             textSize = 14f
-            setTextColor(Color.parseColor("#666666"))
+            setTextColor(CaptchaColors.getPromptText(context))
         }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
             marginEnd = dp(8)
         })
@@ -227,19 +258,17 @@ class ClickCaptchaView @JvmOverloads constructor(
         ).apply { cornerRadius = 8f * density }
 
         if (clickCharBitmaps.isNotEmpty()) {
-            for (bmp in clickCharBitmaps) {
+            for ((i, bmp) in clickCharBitmaps.withIndex()) {
                 promptBar.addView(ImageView(context).apply {
                     setImageBitmap(bmp)
                     scaleType = ImageView.ScaleType.FIT_CENTER
                     background = charBg
                     setPadding(dp(4), dp(4), dp(4), dp(4))
                     elevation = 2f * density
-                }, LinearLayout.LayoutParams(dp(28), dp(28)).apply {
-                    marginStart = dp(6)
-                })
+                }, cellParams(i))
             }
         } else {
-            for (text in clickTexts) {
+            for ((i, text) in clickTexts.withIndex()) {
                 promptBar.addView(TextView(context).apply {
                     this.text = text
                     textSize = 16f
@@ -247,23 +276,35 @@ class ClickCaptchaView @JvmOverloads constructor(
                     gravity = Gravity.CENTER
                     background = charBg
                     elevation = 2f * density
-                }, LinearLayout.LayoutParams(dp(28), dp(28)).apply {
-                    marginStart = dp(6)
-                })
+                }, cellParams(i))
             }
         }
     }
 
+    /**
+     * Flutter puts the 6 gap *between* cells (`if (i > 0) SizedBox(width: 6)`),
+     * not before the first one — the 8 gap after the prompt text already
+     * separates it.
+     */
+    private fun cellParams(index: Int) =
+        LinearLayout.LayoutParams(dp(28), dp(28)).apply {
+            if (index > 0) marginStart = dp(6)
+        }
+
     private fun promptCount(): Int = if (clickCharBitmaps.isNotEmpty()) clickCharBitmaps.size else clickTexts.size
 
+    /** x/y are raw touch px from [onTouchEvent]; the overlay draws in px too. */
     private fun handleClick(x: Float, y: Float) {
         if (clickPoints.size >= promptCount() || statusOverlay.visibility == View.VISIBLE) return
 
         statisticsData.totalClickCount++
-        clickPoints.add(CaptchaPoint(x, y))
+        // Verification expects image coordinates (0..captchaWidth), so drop the
+        // density the layout applied.
+        val point = CaptchaPoint(x / density, y / density)
+        clickPoints.add(point)
         clickOverlayView.addClickPoint(x, y, clickPoints.size)
 
-        callback?.onClick(CaptchaPoint(x, y), clickPoints.size)
+        callback?.onClick(point, clickPoints.size)
 
         if (clickPoints.size >= promptCount()) {
             postDelayed({ verify() }, 100)

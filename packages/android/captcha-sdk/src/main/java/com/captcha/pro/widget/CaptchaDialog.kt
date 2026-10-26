@@ -1,14 +1,20 @@
+
 package com.captcha.pro.widget
+import com.captcha.pro.core.CaptchaColors
+import com.captcha.pro.R
 
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
+import android.view.TouchDelegate
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.AccessibilityDelegateCompat
@@ -49,7 +55,7 @@ class CaptchaDialog(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT
             )
-            setBackgroundDrawable(ColorDrawable(Color.argb(128, 0, 0, 0)))
+            setBackgroundDrawable(ColorDrawable(CaptchaColors.getPopupMask(context)))
         }
     }
 
@@ -58,7 +64,7 @@ class CaptchaDialog(
         fun dp(v: Int) = (v * density).toInt()
 
         val cardDrawable = GradientDrawable().apply {
-            setColor(Color.WHITE)
+            setColor(CaptchaColors.getPopupCard(context))
             cornerRadius = 24f * density
         }
 
@@ -66,7 +72,10 @@ class CaptchaDialog(
             orientation = LinearLayout.VERTICAL
             background = cardDrawable
             elevation = 8f * density
-            setPadding(dp(24), dp(24), dp(24), dp(24))
+            // Same as the captcha card: let its shadow spill outside.
+            clipChildren = false
+            // No card padding: popup_captcha.dart pads the header (16x12) and
+            // the body (12) separately, so cardWidth == captchaWidth + 24.
             isClickable = true
         }
 
@@ -84,6 +93,10 @@ class CaptchaDialog(
         })
 
         card.addView(createHeader())
+        // Flutter's header carries Border(bottom: BorderSide(popupSeparator)).
+        card.addView(View(context).apply {
+            setBackgroundColor(CaptchaColors.getPopupSeparator(context))
+        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(1)))
 
         captchaView = when (type) {
             CaptchaType.SLIDER -> SliderCaptchaView(context).apply {
@@ -134,10 +147,15 @@ class CaptchaDialog(
             }
         }
 
-        card.addView(captchaView)
+        // Padding(all: cardPadding) around the body in popup_captcha.dart.
+        card.addView(captchaView, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        ).apply { setMargins(dp(12), dp(12), dp(12), dp(12)) })
 
         return FrameLayout(context).apply {
             setOnClickListener { if (maskClosable) dismiss() }
+            clipChildren = false
             val cardParams = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.WRAP_CONTENT,
                 FrameLayout.LayoutParams.WRAP_CONTENT,
@@ -153,27 +171,49 @@ class CaptchaDialog(
 
         val displayTitle = if (title.isNotEmpty()) title else LocaleMessages.get(locale, "popup_title")
 
+        var closeBtn: ImageView? = null
         return LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setPadding(0, 0, 0, dp(16))
+            // EdgeInsets.symmetric(horizontal: 16, vertical: 12) in
+            // popup_captcha.dart's header.
+            setPadding(dp(16), dp(12), dp(16), dp(12))
 
             addView(TextView(context).apply {
                 text = displayTitle
                 textSize = 16f
-                setTextColor(Color.parseColor("#333333"))
+                setTextColor(CaptchaColors.getPopupTitle(context))
             }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
 
             if (showClose) {
-                addView(TextView(context).apply {
-                    text = "×"
-                    textSize = 20f
-                    setTextColor(Color.parseColor("#999999"))
-                    setPadding(dp(12), 0, dp(12), 0)
+                closeBtn = ImageView(context).apply {
+                    // Vector drawable rather than the "×" glyph: the glyph
+                    // renders well below its point size and its baseline sits
+                    // off-centre in this fixed box. 4dp padding leaves a 16dp
+                    // glyph — the Icon(size: 16) popup_captcha.dart draws
+                    // inside its 24dp button.
+                    setImageResource(R.drawable.ic_captcha_close)
+                    scaleType = ImageView.ScaleType.FIT_CENTER
+                    setPadding(dp(4), dp(4), dp(4), dp(4))
+                    setColorFilter(CaptchaColors.getPopupClose(context))
                     // a11y: label the close button for TalkBack
                     contentDescription = LocaleMessages.get(locale, "popup_close")
                     setOnClickListener { dismiss() }
-                })
+                }
+                addView(closeBtn, LinearLayout.LayoutParams(dp(24), dp(24)))
+            }
+        }.also { header ->
+            // a11y: the visual button is 24dp (as in Flutter), so expand its
+            // touch target to 48dp the way the captcha refresh button does.
+            val btn = closeBtn
+            if (btn != null) {
+                btn.post {
+                    val pad = (dp(48) - dp(24)) / 2
+                    val rect = Rect()
+                    btn.getHitRect(rect)
+                    rect.inset(-pad, -pad)
+                    header.touchDelegate = TouchDelegate(rect, btn)
+                }
             }
         }
     }

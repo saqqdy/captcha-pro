@@ -1,4 +1,7 @@
+
 package com.captcha.pro.widget
+import com.captcha.pro.core.CaptchaColors
+import com.captcha.pro.R
 
 import android.content.Context
 import android.graphics.*
@@ -44,7 +47,7 @@ class SliderCaptchaView @JvmOverloads constructor(
     private val sliderBar: SliderBarView
     private val loadingView: TextView
     private val statusOverlay: StatusOverlayView
-    private val refreshBtn: TextView
+    private val refreshBtn: ImageView
 
     private var isDragging = false
     private var startX = 0f
@@ -85,54 +88,83 @@ class SliderCaptchaView @JvmOverloads constructor(
     private var currentJob: Job? = null
 
     init {
+        // bgView's cast shadow falls outside this view's bounds (Flutter's
+        // BoxShadow doesn't affect layout either), so let children draw
+        // outside — otherwise only the part over the slider bar survives.
+        clipChildren = false
+
         val gradientDrawable = GradientDrawable(
             GradientDrawable.Orientation.TL_BR,
             intArrayOf(Color.parseColor("#667eea"), Color.parseColor("#764ba2"))
-        ).apply { cornerRadius = 16f * density }
+        // 8, matching BorderRadius.circular(8) on the captcha card in
+        // slider_captcha.dart (and iOS captchaClipView's cornerRadius).
+        ).apply { cornerRadius = 8f * density }
 
         bgView = ImageView(context).apply {
             scaleType = ImageView.ScaleType.FIT_XY
             background = gradientDrawable
             outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
-                    outline.setRoundRect(0, 0, view.width, view.height, 16f * density)
+                    outline.setRoundRect(0, 0, view.width, view.height, 8f * density)
                 }
             }
             clipToOutline = true
             elevation = 8f * density
         }
-        addView(bgView, LayoutParams(captchaWidth, captchaHeight))
+        // captchaWidth/Height are logical pixels, matching every other platform
+        // (Flutter lays out `width` as logical px while still requesting the
+        // same 300 from the backend). Scale by density for rendering only —
+        // the drag/verify maths below stay in logical px.
+        addView(bgView, LayoutParams(dp(captchaWidth), dp(captchaHeight)))
+
+        /**
+         * bgView sets elevation for its card shadow, and ViewGroup draws
+         * children ordered by Z — so every sibling laid over the image needs a
+         * HIGHER elevation or the background covers it regardless of add order
+         * (this is what hid the puzzle piece, the status overlay and the
+         * refresh button).
+         */
+        val overlayElevation = 9f * density
 
         loadingView = TextView(context).apply {
             text = LocaleMessages.get(locale, "loading")
             textSize = 14f
             setTextColor(Color.WHITE)
             gravity = Gravity.CENTER
+            elevation = overlayElevation
         }
-        addView(loadingView, LayoutParams(captchaWidth, captchaHeight))
+        addView(loadingView, LayoutParams(dp(captchaWidth), dp(captchaHeight)))
 
         sliderView = ImageView(context).apply {
             scaleType = ImageView.ScaleType.FIT_XY
+            elevation = overlayElevation
         }
-        addView(sliderView, LayoutParams(sliderWidth, sliderHeight))
+        addView(sliderView, LayoutParams(dp(sliderWidth), dp(sliderHeight)))
 
-        refreshBtn = TextView(context).apply {
-            text = "⟳"
-            textSize = 16f
-            setTextColor(Color.parseColor("#666666"))
-            gravity = Gravity.CENTER
+        refreshBtn = ImageView(context).apply {
+            // Vector drawable rather than the "⟳" glyph: the glyph renders well
+            // below its point size and its baseline sits off-centre in this
+            // fixed 28dp box. Matches the core SVG (16dp).
+            setImageResource(R.drawable.ic_captcha_refresh)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            // 28dp hit box with a 16dp glyph: 6dp padding each side.
+            setPadding(dp(6), dp(6), dp(6), dp(6))
+            setColorFilter(CaptchaColors.getSliderHintText(context))
             background = GradientDrawable().apply {
-                setColor(Color.argb(230, 255, 255, 255))
+                setColor(CaptchaColors.getRefreshBtnBg(context))
                 cornerRadius = 8f * density
             }
             // a11y: label refresh button for TalkBack
             contentDescription = LocaleMessages.get(locale, "refresh")
             setOnClickListener { refresh() }
+            elevation = overlayElevation
         }
         addView(refreshBtn, LayoutParams(dp(28), dp(28)).apply {
             gravity = Gravity.TOP or Gravity.END
-            topMargin = dp(8)
-            marginEnd = dp(8)
+            // Flutter's 28dp box is centred inside a 44dp Positioned(top: 8,
+            // right: 8), so visually it sits 16 from each edge, not 8.
+            topMargin = dp(16)
+            marginEnd = dp(16)
         })
 
         // a11y: expand refresh touch target to 48dp (visual 28dp unchanged, centered)
@@ -146,21 +178,31 @@ class SliderCaptchaView @JvmOverloads constructor(
         }
 
         statusOverlay = StatusOverlayView(context)
+        statusOverlay.elevation = overlayElevation
         // a11y: announce status changes (success/fail) via polite live region
         ViewCompat.setAccessibilityLiveRegion(
             statusOverlay,
             ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE
         )
-        addView(statusOverlay, LayoutParams(captchaWidth, captchaHeight))
+        addView(statusOverlay, LayoutParams(dp(captchaWidth), dp(captchaHeight)))
 
         sliderBar = SliderBarView(context).apply {
             hintText = LocaleMessages.get(locale, "slider_hint")
             // a11y: label slider thumb and expose current value/range to TalkBack
             contentDescription = LocaleMessages.get(locale, "slider_hint")
+            // Hardware-accelerated ViewGroup draws by Z, not by add order, so a
+            // zero-elevation bar is painted *under* bgView's shadow. Raise it
+            // above the card the way the other overlays are; the bar paints
+            // itself on a Canvas (no background drawable), so it casts no shadow
+            // of its own — matching Flutter, where the bar is a later sibling in
+            // the Column and therefore paints over the card's shadow.
+            elevation = overlayElevation
         }
-        addView(sliderBar, LayoutParams(captchaWidth, dp(42)).apply {
+        // Bar height 40 with a 5 gap, matching slider_captcha.dart
+        // (`barHeight = 40.0` + `SizedBox(height: 5)`).
+        addView(sliderBar, LayoutParams(dp(captchaWidth), dp(40)).apply {
             gravity = Gravity.BOTTOM
-            topMargin = captchaHeight + dp(10)
+            topMargin = dp(captchaHeight) + dp(5)
         })
 
         // a11y: expose slider role + current value/range so TalkBack announces progress
@@ -179,10 +221,17 @@ class SliderCaptchaView @JvmOverloads constructor(
             }
         })
 
-        sliderBar.onDragListener = { delta ->
+        // SliderBarView reports the absolute drag distance in px; convert to
+        // logical px. It reports an absolute value on every move, so assign
+        // (not +=) — accumulating it made the thumb outrun the finger and slam
+        // into the end of the track.
+        sliderBar.onDragListener = { distance ->
             if (!isDragging) {
-                currentX = (currentX + delta).coerceIn(0f, (captchaWidth - sliderWidth).toFloat())
-                sliderView.translationX = currentX
+                val target = (distance / density)
+                    .coerceIn(0f, (captchaWidth - sliderWidth).toFloat())
+                val delta = target - currentX
+                currentX = target
+                sliderView.translationX = currentX * density
                 sliderBar.setProgress(currentX / (captchaWidth - sliderWidth))
                 callback?.onDrag(delta)
             }
@@ -231,7 +280,8 @@ class SliderCaptchaView @JvmOverloads constructor(
             bgView.setImageBitmap(bgBitmap)
             sliderView.setImageBitmap(sliderBitmap)
             sliderView.translationX = 0f
-            sliderView.translationY = sliderY
+            // sliderY comes from the backend in image coordinates (0..height).
+            sliderView.translationY = sliderY * density
             sliderView.visibility = View.VISIBLE
 
             loadingView.visibility = View.GONE
@@ -333,41 +383,35 @@ class SliderBarView @JvmOverloads constructor(
     private fun dp(v: Float) = v * density
 
     private val trackPaint = Paint().apply {
-        color = Color.parseColor("#F7F9FA")
+        color = CaptchaColors.getSliderBarBg(context)
         style = Paint.Style.FILL
-        isAntiAlias = true
-    }
-
-    private val progressPaint = Paint().apply {
-        color = Color.parseColor("#1991FA")
-        style = Paint.Style.FILL
-        alpha = 50
         isAntiAlias = true
     }
 
     private val thumbPaint = Paint().apply {
-        color = Color.WHITE
+        color = CaptchaColors.getSliderThumbBg(context)
         style = Paint.Style.FILL
         isAntiAlias = true
     }
 
     private val thumbBorderPaint = Paint().apply {
-        color = Color.parseColor("#E1E4E8")
+        color = CaptchaColors.getSliderThumbBorder(context)
         style = Paint.Style.STROKE
-        strokeWidth = dp(2f)
+        // Border.all() defaults to a 1px border in slider_captcha.dart.
+        strokeWidth = dp(1f)
         isAntiAlias = true
     }
 
     private val arrowPaint = Paint().apply {
         color = Color.parseColor("#1991FA")
-        textSize = dp(16f)
-        textAlign = Paint.Align.CENTER
+        style = Paint.Style.FILL
         isAntiAlias = true
     }
 
     private val hintPaint = Paint().apply {
-        color = Color.parseColor("#666666")
-        textSize = dp(12f)
+        color = CaptchaColors.getSliderHintText(context)
+        // 14, matching the hint Text in slider_captcha.dart (was 12).
+        textSize = dp(14f)
         textAlign = Paint.Align.CENTER
         isAntiAlias = true
     }
@@ -391,11 +435,9 @@ class SliderBarView @JvmOverloads constructor(
         val thumbLeft = progress * (width - thumbWidth)
         val thumbCenterX = thumbLeft + thumbWidth / 2
 
+        // No progress fill: slider_captcha.dart's bar is just the track, the
+        // centred hint and the thumb (iOS matches).
         canvas.drawRoundRect(0f, 0f, width, height, radius, radius, trackPaint)
-
-        if (progress > 0) {
-            canvas.drawRect(0f, 0f, thumbCenterX, height, progressPaint)
-        }
 
         // Slider hint text (behind thumb)
         if (hintText.isNotEmpty()) {
@@ -404,14 +446,28 @@ class SliderBarView @JvmOverloads constructor(
             canvas.drawText(hintText, width / 2f, textY, hintPaint)
         }
 
-        val thumbTop = (height - thumbWidth) / 2
-        val thumbRect = RectF(thumbLeft, thumbTop, thumbLeft + thumbWidth, thumbTop + thumbWidth)
+        // Thumb is a full-height 42x40 box (Flutter: Positioned top:0 bottom:0
+        // with width: sliderWidth), so it fills the 40-high bar rather than
+        // being a centred square.
+        val thumbRect = RectF(thumbLeft, 0f, thumbLeft + thumbWidth, height)
         canvas.drawRoundRect(thumbRect, radius, radius, thumbPaint)
         canvas.drawRoundRect(thumbRect, radius, radius, thumbBorderPaint)
 
-        val arrowFm = arrowPaint.fontMetrics
-        val arrowY = height / 2 - (arrowFm.ascent + arrowFm.descent) / 2
-        canvas.drawText("→", thumbCenterX, arrowY, arrowPaint)
+        // Triangle rather than the "→" glyph: the glyph renders well below its
+        // point size and its baseline is hard to centre in the thumb. Matches
+        // the 20dp triangle core/slider.ts draws. Optically centred — a right
+        // triangle's centroid is 1/3 of its width from the flat edge, so the
+        // flat edge sits 1/3 of the width left of centre.
+        val arrowSize = dp(20f)
+        val arrowHalf = arrowSize / 2
+        val arrowLeft = thumbCenterX - arrowSize / 3
+        val midY = height / 2f
+        canvas.drawPath(Path().apply {
+            moveTo(arrowLeft, midY - arrowHalf)
+            lineTo(arrowLeft + arrowSize, midY)
+            lineTo(arrowLeft, midY + arrowHalf)
+            close()
+        }, arrowPaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -465,28 +521,38 @@ class StatusOverlayView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private val density = resources.displayMetrics.density
-    private val iconView: TextView
+    private val iconView: ImageView
     private val textView: TextView
 
     init {
-        setBackgroundColor(Color.argb(191, 255, 255, 255))
+        setBackgroundColor(CaptchaColors.getStatusOverlayBg(context))
         visibility = View.GONE
         isClickable = false
+        // Flutter puts this inside the card's ClipRRect(borderRadius: 8), so
+        // the overlay is clipped to the card corners too.
+        outlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline) {
+                outline.setRoundRect(0, 0, view.width, view.height, 8f * density)
+            }
+        }
+        clipToOutline = true
 
         val content = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
         }
 
-        iconView = TextView(context).apply {
-            gravity = Gravity.CENTER
-            textSize = 18f
-            setTextColor(Color.WHITE)
+        iconView = ImageView(context).apply {
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            // 32dp circle with an 18dp glyph: 7dp padding each side.
+            val pad = (7 * density).toInt()
+            setPadding(pad, pad, pad, pad)
         }
 
         textView = TextView(context).apply {
             gravity = Gravity.CENTER
-            textSize = 14f
+            // 13, matching the status Text in slider/click_captcha.dart.
+            textSize = 13f
         }
 
         content.addView(iconView, LinearLayout.LayoutParams((32 * density).toInt(), (32 * density).toInt()).apply {
@@ -500,15 +566,16 @@ class StatusOverlayView @JvmOverloads constructor(
     fun show(success: Boolean, message: String) {
         val iconBg = GradientDrawable().apply {
             shape = GradientDrawable.OVAL
-            setColor(if (success) Color.argb(217, 82, 196, 26) else Color.argb(217, 255, 77, 79))
+            setColor(if (success) CaptchaColors.getSuccessIconBg(context) else CaptchaColors.getFailIconBg(context))
         }
         iconView.apply {
-            text = if (success) "✓" else "✕"
+            setImageResource(if (success) R.drawable.ic_captcha_check else R.drawable.ic_captcha_close)
+            setColorFilter(Color.WHITE)
             background = iconBg
         }
         textView.apply {
             text = message
-            setTextColor(if (success) Color.parseColor("#389e0d") else Color.parseColor("#cf1322"))
+            setTextColor(if (success) CaptchaColors.getSuccessText(context) else CaptchaColors.getFailText(context))
         }
         visibility = View.VISIBLE
         alpha = 0f

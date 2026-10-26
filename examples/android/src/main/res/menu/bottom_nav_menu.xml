@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Icons mirror the NavigationDestination icons in
+         examples/flutter/lib/main.dart (Icons.tune / touch_app_outlined /
+         picture_in_picture_alt_outlined). -->
+    <item
+        android:id="@+id/tab_slider"
+        android:icon="@drawable/ic_tab_slider"
+        android:title="Slider" />
+    <item
+        android:id="@+id/tab_click"
+        android:icon="@drawable/ic_tab_click"
+        android:title="Click" />
+    <item
+        android:id="@+id/tab_popup"
+        android:icon="@drawable/ic_tab_popup"
+        android:title="Popup" />
+</menu>

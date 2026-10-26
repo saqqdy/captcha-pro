@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PopupCaptcha"
+        android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+    <!-- FilledButton.icon in examples/flutter: same lead icon, same 24dp gap
+         to the title and 12dp gap between the two buttons. -->
+    <Button
+        android:id="@+id/btnSliderPopup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="弹出滑动验证码"
+        app:icon="@drawable/ic_tab_slider"
+        app:iconGravity="start" />
+
+    <Button
+        android:id="@+id/btnClickPopup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="弹出点选验证码"
+        app:icon="@drawable/ic_tab_click"
+        app:iconGravity="start" />
+
+</LinearLayout>
