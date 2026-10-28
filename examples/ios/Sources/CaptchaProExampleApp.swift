@@ -15,7 +15,7 @@ struct ContentView: View {
     @State private var showSliderPopup = false
     @State private var showClickPopup = false
 
-    // Launch env (TAB / POPUP, set via `simctl launch --setenv`) drives the
+    // Launch env (TAB / POPUP, set via `SIMCTL_CHILD_TAB=... simctl launch`) drives the
     // initial tab / auto-popup so each view can be screenshotted without
     // manual tapping.
     init() {

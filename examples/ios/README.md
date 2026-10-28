@@ -57,10 +57,11 @@ xcrun simctl spawn booted log stream --predicate 'process == "CaptchaProExample"
 
 ```bash
 # TAB=slider（默认）| click | popup
-xcrun simctl launch --setenv TAB=click booted com.captchapro.CaptchaProExample
+# 环境变量通过 SIMCTL_CHILD_ 前缀传递（新版 simctl 已移除 --setenv）
+SIMCTL_CHILD_TAB=click xcrun simctl launch booted com.captchapro.CaptchaProExample
 
 # POPUP 让弹窗自动弹出：slider | click
-xcrun simctl launch --setenv TAB=popup --setenv POPUP=slider booted com.captchapro.CaptchaProExample
+SIMCTL_CHILD_TAB=popup SIMCTL_CHILD_POPUP=slider xcrun simctl launch booted com.captchapro.CaptchaProExample
 ```
 
 ## SDK 单独验证（packages/ios）
