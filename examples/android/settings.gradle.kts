@@ -24,5 +24,6 @@ rootProject.name = "captcha-pro-android-example"
 includeBuild("../../packages/android") {
     dependencySubstitution {
         substitute(module("com.captcha.pro:captcha-sdk")).using(project(":captcha-sdk"))
+        substitute(module("com.captcha.pro:captcha-compose")).using(project(":captcha-compose"))
     }
 }

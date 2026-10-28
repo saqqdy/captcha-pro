@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
@@ -71,6 +72,11 @@ fun SliderCaptcha(
     val colors = CaptchaColorScheme.get()
     val generator = remember { CaptchaGenerator() }
     val scope = rememberCoroutineScope()
+    // Pointer offsets from detectHorizontalDragGestures are in PX; currentX is
+    // stored in dp (logical px) so it can feed both .offset(currentX.dp) and
+    // the backend verify (which expects 0..width in image/logical space). Divide
+    // by density on the way in — matches SliderCaptchaView's `distance / density`.
+    val density = LocalDensity.current.density
 
     var bgBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var sliderBitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -179,8 +185,18 @@ fun SliderCaptcha(
                             .width(sliderWidth.dp)
                             .height(sliderHeight.dp)
                     ) {
+                        // Scale the puzzle piece to fill the Canvas (sliderWidth.dp
+                        // × sliderHeight.dp). The bitmap arrives at sliderWidth ×
+                        // sliderHeight px; drawBitmap(.., 0f, 0f, null) would paint
+                        // it 1:1, leaving it ~density× too small. ImageView in
+                        // SliderCaptchaView uses scaleType=FIT_XY for the same effect.
                         drawIntoCanvas { canvas ->
-                            canvas.nativeCanvas.drawBitmap(bitmap, 0f, 0f, null)
+                            canvas.nativeCanvas.drawBitmap(
+                                bitmap,
+                                null,
+                                android.graphics.Rect(0, 0, size.width.toInt(), size.height.toInt()),
+                                null
+                            )
                         }
                     }
                 }
@@ -191,9 +207,9 @@ fun SliderCaptcha(
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        // Flutter's 44dp hit box is Positioned(top: 8, right: 8)
-                        // (the 28dp visual is centred inside it).
-                        .offset(x = (-8).dp, y = 8.dp)
+                        // 44dp hit box flush with the card's top-right corner; the
+                        // 28dp visual centred inside it then sits 8dp from each edge
+                        // (matches captcha-sdk's refreshBtn topMargin/marginEnd = 8).
                         .size(44.dp)
                         .semantics {
                             role = Role.Button
@@ -286,7 +302,9 @@ fun SliderCaptcha(
                         onDragEnd = { if (status == null) verify() }
                     ) { _, dragAmount ->
                         if (status == null) {
-                            currentX = (currentX + dragAmount).coerceIn(0f, (width - sliderWidth).toFloat())
+                            // dragAmount is in px; currentX is in dp (see density note).
+                            currentX = (currentX + dragAmount / density)
+                                .coerceIn(0f, (width - sliderWidth).toFloat())
                         }
                     }
                 }

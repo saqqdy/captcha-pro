@@ -1,5 +1,8 @@
 plugins {
     id("com.android.application") version "9.0.1"
+    // AGP 9 ships Kotlin itself; only the compose compiler needs a version,
+    // and it must match that built-in Kotlin (same as packages/android).
+    id("org.jetbrains.kotlin.plugin.compose") version "2.3.20"
 }
 
 android {
@@ -11,6 +14,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        compose = true
     }
 
     defaultConfig {
@@ -53,8 +57,16 @@ kotlin {
 dependencies {
     // Provided by the included build (packages/android :captcha-sdk)
     implementation("com.captcha.pro:captcha-sdk:2.3.0")
+    implementation("com.captcha.pro:captcha-compose:2.3.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    // 1.8.0 matches the androidx.activity that appcompat 1.6.1 pulls in.
+    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.material:material")
 }

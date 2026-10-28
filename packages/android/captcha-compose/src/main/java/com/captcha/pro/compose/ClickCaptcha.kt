@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -84,6 +85,11 @@ fun ClickCaptcha(
     val colors = CaptchaColorScheme.get()
     val generator = remember { CaptchaGenerator() }
     val scope = rememberCoroutineScope()
+    // detectTapGestures reports offsets in PX; click points are stored in dp
+    // (logical px) so they render correctly via .offset(point.x.dp) AND reach
+    // the backend in 0..width image space. Divide by density on the way in —
+    // matches ClickCaptchaView's `CaptchaPoint(x / density, y / density)`.
+    val density = LocalDensity.current.density
 
     var bgBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var clickTexts by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -196,7 +202,7 @@ fun ClickCaptcha(
                         }
                         .pointerInput(Unit) {
                             detectTapGestures { offset ->
-                                handleClick(offset.x, offset.y)
+                                handleClick(offset.x / density, offset.y / density)
                             }
                         }
                 ) {
@@ -243,9 +249,9 @@ fun ClickCaptcha(
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        // Flutter's 44dp hit box is Positioned(top: 8, right: 8)
-                        // (the 28dp visual is centred inside it).
-                        .offset(x = (-8).dp, y = 8.dp)
+                        // 44dp hit box flush with the card's top-right corner; the
+                        // 28dp visual centred inside it then sits 8dp from each edge
+                        // (matches captcha-sdk's refreshBtn topMargin/marginEnd = 8).
                         .size(44.dp)
                         .semantics {
                             role = Role.Button

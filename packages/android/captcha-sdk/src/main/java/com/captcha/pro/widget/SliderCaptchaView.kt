@@ -161,10 +161,10 @@ class SliderCaptchaView @JvmOverloads constructor(
         }
         addView(refreshBtn, LayoutParams(dp(28), dp(28)).apply {
             gravity = Gravity.TOP or Gravity.END
-            // Flutter's 28dp box is centred inside a 44dp Positioned(top: 8,
-            // right: 8), so visually it sits 16 from each edge, not 8.
-            topMargin = dp(16)
-            marginEnd = dp(16)
+            // 8dp from the card's top-right edge (was 16). The TouchDelegate
+            // below still expands the hit target to 48dp.
+            topMargin = dp(8)
+            marginEnd = dp(8)
         })
 
         // a11y: expand refresh touch target to 48dp (visual 28dp unchanged, centered)
