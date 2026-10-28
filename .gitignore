@@ -11,11 +11,16 @@ coverage/
 stats.html
 .turbo/
 
+# Vite temp config emitted when the config is re-evaluated
+vite.config.*.timestamp-*
+
 # VitePress build cache
 docs/.vitepress/cache/
 
 # Flutter source — overrides lib/ above (which ignores JS build-output dirs)
 !packages/flutter/lib/
+!examples/flutter/lib/
+!examples/flutter/test/
 
 # Native build artifacts
 ## Android (Gradle)
@@ -57,3 +62,28 @@ packages/flutter/.flutter-plugins
 packages/flutter/.flutter-plugins-dependencies
 packages/flutter/build/
 packages/flutter/.packages
+
+## Flutter example app (examples/flutter — ios/ and android/ subprojects)
+examples/flutter/build/
+examples/flutter/.dart_tool/
+examples/flutter/.flutter-plugins
+examples/flutter/.flutter-plugins-dependencies
+examples/flutter/.packages
+examples/flutter/.pub-cache/
+examples/flutter/.pub/
+examples/flutter/.idea/
+# ios/ subproject (Pods, DerivedData, Xcode user state)
+examples/flutter/ios/Pods/
+examples/flutter/ios/DerivedData/
+examples/flutter/ios/.symlinks/
+examples/flutter/ios/Flutter/Generated.xcconfig
+examples/flutter/ios/Flutter/ephemeral/
+examples/flutter/ios/**/*.xcuserstate
+examples/flutter/ios/**/*.xcuserdata
+# android/ subproject (Gradle)
+examples/flutter/android/.gradle/
+examples/flutter/android/build/
+examples/flutter/android/local.properties
+examples/flutter/android/captures/
+examples/flutter/android/.cxx/
+examples/flutter/android/**/*.iml
