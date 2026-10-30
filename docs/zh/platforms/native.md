@@ -9,7 +9,7 @@ captcha-pro 为移动平台提供原生 SDK。
 ```yaml
 # pubspec.yaml
 dependencies:
-  captcha_pro: ^2.0.0
+  captcha_pro: ^2.3.0
 ```
 
 ```dart
@@ -28,10 +28,10 @@ SliderCaptcha(
 
 ```groovy
 # build.gradle — 传统 View 体系
-implementation 'com.captcha.pro:captcha-sdk:2.0.0'
+implementation 'com.captcha.pro:captcha-sdk:2.3.0'
 
 # build.gradle — Jetpack Compose
-implementation 'com.captcha.pro:captcha-compose:2.0.0'
+implementation 'com.captcha.pro:captcha-compose:2.3.0'
 ```
 
 | 包名 | 描述 |
@@ -45,7 +45,7 @@ implementation 'com.captcha.pro:captcha-compose:2.0.0'
 
 ```ruby
 # Podfile
-pod 'CaptchaPro', '~> 2.0.0'
+pod 'CaptchaPro', '~> 2.3.0'
 ```
 
 ```swift

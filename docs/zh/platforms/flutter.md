@@ -8,7 +8,7 @@
 
 ```yaml
 dependencies:
-  captcha_pro: ^2.2.0
+  captcha_pro: ^2.3.0
 ```
 
 然后运行：

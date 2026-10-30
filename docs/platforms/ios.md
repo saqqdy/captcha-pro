@@ -9,7 +9,7 @@ This guide details how to use captcha-pro in iOS projects.
 Add the following to your `Podfile`:
 
 ```ruby
-pod 'CaptchaPro', '~> 2.2.0'
+pod 'CaptchaPro', '~> 2.3.0'
 ```
 
 Then run:

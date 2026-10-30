@@ -21,7 +21,7 @@ dependencies: [
 ### CocoaPods
 
 ```ruby
-pod 'CaptchaPro', '~> 2.0.0'
+pod 'CaptchaPro', '~> 2.3.0'
 ```
 
 ## 特性

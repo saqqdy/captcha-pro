@@ -8,7 +8,7 @@ Add the following to `build.gradle`:
 
 ```gradle
 dependencies {
-    implementation 'com.captcha.pro:captcha-sdk:2.2.0'
+    implementation 'com.captcha.pro:captcha-sdk:2.3.0'
 }
 ```
 
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
 ```gradle
 dependencies {
-    implementation 'com.captcha.pro:captcha-compose:2.2.0'
+    implementation 'com.captcha.pro:captcha-compose:2.3.0'
 }
 ```
 

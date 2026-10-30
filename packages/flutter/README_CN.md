@@ -8,7 +8,7 @@ Captcha Pro 的 Flutter 插件包，提供由后端驱动的验证码组件（�
 
 ```yaml
 dependencies:
-  captcha_pro: ^2.0.0
+  captcha_pro: ^2.3.0
 ```
 
 ---

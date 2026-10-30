@@ -25,13 +25,13 @@ pnpm add @captcha-pro/weixin
 
 ```bash
 # Flutter — 添加到 pubspec.yaml
-captcha_pro: ^2.0.0
+captcha_pro: ^2.3.0
 
 # Android — 添加到 build.gradle
-implementation 'com.captcha.pro:captcha-sdk:2.0.0'
+implementation 'com.captcha.pro:captcha-sdk:2.3.0'
 
 # iOS — CocoaPods
-pod 'CaptchaPro', '~> 2.0.0'
+pod 'CaptchaPro', '~> 2.3.0'
 ```
 
 ## 第一个验证码

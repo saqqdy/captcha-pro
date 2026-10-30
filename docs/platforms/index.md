@@ -31,13 +31,13 @@ pnpm add @captcha-pro/weixin
 
 ```bash
 # Flutter — pubspec.yaml
-captcha_pro: ^2.0.0
+captcha_pro: ^2.3.0
 
 # Android — build.gradle
-implementation 'com.captcha.pro:captcha-sdk:2.0.0'
+implementation 'com.captcha.pro:captcha-sdk:2.3.0'
 
 # iOS — CocoaPods
-pod 'CaptchaPro', '~> 2.0.0'
+pod 'CaptchaPro', '~> 2.3.0'
 ```
 
 ## Verification Modes

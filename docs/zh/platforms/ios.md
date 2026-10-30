@@ -9,7 +9,7 @@
 在 `Podfile` 中添加：
 
 ```ruby
-pod 'CaptchaPro', '~> 2.2.0'
+pod 'CaptchaPro', '~> 2.3.0'
 ```
 
 然后运行：

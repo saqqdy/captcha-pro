@@ -48,7 +48,7 @@ pnpm add @captcha-pro/uniapp-vue
 
 ```yaml
 dependencies:
-  captcha_pro: ^2.2.0
+  captcha_pro: ^2.3.0
 ```
 
 ### Android
@@ -57,7 +57,7 @@ dependencies:
 
 ```gradle
 dependencies {
-  implementation 'com.captcha.pro:captcha-sdk:2.2.0'
+  implementation 'com.captcha.pro:captcha-sdk:2.3.0'
 }
 ```
 
@@ -66,7 +66,7 @@ dependencies {
 在 `Podfile` 中添加：
 
 ```ruby
-pod 'CaptchaPro', '~> 2.2.0'
+pod 'CaptchaPro', '~> 2.3.0'
 ```
 
 ## 📖 各平台特性对比

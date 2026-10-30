@@ -34,7 +34,7 @@ yarn add @captcha-pro/core
 <script src="https://unpkg.com/@captcha-pro/core/dist/index.global.min.js"></script>
 
 <!-- Pinned version -->
-<script src="https://unpkg.com/@captcha-pro/core@2.2.0/dist/index.global.min.js"></script>
+<script src="https://unpkg.com/@captcha-pro/core@2.3.0/dist/index.global.min.js"></script>
 
 <!-- Usage -->
 <script>

@@ -8,7 +8,7 @@ Add the following to `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  captcha_pro: ^2.2.0
+  captcha_pro: ^2.3.0
 ```
 
 Then run:

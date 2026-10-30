@@ -9,7 +9,7 @@ Captcha Pro 的 Android 原生 SDK，提供 Kotlin/Jetpack Compose 验证码组�
 核心 Android SDK，提供基于传统 View 的验证码组件。
 
 ```groovy
-implementation 'com.captcha.pro:captcha-sdk:2.0.0'
+implementation 'com.captcha.pro:captcha-sdk:2.3.0'
 ```
 
 ### captcha-compose
@@ -17,7 +17,7 @@ implementation 'com.captcha.pro:captcha-sdk:2.0.0'
 Jetpack Compose 验证码组件。
 
 ```groovy
-implementation 'com.captcha.pro:captcha-compose:2.0.0'
+implementation 'com.captcha.pro:captcha-compose:2.3.0'
 ```
 
 ## 特性
@@ -40,10 +40,10 @@ repositories {
 
 dependencies {
     // Core SDK (View-based)
-    implementation 'com.captcha.pro:captcha-sdk:2.0.0'
+    implementation 'com.captcha.pro:captcha-sdk:2.3.0'
 
     // Or Compose version
-    implementation 'com.captcha.pro:captcha-compose:2.0.0'
+    implementation 'com.captcha.pro:captcha-compose:2.3.0'
 }
 ```
 

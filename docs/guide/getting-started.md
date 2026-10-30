@@ -25,13 +25,13 @@ For native platforms, see [Platforms](/platforms/).
 
 ```bash
 # Flutter — add to pubspec.yaml
-captcha_pro: ^2.0.0
+captcha_pro: ^2.3.0
 
 # Android — add to build.gradle
-implementation 'com.captcha.pro:captcha-sdk:2.0.0'
+implementation 'com.captcha.pro:captcha-sdk:2.3.0'
 
 # iOS — CocoaPods
-pod 'CaptchaPro', '~> 2.0.0'
+pod 'CaptchaPro', '~> 2.3.0'
 ```
 
 ## Your First Captcha

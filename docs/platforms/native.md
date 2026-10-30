@@ -9,7 +9,7 @@ captcha-pro ships native SDKs for mobile platforms.
 ```yaml
 # pubspec.yaml
 dependencies:
-  captcha_pro: ^2.0.0
+  captcha_pro: ^2.3.0
 ```
 
 ```dart
@@ -28,10 +28,10 @@ Two flavors are available:
 
 ```groovy
 // build.gradle — traditional View system
-implementation 'com.captcha.pro:captcha-sdk:2.0.0'
+implementation 'com.captcha.pro:captcha-sdk:2.3.0'
 
 // build.gradle — Jetpack Compose
-implementation 'com.captcha.pro:captcha-compose:2.0.0'
+implementation 'com.captcha.pro:captcha-compose:2.3.0'
 ```
 
 | Package | Description |
@@ -45,7 +45,7 @@ implementation 'com.captcha.pro:captcha-compose:2.0.0'
 
 ```ruby
 # Podfile
-pod 'CaptchaPro', '~> 2.0.0'
+pod 'CaptchaPro', '~> 2.3.0'
 ```
 
 ```swift
