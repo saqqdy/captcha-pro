@@ -79,3 +79,54 @@ To verify accessibility in your integration:
 - **Contract check**: every platform's accessibility attribute count is > 0 — grep for `aria-label|role=`, `Semantics`, `contentDescription|semantics`, `accessibilityLabel`.
 
 To report an accessibility issue, open an issue with the platform, screen reader, and the element whose announcement or operability is incorrect.
+
+## Dark Mode
+
+**2.3.0** introduces automatic dark mode support across all platforms. The captcha component follows the system's color scheme preference with no manual toggle prop.
+
+### Implementation
+
+- **Web**: CSS `@media (prefers-color-scheme: dark)` media query
+- **Flutter**: `MediaQuery.platformBrightness` + `CaptchaColorScheme`
+- **Android**: `values-night/colors.xml` resources (View) + `isSystemInDarkTheme()` (Compose)
+- **iOS**: Dynamic `UIColor` providers + `@Environment(\.colorScheme)` (SwiftUI)
+
+### Color Tokens
+
+Dark mode preserves the brand gradient (`#667EEA→#764BA2`) and accent color (`#1991FA`). Adapted tokens include:
+
+| Element | Light | Dark | Contrast (Dark) |
+| --- | --- | --- | --- |
+| Slider bar bg | `#F7F9FA` | `#1F1F1F` | — |
+| Slider hint text | `#666` | `#AAA` | ≥ 4.5:1 |
+| Prompt bar bg | `#F7F9FA` | `#1F1F1F` | — |
+| Prompt text | `#666` | `#AAA` | ≥ 4.5:1 |
+| Refresh btn bg | `rgba(255,255,255,0.9)` | `rgba(60,60,60,0.9)` | — |
+| Status overlay bg | `rgba(255,255,255,0.75)` | `rgba(0,0,0,0.6)` | — |
+| Success text | `#389E0D` | `#5CB85C` | ≥ 4.5:1 |
+| Fail text | `#CF1322` | `#FF7875` | ≥ 4.5:1 |
+| Popup card | `#FFF` | `#1F1F1F` | — |
+| Popup title | `#333` | `#EEE` | ≥ 4.5:1 |
+| Popup close | `#999` | `#AAA` | ≥ 4.5:1 |
+| Popup mask | `rgba(0,0,0,0.5)` | `rgba(0,0,0,0.7)` | — |
+
+All dark-mode text colors meet WCAG 2.2 Level AA contrast requirements (≥ 4.5:1).
+
+### Mini-program Compatibility
+
+`@media (prefers-color-scheme: dark)` requires mini-program base library **≥ 2.11**. Older versions fall back to light mode. Integrators should document this minimum in their release notes.
+
+### Focus Trap (Web Popup)
+
+2.3.0 completes the deferred 2.2.0 focus trap for web popups. When a popup opens:
+- Focus moves to the first focusable element (close button)
+- `Tab` / `Shift+Tab` cycles focus within the dialog
+- On close, focus returns to the trigger element
+
+This ensures keyboard users cannot accidentally interact with the background while the popup is open.
+
+### Manual Override
+
+The captcha component does **not** expose a `dark` / `theme` prop. To override the system preference, integrators must:
+- **Web**: Inject custom CSS after the captcha styles
+- **Native**: Wrap the captcha in a theme provider with a fixed color scheme

@@ -30,6 +30,29 @@ Preserved colors (light/dark universal):
 
 No API changes - follows system preference automatically.
 
+### Icon Migration (Native)
+
+- **Android**: Replaced text labels in captcha widgets (slider thumb, refresh, close, click markers) with vector drawable icons for consistent scaling across densities and locales
+- **iOS**: Replaced text labels in SwiftUI/UIView captcha components with SF Symbols (`arrow.right`, `arrow.clockwise`, `xmark`, `checkmark`) for native visual consistency
+
+### Example Apps
+
+- **Android**: Added `examples/android` — CaptchaPro demo app with slider, click, and popup captcha screens (Compose + View)
+- **iOS**: Added `examples/ios` — CaptchaProExample SwiftUI app with slider, click, and popup tabs, backend-driven verification against `server/node`
+
+### Native & Tooling
+
+- **Android / Flutter**: Updated backend connectivity configuration and debugging helpers for easier local development
+- **iOS example**: Uses `SIMCTL_CHILD_*` env vars to drive the initial tab / auto-popup (newer `simctl` removed `--setenv`); shares host loopback with the simulator
+- **.gitignore**: Expanded to cover Flutter and additional native build artifacts
+
+### Documentation
+
+- Added per-platform guides: `docs/platforms/{android,flutter,ios,vue3,web}.md` (EN + ZH)
+- Added deep-dive guides: `docs/guides/{backend-integration,frontend-integration,security,comparison,i18n,miniprogram-integration}.md` (EN + ZH)
+- Added quick-start tutorials: `docs/quick-start/{web,vue3,react,miniprogram}.md` (EN + ZH)
+- Registered all new pages in the VitePress sidebar (EN + ZH)
+
 # Changelog
 
 All notable changes to this project will be documented in this file.

@@ -1,919 +1,317 @@
-<div style="text-align: center;" align="center">
+<div align="center">
 
 # captcha-pro
 
-**一个轻量级、框架无关的行为验证码库**
+**跨平台行为验证码 · 30KB 极致轻量**
 
-滑动拼图 · 点选文字 · 智能无感 · 弹窗模式
+滑块拼图 · 文字点选 · 无感验证 · 弹窗模式
 
 [![NPM version][npm-image]][npm-url]
-[![Codacy Badge][codacy-image]][codacy-url]
-[![Test coverage][codecov-image]][codecov-url]
 [![npm download][download-image]][download-url]
 [![gzip][gzip-image]][gzip-url]
 [![License][license-image]][license-url]
 
+[![Codacy Badge][codacy-image]][codacy-url]
+[![Test coverage][codecov-image]][codecov-url]
 [![Sonar][sonar-image]][sonar-url]
 
+**[在线演示](https://stackblitz.com/github/saqqdy/captcha-pro?file=examples/html/index.html)** ·
+**[完整文档](#-文档导航)** ·
+**[更新日志](./CHANGELOG.md)** ·
+**[English](./README.md)**
+
 </div>
 
-<div style="text-align: center; margin-bottom: 20px;" align="center">
+---
 
-**[更新日志](./CHANGELOG.md)** · **[English](./README.md)**
+## ✨ 核心特性
 
-</div>
+| 验证类型 | 说明 | 适用场景 |
+|---------|------|---------|
+| 🧩 **滑块验证** | 拼图验证，支持多种形状（方/三角/梯形/五边形） | 通用场景 |
+| 🖱️ **点选验证** | 文字点选，200+ 中文词库，随机干扰字符 | 防机器人 |
+| 👻 **无感验证** | 风险评估触发，行为追踪分析 | 低风险用户 |
+| 📦 **弹窗验证** | 滑块/点选的弹窗包装，支持多种触发方式 | 按钮触发 |
 
-## 在线体验
+**技术亮点：**
 
-- [StackBlitz](https://stackblitz.com/github/saqqdy/captcha-pro?file=examples/html/index.html)
-- [CodeSandbox](https://codesandbox.io/p/github/saqqdy/captcha-pro/master?file=examples/html/index.html)
-- [Gitpod](https://gitpod.io/#https://github.com/saqqdy/captcha-pro)
+- 🚀 **极致轻量** - 30KB minified，零依赖
+- 🌍 **多平台支持** - Web / Vue / React / 小程序 / Flutter / Android / iOS
+- 🔐 **安全加固** - AES-GCM 加密、时间戳校验、频率限制、IP 黑名单
+- ♿ **无障碍访问** - WCAG 2.2 AA 级别，完整键盘操作支持
+- 🌐 **国际化** - 中英文双语，自动检测浏览器语言
+- 🎨 **高度定制** - 自定义图片、主题、文案
+- 🌓 **暗色模式** - 自动跟随系统主题，无需手动切换
 
-## 多平台支持
+---
 
-Captcha Pro 支持 **10+ 平台**，API 保持一致：
+## 📦 三秒上手
 
-| 平台 | 包名 | 描述 |
-|------|------|------|
-| Web (原生 JS) | `@captcha-pro/core` | 核心包，通用支持 |
-| Vue 2 | `@captcha-pro/vue2` | Options API + Mixins |
-| Vue 3 | `@captcha-pro/vue` | Composition API + Composables |
-| React | `@captcha-pro/react` | Hooks 组件 |
-| 微信小程序 | `@captcha-pro/weixin` | WXML/WXSS/JS，仅后端模式 |
-| uni-app | `@captcha-pro/uniapp-vue` | Vue 跨端，仅后端模式 |
-| Taro 3 | `@captcha-pro/taro-react` | React 跨端，仅后端模式 |
-| Flutter | `captcha_pro` | Dart Widgets |
-| Android | `captcha-sdk` | 原生 Kotlin SDK |
-| Android Compose | `captcha-compose` | Jetpack Compose |
-| iOS | `CaptchaPro` | Swift SDK (UIKit + SwiftUI) |
-
-详见 [PLATFORM_ROADMAP.md](./internal/PLATFORM_ROADMAP.md)。
-
-## 快速开始
+### 安装
 
 ```bash
-# 安装
+# Web（原生 JS）
 pnpm add @captcha-pro/core
 
-# 使用
+# Vue 3
+pnpm add @captcha-pro/vue
+
+# React
+pnpm add @captcha-pro/react
+
+# 微信小程序
+pnpm add @captcha-pro/weixin
+
+# Taro（React）
+pnpm add @captcha-pro/taro-react
+
+# Flutter
+# pubspec.yaml: captcha_pro: ^2.3.0
+
+# Android
+# implementation 'com.captcha.pro:captcha-sdk:2.3.0'
+
+# iOS
+# pod 'CaptchaPro', '~> 2.3.0'
+```
+
+### 最简示例
+
+```html
+<!-- Web -->
+<div id="captcha"></div>
+<script type="module">
+  import { SliderCaptcha } from '@captcha-pro/core'
+  new SliderCaptcha({ el: '#captcha', onSuccess: () => console.log('通过!') })
+</script>
+```
+
+```vue
+<!-- Vue 3 -->
+<template>
+  <SliderCaptcha @success="onSuccess" />
+</template>
+<script setup>
+import { SliderCaptcha } from '@captcha-pro/vue'
+const onSuccess = () => console.log('通过!')
+</script>
+```
+
+```tsx
+// React
+import { SliderCaptcha } from '@captcha-pro/react'
+export default () => <SliderCaptcha onSuccess={() => console.log('通过!')} />
+```
+
+---
+
+## 🌍 多平台支持
+
+captcha-pro 支持 **14+ 平台**，API 一致，无缝切换：
+
+| 平台 | 包名 | 文档 |
+|------|------|------|
+| Web (原生 JS) | `@captcha-pro/core` | [使用指南](./docs/platforms/web.md) |
+| Vue 3 | `@captcha-pro/vue` | [使用指南](./docs/platforms/vue3.md) |
+| Vue 2 | `@captcha-pro/vue2` | [使用指南](./docs/platforms/vue.md) |
+| React | `@captcha-pro/react` | [使用指南](./docs/platforms/react.md) |
+| 微信小程序 | `@captcha-pro/weixin` | [使用指南](./docs/platforms/miniprogram.md) |
+| Taro (React) | `@captcha-pro/taro-react` | [使用指南](./docs/platforms/miniprogram.md) |
+| Taro (Vue 3) | `@captcha-pro/taro-vue` | [使用指南](./docs/platforms/miniprogram.md) |
+| Taro (Vue 2) | `@captcha-pro/taro-vue2` | [使用指南](./docs/platforms/miniprogram.md) |
+| uni-app (Vue 3) | `@captcha-pro/uniapp-vue` | [使用指南](./docs/platforms/miniprogram.md) |
+| uni-app (Vue 2) | `@captcha-pro/uniapp-vue2` | [使用指南](./docs/platforms/miniprogram.md) |
+| Flutter | `captcha_pro` | [使用指南](./docs/platforms/flutter.md) |
+| Android (View) | `captcha-sdk` | [使用指南](./docs/platforms/android.md) |
+| Android (Compose) | `captcha-compose` | [使用指南](./docs/platforms/android.md) |
+| iOS (UIKit/SwiftUI) | `CaptchaPro` | [使用指南](./docs/platforms/ios.md) |
+
+---
+
+## 🚀 按角色快速开始
+
+### 我是前端开发者
+
+**前端验证模式（无需后端）：**
+
+```javascript
 import { SliderCaptcha } from '@captcha-pro/core'
 
 new SliderCaptcha({
   el: '#captcha',
-  onSuccess: () => console.log('验证通过!')
+  verifyMode: 'frontend', // 默认值
+  onSuccess: () => form.submit()
 })
 ```
 
-## 特性
-
-### 验证码类型
-
-- 🧩 **滑动拼图验证码** - 支持随机形状（方形/三角形/梯形/五边形），迷惑坑位随机旋转
-- 🖱️ **点选文字验证码** - 200+ 中文词汇支持，每个词汇不含重复字，随机迷惑文字，提示图片防机器识别
-- 👻 **智能无感验证** - 基于风险评估的隐形验证，行为追踪与分析
-- 📦 **弹窗验证码** - 模态弹窗包装器，支持元素点击或编程式触发
-
-### 验证模式
-
-- 🎯 **前端模式** - 纯前端验证，无需后端
-- 🌐 **后端模式** - 服务端验证与图片生成
-
-### 安全特性
-
-- 🔐 **数据加密** - AES-GCM 加密防止数据篡改
-- ⏱️ **时间戳验证** - 防止重放攻击
-- 🚦 **频率限制** - 防止 API 滥用（默认 60 次/分钟）
-- 🚫 **IP 黑名单** - 支持临时/永久封禁恶意 IP
-- 🛡️ **暴力破解防护** - 检测并封禁暴力破解攻击
-
-### 其他特性
-
-- 📊 **统计 API** - 追踪验证成功率、耗时、距离
-- 🌍 **多语言支持** - 内置中英文（zh-CN、en-US），自动检测浏览器语言
-- 🚀 **框架无关** - 可用于 Vue、React、Angular 或原生 JS
-- 📦 **轻量级** - 约 35KB 压缩后，无额外依赖
-- 🖼️ **自定义图片** - 支持自定义背景和滑块图片
-- 📱 **移动端友好** - 完整支持触摸事件
-- ♿ **无障碍支持（WCAG 2.2 AA）** - ARIA 标签与角色、完整键盘操作、44px 触摸目标、实时区域状态播报
-- 🌐 **IE11+ 支持** - 需要 Promise polyfill
-
-## 安装
-
-```bash
-# 核心包 (Web/原生 JS)
-$ pnpm add @captcha-pro/core
-
-# Vue 2
-$ pnpm add @captcha-pro/vue2
-
-# Vue 3
-$ pnpm add @captcha-pro/vue
-
-# React
-$ pnpm add @captcha-pro/react
-
-# 小程序 (微信/uni-app/Taro)
-$ pnpm add @captcha-pro/weixin
-
-# Flutter - 添加到 pubspec.yaml
-captcha_pro: ^2.2.0
-
-# Android - 添加到 build.gradle
-implementation 'com.captcha.pro:captcha-sdk:2.2.0'
-
-# iOS - CocoaPods
-pod 'CaptchaPro', '~> 2.2.0'
-```
-
-## 框架使用
-
-### Vue 3
-
-```vue
-<template>
-  <SliderCaptcha
-    :width="300"
-    :height="170"
-    @success="onSuccess"
-    @fail="onFail"
-  />
-</template>
-
-<script setup lang="ts">
-import { SliderCaptcha } from '@captcha-pro/vue'
-
-const onSuccess = () => console.log('验证通过!')
-</script>
-```
-
-### React
-
-```tsx
-import { SliderCaptcha } from '@captcha-pro/react'
-
-function App() {
-  return (
-    <SliderCaptcha
-      width={300}
-      height={170}
-      onSuccess={() => console.log('验证通过!')}
-    />
-  )
-}
-```
-
-### Flutter
-
-```dart
-import 'package:captcha_pro/captcha_pro.dart';
-
-SliderCaptcha(
-  width: 300,
-  height: 170,
-  onSuccess: () => print('验证通过!'),
-)
-```
-
-## 使用
-
-### 滑动拼图验证码
-
-```html
-<div id="slider-captcha"></div>
-
-<script type="module">
-  import { SliderCaptcha } from '@captcha-pro/core'
-
-  const captcha = new SliderCaptcha({
-    el: '#slider-captcha',
-    width: 300,
-    height: 170,
-    precision: 5,
-    showRefresh: true,
-    onSuccess: () => console.log('验证通过！'),
-    onFail: () => console.log('验证失败！')
-  })
-
-  // 获取验证数据
-  const data = captcha.getData()
-  console.log('目标位置:', data.target)
-
-  // 获取统计数据
-  const stats = captcha.getStatistics()
-  console.log('成功率:', stats.successRate + '%')
-
-  // 重置或销毁
-  captcha.reset()
-  captcha.destroy()
-</script>
-```
-
-### 点选文字验证码
-
-```html
-<div id="click-captcha"></div>
-
-<script type="module">
-  import { ClickCaptcha } from '@captcha-pro/core'
-
-  const captcha = new ClickCaptcha({
-    el: '#click-captcha',
-    width: 300,
-    height: 170,
-    count: 3,
-    onSuccess: () => console.log('验证通过！')
-  })
-
-  // 获取已点击的点位
-  const points = captcha.getClickPoints()
-</script>
-```
-
-### 弹窗验证码
-
-```html
-<button id="submit-btn">提交</button>
-
-<script type="module">
-  import { PopupCaptcha } from '@captcha-pro/core'
-
-  const popup = new PopupCaptcha({
-    trigger: '#submit-btn',
-    type: 'slider', // 'slider' | 'click'
-    modal: {
-      title: '安全验证',
-      maskClosable: true,    // 点击遮罩关闭
-      escClosable: true,     // ESC 键关闭
-      showClose: true,       // 显示关闭按钮
-    },
-    captchaOptions: {
-      width: 300,
-      height: 170,
-      precision: 5,
-    },
-    autoClose: true,
-    closeDelay: 500,
-    onSuccess: () => console.log('验证通过！'),
-    onOpen: () => console.log('弹窗已打开'),
-    onClose: () => console.log('弹窗已关闭')
-  })
-
-  // 编程式控制
-  popup.show()         // 显示弹窗
-  popup.hide()         // 隐藏弹窗
-  popup.isVisible()    // 获取可见状态
-  popup.getCaptcha()   // 获取内部验证码实例
-</script>
-```
-
-### 智能无感验证
-
-```html
-<button id="submit-btn">提交</button>
-
-<script type="module">
-  import { InvisibleCaptcha } from '@captcha-pro/core'
-
-  const captcha = new InvisibleCaptcha({
-    el: '#submit-btn',
-    trigger: 'click',
-    riskAssessment: {
-      threshold: 0.7, // 风险分数 > 0.7 时显示验证码
-      behaviorCheck: {
-        minInteractionTime: 500,
-        trackAnalysis: true
-      }
-    },
-    challengeType: 'slider', // 'slider' | 'click'
-    onChallenge: () => console.log('显示验证码挑战...'),
-    onSuccess: () => form.submit(),
-    onFail: () => console.log('验证失败')
-  })
-
-  // 获取风险分数
-  const score = captcha.getRiskScore()
-</script>
-```
-
-### 安全特性
+**后端验证模式：**
 
 ```javascript
-import { SliderCaptcha, decryptCaptchaData } from '@captcha-pro/core'
-
-// 带 AES-GCM 加密用于后端验证
-const captcha = new SliderCaptcha({
-  el: '#captcha',
-  security: {
-    secretKey: 'your-secret-key',  // 与后端共享
-    enableSign: true,
-    timestampTolerance: 60000      // 60秒
-  },
-  onSuccess: async () => {
-    // 获取加密数据用于后端验证
-    const encryptedData = await captcha.getSignedData()
-    // encryptedData 包含: type, target, timestamp, nonce, 加密数据
-
-    // 发送到后端
-    await fetch('/api/verify', {
-      method: 'POST',
-      body: JSON.stringify(encryptedData)
-    })
-  }
-})
-
-// 后端验证示例（Node.js）
-import { decryptCaptchaData, validateTimestamp } from '@captcha-pro/core'
-
-async function verifyCaptcha(encryptedData, secretKey) {
-  try {
-    // 解密数据
-    const data = await decryptCaptchaData(encryptedData.signature, secretKey)
-
-    // 检查时间戳
-    if (!validateTimestamp(data.timestamp, 60000)) {
-      return { valid: false, error: '时间戳已过期' }
-    }
-
-    return { valid: true, data }
-  } catch (error) {
-    return { valid: false, error: '加密数据无效' }
-  }
-}
-```
-
-### 后端验证模式
-
-```javascript
-import { SliderCaptcha } from '@captcha-pro/core'
-
-const captcha = new SliderCaptcha({
-  el: '#captcha',
-  verifyMode: 'backend', // 'frontend'（默认）或 'backend'
-  backendVerify: {
-    getCaptcha: '/api/captcha/get',
-    verify: '/api/captcha/verify',
-    headers: {
-      'X-Requested-With': 'XMLHttpRequest'
-    },
-    timeout: 10000
-  },
-  onSuccess: () => console.log('后端验证通过！'),
-  onFail: () => console.log('验证失败')
-})
-```
-
-### 统计 API
-
-```javascript
-const captcha = new SliderCaptcha({ el: '#captcha' })
-
-// 进行一些验证后...
-const stats = captcha.getStatistics()
-console.log({
-  totalAttempts: stats.totalAttempts,
-  successCount: stats.successCount,
-  failCount: stats.failCount,
-  successRate: stats.successRate + '%',
-  avgVerifyTime: stats.avgVerifyTime + 'ms',
-  avgDragTime: stats.avgDragTime + 'ms',
-  avgDragDistance: stats.avgDragDistance + 'px'
-})
-
-// 重置统计
-captcha.resetStatistics()
-```
-
-### 自定义图片
-
-```javascript
-import { SliderCaptcha } from '@captcha-pro/core'
-
-const captcha = new SliderCaptcha({
-  el: '#captcha',
-  bgImage: '/path/to/background.jpg',
-  sliderImage: '/path/to/slider.png', // 可选，不提供则自动生成
-  width: 300,
-  height: 200,
-  sliderWidth: 60,
-  sliderHeight: 60,
-  onSuccess: () => console.log('验证通过！')
-})
-```
-
-### 工厂函数
-
-```javascript
-import {
-  createSliderCaptcha,
-  createClickCaptcha,
-  createInvisibleCaptcha,
-  createPopupCaptcha
-} from '@captcha-pro/core'
-
-const slider = createSliderCaptcha({ el: '#slider' })
-const click = createClickCaptcha({ el: '#click' })
-const invisible = createInvisibleCaptcha({ el: '#btn' })
-const popup = createPopupCaptcha({ type: 'slider' })
-```
-
-### 多语言支持（i18n）
-
-captcha-pro 内置中英文支持，默认自动检测浏览器语言。
-
-```javascript
-import { SliderCaptcha, setLocale, getLocale, t } from '@captcha-pro/core'
-
-// 全局设置语言
-setLocale('en-US')
-
-// 获取当前语言
-console.log(getLocale()) // 'en-US'
-
-// 或在组件级别设置
-const captcha = new SliderCaptcha({
-  el: '#captcha',
-  locale: 'en-US',  // 组件级别语言设置
-})
-
-// 获取翻译文本
-console.log(t('slider.success')) // 'Verification passed'
-```
-
-### 浏览器直接引入（IIFE）
-
-```html
-<head>
-  <!-- IE11 需要先引入 Promise polyfill -->
-  <!--[if IE]>
-  <script src="https://cdn.jsdelivr.net/npm/core-js-bundle/minified.js"></script>
-  <![endif]-->
-  <script src="https://unpkg.com/@captcha-pro/core/dist/index.global.min.js"></script>
-</head>
-<body>
-  <div id="captcha"></div>
-  <script>
-    const captcha = new CaptchaPro.SliderCaptcha({
-      el: '#captcha',
-      onSuccess: () => alert('验证成功！')
-    })
-  </script>
-</body>
-```
-
-## 后端服务
-
-在 `server/` 目录下提供了后端服务的参考实现，帮助你将 captcha-pro 集成到自己的后端：
-
-| 目录 | 框架 | 端口 | 描述 |
-|------|------|------|------|
-| `server/node` | Express 5 | 3001 | Node.js 后端示例 |
-| `server/java` | Spring Boot 3 | 8080 | Java 后端示例 |
-| `server/go` | Gin | 8082 | Go 后端示例 |
-
-> **注意**：这些是参考实现，不是发布的包。请将所需代码复制到自己的后端项目中。
-
-### 快速开始（Node.js 示例）
-
-```bash
-cd server/node
-pnpm install
-pnpm dev
-```
-
-服务运行在 `http://localhost:3001`。详见各服务端目录的 README 文件。
-
-### API 接口
-
-| 方法 | 端点 | 描述 |
-|------|------|------|
-| GET | `/api/captcha` | 生成验证码图片 |
-| POST | `/api/captcha/verify` | 验证验证码 |
-| GET | `/api/health` | 健康检查 |
-| GET | `/api/info` | 服务信息 |
-
-### 生成验证码
-
-**GET** `/api/captcha?type=slider&width=300&height=170`
-
-查询参数：
-
-| 参数 | 类型 | 默认值 | 描述 |
-|------|------|---------|------|
-| `type` | string | `slider` | 验证码类型：`slider` 或 `click` |
-| `width` | number | `300` | 图片宽度 |
-| `height` | number | `170` | 图片高度 |
-| `precision` | number | `5` | 验证精度 |
-| `clickCount` | number | `3` | 点击数量（点选类型） |
-
-响应：
-
-```json
-{
-  "success": true,
-  "data": {
-    "captchaId": "uuid-string",
-    "type": "slider",
-    "bgImage": "data:image/png;base64,...",
-    "sliderImage": "data:image/png;base64,...",
-    "sliderY": 42,
-    "width": 300,
-    "height": 170,
-    "expiresAt": 1700000000000
-  }
-}
-```
-
-### 点选验证码响应
-
-点选验证码的响应格式：
-
-```json
-{
-  "success": true,
-  "data": {
-    "captchaId": "uuid-string",
-    "type": "click",
-    "bgImage": "data:image/png;base64,...",
-    "clickTexts": ["春", "暖", "花"],
-    "clickCharImages": ["data:image/png;base64,...", ...],
-    "width": 300,
-    "height": 170,
-    "expiresAt": 1700000000000
-  }
-}
-```
-
-### 验证验证码
-
-**POST** `/api/captcha/verify`
-
-请求体：
-
-```json
-{
-  "captchaId": "uuid-string",
-  "type": "slider",
-  "target": [123]
-}
-```
-
-响应：
-
-```json
-{
-  "success": true,
-  "message": "验证成功",
-  "data": { "verifiedAt": 1700000000000 }
-}
-```
-
-### 安全管理接口
-
-| 方法 | 端点 | 描述 |
-|------|------|------|
-| GET | `/api/security/status/:ip` | 获取 IP 安全状态 |
-| GET | `/api/security/blacklist` | 获取黑名单列表 |
-| POST | `/api/security/blacklist` | 添加 IP 到黑名单 |
-| DELETE | `/api/security/blacklist/:ip` | 从黑名单移除 IP |
-
-### 环境变量（示例服务）
-
-| 变量 | 默认值 | 描述 |
-|------|---------|------|
-| `PORT` | `3001`（Node.js）/ `8080`（Java）/ `8082`（Go） | 服务端口 |
-| `HOST` | `localhost` | 服务主机 |
-| `SECRET_KEY` | `captcha-pro-secret-key` | AES-GCM 加密密钥 |
-| `EXPIRE_TIME` | `60000` | 验证码过期时间（毫秒） |
-| `TIMESTAMP_TOLERANCE` | `60000` | 时间戳容差（毫秒） |
-
-### 前端对接后端
-
-```javascript
-import { SliderCaptcha } from '@captcha-pro/core'
-
-const captcha = new SliderCaptcha({
+new SliderCaptcha({
   el: '#captcha',
   verifyMode: 'backend',
   backendVerify: {
-    getCaptcha: 'http://localhost:3001/api/captcha?type=slider',
-    verify: 'http://localhost:3001/api/captcha/verify'
+    getCaptcha: '/api/captcha',
+    verify: '/api/captcha/verify'
   },
-  onSuccess: () => console.log('后端验证通过！')
+  onSuccess: () => form.submit()
 })
 ```
 
-## API 参考
+→ [前端集成完整指南](./docs/guides/frontend-integration.md)
 
-### SliderCaptcha 选项
+---
 
-| 参数 | 类型 | 默认值 | 描述 |
-|------|------|---------|------|
-| `el` | `string \| HTMLElement` | - | 容器元素或选择器 |
-| `bgImage` | `string` | - | 背景图片 URL |
-| `sliderImage` | `string` | - | 滑块图片 URL |
-| `width` | `number` | `300` | 容器宽度 |
-| `height` | `number` | `170` | 容器高度 |
-| `sliderWidth` | `number` | `42` | 滑块宽度 |
-| `sliderHeight` | `number` | `42` | 滑块高度 |
-| `precision` | `number` | `5` | 验证精度（像素） |
-| `showRefresh` | `boolean` | `true` | 显示刷新按钮 |
-| `className` | `string` | `'captcha-slider'` | 自定义类名 |
-| `verifyMode` | `'frontend' \| 'backend'` | `'frontend'` | 验证模式 |
-| `backendVerify` | `BackendVerifyOptions` | - | 后端验证配置 |
-| `security` | `SecurityOptions` | - | 安全选项 |
-| `onSuccess` | `() => void` | - | 验证成功回调 |
-| `onFail` | `() => void` | - | 验证失败回调 |
-| `onRefresh` | `() => void` | - | 刷新回调 |
+### 我是后端开发者
 
-### ClickCaptcha 选项
-
-| 参数 | 类型 | 默认值 | 描述 |
-|------|------|---------|------|
-| `el` | `string \| HTMLElement` | - | 容器元素或选择器 |
-| `width` | `number` | `300` | 容器宽度 |
-| `height` | `number` | `170` | 容器高度 |
-| `count` | `number` | `3` | 点击点数量 |
-| `showRefresh` | `boolean` | `true` | 显示刷新按钮 |
-| `className` | `string` | `'captcha-click'` | 自定义类名 |
-| `verifyMode` | `'frontend' \| 'backend'` | `'frontend'` | 验证模式 |
-| `backendVerify` | `BackendVerifyOptions` | - | 后端验证配置 |
-| `security` | `SecurityOptions` | - | 安全选项 |
-| `onSuccess` | `() => void` | - | 验证成功回调 |
-| `onFail` | `() => void` | - | 验证失败回调 |
-| `onRefresh` | `() => void` | - | 刷新回调 |
-
-### InvisibleCaptcha 选项
-
-| 参数 | 类型 | 默认值 | 描述 |
-|------|------|---------|------|
-| `el` | `string \| HTMLElement` | - | 触发元素或选择器 |
-| `trigger` | `'click' \| 'submit' \| 'focus'` | `'click'` | 触发事件 |
-| `riskAssessment` | `RiskAssessmentOptions` | - | 风险评估配置 |
-| `challengeType` | `'slider' \| 'click'` | `'slider'` | 挑战验证码类型 |
-| `challengeOptions` | `object` | - | 挑战验证码配置 |
-| `onChallenge` | `() => void` | - | 显示挑战时回调 |
-| `onSuccess` | `() => void` | - | 验证成功回调 |
-| `onFail` | `() => void` | - | 验证失败回调 |
-
-### PopupCaptcha 选项
-
-| 参数 | 类型 | 默认值 | 描述 |
-|------|------|---------|------|
-| `trigger` | `string \| HTMLElement` | - | 触发元素或选择器 |
-| `type` | `'slider' \| 'click'` | `'slider'` | 验证码类型 |
-| `captchaOptions` | `object` | - | 内部验证码配置 |
-| `modal` | `PopupModalOptions` | - | 弹窗配置 |
-| `autoClose` | `boolean` | `true` | 验证成功自动关闭 |
-| `closeDelay` | `number` | `500` | 关闭延迟（毫秒） |
-| `onOpen` | `() => void` | - | 弹窗打开时回调 |
-| `onClose` | `() => void` | - | 弹窗关闭时回调 |
-| `onSuccess` | `() => void` | - | 验证成功回调 |
-| `onFail` | `() => void` | - | 验证失败回调 |
-
-### PopupModalOptions
-
-| 参数 | 类型 | 默认值 | 描述 |
-|------|------|---------|------|
-| `title` | `string` | - | 弹窗标题 |
-| `maskClosable` | `boolean` | `true` | 点击遮罩关闭 |
-| `escClosable` | `boolean` | `true` | ESC 键关闭 |
-| `showClose` | `boolean` | `true` | 显示关闭按钮 |
-
-### SecurityOptions
-
-| 参数 | 类型 | 默认值 | 描述 |
-|------|------|---------|------|
-| `secretKey` | `string` | - | AES-GCM 加密密钥 |
-| `enableSign` | `boolean` | `false` | 启用数据签名 |
-| `timestampTolerance` | `number` | `60000` | 时间戳容差（毫秒） |
-
-### BackendVerifyOptions
-
-| 参数 | 类型 | 默认值 | 描述 |
-|------|------|---------|------|
-| `getCaptcha` | `string \| Function` | - | 获取验证码的 URL 或函数 |
-| `verify` | `string \| Function` | - | 验证验证码的 URL 或函数 |
-| `headers` | `object` | - | 请求头 |
-| `timeout` | `number` | `10000` | 请求超时（毫秒） |
-
-### 实例方法
-
-| 方法 | 描述 |
-|------|------|
-| `verify(data)` | 手动验证 |
-| `reset()` | 重置验证码状态 |
-| `refresh()` | 生成新的验证码 |
-| `destroy()` | 销毁验证码实例 |
-| `getData()` | 获取验证码数据 |
-| `getSignedData()` | 获取带签名的数据用于后端验证 |
-| `getStatistics()` | 获取验证统计 |
-| `resetStatistics()` | 重置统计数据 |
-
-### PopupCaptcha 实例方法
-
-| 方法 | 描述 |
-|------|------|
-| `show()` | 显示弹窗 |
-| `hide()` | 隐藏弹窗 |
-| `isVisible()` | 获取可见状态 |
-| `getCaptcha()` | 获取内部验证码实例 |
-| `destroy()` | 销毁弹窗实例 |
-
-### InvisibleCaptcha 实例方法
-
-| 方法 | 描述 |
-|------|------|
-| `getRiskScore()` | 获取当前风险分数（0-1） |
-| `showChallenge()` | 手动显示挑战 |
-| `destroy()` | 销毁实例 |
-
-## 构建输出
-
-| 文件 | 格式 | 大小 | 用途 |
-|------|------|------|------|
-| `index.mjs` | ESM | 35KB | 打包工具（webpack、vite、rollup） |
-| `index.cjs` | CommonJS | 36KB | Node.js、旧版打包工具 |
-| `index.global.js` | IIFE | 57KB | 浏览器（开发版） |
-| `index.global.min.js` | IIFE | 34KB | 浏览器（生产版） |
-
-## 浏览器支持
-
-| ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png) | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png) | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png) |
-| --- | --- | --- | --- | --- |
-| Chrome ✓ | Firefox ✓ | Safari ✓ | Opera ✓ | IE 11+ ✓ |
-
-> **IE11 说明**：需要 Promise polyfill。
-
-## 本地开发
+**后端服务示例（Node.js / Java / Go）：**
 
 ```bash
-# 克隆并安装
+# Node.js
+cd server/node && pnpm install && pnpm dev
+
+# Java (Spring Boot)
+cd server/java && ./gradlew bootRun
+
+# Go (Gin)
+cd server/go && go run main.go
+```
+
+**API 端点：**
+
+| 方法 | 端点 | 说明 |
+|------|------|------|
+| GET | `/api/captcha` | 生成验证码图片 |
+| POST | `/api/captcha/verify` | 验证用户输入 |
+
+→ [后端集成完整指南](./docs/guides/backend-integration.md)
+
+---
+
+### 我是产品/决策者
+
+**为什么选择 captcha-pro？**
+
+| 对比项 | captcha-pro | Google reCAPTCHA | 极验验证码 |
+|--------|------------|------------------|-----------|
+| 包体积 | **30KB** | ~150KB | ~200KB |
+| 多平台支持 | **Web + 小程序 + App** | 仅 Web | Web + App |
+| 自定义程度 | **完全可控** | 有限 | 有限 |
+| 部署方式 | **自托管** | 云服务 | 云服务 |
+| 数据隐私 | **完全自控** | 提交至 Google | 提交至第三方 |
+| 成本 | **开源免费** | 免费/付费 | 按量付费 |
+
+→ [技术选型对比详解](./docs/guides/comparison.md)
+
+---
+
+### 我是小程序开发者
+
+**微信小程序：**
+
+```xml
+<!-- WXML -->
+<captcha-slider bind:success="onSuccess" />
+```
+
+```javascript
+// JS
+import { SliderCaptcha } from '@captcha-pro/weixin'
+```
+
+**Taro / uni-app：**
+
+```bash
+pnpm add @captcha-pro/taro-react  # Taro (React)
+pnpm add @captcha-pro/uniapp-vue  # uni-app (Vue)
+```
+
+→ [小程序集成完整指南](./docs/guides/miniprogram-integration.md)
+
+---
+
+## 📚 文档导航
+
+### 快速开始
+
+- [Web 快速开始](./docs/quick-start/web.md)
+- [Vue 3 快速开始](./docs/quick-start/vue3.md)
+- [React 快速开始](./docs/quick-start/react.md)
+- [小程序快速开始](./docs/quick-start/miniprogram.md)
+
+### 深入学习
+
+- [API 参考手册](./docs/api/README.md)
+- [配置选项详解](./docs/api/options.md)
+- [前端集成指南](./docs/guides/frontend-integration.md)
+- [后端集成指南](./docs/guides/backend-integration.md)
+- [安全特性详解](./docs/guides/security.md)
+- [国际化 (i18n)](./docs/guides/i18n.md)
+- [技术对比](./docs/guides/comparison.md)
+- [无障碍访问 (a11y)](./docs/accessibility.md)
+
+### 平台专项
+
+- [Web](./docs/platforms/web.md) | [Vue 3](./docs/platforms/vue3.md) | [Vue 2](./docs/platforms/vue.md) | [React](./docs/platforms/react.md)
+- [小程序](./docs/platforms/mini-programs.md) | [Android](./docs/platforms/android.md) | [iOS](./docs/platforms/ios.md) | [Flutter](./docs/platforms/flutter.md)
+- [各平台集成指南](./docs/platforms/README.md)
+- [示例代码仓库](./examples/README.md)
+
+### 后端服务
+
+- [Node.js 后端示例](./server/node/README.md)
+- [Java 后端示例](./server/java/README.md)
+- [Go 后端示例](./server/go/README.md)
+
+---
+
+## 🛠️ 本地开发
+
+```bash
+# 克隆项目
 git clone https://github.com/saqqdy/captcha-pro.git
 cd captcha-pro
+
+# 安装依赖（首次较慢）
 pnpm install
 
-# 构建、测试、lint
+# 运行 Web 示例
+pnpm play:vue      # Vue 3 示例
+pnpm play:react    # React 示例
+
+# 构建所有包
 pnpm build
+
+# 运行测试
 pnpm test
-pnpm lint
 
-# 运行后端服务
-cd server/node && pnpm dev
+# 启动文档站
+pnpm docs:dev
 ```
 
-## 零基础快速上手（非开发人员指南）
-
-> 这一节是写给**完全不会写代码**的朋友的。跟着做完，你能在浏览器里亲眼看验证码长什么样。
-
-### 1. 这是什么项目
-
-一句话：这是一套「验证码」组件库——就是网页或 App 登录时让你拖动滑块、点选文字来证明「你是真人」的那个东西。它同时支持网页、微信小程序、Android、iOS、Flutter 多端。你不用懂代码，只想最快看它长啥样？跑一个网页示例就够了，下面一步步教你。
-
-### 2. 需要装什么软件
-
-你需要准备三样东西：
-
-**① Node.js 18 LTS（必装）**
-
-- 打开官网 https://nodejs.org
-- 在首页找到标着 **LTS**（长期支持版）的那一栏，下载对应你系统的安装包：
-  - Windows：下载 `.msi` 文件，双击一路「下一步」装完。
-  - macOS：下载 `.pkg` 文件，双击装完。
-- 装好后验证：打开终端——
-  - Windows：开始菜单搜「PowerShell」，打开它。
-  - macOS：启动台 →「其他」→「终端」（或 Spotlight 搜「终端」）。
-- 在终端里输入下面这行，按回车：
-
-  ```bash
-  node -v
-  ```
-
-  能看到类似 `v18.19.0` 的版本号，就说明装好了。如果不是 v18 开头，回去重下 LTS 版。
-
-**② pnpm（必装）**
-
-Node 装好后，在终端里输入下面这行按回车：
-
-```bash
-npm install -g pnpm
-```
-
-再输 `pnpm -v`，看到版本号（比如 `9.15.3`）就 OK。
-
-**③ 浏览器**
-
-Chrome / Edge / Safari 任选一个，系统自带的就行，不用额外装。
-
-### 3. 拿到项目代码
-
-两种方式，挑一种：
-
-- **方式一（推荐新手）**：到项目 GitHub 页面 https://github.com/saqqdy/captcha-pro ，点绿色「Code」按钮 →「Download ZIP」，下载后解压到任意文件夹。
-- **方式二（需要 git）**：如果你电脑装了 git，在终端里：
-
-  ```bash
-  git clone https://github.com/saqqdy/captcha-pro.git
-  ```
-
-  没装 git 就用方式一，一样能用。
-
-### 4. 安装依赖（第一次会慢，耐心等）
-
-1. 在终端里进入项目根目录。比如你解压在 `D:\code\captcha-pro`，就输：
-
-   ```bash
-   cd D:/code/captcha-pro
-   ```
-
-   macOS 类似：`cd /Users/你的名字/code/captcha-pro`。
-
-2. 输入下面这行，按回车：
-
-   ```bash
-   pnpm install
-   ```
-
-3. 第一次运行会下载所有依赖，大约 **3-10 分钟**，看到进度跑完、出现 `Done` 或回到命令提示符就完成了。
-
-> ⚠️ 如果这一步报和 `python` / `canvas` 相关的错误：那是 `@captcha-pro/core` 包在编译本地模块时需要 Python，**不影响你跑网页示例，可以忽略**。如果确实需要它，装好 Python 3.11 后再用下面的命令重装：
+> ⚠️ 如果 `pnpm install` 报错 `python` / `canvas` 相关错误，这是 `@captcha-pro/core` 编译原生模块所致。**不影响运行 Web 示例，可忽略。** 如需解决：
 >
 > ```bash
 > PYTHON=/usr/local/bin/python3.11 pnpm install
 > ```
 
-### 5. 最快看到效果（跑网页示例）
+---
 
-在项目根目录的终端里，输入下面任意一行（推荐先试 vue）：
+## 🤝 贡献 & 支持
 
-```bash
-pnpm play:vue      # Vue 3 网页示例
-pnpm play:react    # React 网页示例
-pnpm play:vue2     # Vue 2 网页示例
-```
+- [贡献指南](./CONTRIBUTING.md)
+- [问题反馈](https://github.com/saqqdy/captcha-pro/issues)
+- [更新日志](./CHANGELOG.md)
 
-回车后，终端会打印一行类似这样的地址：
+---
 
-```
-  ➜  Local:   http://localhost:5173/
-```
+## 📄 许可证
 
-把 `http://localhost:5173/` 复制到浏览器打开，看到验证码组件的演示页面 = 成功！你可以拖拖滑块、点选文字试试效果。详细说明见 [examples/vue/README_CN.md](./examples/vue/README_CN.md)。
+[MIT](LICENSE) © [saqqdy](https://github.com/saqqdy)
 
-> 想停掉这个本地服务：在终端窗口里按 `Ctrl + C`（macOS 也是 Control 不是 Command）。
+---
 
-### 6. 想看其它端的示例
-
-下面这张表给你指路，点对应链接看各端详细说明：
-
-| 想看哪端 | 进入目录 | 指南 |
-|---|---|---|
-| 网页 Vue 3 | `examples/vue` | [README_CN.md](./examples/vue/README_CN.md) |
-| 网页 React | `examples/react` | [README_CN.md](./examples/react/README_CN.md) |
-| 微信小程序 | `examples/weixin` | [README_CN.md](./examples/weixin/README_CN.md) |
-| Taro 小程序 | `examples/taro-vue` | [README_CN.md](./examples/taro-vue/README_CN.md) |
-| Android SDK | `packages/android` | [README_CN.md](./packages/android/README_CN.md) |
-| iOS SDK | `packages/ios` | [README_CN.md](./packages/ios/README_CN.md) |
-| Flutter | `packages/flutter` | [README_CN.md](./packages/flutter/README_CN.md) |
-| 后端服务 | `server/node` | [README_CN.md](./server/node/README_CN.md) |
-
-> 小程序 / Android / iOS / Flutter 这些端需要各自的开发工具（微信开发者工具、Android Studio、Xcode、Flutter SDK），比网页麻烦不少，建议先把网页示例跑通再说。
-
-### 7. 构建全部包（非开发人员一般用不到）
-
-如果你想产出最终可发布的文件，在根目录输：
-
-```bash
-pnpm build
-```
-
-构建产物会输出到各个包的 `dist/` 目录里。普通用户只想看效果的话，跳过这步，用第 5 步的 `pnpm play:vue` 就行。
-
-### 8. 在线文档站点
-
-项目自带完整文档网站。在根目录输：
-
-```bash
-pnpm docs:dev
-```
-
-终端会打印一个本地地址（一般是 `http://localhost:5173/` 或别的端口），复制到浏览器打开就能看完整文档。想生成静态站点文件就输 `pnpm docs:build`。
-
-### 9. 验证成功 / 常见报错对照表
-
-| 现象 / 报错 | 原因 | 怎么办 |
-|---|---|---|
-| `pnpm: command not found` | pnpm 没装好 | 回到第 2 步重装 pnpm |
-| `node -v` 显示的不是 v18 | Node 版本不对 | 去 nodejs.org 重下 **LTS** 版安装 |
-| `EADDRINUSE` 或提示端口被占用 | 5173 端口被别的程序占了 | 关掉占用 5173 的程序，或在示例目录的 vite 配置里改端口 |
-| `pnpm install` 卡住不动 | 网络问题 / 源慢 | 换国内镜像：`pnpm config set registry https://registry.npmmirror.com` 后重试 |
-| 浏览器打开是空白页 | 本地服务没启动 / 地址输错 | 确认终端里打印的地址，照抄进浏览器 |
-
-祝你好运！跑通后如果对验证码的具体用法感兴趣，再回头看本文件上方的「快速开始」「特性」等章节。
-
-## 许可证
-
-[MIT](LICENSE)
-
+<!-- 徽章链接 -->
 [npm-image]: https://img.shields.io/npm/v/@captcha-pro/core.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/@captcha-pro/core
 [codacy-image]: https://app.codacy.com/project/badge/Grade/f70d4880e4ad4f40aa970eb9ee9d0696

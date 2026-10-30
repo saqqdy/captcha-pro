@@ -72,3 +72,54 @@ Vue、Vue 2、React 封装完全可键盘操作。
 - **契约检查**：各平台无障碍属性计数 > 0 —— grep `aria-label|role=`、`Semantics`、`contentDescription|semantics`、`accessibilityLabel`。
 
 要报告无障碍问题，请提 issue 并注明平台、屏幕阅读器及播报或可操作性有误的元素。
+
+## 深色模式
+
+**2.3.0** 在所有平台引入自动深色模式支持。验证码组件跟随系统配色偏好，无需手动切换 prop。
+
+### 实现
+
+- **Web**：CSS `@media (prefers-color-scheme: dark)` 媒体查询
+- **Flutter**：`MediaQuery.platformBrightness` + `CaptchaColorScheme`
+- **Android**：`values-night/colors.xml` 资源（View）+ `isSystemInDarkTheme()`（Compose）
+- **iOS**：动态 `UIColor` provider + `@Environment(\.colorScheme)`（SwiftUI）
+
+### 颜色令牌
+
+深色模式保留品牌渐变（`#667EEA→#764BA2`）与强调色（`#1991FA`）。适配令牌包括：
+
+| 元素 | 浅色 | 深色 | 对比度（深色） |
+| --- | --- | --- | --- |
+| 滑块条背景 | `#F7F9FA` | `#1F1F1F` | — |
+| 滑块提示文字 | `#666` | `#AAA` | ≥ 4.5:1 |
+| 提示条背景 | `#F7F9FA` | `#1F1F1F` | — |
+| 提示文字 | `#666` | `#AAA` | ≥ 4.5:1 |
+| 刷新按钮背景 | `rgba(255,255,255,0.9)` | `rgba(60,60,60,0.9)` | — |
+| 状态遮罩背景 | `rgba(255,255,255,0.75)` | `rgba(0,0,0,0.6)` | — |
+| 成功文字 | `#389E0D` | `#5CB85C` | ≥ 4.5:1 |
+| 失败文字 | `#CF1322` | `#FF7875` | ≥ 4.5:1 |
+| 弹窗卡片 | `#FFF` | `#1F1F1F` | — |
+| 弹窗标题 | `#333` | `#EEE` | ≥ 4.5:1 |
+| 弹窗关闭 | `#999` | `#AAA` | ≥ 4.5:1 |
+| 弹窗遮罩 | `rgba(0,0,0,0.5)` | `rgba(0,0,0,0.7)` | — |
+
+所有深色模式文字颜色满足 WCAG 2.2 Level AA 对比度要求（≥ 4.5:1）。
+
+### 小程序兼容性
+
+`@media (prefers-color-scheme: dark)` 要求小程序基础库 **≥ 2.11**。更低版本回退至浅色模式。集成方应在发版说明中注明该最低版本。
+
+### 焦点陷阱（Web 弹窗）
+
+2.3.0 补齐了 2.2.0 暂缓的 Web 弹窗焦点陷阱。弹窗打开时：
+- 焦点移至首个可聚焦元素（关闭按钮）
+- `Tab` / `Shift+Tab` 在对话框内循环焦点
+- 关闭时焦点回到触发元素
+
+这确保键盘用户在弹窗打开时不会误操作背景。
+
+### 手动覆盖
+
+验证码组件**不**暴露 `dark` / `theme` prop。要覆盖系统偏好，集成方需：
+- **Web**：在验证码样式之后注入自定义 CSS
+- **原生**：用固定配色的主题 provider 包裹验证码
