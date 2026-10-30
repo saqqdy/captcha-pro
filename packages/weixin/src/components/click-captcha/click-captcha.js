@@ -32,7 +32,7 @@ Component({
         const saved = wx.getStorageSync('cp-theme')
         const systemDark = sysInfo.theme === 'dark'
         this.setData({ isDark: saved === 'dark' || (saved !== 'light' && systemDark) })
-      } catch (e) { /* ignore storage read errors */ }
+      } catch { /* ignore storage read errors */ }
       this.loadCaptcha()
     },
   },

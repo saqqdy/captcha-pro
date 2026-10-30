@@ -1,4 +1,4 @@
-/* global Component */
+/* global Component, wx */
 /**
  * WeChat Mini-program Popup Captcha Component — Backend-only mode
  *
@@ -36,7 +36,7 @@ Component({
         const saved = wx.getStorageSync('cp-theme')
         const systemDark = sysInfo.theme === 'dark'
         this.setData({ isDark: saved === 'dark' || (saved !== 'light' && systemDark) })
-      } catch (e) { /* ignore */ }
+      } catch { /* ignore */ }
     },
   },
 

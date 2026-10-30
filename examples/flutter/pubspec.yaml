@@ -1,6 +1,6 @@
 name: captcha_pro_example
 description: Captcha Pro Flutter example app (slider + click + popup).
-publish_to: "none"
+publish_to: none
 version: 1.0.0
 
 environment:
