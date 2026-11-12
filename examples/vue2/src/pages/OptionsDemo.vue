@@ -1,7 +1,7 @@
 <script>
+import { demoT } from '../utils/demoI18n'
 import { ref } from 'vue'
-import SliderCaptcha from '@captcha-pro/vue2'
-import ClickCaptcha from '@captcha-pro/vue2'
+import { SliderCaptcha, ClickCaptcha } from '@captcha-pro/vue2'
 
 export default {
   name: 'OptionsDemo',
@@ -21,7 +21,7 @@ export default {
     const sliderResult = ref('')
     const clickResult = ref('')
 
-    const t = (zh, en) => props.locale === 'zh-CN' ? zh : en
+    const t = (zh, en) => demoT(props.locale, zh, en)
 
     const onSliderSuccess = () => {
       sliderResult.value = t('验证成功！', 'Verification successful!')
@@ -35,7 +35,6 @@ export default {
       configs,
       sliderResult,
       clickResult,
-      t,
       onSliderSuccess,
       onClickSuccess
     }
@@ -96,7 +95,6 @@ export default {
           <ClickCaptcha
             :width="300"
             :height="170"
-            :precision="configs.precision"
             :show-refresh="configs.showRefresh"
             :locale="locale"
             @success="onClickSuccess"
@@ -254,55 +252,53 @@ export default {
   color: #155724;
 }
 
-@media (prefers-color-scheme: dark) {
-  .info-box {
+  html.cp-dark .info-box {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .info-box h3 {
+  html.cp-dark .info-box h3 {
     color: #aaaaaa;
   }
 
-  .info-box p {
+  html.cp-dark .info-box p {
     color: #888888;
   }
 
-  .config-panel {
+  html.cp-dark .config-panel {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .config-panel h3 {
+  html.cp-dark .config-panel h3 {
     color: #aaaaaa;
   }
 
-  .config-label {
+  html.cp-dark .config-label {
     color: #aaaaaa;
   }
 
-  .config-item input[type="number"] {
+  html.cp-dark .config-item input[type="number"] {
     background: #1f1f1f;
     border-color: #3a3a3a;
     color: #aaaaaa;
   }
 
-  .toggle-slider {
+  html.cp-dark .toggle-slider {
     background-color: #3a3a3a;
   }
 
-  .demo-item {
+  html.cp-dark .demo-item {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .demo-item h3 {
+  html.cp-dark .demo-item h3 {
     color: #aaaaaa;
   }
 
-  .result.success {
+  html.cp-dark .result.success {
     background: #1e3a1e;
     color: #5cb85c;
   }
-}
 </style>

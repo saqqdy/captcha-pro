@@ -1,4 +1,5 @@
 import { getLocale, setLocale } from '@captcha-pro/vue2'
+import { demoT } from '../utils/demoI18n'
 
 export default {
   data() {
@@ -8,7 +9,7 @@ export default {
   },
   methods: {
     t(zh, en) {
-      return this.currentLocale === 'zh-CN' ? zh : en
+      return demoT(this.currentLocale, zh, en)
     },
     switchLanguage(locale) {
       this.currentLocale = locale

@@ -1,6 +1,7 @@
 <script>
-import { ref, computed } from 'vue'
-import { SliderCaptcha, ClickCaptcha, setLocale, getLocale } from '@captcha-pro/vue2'
+import { computed } from 'vue'
+import { SliderCaptcha, ClickCaptcha, t as translate } from '@captcha-pro/vue2'
+import { demoT } from '../utils/demoI18n'
 
 export default {
   name: 'LocaleDemo',
@@ -11,38 +12,46 @@ export default {
       default: 'zh-CN'
     }
   },
-  setup(props) {
-    const currentLocale = ref(getLocale())
+  emits: ['switch'],
+  setup(props, { emit }) {
+    const currentLocale = computed(() => props.locale)
 
     const locales = [
       { code: 'zh-CN', label: '简体中文' },
-      { code: 'en-US', label: 'English' }
+      { code: 'zh-TW', label: '繁體中文' },
+      { code: 'en-US', label: 'English' },
+      { code: 'fr-FR', label: 'Français' },
+      { code: 'de-DE', label: 'Deutsch' },
+      { code: 'es-ES', label: 'Español' }
     ]
 
-    const i18nKeys = [
-      { key: 'slider_hint', zh: '向右拖动滑块填满缺口', en: 'Drag the slider to fill the gap' },
-      { key: 'click_prompt', zh: '请依次点击', en: 'Please click in order' },
-      { key: 'loading', zh: '加载中...', en: 'Loading...' },
-      { key: 'refresh', zh: '刷新', en: 'Refresh' },
-      { key: 'success', zh: '验证成功', en: 'Verification successful' },
-      { key: 'fail', zh: '验证失败', en: 'Verification failed' },
-      { key: 'popup_title', zh: '安全验证', en: 'Security Verification' },
-      { key: 'popup_close', zh: '关闭', en: 'Close' }
+    const messageKeys = [
+      'refresh',
+      'slider.slide',
+      'slider.success',
+      'slider.fail',
+      'click.prompt',
+      'click.success',
+      'click.fail',
+      'popup.title',
+      'popup.close',
+      'errors.network',
+      'errors.expired',
+      'errors.invalid',
+      'errors.notFound',
+      'errors.fetchFailed'
     ]
 
     const switchLocale = (locale) => {
-      currentLocale.value = locale
-      setLocale(locale)
+      emit('switch', locale)
     }
-
-    const t = computed(() => (zh, en) => currentLocale.value === 'zh-CN' ? zh : en)
 
     return {
       currentLocale,
       locales,
-      i18nKeys,
+      messageKeys,
       switchLocale,
-      t
+      translate
     }
   }
 }
@@ -69,15 +78,13 @@ export default {
         <thead>
           <tr>
             <th>Key</th>
-            <th>简体中文</th>
-            <th>English</th>
+            <th v-for="loc in locales" :key="loc.code">{{ loc.code }}</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in i18nKeys" :key="item.key">
-            <td><code>{{ item.key }}</code></td>
-            <td>{{ item.zh }}</td>
-            <td>{{ item.en }}</td>
+          <tr v-for="key in messageKeys" :key="key">
+            <td><code>{{ key }}</code></td>
+            <td v-for="loc in locales" :key="loc.code">{{ translate(key, loc.code) }}</td>
           </tr>
         </tbody>
       </table>
@@ -113,8 +120,8 @@ export default {
       <h3>{{ t('代码示例', 'Code Example') }}</h3>
       <pre><code>import { setLocale, getLocale } from '@captcha-pro/vue2'
 
-// 设置语言
-setLocale('en-US')  // 或 'zh-CN'
+// 设置语言（6 种内置语言）
+setLocale('fr-FR')  // zh-CN / zh-TW / en-US / fr-FR / de-DE / es-ES
 
 // 获取当前语言
 const locale = getLocale()
@@ -128,6 +135,7 @@ const locale = getLocale()
 <style scoped>
 .locale-switcher {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 24px;
   justify-content: center;
@@ -151,6 +159,7 @@ const locale = getLocale()
 
 .i18n-table {
   margin-bottom: 32px;
+  overflow-x: auto;
 }
 
 .i18n-table h3 {
@@ -160,6 +169,8 @@ const locale = getLocale()
 
 .i18n-table table {
   width: 100%;
+  min-width: 900px;
+  table-layout: fixed;
   border-collapse: collapse;
   background: #fff;
   border-radius: 8px;
@@ -171,6 +182,7 @@ const locale = getLocale()
   padding: 12px 16px;
   text-align: left;
   border-bottom: 1px solid #e9ecef;
+  overflow-wrap: break-word;
 }
 
 .i18n-table th {
@@ -234,42 +246,45 @@ const locale = getLocale()
   line-height: 1.6;
 }
 
-@media (prefers-color-scheme: dark) {
-  .locale-switcher button {
-    background: #2a2a2a;
-    border-color: #3a3a3a;
-    color: #aaaaaa;
-  }
+html.cp-dark .locale-switcher button {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #aaaaaa;
+}
 
-  .locale-switcher button.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
-  }
+html.cp-dark .locale-switcher button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
 
-  .i18n-table h3 {
-    color: #aaaaaa;
-  }
+html.cp-dark .i18n-table h3 {
+  color: #aaaaaa;
+}
 
-  .i18n-table table {
-    background: #2a2a2a;
-  }
+html.cp-dark .i18n-table table {
+  background: #2a2a2a;
+}
 
-  .i18n-table th {
-    background: #1f1f1f;
-    color: #aaaaaa;
-  }
+html.cp-dark .i18n-table th {
+  background: #1f1f1f;
+  color: #aaaaaa;
+}
 
-  .i18n-table code {
-    background: #3a3a3a;
-  }
+html.cp-dark .i18n-table th,
+html.cp-dark .i18n-table td {
+  border-bottom-color: #3a3a3a;
+}
 
-  .demo-item {
-    background: #2a2a2a;
-    border-color: #3a3a3a;
-  }
+html.cp-dark .i18n-table code {
+  background: #3a3a3a;
+}
 
-  .demo-item h3 {
-    color: #aaaaaa;
-  }
+html.cp-dark .demo-item {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .demo-item h3 {
+  color: #aaaaaa;
 }
 </style>

@@ -1,4 +1,5 @@
 <script>
+import { demoT } from '../utils/demoI18n'
 import { ref } from 'vue'
 import { SliderCaptcha, ClickCaptcha } from '@captcha-pro/vue2'
 
@@ -17,7 +18,7 @@ export default {
     const sliderResult = ref('')
     const clickResult = ref('')
 
-    const t = (zh, en) => props.locale === 'zh-CN' ? zh : en
+    const t = (zh, en) => demoT(props.locale, zh, en)
 
     const onSliderSuccess = () => {
       sliderResult.value = t('验证成功！', 'Verification successful!')
@@ -39,7 +40,6 @@ export default {
       clickRef,
       sliderResult,
       clickResult,
-      t,
       onSliderSuccess,
       onClickSuccess,
       resetAll
@@ -207,36 +207,34 @@ export default {
   margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  .info-box {
+  html.cp-dark .info-box {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .info-box h3 {
+  html.cp-dark .info-box h3 {
     color: #aaaaaa;
   }
 
-  .info-box code {
+  html.cp-dark .info-box code {
     background: #3a3a3a;
   }
 
-  .demo-item {
+  html.cp-dark .demo-item {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .demo-item h3 {
+  html.cp-dark .demo-item h3 {
     color: #aaaaaa;
   }
 
-  .result.success {
+  html.cp-dark .result.success {
     background: #1e3a1e;
     color: #5cb85c;
   }
 
-  .hint {
+  html.cp-dark .hint {
     color: #888888;
   }
-}
 </style>

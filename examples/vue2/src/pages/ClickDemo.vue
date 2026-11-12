@@ -20,7 +20,7 @@ export default {
     getData() {
       const data = this.$refs.captchaRef?.getData()
       console.log('Click data:', data)
-      alert(this.locale === 'zh-CN' ? '验证数据已输出到控制台' : 'Data logged to console')
+      alert(this.t('验证数据已输出到控制台', 'Data logged to console'))
     }
   }
 }
@@ -28,15 +28,15 @@ export default {
 
 <template>
   <section class="demo-section">
-    <h2>🎯 {{ locale === 'zh-CN' ? '点选文字验证码' : 'Click Captcha' }}</h2>
+    <h2>🎯 {{ t('点选文字验证码', 'Click Captcha') }}</h2>
 
     <div class="info-box">
-      💡 {{ locale === 'zh-CN' ? '使用中文词汇库自动生成，包含200+常用成语和词汇。' : 'Auto-generated from Chinese vocabulary (200+ words).' }}
+      💡 {{ t('使用中文词汇库自动生成，包含200+常用成语和词汇。', 'Auto-generated from Chinese vocabulary (200+ words).') }}
     </div>
 
     <div class="options">
       <div class="option-row">
-        <label>{{ locale === 'zh-CN' ? '点击数量' : 'Click Count' }}:</label>
+        <label>{{ t('点击数量', 'Click Count') }}:</label>
         <select v-model.number="count">
           <option :value="2">2</option>
           <option :value="3">3</option>
@@ -57,8 +57,8 @@ export default {
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-primary" @click="reset">{{ locale === 'zh-CN' ? '重置验证码' : 'Reset' }}</button>
-      <button class="btn btn-secondary" @click="getData">{{ locale === 'zh-CN' ? '获取数据' : 'Get Data' }}</button>
+      <button class="btn btn-primary" @click="reset">{{ t('重置验证码', 'Reset') }}</button>
+      <button class="btn btn-secondary" @click="getData">{{ t('获取数据', 'Get Data') }}</button>
     </div>
   </section>
 </template>

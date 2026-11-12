@@ -24,6 +24,9 @@ export default {
   methods: {
     changeImage() {
       this.index = (this.index + 1) % images.length
+    },
+    onSuccess() {
+      console.log('Custom captcha success')
     }
   }
 }
@@ -31,10 +34,10 @@ export default {
 
 <template>
   <section class="demo-section">
-    <h2>🖼️ {{ locale === 'zh-CN' ? '自定义图片验证码' : 'Custom Image Captcha' }}</h2>
+    <h2>🖼️ {{ t('自定义图片验证码', 'Custom Image Captcha') }}</h2>
 
     <div class="info-box">
-      💡 {{ locale === 'zh-CN' ? '支持使用自定义背景图片。' : 'Support custom background images.' }}
+      💡 {{ t('支持使用自定义背景图片。', 'Support custom background images.') }}
     </div>
 
     <div class="captcha-box">
@@ -43,12 +46,12 @@ export default {
         :height="180"
         :bg-image="bgImage"
         :locale="locale"
-        @success="() => console.log('Custom captcha success')"
+        @success="onSuccess"
       />
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-primary" @click="changeImage">{{ locale === 'zh-CN' ? '更换图片' : 'Change Image' }}</button>
+      <button class="btn btn-primary" @click="changeImage">{{ t('更换图片', 'Change Image') }}</button>
     </div>
   </section>
 </template>

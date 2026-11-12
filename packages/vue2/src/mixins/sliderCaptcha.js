@@ -35,8 +35,8 @@ export const sliderCaptchaMixin = {
 
   computed: {
     statusText() {
-      if (this.status === 'success') return this.locale === 'zh-CN' ? '验证成功' : 'Success'
-      if (this.status === 'fail') return this.locale === 'zh-CN' ? '验证失败' : 'Failed'
+      if (this.status === 'success') return ['zh-CN', 'zh-TW'].includes(this.locale) ? '验证成功' : 'Success'
+      if (this.status === 'fail') return ['zh-CN', 'zh-TW'].includes(this.locale) ? '验证失败' : 'Failed'
       return ''
     },
   },

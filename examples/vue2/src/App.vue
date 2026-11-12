@@ -75,7 +75,7 @@ export default {
     <InvisibleDemo v-show="activeTab === 'invisible'" :locale="currentLocale" />
     <CustomImageDemo v-show="activeTab === 'custom'" :locale="currentLocale" />
     <AccessibilityDemo v-show="activeTab === 'accessibility'" :locale="currentLocale" />
-    <LocaleDemo v-show="activeTab === 'locale'" :locale="currentLocale" />
+    <LocaleDemo v-show="activeTab === 'locale'" :locale="currentLocale" @switch="switchLanguage" />
     <StatisticsDemo v-show="activeTab === 'statistics'" :locale="currentLocale" />
     <OptionsDemo v-show="activeTab === 'options'" :locale="currentLocale" />
     <ErrorDemo v-show="activeTab === 'error'" :locale="currentLocale" />

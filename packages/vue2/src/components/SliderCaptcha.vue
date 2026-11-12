@@ -86,6 +86,13 @@ export default {
       this.captchaInstance?.destroy()
       this.captchaInstance = null
     },
+
+    rebuild() {
+      this.destroy()
+      this.$nextTick(() => {
+        if (!this.captchaInstance) this.initCaptcha()
+      })
+    },
   },
 
   watch: {
@@ -94,6 +101,15 @@ export default {
     },
     sliderImage() {
       this.refresh()
+    },
+    precision() {
+      this.rebuild()
+    },
+    showRefresh() {
+      this.rebuild()
+    },
+    locale() {
+      this.rebuild()
     },
   },
 

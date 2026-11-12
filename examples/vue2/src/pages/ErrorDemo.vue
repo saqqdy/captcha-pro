@@ -1,7 +1,7 @@
 <script>
+import { demoT } from '../utils/demoI18n'
 import { ref } from 'vue'
-import SliderCaptcha from '@captcha-pro/vue2'
-import ClickCaptcha from '@captcha-pro/vue2'
+import { SliderCaptcha, ClickCaptcha } from '@captcha-pro/vue2'
 
 export default {
   name: 'ErrorDemo',
@@ -20,7 +20,7 @@ export default {
     const sliderError = ref('')
     const clickError = ref('')
 
-    const t = (zh, en) => props.locale === 'zh-CN' ? zh : en
+    const t = (zh, en) => demoT(props.locale, zh, en)
 
     const onSliderSuccess = () => {
       sliderResult.value = t('验证成功！', 'Verification successful!')
@@ -58,7 +58,6 @@ export default {
       clickResult,
       sliderError,
       clickError,
-      t,
       onSliderSuccess,
       onSliderFail,
       onClickSuccess,
@@ -183,37 +182,35 @@ export default {
   color: #721c24;
 }
 
-@media (prefers-color-scheme: dark) {
-  .info-box {
+  html.cp-dark .info-box {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .info-box h3 {
+  html.cp-dark .info-box h3 {
     color: #aaaaaa;
   }
 
-  .info-box p {
+  html.cp-dark .info-box p {
     color: #888888;
   }
 
-  .demo-item {
+  html.cp-dark .demo-item {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .demo-item h3 {
+  html.cp-dark .demo-item h3 {
     color: #aaaaaa;
   }
 
-  .result.success {
+  html.cp-dark .result.success {
     background: #1e3a1e;
     color: #5cb85c;
   }
 
-  .result.error {
+  html.cp-dark .result.error {
     background: #3a1e1e;
     color: #e57373;
   }
-}
 </style>

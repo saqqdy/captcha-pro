@@ -35,7 +35,7 @@ export default {
       :class="{ active: activeTab === tab.key }"
       @click="$emit('update:active-tab', tab.key)"
     >
-      {{ locale === 'zh-CN' ? tab.label.zh : tab.label.en }}
+      {{ t(tab.label.zh, tab.label.en) }}
       <span v-if="tab.badge" class="new-badge">{{ tab.badge }}</span>
     </button>
   </div>

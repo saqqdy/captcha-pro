@@ -1,5 +1,6 @@
 <script>
 import { SliderCaptcha, ClickCaptcha } from '@captcha-pro/vue2'
+import { demoT } from '../utils/demoI18n'
 
 export default {
   name: 'DarkModeDemo',
@@ -12,7 +13,7 @@ export default {
   },
   methods: {
     t(zh, en) {
-      return this.locale === 'zh-CN' ? zh : en
+      return demoT(this.locale, zh, en)
     }
   }
 }

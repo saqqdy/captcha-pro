@@ -26,24 +26,24 @@ export default {
 
 <template>
   <section class="demo-section">
-    <h2>💬 {{ locale === 'zh-CN' ? '弹窗验证码' : 'Popup Captcha' }}</h2>
+    <h2>💬 {{ t('弹窗验证码', 'Popup Captcha') }}</h2>
 
     <div class="options">
       <div class="option-row">
-        <label>{{ locale === 'zh-CN' ? '验证码类型' : 'Type' }}:</label>
+        <label>{{ t('验证码类型', 'Type') }}:</label>
         <select v-model="type">
-          <option value="slider">{{ locale === 'zh-CN' ? '滑块验证' : 'Slider' }}</option>
-          <option value="click">{{ locale === 'zh-CN' ? '点击验证' : 'Click' }}</option>
+          <option value="slider">{{ t('滑块验证', 'Slider') }}</option>
+          <option value="click">{{ t('点击验证', 'Click') }}</option>
         </select>
       </div>
       <div class="option-row">
-        <label>{{ locale === 'zh-CN' ? '自动关闭' : 'Auto Close' }}:</label>
+        <label>{{ t('自动关闭', 'Auto Close') }}:</label>
         <input type="checkbox" v-model="autoClose">
       </div>
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-primary" @click="show">{{ locale === 'zh-CN' ? '打开验证弹窗' : 'Open Popup' }}</button>
+      <button class="btn btn-primary" @click="show">{{ t('打开验证弹窗', 'Open Popup') }}</button>
     </div>
 
     <PopupCaptcha

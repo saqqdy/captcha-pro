@@ -1,7 +1,7 @@
 <script>
+import { demoT } from '../utils/demoI18n'
 import { ref } from 'vue'
-import SliderCaptcha from '@captcha-pro/vue2'
-import ClickCaptcha from '@captcha-pro/vue2'
+import { SliderCaptcha, ClickCaptcha } from '@captcha-pro/vue2'
 
 export default {
   name: 'StatisticsDemo',
@@ -20,16 +20,32 @@ export default {
     const sliderResult = ref('')
     const clickResult = ref('')
 
-    const t = (zh, en) => props.locale === 'zh-CN' ? zh : en
+    const t = (zh, en) => demoT(props.locale, zh, en)
+
+    const updateSliderStats = () => {
+      sliderStats.value = sliderRef.value?.getStatistics?.() || null
+    }
+
+    const updateClickStats = () => {
+      clickStats.value = clickRef.value?.getStatistics?.() || null
+    }
 
     const onSliderSuccess = () => {
-      sliderStats.value = sliderRef.value?.getStatistics?.() || null
-      sliderResult.value = t('验证成功！耗时：', 'Verification successful! Time: ') + `${sliderStats.value?.verificationTime?.toFixed(0) || 0}ms`
+      updateSliderStats()
+      sliderResult.value = t('验证成功！耗时：', 'Verification successful! Time: ') + `${sliderStats.value?.avgVerifyTime || 0}ms`
+    }
+
+    const onSliderFail = () => {
+      updateSliderStats()
     }
 
     const onClickSuccess = () => {
-      clickStats.value = clickRef.value?.getStatistics?.() || null
-      clickResult.value = t('验证成功！点击次数：', 'Verification successful! Clicks: ') + `${clickStats.value?.clickCount || 0}`
+      updateClickStats()
+      clickResult.value = t('验证成功！点击次数：', 'Verification successful! Clicks: ') + `${clickStats.value?.avgClickCount || 0}`
+    }
+
+    const onClickFail = () => {
+      updateClickStats()
     }
 
     const resetAll = () => {
@@ -48,9 +64,10 @@ export default {
       clickStats,
       sliderResult,
       clickResult,
-      t,
       onSliderSuccess,
+      onSliderFail,
       onClickSuccess,
+      onClickFail,
       resetAll
     }
   }
@@ -76,6 +93,7 @@ export default {
             :height="170"
             :locale="locale"
             @success="onSliderSuccess"
+            @fail="onSliderFail"
           />
         </div>
         <div v-if="sliderResult" class="result success">{{ sliderResult }}</div>
@@ -83,7 +101,19 @@ export default {
           <h4>{{ t('统计数据', 'Statistics') }}</h4>
           <div class="stat-item">
             <span class="label">{{ t('验证耗时', 'Time') }}:</span>
-            <span class="value">{{ sliderStats.verificationTime?.toFixed(0) || 0 }}ms</span>
+            <span class="value">{{ sliderStats.avgVerifyTime || 0 }}ms</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">{{ t('滑动距离', 'Slider Distance') }}:</span>
+            <span class="value">{{ sliderStats.avgDragDistance || 0 }}px</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">{{ t('尝试次数', 'Attempts') }}:</span>
+            <span class="value">{{ sliderStats.totalAttempts || 0 }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">{{ t('成功率', 'Rate') }}:</span>
+            <span class="value">{{ sliderStats.successRate || 0 }}%</span>
           </div>
         </div>
       </div>
@@ -97,6 +127,7 @@ export default {
             :height="170"
             :locale="locale"
             @success="onClickSuccess"
+            @fail="onClickFail"
           />
         </div>
         <div v-if="clickResult" class="result success">{{ clickResult }}</div>
@@ -104,11 +135,19 @@ export default {
           <h4>{{ t('统计数据', 'Statistics') }}</h4>
           <div class="stat-item">
             <span class="label">{{ t('验证耗时', 'Time') }}:</span>
-            <span class="value">{{ clickStats.verificationTime?.toFixed(0) || 0 }}ms</span>
+            <span class="value">{{ clickStats.avgVerifyTime || 0 }}ms</span>
           </div>
           <div class="stat-item">
             <span class="label">{{ t('点击次数', 'Clicks') }}:</span>
-            <span class="value">{{ clickStats.clickCount || 0 }}</span>
+            <span class="value">{{ clickStats.avgClickCount || 0 }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">{{ t('尝试次数', 'Attempts') }}:</span>
+            <span class="value">{{ clickStats.totalAttempts || 0 }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="label">{{ t('成功率', 'Rate') }}:</span>
+            <span class="value">{{ clickStats.successRate || 0 }}%</span>
           </div>
         </div>
       </div>
@@ -215,53 +254,51 @@ export default {
   font-size: 14px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .info-box {
+  html.cp-dark .info-box {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .info-box h3 {
+  html.cp-dark .info-box h3 {
     color: #aaaaaa;
   }
 
-  .info-box p {
+  html.cp-dark .info-box p {
     color: #888888;
   }
 
-  .demo-item {
+  html.cp-dark .demo-item {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .demo-item h3 {
+  html.cp-dark .demo-item h3 {
     color: #aaaaaa;
   }
 
-  .result.success {
+  html.cp-dark .result.success {
     background: #1e3a1e;
     color: #5cb85c;
   }
 
-  .stats-panel {
+  html.cp-dark .stats-panel {
     background: #1f1f1f;
     border-color: #3a3a3a;
   }
 
-  .stats-panel h4 {
+  html.cp-dark .stats-panel h4 {
     color: #aaaaaa;
   }
 
-  .stat-item {
+  html.cp-dark .stat-item {
     border-color: #3a3a3a;
   }
 
-  .stat-item .label {
+  html.cp-dark .stat-item .label {
     color: #888888;
   }
 
-  .stat-item .value {
+  html.cp-dark .stat-item .value {
     color: #aaaaaa;
   }
-}
 </style>

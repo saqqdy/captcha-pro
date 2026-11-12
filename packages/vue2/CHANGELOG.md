@@ -1,5 +1,16 @@
 # @captcha-pro/vue2
 
+## 2.4.0
+
+### Minor Changes
+
+- Expand i18n from 2 to 6 locales: add `zh-TW`, `fr-FR`, `de-DE` and `es-ES` across Web, mini-program, Flutter, Android and iOS. `locale` accepts the new values with no API break; unsupported locales still fall back to `zh-CN`.
+
+### Patch Changes
+
+- Updated dependencies
+  - @captcha-pro/core@2.4.0
+
 ## 2.3.0
 
 ### Minor Changes
