@@ -14,7 +14,7 @@ export interface Props {
   count?: number
   showRefresh?: boolean
   verifyMode?: 'frontend' | 'backend'
-  locale?: 'zh-CN' | 'en-US'
+  locale?: 'zh-CN' | 'zh-TW' | 'en-US' | 'fr-FR' | 'de-DE' | 'es-ES'
   secretKey?: string
   backendVerify?: BackendVerifyOptions
 }
@@ -38,15 +38,15 @@ const containerRef = ref<HTMLElement | null>(null)
 
 const { instance, isReady, refresh, getData, getStatistics, destroy } = useClickCaptcha({
   el: () => containerRef.value ?? undefined,
-  width: props.width,
-  height: props.height,
-  bgImage: props.bgImage,
-  count: props.count,
-  showRefresh: props.showRefresh,
-  verifyMode: props.verifyMode,
-  locale: props.locale,
-  secretKey: props.secretKey,
-  backendVerify: props.backendVerify,
+  get width() { return props.width },
+  get height() { return props.height },
+  get bgImage() { return props.bgImage },
+  get count() { return props.count },
+  get showRefresh() { return props.showRefresh },
+  get verifyMode() { return props.verifyMode },
+  get locale() { return props.locale },
+  get secretKey() { return props.secretKey },
+  get backendVerify() { return props.backendVerify },
   onSuccess: () => emit('success'),
   onFail: () => emit('fail'),
   onRefresh: () => emit('refresh'),

@@ -17,7 +17,7 @@ export interface UseClickCaptchaOptions {
   count?: number
   showRefresh?: boolean
   verifyMode?: 'frontend' | 'backend'
-  locale?: 'zh-CN' | 'en-US'
+  locale?: 'zh-CN' | 'zh-TW' | 'en-US' | 'fr-FR' | 'de-DE' | 'es-ES'
   secretKey?: string
   backendVerify?: BackendVerifyOptions
   onSuccess?: () => void
@@ -73,9 +73,13 @@ export function useClickCaptcha(options: UseClickCaptchaOptions): {
     isReady.value = false
   }
 
-  if (options.bgImage) {
-    watch(() => options.bgImage, () => refresh())
-  }
+  watch(
+    () => [options.width, options.height, options.bgImage, options.count, options.showRefresh, options.verifyMode, options.locale],
+    () => {
+      destroy()
+      init()
+    },
+  )
 
   onMounted(() => init())
   onUnmounted(() => destroy())

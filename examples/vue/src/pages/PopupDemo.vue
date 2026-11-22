@@ -19,28 +19,28 @@ const onSuccess = () => console.log('Popup captcha success')
 
 <template>
   <section class="demo-section">
-    <h2>💬 {{ currentLocale === 'zh-CN' ? '弹窗验证码' : 'Popup Captcha' }}</h2>
+    <h2>💬 {{ t('弹窗验证码', 'Popup Captcha') }}</h2>
 
     <div class="options">
       <div class="option-row">
-        <label>{{ currentLocale === 'zh-CN' ? '验证码类型' : 'Type' }}:</label>
+        <label>{{ t('验证码类型', 'Type') }}:</label>
         <select v-model="config.type">
-          <option value="slider">{{ currentLocale === 'zh-CN' ? '滑块验证' : 'Slider' }}</option>
-          <option value="click">{{ currentLocale === 'zh-CN' ? '点击验证' : 'Click' }}</option>
+          <option value="slider">{{ t('滑块验证', 'Slider') }}</option>
+          <option value="click">{{ t('点击验证', 'Click') }}</option>
         </select>
       </div>
       <div class="option-row">
-        <label>{{ currentLocale === 'zh-CN' ? '弹窗标题' : 'Title' }}:</label>
-        <input type="text" v-model="config.title" :placeholder="currentLocale === 'zh-CN' ? '安全验证' : 'Security Verification'">
+        <label>{{ t('弹窗标题', 'Title') }}:</label>
+        <input type="text" v-model="config.title" :placeholder="t('安全验证', 'Security Verification')">
       </div>
       <div class="option-row">
-        <label>{{ currentLocale === 'zh-CN' ? '自动关闭' : 'Auto Close' }}:</label>
+        <label>{{ t('自动关闭', 'Auto Close') }}:</label>
         <input type="checkbox" v-model="config.autoClose">
       </div>
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-primary" @click="showPopup">{{ currentLocale === 'zh-CN' ? '打开验证弹窗' : 'Open Popup' }}</button>
+      <button class="btn btn-primary" @click="showPopup">{{ t('打开验证弹窗', 'Open Popup') }}</button>
     </div>
 
     <PopupCaptcha

@@ -20,7 +20,7 @@ export interface UseSliderCaptchaOptions {
   precision?: number
   showRefresh?: boolean
   verifyMode?: 'frontend' | 'backend'
-  locale?: 'zh-CN' | 'en-US'
+  locale?: 'zh-CN' | 'zh-TW' | 'en-US' | 'fr-FR' | 'de-DE' | 'es-ES'
   secretKey?: string
   backendVerify?: BackendVerifyOptions
   onSuccess?: () => void
@@ -79,9 +79,13 @@ export function useSliderCaptcha(options: UseSliderCaptchaOptions): {
     isReady.value = false
   }
 
-  if (options.bgImage || options.sliderImage) {
-    watch(() => [options.bgImage, options.sliderImage], () => refresh())
-  }
+  watch(
+    () => [options.width, options.height, options.bgImage, options.sliderImage, options.precision, options.showRefresh, options.verifyMode, options.locale],
+    () => {
+      destroy()
+      init()
+    },
+  )
 
   onMounted(() => init())
   onUnmounted(() => destroy())

@@ -17,7 +17,7 @@ export interface Props {
   precision?: number
   showRefresh?: boolean
   verifyMode?: 'frontend' | 'backend'
-  locale?: 'zh-CN' | 'en-US'
+  locale?: 'zh-CN' | 'zh-TW' | 'en-US' | 'fr-FR' | 'de-DE' | 'es-ES'
   secretKey?: string
   backendVerify?: BackendVerifyOptions
 }
@@ -43,18 +43,18 @@ const containerRef = ref<HTMLElement | null>(null)
 
 const { instance, isReady, refresh, getData, getStatistics, destroy } = useSliderCaptcha({
   el: () => containerRef.value ?? undefined,
-  width: props.width,
-  height: props.height,
-  bgImage: props.bgImage,
-  sliderImage: props.sliderImage,
-  sliderWidth: props.sliderWidth,
-  sliderHeight: props.sliderHeight,
-  precision: props.precision,
-  showRefresh: props.showRefresh,
-  verifyMode: props.verifyMode,
-  locale: props.locale,
-  secretKey: props.secretKey,
-  backendVerify: props.backendVerify,
+  get width() { return props.width },
+  get height() { return props.height },
+  get bgImage() { return props.bgImage },
+  get sliderImage() { return props.sliderImage },
+  get sliderWidth() { return props.sliderWidth },
+  get sliderHeight() { return props.sliderHeight },
+  get precision() { return props.precision },
+  get showRefresh() { return props.showRefresh },
+  get verifyMode() { return props.verifyMode },
+  get locale() { return props.locale },
+  get secretKey() { return props.secretKey },
+  get backendVerify() { return props.backendVerify },
   onSuccess: () => emit('success'),
   onFail: () => emit('fail'),
   onRefresh: () => emit('refresh'),

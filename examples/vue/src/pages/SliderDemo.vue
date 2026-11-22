@@ -36,26 +36,26 @@ watch(() => config.value.precision, () => captchaRef.value?.refresh())
 
 <template>
   <section class="demo-section">
-    <h2>🧩 {{ currentLocale === 'zh-CN' ? '滑动拼图验证码' : 'Slider Captcha' }}</h2>
+    <h2>🧩 {{ t('滑动拼图验证码', 'Slider Captcha') }}</h2>
 
     <div class="options">
       <div class="option-row">
-        <label>{{ currentLocale === 'zh-CN' ? '验证精度' : 'Precision' }}:</label>
+        <label>{{ t('验证精度', 'Precision') }}:</label>
         <select v-model.number="config.precision">
-          <option :value="3">{{ currentLocale === 'zh-CN' ? '高 (3px)' : 'High (3px)' }}</option>
-          <option :value="5">{{ currentLocale === 'zh-CN' ? '中 (5px)' : 'Medium (5px)' }}</option>
-          <option :value="10">{{ currentLocale === 'zh-CN' ? '低 (10px)' : 'Low (10px)' }}</option>
+          <option :value="3">{{ t('高 (3px)', 'High (3px)') }}</option>
+          <option :value="5">{{ t('中 (5px)', 'Medium (5px)') }}</option>
+          <option :value="10">{{ t('低 (10px)', 'Low (10px)') }}</option>
         </select>
       </div>
       <div class="option-row">
-        <label>{{ currentLocale === 'zh-CN' ? '验证模式' : 'Mode' }}:</label>
+        <label>{{ t('验证模式', 'Mode') }}:</label>
         <select v-model="config.verifyMode">
-          <option value="frontend">{{ currentLocale === 'zh-CN' ? '前端验证' : 'Frontend' }}</option>
-          <option value="backend">{{ currentLocale === 'zh-CN' ? '后端验证' : 'Backend' }}</option>
+          <option value="frontend">{{ t('前端验证', 'Frontend') }}</option>
+          <option value="backend">{{ t('后端验证', 'Backend') }}</option>
         </select>
       </div>
       <div class="option-row">
-        <label>{{ currentLocale === 'zh-CN' ? '显示刷新' : 'Show Refresh' }}:</label>
+        <label>{{ t('显示刷新', 'Show Refresh') }}:</label>
         <input type="checkbox" v-model="config.showRefresh">
       </div>
     </div>
@@ -74,27 +74,27 @@ watch(() => config.value.precision, () => captchaRef.value?.refresh())
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-primary" @click="reset">{{ currentLocale === 'zh-CN' ? '重置验证码' : 'Reset' }}</button>
-      <button class="btn btn-secondary" @click="getData">{{ currentLocale === 'zh-CN' ? '获取数据' : 'Get Data' }}</button>
-      <button class="btn btn-secondary" @click="updateStats">{{ currentLocale === 'zh-CN' ? '查看统计' : 'Statistics' }}</button>
+      <button class="btn btn-primary" @click="reset">{{ t('重置验证码', 'Reset') }}</button>
+      <button class="btn btn-secondary" @click="getData">{{ t('获取数据', 'Get Data') }}</button>
+      <button class="btn btn-secondary" @click="updateStats">{{ t('查看统计', 'Statistics') }}</button>
     </div>
 
     <div v-if="stats && Object.keys(stats).length" class="stats">
       <div class="stat-item">
         <span class="stat-value">{{ stats.totalAttempts }}</span>
-        <span class="stat-label">{{ currentLocale === 'zh-CN' ? '总尝试' : 'Attempts' }}</span>
+        <span class="stat-label">{{ t('总尝试', 'Attempts') }}</span>
       </div>
       <div class="stat-item">
         <span class="stat-value">{{ stats.successCount }}</span>
-        <span class="stat-label">{{ currentLocale === 'zh-CN' ? '成功' : 'Success' }}</span>
+        <span class="stat-label">{{ t('成功', 'Success') }}</span>
       </div>
       <div class="stat-item">
         <span class="stat-value">{{ stats.successRate }}%</span>
-        <span class="stat-label">{{ currentLocale === 'zh-CN' ? '成功率' : 'Rate' }}</span>
+        <span class="stat-label">{{ t('成功率', 'Rate') }}</span>
       </div>
       <div class="stat-item">
         <span class="stat-value">{{ stats.avgVerifyTime }}ms</span>
-        <span class="stat-label">{{ currentLocale === 'zh-CN' ? '平均耗时' : 'Avg Time' }}</span>
+        <span class="stat-label">{{ t('平均耗时', 'Avg Time') }}</span>
       </div>
     </div>
   </section>

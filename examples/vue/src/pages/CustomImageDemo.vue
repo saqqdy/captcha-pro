@@ -21,12 +21,10 @@ const changeImage = () => {
 
 <template>
   <section class="demo-section">
-    <h2>🖼️ {{ currentLocale === 'zh-CN' ? '自定义图片验证码' : 'Custom Image Captcha' }}</h2>
+    <h2>🖼️ {{ t('自定义图片验证码', 'Custom Image Captcha') }}</h2>
 
     <div class="info-box">
-      💡 {{ currentLocale === 'zh-CN'
-        ? '支持使用自定义背景图片，滑块图片会自动生成。'
-        : 'Support custom background images, slider image will be auto-generated.' }}
+      💡 {{ t('支持使用自定义背景图片，滑块图片会自动生成。', 'Support custom background images, slider image will be auto-generated.') }}
     </div>
 
     <div class="captcha-box">
@@ -41,11 +39,11 @@ const changeImage = () => {
     </div>
 
     <div class="btn-group">
-      <button class="btn btn-primary" @click="changeImage">{{ currentLocale === 'zh-CN' ? '更换图片' : 'Change Image' }}</button>
+      <button class="btn btn-primary" @click="changeImage">{{ t('更换图片', 'Change Image') }}</button>
     </div>
 
     <p class="image-info">
-      {{ currentLocale === 'zh-CN' ? '当前图片' : 'Current image' }}: {{ index + 1 }} / {{ images.length }}
+      {{ t('当前图片', 'Current image') }}: {{ index + 1 }} / {{ images.length }}
     </p>
   </section>
 </template>

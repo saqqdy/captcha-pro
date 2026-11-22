@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { SliderCaptcha, ClickCaptcha } from '@captcha-pro/vue'
+import { useLocale } from '../composables/useLocale'
 
-const currentLocale = ref('zh-CN')
-const t = computed(() => (zh: string, en: string) => currentLocale.value === 'zh-CN' ? zh : en)
+const { currentLocale, t } = useLocale()
 
 const sliderRef = ref()
 const clickRef = ref()
@@ -231,45 +231,43 @@ const onFail = () => {
   line-height: 1.6;
 }
 
-@media (prefers-color-scheme: dark) {
-  .info-box {
+  html.cp-dark .info-box {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .info-box h3 {
+  html.cp-dark .info-box h3 {
     color: #aaaaaa;
   }
 
-  .info-box p {
+  html.cp-dark .info-box p {
     color: #888888;
   }
 
-  .info-box code {
+  html.cp-dark .info-box code {
     background: #3a3a3a;
   }
 
-  .demo-item {
+  html.cp-dark .demo-item {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .demo-item h3 {
+  html.cp-dark .demo-item h3 {
     color: #aaaaaa;
   }
 
-  .result.success {
+  html.cp-dark .result.success {
     background: #1e3a1e;
     color: #5cb85c;
   }
 
-  .result.error {
+  html.cp-dark .result.error {
     background: #3a1e1e;
     color: #e57373;
   }
 
-  .hint {
+  html.cp-dark .hint {
     color: #888888;
   }
-}
 </style>

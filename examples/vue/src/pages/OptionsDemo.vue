@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { SliderCaptcha, ClickCaptcha } from '@captcha-pro/vue'
+import { useLocale } from '../composables/useLocale'
 
-const currentLocale = ref('zh-CN')
-const t = computed(() => (zh: string, en: string) => currentLocale.value === 'zh-CN' ? zh : en)
+const { currentLocale, t } = useLocale()
 
 const configs = ref({
   precision: 5,
@@ -77,7 +77,6 @@ const onClickSuccess = () => {
           <ClickCaptcha
             :width="300"
             :height="170"
-            :precision="configs.precision"
             :show-refresh="configs.showRefresh"
             :locale="currentLocale"
             @success="onClickSuccess"
@@ -284,59 +283,57 @@ const onClickSuccess = () => {
   line-height: 1.6;
 }
 
-@media (prefers-color-scheme: dark) {
-  .info-box {
+  html.cp-dark .info-box {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .info-box h3 {
+  html.cp-dark .info-box h3 {
     color: #aaaaaa;
   }
 
-  .info-box p {
+  html.cp-dark .info-box p {
     color: #888888;
   }
 
-  .config-panel {
+  html.cp-dark .config-panel {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .config-panel h3 {
+  html.cp-dark .config-panel h3 {
     color: #aaaaaa;
   }
 
-  .config-label {
+  html.cp-dark .config-label {
     color: #aaaaaa;
   }
 
-  .config-desc {
+  html.cp-dark .config-desc {
     color: #888888;
   }
 
-  .config-item input[type="number"] {
+  html.cp-dark .config-item input[type="number"] {
     background: #1f1f1f;
     border-color: #3a3a3a;
     color: #aaaaaa;
   }
 
-  .toggle-slider {
+  html.cp-dark .toggle-slider {
     background-color: #3a3a3a;
   }
 
-  .demo-item {
+  html.cp-dark .demo-item {
     background: #2a2a2a;
     border-color: #3a3a3a;
   }
 
-  .demo-item h3 {
+  html.cp-dark .demo-item h3 {
     color: #aaaaaa;
   }
 
-  .result.success {
+  html.cp-dark .result.success {
     background: #1e3a1e;
     color: #5cb85c;
   }
-}
 </style>
