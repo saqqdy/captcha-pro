@@ -19,7 +19,7 @@ export interface UseSliderCaptchaOptions {
   precision?: number
   showRefresh?: boolean
   verifyMode?: 'frontend' | 'backend'
-  locale?: 'zh-CN' | 'en-US'
+  locale?: 'zh-CN' | 'zh-TW' | 'en-US' | 'fr-FR' | 'de-DE' | 'es-ES'
   secretKey?: string
   onSuccess?: () => void
   onFail?: () => void
@@ -61,11 +61,11 @@ export function useSliderCaptcha(options: UseSliderCaptchaOptions = {}): UseSlid
 
   const statusText =
     status === 'success'
-      ? locale === 'zh-CN'
+      ? ['zh-CN', 'zh-TW'].includes(locale)
         ? '验证成功'
         : 'Success'
       : status === 'fail'
-        ? locale === 'zh-CN'
+        ? ['zh-CN', 'zh-TW'].includes(locale)
           ? '验证失败'
           : 'Failed'
         : ''
@@ -106,7 +106,7 @@ export function useSliderCaptcha(options: UseSliderCaptchaOptions = {}): UseSlid
       captchaInstance.current?.destroy()
       captchaInstance.current = null
     }
-  }, [])
+  }, [locale, precision, showRefresh])
 
   useEffect(() => {
     captchaInstance.current?.refresh()

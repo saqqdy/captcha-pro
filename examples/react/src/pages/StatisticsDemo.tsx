@@ -12,16 +12,24 @@ export default function StatisticsDemo(): ReactElement {
   const [sliderResult, setSliderResult] = useState('')
   const [clickResult, setClickResult] = useState('')
 
+  const updateSliderStats = (): void => {
+    setSliderStats(sliderRef.current?.getStatistics?.())
+  }
+
+  const updateClickStats = (): void => {
+    setClickStats(clickRef.current?.getStatistics?.())
+  }
+
   const onSliderSuccess = (): void => {
+    updateSliderStats()
     const stats = sliderRef.current?.getStatistics?.()
-    setSliderStats(stats)
-    setSliderResult(`${t('验证成功！耗时：', 'Verification successful! Time: ')  }${stats?.verificationTime?.toFixed(0) || 0}ms`)
+    setSliderResult(`${t('验证成功！耗时：', 'Verification successful! Time: ')  }${stats?.avgVerifyTime || 0}ms`)
   }
 
   const onClickSuccess = (): void => {
+    updateClickStats()
     const stats = clickRef.current?.getStatistics?.()
-    setClickStats(stats)
-    setClickResult(`${t('验证成功！点击次数：', 'Verification successful! Clicks: ')  }${stats?.clickCount || 0}`)
+    setClickResult(`${t('验证成功！点击次数：', 'Verification successful! Clicks: ')  }${stats?.avgClickCount || 0}`)
   }
 
   const resetAll = (): void => {
@@ -34,7 +42,7 @@ export default function StatisticsDemo(): ReactElement {
   }
 
   return (
-    <section className="demo-section">
+    <section className="demo-section page-statistics">
       <h2>📊 {t('统计数据演示', 'Statistics Demo')}</h2>
 
       <div className="info-box">
@@ -52,6 +60,7 @@ export default function StatisticsDemo(): ReactElement {
               height={170}
               locale={currentLocale}
               onSuccess={onSliderSuccess}
+              onFail={updateSliderStats}
             />
           </div>
           {sliderResult && <div className="result success">{sliderResult}</div>}
@@ -60,7 +69,15 @@ export default function StatisticsDemo(): ReactElement {
               <h4>{t('统计数据', 'Statistics')}</h4>
               <div className="stat-item">
                 <span className="label">{t('验证耗时', 'Time')}:</span>
-                <span className="value">{sliderStats.verificationTime?.toFixed(0) || 0}ms</span>
+                <span className="value">{sliderStats.avgVerifyTime || 0}ms</span>
+              </div>
+              <div className="stat-item">
+                <span className="label">{t('尝试次数', 'Attempts')}:</span>
+                <span className="value">{sliderStats.totalAttempts || 0}</span>
+              </div>
+              <div className="stat-item">
+                <span className="label">{t('成功率', 'Rate')}:</span>
+                <span className="value">{sliderStats.successRate || 0}%</span>
               </div>
             </div>
           )}
@@ -75,6 +92,7 @@ export default function StatisticsDemo(): ReactElement {
               height={170}
               locale={currentLocale}
               onSuccess={onClickSuccess}
+              onFail={updateClickStats}
             />
           </div>
           {clickResult && <div className="result success">{clickResult}</div>}
@@ -83,11 +101,19 @@ export default function StatisticsDemo(): ReactElement {
               <h4>{t('统计数据', 'Statistics')}</h4>
               <div className="stat-item">
                 <span className="label">{t('验证耗时', 'Time')}:</span>
-                <span className="value">{clickStats.verificationTime?.toFixed(0) || 0}ms</span>
+                <span className="value">{clickStats.avgVerifyTime || 0}ms</span>
               </div>
               <div className="stat-item">
                 <span className="label">{t('点击次数', 'Clicks')}:</span>
-                <span className="value">{clickStats.clickCount || 0}</span>
+                <span className="value">{clickStats.avgClickCount || 0}</span>
+              </div>
+              <div className="stat-item">
+                <span className="label">{t('尝试次数', 'Attempts')}:</span>
+                <span className="value">{clickStats.totalAttempts || 0}</span>
+              </div>
+              <div className="stat-item">
+                <span className="label">{t('成功率', 'Rate')}:</span>
+                <span className="value">{clickStats.successRate || 0}%</span>
               </div>
             </div>
           )}

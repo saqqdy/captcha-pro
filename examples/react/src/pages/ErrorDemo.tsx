@@ -42,7 +42,7 @@ export default function ErrorDemo(): ReactElement {
   }
 
   return (
-    <section className="demo-section">
+    <section className="demo-section page-error">
       <h2>❌ {t('错误处理演示', 'Error Handling Demo')}</h2>
 
       <div className="info-box">

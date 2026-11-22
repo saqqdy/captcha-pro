@@ -14,7 +14,7 @@ export default function OptionsDemo(): ReactElement {
   const [clickResult, setClickResult] = useState('')
 
   return (
-    <section className="demo-section">
+    <section className="demo-section page-options">
       <h2>⚙️ {t('配置选项演示', 'Configuration Options Demo')}</h2>
 
       <div className="info-box">
@@ -77,7 +77,6 @@ export default function OptionsDemo(): ReactElement {
             <ClickCaptcha
               width={300}
               height={170}
-              precision={configs.precision}
               showRefresh={configs.showRefresh}
               locale={currentLocale}
               onSuccess={() => setClickResult(t('验证成功！', 'Verification successful!'))}

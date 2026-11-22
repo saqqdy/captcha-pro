@@ -454,3 +454,850 @@ html.cp-dark .result.error {
     width: 100%;
   }
 }
+
+/* Page-level styles aligned with Vue3 scoped styles */
+/* AccessibilityDemo — aligned with Vue3 scoped styles */
+
+.page-accessibility .info-box {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.page-accessibility .info-box h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #495057;
+}
+
+.page-accessibility .info-box ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.page-accessibility .info-box li {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.page-accessibility .info-box ul ul {
+  margin-top: 8px;
+}
+
+.page-accessibility .info-box code {
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 0.9em;
+}
+
+.page-accessibility .demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.page-accessibility .demo-item {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.page-accessibility .demo-item h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #495057;
+}
+
+.page-accessibility .captcha-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.page-accessibility .result {
+  text-align: center;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.page-accessibility .result.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.page-accessibility .hint {
+  text-align: center;
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+}
+
+html.cp-dark .page-accessibility .info-box {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-accessibility .info-box h3 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-accessibility .info-box code {
+  background: #3a3a3a;
+}
+
+html.cp-dark .page-accessibility .demo-item {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-accessibility .demo-item h3 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-accessibility .result.success {
+  background: #1e3a1e;
+  color: #5cb85c;
+}
+
+html.cp-dark .page-accessibility .hint {
+  color: #888888;
+}
+
+/* ErrorDemo — aligned with Vue3 scoped styles */
+
+.page-error .info-box {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.page-error .info-box h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #495057;
+}
+
+.page-error .info-box p {
+  margin-bottom: 12px;
+  color: #6c757d;
+}
+
+.page-error .info-box ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.page-error .info-box li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.page-error .info-box code {
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 0.9em;
+}
+
+.page-error .demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.page-error .demo-item {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.page-error .demo-item h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #495057;
+}
+
+.page-error .captcha-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.page-error .result {
+  text-align: center;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.page-error .result.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.page-error .result.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.page-error .hint {
+  text-align: center;
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+}
+
+.page-error .code-example {
+  background: #2d2d2d;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.page-error .code-example h3 {
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.page-error .code-example pre {
+  margin: 0;
+  color: #f8f8f2;
+}
+
+.page-error .code-example code {
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+html.cp-dark .page-error .info-box {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-error .info-box h3 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-error .info-box p {
+  color: #888888;
+}
+
+html.cp-dark .page-error .info-box code {
+  background: #3a3a3a;
+}
+
+html.cp-dark .page-error .demo-item {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-error .demo-item h3 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-error .result.success {
+  background: #1e3a1e;
+  color: #5cb85c;
+}
+
+html.cp-dark .page-error .result.error {
+  background: #3a1e1e;
+  color: #e57373;
+}
+
+html.cp-dark .page-error .hint {
+  color: #888888;
+}
+
+/* LocaleDemo — aligned with Vue3 scoped styles */
+
+.page-locale .locale-switcher {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  justify-content: center;
+}
+
+.page-locale .locale-switcher button {
+  padding: 12px 24px;
+  border: 2px solid #e9ecef;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 16px;
+}
+
+.page-locale .locale-switcher button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-color: transparent;
+}
+
+.page-locale .i18n-table {
+  margin-bottom: 32px;
+}
+
+.page-locale .i18n-table h3 {
+  margin-bottom: 16px;
+  color: #495057;
+}
+
+.page-locale .i18n-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.page-locale .i18n-table th,
+.page-locale .i18n-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.page-locale .i18n-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.page-locale .i18n-table code {
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.page-locale .demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.page-locale .demo-item {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.page-locale .demo-item h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #495057;
+}
+
+.page-locale .captcha-box {
+  display: flex;
+  justify-content: center;
+}
+
+.page-locale .code-example {
+  background: #2d2d2d;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.page-locale .code-example h3 {
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.page-locale .code-example pre {
+  margin: 0;
+  color: #f8f8f2;
+}
+
+.page-locale .code-example code {
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+html.cp-dark .page-locale .locale-switcher button {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-locale .locale-switcher button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+html.cp-dark .page-locale .i18n-table h3 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-locale .i18n-table table {
+  background: #2a2a2a;
+}
+
+html.cp-dark .page-locale .i18n-table th {
+  background: #1f1f1f;
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-locale .i18n-table code {
+  background: #3a3a3a;
+}
+
+html.cp-dark .page-locale .demo-item {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-locale .demo-item h3 {
+  color: #aaaaaa;
+}
+
+/* OptionsDemo — aligned with Vue3 scoped styles */
+
+.page-options .info-box {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.page-options .info-box h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #495057;
+}
+
+.page-options .info-box p {
+  margin: 0;
+  color: #6c757d;
+}
+
+.page-options .config-panel {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.page-options .config-panel h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #495057;
+}
+
+.page-options .config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.page-options .config-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.page-options .config-item > label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-options .config-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.page-options .config-desc {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.page-options .config-item input[type="number"] {
+  padding: 8px 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+  color: #495057;
+}
+
+.page-options .config-item input[type="number"]:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.page-options .toggle {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+}
+
+.page-options .toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.page-options .toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.page-options .toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.page-options .toggle input:checked + .toggle-slider {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.page-options .toggle input:checked + .toggle-slider:before {
+  transform: translateX(24px);
+}
+
+.page-options .demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.page-options .demo-item {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.page-options .demo-item h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #495057;
+}
+
+.page-options .captcha-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.page-options .result {
+  text-align: center;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.page-options .result.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.page-options .code-example {
+  background: #2d2d2d;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.page-options .code-example h3 {
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.page-options .code-example pre {
+  margin: 0;
+  color: #f8f8f2;
+}
+
+.page-options .code-example code {
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+html.cp-dark .page-options .info-box {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-options .info-box h3 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-options .info-box p {
+  color: #888888;
+}
+
+html.cp-dark .page-options .config-panel {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-options .config-panel h3 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-options .config-label {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-options .config-desc {
+  color: #888888;
+}
+
+html.cp-dark .page-options .config-item input[type="number"] {
+  background: #1f1f1f;
+  border-color: #3a3a3a;
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-options .toggle-slider {
+  background-color: #3a3a3a;
+}
+
+html.cp-dark .page-options .demo-item {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-options .demo-item h3 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-options .result.success {
+  background: #1e3a1e;
+  color: #5cb85c;
+}
+
+/* StatisticsDemo — aligned with Vue3 scoped styles */
+
+.page-statistics .info-box {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.page-statistics .info-box h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #495057;
+}
+
+.page-statistics .info-box p {
+  margin-bottom: 12px;
+  color: #6c757d;
+}
+
+.page-statistics .info-box ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.page-statistics .info-box li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.page-statistics .info-box code {
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 0.9em;
+}
+
+.page-statistics .demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.page-statistics .demo-item {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.page-statistics .demo-item h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #495057;
+}
+
+.page-statistics .captcha-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.page-statistics .result {
+  text-align: center;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.page-statistics .result.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.page-statistics .stats-panel {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.page-statistics .stats-panel h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #495057;
+}
+
+.page-statistics .stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.page-statistics .stat-item:last-child {
+  border-bottom: none;
+}
+
+.page-statistics .stat-item .label {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.page-statistics .stat-item .value {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.page-statistics .code-example {
+  background: #2d2d2d;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.page-statistics .code-example h3 {
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.page-statistics .code-example pre {
+  margin: 0;
+  color: #f8f8f2;
+}
+
+.page-statistics .code-example code {
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+html.cp-dark .page-statistics .info-box {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-statistics .info-box h3 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-statistics .info-box p {
+  color: #888888;
+}
+
+html.cp-dark .page-statistics .info-box code {
+  background: #3a3a3a;
+}
+
+html.cp-dark .page-statistics .demo-item {
+  background: #2a2a2a;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-statistics .demo-item h3 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-statistics .result.success {
+  background: #1e3a1e;
+  color: #5cb85c;
+}
+
+html.cp-dark .page-statistics .stats-panel {
+  background: #1f1f1f;
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-statistics .stats-panel h4 {
+  color: #aaaaaa;
+}
+
+html.cp-dark .page-statistics .stat-item {
+  border-color: #3a3a3a;
+}
+
+html.cp-dark .page-statistics .stat-item .label {
+  color: #888888;
+}
+
+html.cp-dark .page-statistics .stat-item .value {
+  color: #aaaaaa;
+}

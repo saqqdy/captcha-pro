@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 import { useLocale } from '../hooks/useLocale'
 
 export function Features(): ReactElement {
-  const { currentLocale, t } = useLocale()
+  const { t } = useLocale()
 
   const features = [
     { zh: '随机滑块形状', en: 'Random slider shapes' },
@@ -26,7 +26,7 @@ export function Features(): ReactElement {
         {features.map((f) => (
           <div key={f.en} className="feature-item">
             ✓
-            {currentLocale === 'zh-CN' ? f.zh : f.en}
+            {t(f.zh, f.en)}
             {f.badge && <span className="new-badge">{f.badge}</span>}
           </div>
         ))}

@@ -17,7 +17,7 @@ export interface ClickCaptchaProps {
   count?: number
   showRefresh?: boolean
   verifyMode?: 'frontend' | 'backend'
-  locale?: 'zh-CN' | 'en-US'
+  locale?: 'zh-CN' | 'zh-TW' | 'en-US' | 'fr-FR' | 'de-DE' | 'es-ES'
   secretKey?: string
   backendVerify?: BackendVerifyOptions
   onSuccess?: () => void

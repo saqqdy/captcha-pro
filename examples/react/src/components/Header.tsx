@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import type { Locale } from '../hooks/useLocale'
 import { useEffect, useState } from 'react'
 import { useLocale } from '../hooks/useLocale'
 
@@ -35,30 +36,34 @@ export function Header(): ReactElement {
     <header>
       <h1>
         🔐 Captcha Pro
-        <span className="version-badge">v2.3.0</span>
+        <span className="version-badge">v2.4.0</span>
       </h1>
       <p className="subtitle">
         {t('轻量级行为验证码库', 'Lightweight Behavioral Captcha Library')}
       </p>
       <div className="lang-switch">
-        <button
-          className={currentLocale === 'zh-CN' ? 'active' : ''}
-          onClick={() => switchLanguage('zh-CN')}
-        >
-          中文
-        </button>
-        <button
-          className={currentLocale === 'en-US' ? 'active' : ''}
-          onClick={() => switchLanguage('en-US')}
-        >
-          English
-        </button>
+        {[
+          { code: 'zh-CN', label: '中文' },
+          { code: 'zh-TW', label: '繁中' },
+          { code: 'en-US', label: 'EN' },
+          { code: 'fr-FR', label: 'FR' },
+          { code: 'de-DE', label: 'DE' },
+          { code: 'es-ES', label: 'ES' },
+        ].map(({ code, label }) => (
+          <button
+            key={code}
+            className={currentLocale === code ? 'active' : ''}
+            onClick={() => switchLanguage(code as Locale)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
       <div className="theme-switch">
         <button className={isDark ? 'active' : ''} onClick={toggleTheme}>
           {isDark
-            ? (currentLocale === 'zh-CN' ? '☀️ 浅色模式' : '☀️ Light')
-            : (currentLocale === 'zh-CN' ? '🌙 暗色模式' : '🌙 Dark')}
+            ? (t('☀️ 浅色模式', '☀️ Light'))
+            : (t('🌙 暗色模式', '🌙 Dark'))}
         </button>
       </div>
     </header>

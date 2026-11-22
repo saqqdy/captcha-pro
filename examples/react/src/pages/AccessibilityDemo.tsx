@@ -9,7 +9,7 @@ export default function AccessibilityDemo(): ReactElement {
   const [clickResult, setClickResult] = useState('')
 
   return (
-    <section className="demo-section">
+    <section className="demo-section page-accessibility">
       <h2>♿ {t('无障碍支持演示', 'Accessibility Demo')}</h2>
 
       <div className="info-box">

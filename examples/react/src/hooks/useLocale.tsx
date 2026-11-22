@@ -1,7 +1,8 @@
 import { getLocale, setLocale } from '@captcha-pro/react'
 import { createContext, type ReactElement, type ReactNode, useCallback, useContext, useState } from 'react'
+import { demoT } from '../utils/demoI18n'
 
-type Locale = 'zh-CN' | 'en-US'
+export type Locale = 'zh-CN' | 'zh-TW' | 'en-US' | 'fr-FR' | 'de-DE' | 'es-ES'
 
 interface LocaleContextValue {
   currentLocale: Locale
@@ -15,7 +16,7 @@ export function LocaleProvider(props: { children: ReactNode }): ReactElement {
   const [currentLocale, setCurrentLocale] = useState<Locale>(getLocale() as Locale)
 
   const t = useCallback((zh: string, en: string): string => {
-    return currentLocale === 'zh-CN' ? zh : en
+    return demoT(currentLocale, zh, en)
   }, [currentLocale])
 
   const switchLanguage = useCallback((locale: Locale): void => {

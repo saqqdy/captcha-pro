@@ -1,41 +1,47 @@
 import type { ReactElement } from 'react'
-import { ClickCaptcha, getLocale, setLocale, SliderCaptcha } from '@captcha-pro/react'
-import { useState } from 'react'
-import { useLocale } from '../hooks/useLocale'
+import { ClickCaptcha, SliderCaptcha, t as translate } from '@captcha-pro/react'
+import { type Locale, useLocale } from '../hooks/useLocale'
 
 export default function LocaleDemo(): ReactElement {
-  const { t } = useLocale()
-  const [selectedLocale, setSelectedLocale] = useState(getLocale())
+  const { t, currentLocale, switchLanguage } = useLocale()
 
   const locales = [
     { code: 'zh-CN', label: '简体中文' },
-    { code: 'en-US', label: 'English' }
+    { code: 'zh-TW', label: '繁體中文' },
+    { code: 'en-US', label: 'English' },
+    { code: 'fr-FR', label: 'Français' },
+    { code: 'de-DE', label: 'Deutsch' },
+    { code: 'es-ES', label: 'Español' }
   ]
 
-  const i18nKeys = [
-    { key: 'slider_hint', zh: '向右拖动滑块填满缺口', en: 'Drag the slider to fill the gap' },
-    { key: 'click_prompt', zh: '请依次点击', en: 'Please click in order' },
-    { key: 'loading', zh: '加载中...', en: 'Loading...' },
-    { key: 'refresh', zh: '刷新', en: 'Refresh' },
-    { key: 'success', zh: '验证成功', en: 'Verification successful' },
-    { key: 'fail', zh: '验证失败', en: 'Verification failed' }
+  const messageKeys = [
+    'refresh',
+    'slider.slide',
+    'slider.success',
+    'slider.fail',
+    'click.prompt',
+    'click.success',
+    'click.fail',
+    'popup.title',
+    'popup.close',
+    'errors.network',
+    'errors.expired',
+    'errors.invalid',
+    'errors.notFound',
+    'errors.fetchFailed'
   ]
 
-  const switchLocale = (loc: string): void => {
-    setSelectedLocale(loc)
-    setLocale(loc)
-  }
 
   return (
-    <section className="demo-section">
+    <section className="demo-section page-locale">
       <h2>🌐 {t('国际化演示', 'Internationalization Demo')}</h2>
 
       <div className="locale-switcher">
         {locales.map(loc => (
           <button
             key={loc.code}
-            className={selectedLocale === loc.code ? 'active' : ''}
-            onClick={() => switchLocale(loc.code)}
+            className={currentLocale === loc.code ? 'active' : ''}
+            onClick={() => switchLanguage(loc.code as Locale)}
           >
             {loc.label}
           </button>
@@ -48,16 +54,14 @@ export default function LocaleDemo(): ReactElement {
           <thead>
             <tr>
               <th>Key</th>
-              <th>简体中文</th>
-              <th>English</th>
+              {locales.map(loc => <th key={loc.code}>{loc.code}</th>)}
             </tr>
           </thead>
           <tbody>
-            {i18nKeys.map(item => (
-              <tr key={item.key}>
-                <td><code>{item.key}</code></td>
-                <td>{item.zh}</td>
-                <td>{item.en}</td>
+            {messageKeys.map(key => (
+              <tr key={key}>
+                <td><code>{key}</code></td>
+                {locales.map(loc => <td key={loc.code}>{translate(key, loc.code as Locale)}</td>)}
               </tr>
             ))}
           </tbody>
@@ -71,7 +75,7 @@ export default function LocaleDemo(): ReactElement {
             <SliderCaptcha
               width={300}
               height={170}
-              locale={selectedLocale}
+              locale={currentLocale}
               onSuccess={() => {}}
             />
           </div>
@@ -83,7 +87,7 @@ export default function LocaleDemo(): ReactElement {
             <ClickCaptcha
               width={300}
               height={170}
-              locale={selectedLocale}
+              locale={currentLocale}
               onSuccess={() => {}}
             />
           </div>

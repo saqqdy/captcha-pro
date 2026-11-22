@@ -9,7 +9,7 @@ interface TabNavProps {
 }
 
 export function TabNav(props: TabNavProps): ReactElement {
-  const { currentLocale } = useLocale()
+  const { t } = useLocale()
 
   const tabs: { key: TabType, label: { zh: string, en: string }, badge?: string }[] = [
     { key: 'slider', label: { zh: '滑块验证码', en: 'Slider Captcha' } },
@@ -34,7 +34,7 @@ export function TabNav(props: TabNavProps): ReactElement {
           className={props.activeTab === tab.key ? 'active' : ''}
           onClick={() => props.onTabChange(tab.key)}
         >
-          {currentLocale === 'zh-CN' ? tab.label.zh : tab.label.en}
+          {t(tab.label.zh, tab.label.en)}
           {tab.badge && <span className="new-badge">{tab.badge}</span>}
         </button>
       ))}
